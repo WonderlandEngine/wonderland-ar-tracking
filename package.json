@@ -1,0 +1,22 @@
+{
+  "name": "wonderland-8thwall-tracking",
+  "version": "1.0.0",
+  "description": "My Wonderland project",
+  "main": "js/index.js",
+  "type": "module",
+  "module": "js/index.js",
+  "scripts": {
+    "build": "esbuild ./js/index.js --bundle --outfile=\"deploy/main-bundle.js\""
+  },
+  "keywords": [
+    "wonderland-engine"
+  ],
+  "devDependencies": {
+    "esbuild": "^0.15.14"
+  },
+  "dependencies": {
+    "@wonderlandengine/api": "^0.9.0",
+    "@wonderlandengine/components": "^0.9.0",
+    "gl-matrix": "^3.4.3"
+  }
+}
