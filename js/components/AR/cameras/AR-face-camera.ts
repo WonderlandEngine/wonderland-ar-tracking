@@ -1,34 +1,38 @@
 import ARSetup from '../AR-setup';
 import FaceTracking_8thWall from '../frameworks/8thwall/face-tracking-system-8thwall';
+import { Setup8thwall } from '../8thwall-setup';
+import { Component } from '@wonderlandengine/api';
 
-ARSetup.setUsage(ARSetup.ARUsage.FACE_TRACKING);
+ARSetup.setUsage(ARSetup.ARUsage.FACE_TRACKING, [Setup8thwall]);
 
-WL.registerComponent("AR-face-camera", {}, {
+class ARFaceCamera extends Component {
+  public static TypeName = 'AR-face-camera';
+  public static Properties = {};
 
-  // TODO - this has to be defined before the getters (because apparently getters are evaluated ahead of time). Which is wrong, figure out how to make getter work at runtime.
-  trackingSystem: FaceTracking_8thWall,
+  private trackingSystem = new FaceTracking_8thWall(this);
 
-  get onFaceFound() {
+  public get onFaceFound () {
     return this.trackingSystem.onFaceFound;
-  },
 
-  get onFaceUpdate() {
+  }
+  public get onFaceUpdate() {
     return this.trackingSystem.onFaceUpdate;
-  },
+  }
 
-  get onFaceLost() {
+  public get onFaceLost() {
     return this.trackingSystem.onFaceLost;
-  },
+  }
 
-  start: function () {
-    this.object.getComponent("input").active = false; // 8thwall will handle the camera pose
-    this.trackingSystem = FaceTracking_8thWall;
-    this.trackingSystem.init(this);
-    ARSetup.addARSystem(this.trackingSystem);
-  },
+  public start() {
+    this.object.getComponent("input")!.active = false; // 8thwall will handle the camera pose
+    this.trackingSystem.init();
 
-  update: function (dt) {
-    this.trackingSystem.update?.(dt);
-  },
+    ARSetup.onARStartClicked.push((_event) => {
+      this.trackingSystem.startARSession();
+    });
+    //ARSetup.addARSystem(this.trackingSystem);
+  }
+}
 
-});
+
+WL.registerComponent(ARFaceCamera);

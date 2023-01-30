@@ -1,32 +1,40 @@
 
-import ARSetup from "../../AR-setup";
+import { ViewComponent } from "@wonderlandengine/api";
+import { Setup8thwall } from "../../8thwall-setup";
+import { TrackingProvider } from "../trackingProvider";
 
-const WorldTracking_8thWall = {
-  name: "world_tracking_8thwall",
-  component: null,
-  view: null, // cache camera
-  cachedPosition: [0, 0, 0], // cache 8thwall cam position
-  cachedRotation: [0, 0, 0, -1], // cache 8thwall cam rotation
 
-  init: function (component) {
-    this.component = component;
-    this.view = this.component.object.getComponent("view");
-    this.onUpdate = this.onUpdate.bind(this);
-    this.onAttach = this.onAttach.bind(this);
-  },
+class WorldTracking_8thWall extends TrackingProvider {
+  // consumed by 8thwall
+  public readonly name = "world_tracking_8thwall";
 
-  listeners: [
+  private view?: ViewComponent; // cache camera
+  private cachedPosition = [0, 0, 0]; // cache 8thwall cam position
+  private cachedRotation = [0, 0, 0, -1]; // cache 8thwall cam rotation
+
+  // consumed by 8thwall
+  public readonly listeners = [
     {
       event: 'reality.trackingstatus', process: (e) => {
         // console.log("reality status", e);
       }
-    },
-  ],
+    }
+  ];
 
-  startARSession: function () {
+  public init() {
+    this.view = this.component.object.getComponent("view")!;
+    //this.onUpdate = this.onUpdate.bind(this);
+    //this.onAttach = this.onAttach.bind(this);
+  }
+
+  public async startARSession() {
+    console.log("Wtarting AR session");
+    const me = await Setup8thwall.checkPermissions();
+    console.log("What a me", me);
+
     XR8.XrController.configure({
       // enableLighting: true,
-      // disableWorldTracking: false,
+      disableWorldTracking: false,
       //scale: 'absolute'
     });
 
@@ -44,26 +52,26 @@ const WorldTracking_8thWall = {
         direction: XR8.XrConfig.camera().BACK,
       },
     })
-  },
+  }
 
 
-  stopARSession: function () {
+  public stopARSession() {
     // TODO: 
-  },
+  }
 
   /**
-  * private, called by 8thwall
+  * called by 8thwall
   */
-  onStart: function () {
-    ARSetup.enable8thwallCameraFeed();
-  },
+  public onStart = () => {
+    Setup8thwall.enableCameraFeed()
+  }
 
   /**
-    * @param {*} params 
-    * 
-    * private, called by 8thwall
-    */
-  onAttach: function (_params) {
+  * @param {*} params 
+  * 
+  * called by 8thwall
+  */
+  public onAttach = (_params) => {
     // Sync the xr controller's 6DoF position and camera paremeters with our camera.
     const rot = this.component.object.rotationWorld;
     const pos = this.component.object.getTranslationWorld([]);
@@ -73,14 +81,14 @@ const WorldTracking_8thWall = {
       cam: { pixelRectWidth: Module.canvas.width, pixelRectHeight: Module.canvas.height, nearClipPlane: 0.01, farClipPlane: 100 }
     })
     //Factory.add8thwallCameraFeed();
-  },
+  }
 
   /**
-     * @param {*} e 
-     * 
-     * private, called by 8thwall
-     */
-  onUpdate: function (e) {
+   * @param {*} e 
+   * 
+   * called by 8thwall
+   */
+  public onUpdate = (e) => {
     const source = e.processCpuResult.reality;
     if (!source)
       return;
@@ -99,7 +107,7 @@ const WorldTracking_8thWall = {
     if (intrinsics) {
       for (let i = 0; i < 16; i++) {
         if (Number.isFinite(intrinsics[i])) { // some processCpuResult.reality.intrinsics are set to Infinity, which WL brakes our projectionMatrix. So we just filter those elements out
-          this.view.projectionMatrix[i] = intrinsics[i];
+          this.view!.projectionMatrix[i] = intrinsics[i];
         }
       }
     }
@@ -108,7 +116,7 @@ const WorldTracking_8thWall = {
       this.component.object.rotationWorld = this.cachedRotation;
       this.component.object.setTranslationWorld(this.cachedPosition);
     }
-  },
+  }
 }
 
 export default WorldTracking_8thWall;

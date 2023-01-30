@@ -67,11 +67,11 @@
                 },
                 {
                     "type": "AR-face-camera",
-                    "active": true
+                    "active": false
                 },
                 {
                     "type": "AR-camera",
-                    "active": false
+                    "active": true
                 },
                 {
                     "type": "input",
@@ -280,7 +280,7 @@
                 }
             ],
             "translation": [
-                5.960464477539064e-8,
+                5.960464477539065e-8,
                 -2.0,
                 -5.0
             ],

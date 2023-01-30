@@ -1,12 +1,8 @@
-import { quat2 } from 'gl-matrix';
+import {TrackingProvider} from '../trackingProvider';
 
-const WorldTracking_webAR = {
-  component: null,
-  init: function (component) {
-    this.component = component;
-  },
 
-  startARSession: function () {
+class WorldTracking_webAR extends TrackingProvider {
+  public startARSession() {
     Module['webxr_request_session_func']('immersive-ar', ['local',], ['local', 'hand-tracking', 'hit-test',])
   }
 }

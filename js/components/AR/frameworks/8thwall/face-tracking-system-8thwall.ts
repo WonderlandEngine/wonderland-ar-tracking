@@ -1,45 +1,44 @@
 
-import ARSetup from "../../AR-setup";
+import { ViewComponent } from "@wonderlandengine/api";
+import { Setup8thwall } from "../../8thwall-setup";
+import { TrackingProvider } from "../trackingProvider";
 
 
-const FaceTracking_8thWall = {
-  name: "face_tracking_8thwall",
-  component: null,
-  view: null, // cache camera
-  cachedPosition: [0, 0, 0], // cache 8thwall cam position
-  cachedRotation: [0, 0, 0, -1], // cache 8thwall cam rotation
+class FaceTracking_8thWall extends TrackingProvider {
+  public readonly name = "face_tracking_8thwall";
 
-  onFaceFound: [],
-  onFaceUpdate: [],
-  onFaceLost: [],
+  private view?: ViewComponent;  // cache camera
+  private cachedPosition = [0, 0, 0]; // cache 8thwall cam position
+  private cachedRotation = [0, 0, 0, -1]; // cache 8thwall cam rotation
 
+  public readonly onFaceFound: any[] = [];
+  public readonly onFaceUpdate: any[] = [];
+  public readonly onFaceLost: any[] = [];
 
-  init: function (component) {
-    this.component = component;
-    this.view = this.component.object.getComponent("view");
-    this.onUpdate = this.onUpdate.bind(this);
-    this.onAttach = this.onAttach.bind(this);
+  // consumed by 8thwall
+  public readonly listeners = [
+    {
+      event: 'facecontroller.facefound', process: (event) => {
+        this.onFaceFound.forEach(callback => callback(event));
+      }
+    },
+    {
+      event: 'facecontroller.faceupdated', process: (event) => {
+        this.onFaceUpdate.forEach(callback => callback(event));
+      }
+    },
+    {
+      event: 'facecontroller.facelost', process: (event) => {
+        this.onFaceLost.forEach(callback => callback(event));
+      }
+    },
+  ];
 
-    this.listeners = [
-      {
-        event: 'facecontroller.facefound', process: (event) => {
-          this.onFaceFound.forEach(callback => callback(event));
-        }
-      },
-      {
-        event: 'facecontroller.faceupdated', process: (event) => {
-          this.onFaceUpdate.forEach(callback => callback(event));
-        }
-      },
-      {
-        event: 'facecontroller.facelost', process: (event) => {
-          this.onFaceLost.forEach(callback => callback(event));
-        }
-      },
-    ];
-  },
+  public init() {
+    this.view = this.component.object.getComponent("view")!;
+  }
 
-  startARSession: function () {
+  public startARSession() {
     XR8.FaceController.configure({
       meshGeometry: [
         XR8.FaceController.MeshGeometry.FACE,
@@ -63,34 +62,34 @@ const FaceTracking_8thWall = {
         direction: XR8.XrConfig.camera().FRONT,
       },
     })
-  },
+  }
 
-  stopARSession: function () {
+  public stopARSession() {
 
-  },
+  }
 
   /**
-  * private, called by 8thwall
+  * called by 8thwall
   */
-  onStart: function () {
-    ARSetup.enable8thwallCameraFeed();
-  },
+  public onStart = () => {
+    Setup8thwall.enableCameraFeed();
+  }
 
   /**
-    * @param {*} params 
-    * 
-    * private, called by 8thwall
-    */
-  onAttach: function (_params) {
+  * @param {*} params 
+  * 
+  * called by 8thwall
+  */
+  public onAttach = (_params) => {
     WL.scene.colorClearEnabled = false;
-  },
+  }
 
   /**
-     * @param {*} e 
-     * 
-     * private, called by 8thwall
-     */
-  onUpdate: function (e) {
+   * @param {*} e 
+   * 
+   * called by 8thwall
+   */
+  public onUpdate = (e: any) => {
     const source = e.processCpuResult.facecontroller;
     if (!source)
       return;
@@ -109,7 +108,7 @@ const FaceTracking_8thWall = {
     if (intrinsics) {
       for (let i = 0; i < 16; i++) {
         if (Number.isFinite(intrinsics[i])) { // some processCpuResult.reality.intrinsics are set to Infinity, which WL brakes our projectionMatrix. So we just filter those elements out
-          this.view.projectionMatrix[i] = intrinsics[i];
+          this.view!.projectionMatrix[i] = intrinsics[i];
         }
       }
     }
