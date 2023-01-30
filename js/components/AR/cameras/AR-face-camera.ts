@@ -1,13 +1,16 @@
 import ARSetup from '../AR-setup';
 import FaceTracking_8thWall from '../frameworks/8thwall/face-tracking-system-8thwall';
 import  Setup8thwall from '../8thwall-setup';
-import { Component } from '@wonderlandengine/api';
+import { Component, Type } from '@wonderlandengine/api';
 
 ARSetup.setUsage(ARSetup.ARUsage.FACE_TRACKING, [Setup8thwall]);
 
-class ARFaceCamera extends Component {
+
+export default class ARFaceCamera extends Component {
   public static TypeName = 'AR-face-camera';
-  public static Properties = {};
+  public static Properties = {
+    cameraDirection: { type: Type.Enum, values:["front", "back", "any"], default: 'any'},
+  };
 
   private trackingSystem = new FaceTracking_8thWall(this);
 
@@ -24,6 +27,7 @@ class ARFaceCamera extends Component {
   }
 
   public start() {
+    
     this.object.getComponent("input")!.active = false; // 8thwall will handle the camera pose
     this.trackingSystem.init();
 
@@ -34,5 +38,5 @@ class ARFaceCamera extends Component {
   }
 }
 
-
 WL.registerComponent(ARFaceCamera);
+

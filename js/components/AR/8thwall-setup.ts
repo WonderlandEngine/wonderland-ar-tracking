@@ -29,12 +29,28 @@ const Setup8thwall = {
       const s = document.createElement('script');
       s.crossOrigin = "anonymous";
       s.src = "https://apps.8thwall.com/xrweb?appKey=" + API_TOKEN_8THWALL;
-      s.onload = () => {
+      /*s.onload = () => {
         document.querySelector("#WL-loading-8thwall-logo")?.remove();
         resolve();
-      }
-      document.body.appendChild(s);
+      }**/
 
+      window.addEventListener('xrloaded', () => {
+        document.querySelector("#WL-loading-8thwall-logo")?.remove();
+
+        XR8.addCameraPipelineModules([
+          {
+            name: "WLE-XR8-setup",
+            onException: (message) => {
+              // console.log("Error happened", err);
+              window.dispatchEvent(new CustomEvent("8thwall-error", { detail: { message } }))
+            }
+          }
+        ]);
+
+        resolve();
+      });
+
+      document.body.appendChild(s);
       // Wait until index.html has been fully parsed and append the 8thwall logo
       document.readyState === "complete" ? this.add8thwallLogo() : document.addEventListener("DOMContentLoaded", () => this.add8thwallLogo);
     })
@@ -219,7 +235,8 @@ const OverlaysHandler = {
     this.showOverlay(failedPermissionOverlay);
   },
 
-  handleError: function (_error) {
+  handleError: function (error) {
+    console.error("XR8 encountered an error", error.detail.message);
     this.showOverlay(runtimeErrorOverlay);
   },
 
@@ -340,4 +357,4 @@ const runtimeErrorOverlay = `
   </div>`;
 
 
-  export default Setup8thwall;
+export default Setup8thwall;

@@ -67,7 +67,10 @@
                 },
                 {
                     "type": "AR-face-camera",
-                    "active": true
+                    "active": true,
+                    "AR-face-camera": {
+                        "cameraDirection": "back"
+                    }
                 },
                 {
                     "type": "AR-camera",

@@ -2,7 +2,7 @@
 import { ViewComponent } from "@wonderlandengine/api";
 import { TrackingProvider } from "../trackingProvider";
 import Setup8thwall from "../../8thwall-setup";
-
+import ARFaceCamera from "../../cameras/AR-face-camera";
 
 class FaceTracking_8thWall extends TrackingProvider {
   public readonly name = "face_tracking_8thwall";
@@ -40,7 +40,6 @@ class FaceTracking_8thWall extends TrackingProvider {
 
   public async startARSession() {
     await Setup8thwall.checkPermissions();
-
     XR8.FaceController.configure({
       meshGeometry: [
         XR8.FaceController.MeshGeometry.FACE,
@@ -55,9 +54,12 @@ class FaceTracking_8thWall extends TrackingProvider {
       XR8.FaceController.pipelineModule(),
       this,
     ]);
+    
 
+    console.log("Camera direction",  (this.component as any).cameraDirection);
     XR8.run({
       canvas: Module.canvas as HTMLCanvasElement,
+      //allowedDevices: XR8.XrConfig.device().ANY,
       allowedDevices: XR8.XrConfig.device().ANY,
       ownRunLoop: false,
       cameraConfig: {

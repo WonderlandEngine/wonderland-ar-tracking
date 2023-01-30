@@ -6,6 +6,7 @@ declare var API_TOKEN_8THWALL: string;
 
 declare type XR8CameraPipelineModule = {
   name: string;
+  onException?: (error: string) => void;
 }
 
 declare type XR8DeviceType = {
