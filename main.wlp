@@ -67,11 +67,11 @@
                 },
                 {
                     "type": "AR-face-camera",
-                    "active": false
+                    "active": true
                 },
                 {
                     "type": "AR-camera",
-                    "active": true
+                    "active": false
                 },
                 {
                     "type": "input",

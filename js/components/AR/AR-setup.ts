@@ -22,11 +22,13 @@ const ARSetup = {
   },
 
   onWLSceneLoaded: function () {
-    if (document.querySelector('#ar-button')) {
+    /*if (document.querySelector('#ar-button')) {
       return;
-    }
+    }*/
 
-    const xrButton = document.createElement("div")
+    console.log("Scene is loaded");
+
+    /*const xrButton = document.createElement("div")
     xrButton.id = "ar-button";
     xrButton.innerHTML = `
       <svg id="Layer_1" data - name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 109.41 65">
@@ -40,12 +42,26 @@ const ARSetup = {
           style="fill:none;stroke-linejoin:round;stroke-width:7px"> </rect>
       </svg>
       `;
-    document.querySelector(".xr-button-container")?.appendChild(xrButton);
+    document.querySelector(".xr-button-container")?.appendChild(xrButton);*/
+    let xrButton = document.querySelector<HTMLElement>("#ar-button");
+    if(xrButton === null) {
+      console.error("No #ar-button found. Session will not start.");
+      return;
+    }
+    
     xrButton.addEventListener("click", (event) => {
-      xrButton.remove();
+      // xrButton!.remove();
+      xrButton!.style.display = "none";
       this.onARStartClicked.forEach(cb => {
         cb(event);
       });
+    });
+  },
+
+  startSession: function (event) {
+    console.log("Should start session", this.onARStartClicked)
+    this.onARStartClicked.forEach(cb => {
+      cb(event);
     });
   },
 
@@ -57,4 +73,5 @@ const ARSetup = {
   }
 };
 
+(window as any).ARSetup = ARSetup;
 export default ARSetup;

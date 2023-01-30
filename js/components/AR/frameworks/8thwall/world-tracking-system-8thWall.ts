@@ -1,8 +1,8 @@
 
 import { ViewComponent } from "@wonderlandengine/api";
-import { Setup8thwall } from "../../8thwall-setup";
 import { TrackingProvider } from "../trackingProvider";
 
+import Setup8thwall from "../../8thwall-setup";
 
 class WorldTracking_8thWall extends TrackingProvider {
   // consumed by 8thwall

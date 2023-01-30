@@ -1,6 +1,6 @@
 import ARSetup from '../AR-setup';
 import FaceTracking_8thWall from '../frameworks/8thwall/face-tracking-system-8thwall';
-import { Setup8thwall } from '../8thwall-setup';
+import  Setup8thwall from '../8thwall-setup';
 import { Component } from '@wonderlandengine/api';
 
 ARSetup.setUsage(ARSetup.ARUsage.FACE_TRACKING, [Setup8thwall]);

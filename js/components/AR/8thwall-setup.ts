@@ -1,5 +1,5 @@
 
-export const Setup8thwall = {
+const Setup8thwall = {
   // Loading of 8thwall might be initiated by several components, make sure we load it only once
   loading: false,
 
@@ -21,7 +21,6 @@ export const Setup8thwall = {
         resolve();
         return;
       }
-
 
       if (!API_TOKEN_8THWALL) {
         throw new Error("8thwall api is not defined");
@@ -169,7 +168,7 @@ export const Setup8thwall = {
       }
     }
 
-    try {
+    /*try {
       // make sure we get the camera stream
       const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
 
@@ -180,7 +179,7 @@ export const Setup8thwall = {
 
     } catch (exception) {
       throw new Error("Camera");
-    }
+    }*/
   },
 
 
@@ -339,3 +338,6 @@ const runtimeErrorOverlay = `
 
   <button class="wall-error-overlay_button" onclick="window.location.reload()">Reload</button>
   </div>`;
+
+
+  export default Setup8thwall;

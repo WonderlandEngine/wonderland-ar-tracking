@@ -1,13 +1,12 @@
+import { Component } from '@wonderlandengine/api';
 
 import ARSetup from '../AR-setup';
 
-import worldTracking8thWall from '../frameworks/8thwall/world-tracking-system-8thWall';
-import WorldTracking_webAR from '../frameworks/webAR/world-tracking-system-webAR';
-
-import { Setup8thwall } from '../8thwall-setup';
-import { Component } from '@wonderlandengine/api';
 import WorldTracking_8thWall from '../frameworks/8thwall/world-tracking-system-8thWall';
-import {TrackingProvider, ITrackingProvider} from '../frameworks/trackingProvider';
+import WorldTracking_webAR from '../frameworks/webAR/world-tracking-system-webAR';
+import Setup8thwall from '../8thwall-setup';
+
+import { ITrackingProvider } from '../frameworks/trackingProvider';
 
 
 if (WL.arSupported) {
@@ -20,7 +19,7 @@ if (WL.arSupported) {
 class ARCamera extends Component {
   public static TypeName = 'AR-camera';
   public static Properties = {};
-  
+
   private worldTrackingSystem?: ITrackingProvider;
 
   public start() {

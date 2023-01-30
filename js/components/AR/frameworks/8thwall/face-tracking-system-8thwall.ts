@@ -1,7 +1,7 @@
 
 import { ViewComponent } from "@wonderlandengine/api";
-import { Setup8thwall } from "../../8thwall-setup";
 import { TrackingProvider } from "../trackingProvider";
+import Setup8thwall from "../../8thwall-setup";
 
 
 class FaceTracking_8thWall extends TrackingProvider {
@@ -38,7 +38,9 @@ class FaceTracking_8thWall extends TrackingProvider {
     this.view = this.component.object.getComponent("view")!;
   }
 
-  public startARSession() {
+  public async startARSession() {
+    await Setup8thwall.checkPermissions();
+
     XR8.FaceController.configure({
       meshGeometry: [
         XR8.FaceController.MeshGeometry.FACE,
