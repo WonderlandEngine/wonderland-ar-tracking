@@ -4,45 +4,83 @@ import { TrackingProvider } from "../trackingProvider";
 
 import XR8Setup from "./xr8-setup";
 
+// Just some helper types to determine if an object has some props
+type CanDisableSLAM = {
+  EnableSLAM: boolean,
+}
+
+type CanUseAbsoluteScale =  {
+  UseAbsoluteScale: boolean
+}
+
 class WorldTracking_XR8 extends TrackingProvider {
   // consumed by 8thwall
   public readonly name = "world_tracking_XR8";
-  
+
   private view?: ViewComponent; // cache camera
   private cachedPosition = [0, 0, 0]; // cache 8thwall cam position
   private cachedRotation = [0, 0, 0, -1]; // cache 8thwall cam rotation
+
+  public readonly onImageFound: Array<(event: any) => void> = [];
+  public readonly onImageUpdate: Array<(event: any) => void> = [];
+  public readonly onImageLost: Array<(event: any) => void> = [];
 
   // consumed by 8thwall
   public readonly listeners = [
     {
       event: 'reality.trackingstatus', process: (e) => {
         // console.log("reality status", e);
+      },
+    },
+    {
+      event: 'reality.imagefound', process: (event) => {
+        this.onImageFound.forEach(callback => callback(event));
       }
-    }
+    },
+    {
+      event: 'reality.imageupdated', process: (event) => {
+        this.onImageUpdate.forEach(callback => callback(event));
+      }
+    },
+    {
+      event: 'reality.imagelost', process: (event) => {
+        this.onImageLost.forEach(callback => callback(event));
+      }
+    },
+
   ];
 
   public init() {
+    const input = this.component.object.getComponent("input");
+    if (input) {
+      input.active = false; // 8thwall will handle the camera pose
+    }
+
     this.view = this.component.object.getComponent("view")!;
   }
 
   public async startARSession() {
-    
+
     const permissions = await XR8Setup.checkPermissions();
-    if(!permissions) {
+    if (!permissions) {
       return;
     }
+    
+    const componentEnablesSLAM = (this.component as Partial<CanDisableSLAM>).EnableSLAM;
+    const componentUsesAbsoluteScale = (this.component as Partial<CanUseAbsoluteScale>).UseAbsoluteScale;
 
     XR8.XrController.configure({
       // enableLighting: true,
-      disableWorldTracking: false,
-      //scale: 'absolute'
+      disableWorldTracking: componentEnablesSLAM === undefined ? false : !componentEnablesSLAM, // invert componentEnablesSLAM
+      scale: componentUsesAbsoluteScale === undefined ? "responsive" : (componentUsesAbsoluteScale ? "absolute" : "responsive")
     });
+
 
     XR8.addCameraPipelineModules([
       XR8.XrController.pipelineModule(),
       this,
     ]);
-    
+
     XR8.run({
       canvas: Module.canvas as HTMLCanvasElement,
       allowedDevices: XR8.XrConfig.device().ANY,

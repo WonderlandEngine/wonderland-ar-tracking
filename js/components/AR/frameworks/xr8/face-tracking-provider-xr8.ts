@@ -2,7 +2,7 @@
 import { ViewComponent } from "@wonderlandengine/api";
 import { TrackingProvider } from "../trackingProvider";
 import XR8Setup from "./xr8-setup";
-import ARFaceCamera from "../../cameras/AR-face-camera";
+import ARFaceTrackingCamera from "../../cameras/AR-face-tracking-camera";
 
 
 class FaceTracking_XR8 extends TrackingProvider {
@@ -12,9 +12,9 @@ class FaceTracking_XR8 extends TrackingProvider {
   private cachedPosition = [0, 0, 0]; // cache 8thwall cam position
   private cachedRotation = [0, 0, 0, -1]; // cache 8thwall cam rotation
 
-  public readonly onFaceFound: any[] = [];
-  public readonly onFaceUpdate: any[] = [];
-  public readonly onFaceLost: any[] = [];
+  public readonly onFaceFound: Array<(event: any) => void> = [];
+  public readonly onFaceUpdate: Array<(event: any) => void> = [];
+  public readonly onFaceLost: Array<(event: any) => void> = [];
 
   // consumed by 8thwall
   public readonly listeners = [
@@ -36,6 +36,11 @@ class FaceTracking_XR8 extends TrackingProvider {
   ];
 
   public init() {
+    const input = this.component.object.getComponent("input");
+    if (input) {
+      input.active = false; // 8thwall will handle the camera pose
+    }
+
     this.view = this.component.object.getComponent("view")!;
   }
 
@@ -65,7 +70,7 @@ class FaceTracking_XR8 extends TrackingProvider {
       allowedDevices: XR8.XrConfig.device().ANY,
       ownRunLoop: false,
       cameraConfig: {
-        direction: (ARFaceCamera.Properties.cameraDirection.values[(this.component as ARFaceCamera).cameraDirection]),
+        direction: (ARFaceTrackingCamera.Properties.cameraDirection.values[(this.component as ARFaceTrackingCamera).cameraDirection]),
       },
     })
   }

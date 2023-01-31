@@ -66,17 +66,25 @@
                     "type": "mouse-look"
                 },
                 {
-                    "type": "AR-camera",
-                    "active": false
-                },
-                {
                     "type": "input",
                     "input": {
                         "type": "eye left"
                     }
                 },
                 {
-                    "type": "AR-face-camera"
+                    "type": "AR-SLAM-camera",
+                    "active": false
+                },
+                {
+                    "type": "AR-face-tracking-camera",
+                    "active": false
+                },
+                {
+                    "type": "AR-image-tracking-camera",
+                    "active": true,
+                    "AR-image-tracking-camera": {
+                        "EnableSLAM": true
+                    }
                 }
             ]
         },
@@ -236,15 +244,6 @@
         },
         "65": {
             "name": "NoseAttachment",
-            "components": [
-                {
-                    "type": "clown-nose",
-                    "clown-nose": {
-                        "ARFaceCamera": "17",
-                        "nose": "66"
-                    }
-                }
-            ],
             "translation": [
                 0.5080373,
                 2.7103121,
@@ -260,6 +259,15 @@
                 1.0,
                 1.0,
                 1.0
+            ],
+            "components": [
+                {
+                    "type": "nose-tracking-example",
+                    "nose-tracking-example": {
+                        "ARFaceTrackingCamera": "17",
+                        "nose": "66"
+                    }
+                }
             ]
         },
         "66": {
@@ -293,6 +301,25 @@
                 0.0,
                 0.0,
                 1.0
+            ]
+        },
+        "68": {
+            "name": "ImageTracker",
+            "components": [
+                {
+                    "type": "mesh",
+                    "mesh": {
+                        "mesh": "12",
+                        "material": "25"
+                    },
+                    "active": false
+                },
+                {
+                    "type": "image-tracking-example",
+                    "image-tracking-example": {
+                        "ARImageTrackingCamera": "17"
+                    }
+                }
             ]
         }
     },

@@ -15,18 +15,23 @@ if (WL.arSupported) {
   ARSetup.setUsage(ARSetup.ARUsage.SLAM, [XR8Setup]);
 }
 
+const WLEComponentTypeName = "AR-SLAM-camera";
 
-class ARCamera extends Component {
-  public static TypeName = 'AR-camera';
+class ARSlamCamera extends Component {
+  public static TypeName = WLEComponentTypeName;
   public static Properties = {};
 
   private worldTrackingProvider?: ITrackingProvider;
 
   public start() {
+
+    if (!this.object.getComponent("view")) {
+      throw new Error("AR-camera requires a view component");
+    }
+
     if (WL.arSupported) {
       this.worldTrackingProvider = new WorldTracking_webAR(this);
     } else {
-      this.object.getComponent("input")!.active = false;  // 8thwall will handle the camera pose
       this.worldTrackingProvider = new WorldTracking_XR8(this);
       (this.worldTrackingProvider as WorldTracking_XR8).init();
     }
@@ -34,13 +39,10 @@ class ARCamera extends Component {
     ARSetup.onARStartClicked.push((_event) => {
       this.worldTrackingProvider!.startARSession();
     });
-
-    //this.worldTrackingSystem.init(this);
-    //ARSetup.addARSystem(this.worldTrackingSystem);
   }
 
   public update(dt) {
     this.worldTrackingProvider!.update?.(dt);
   }
 }
-WL.registerComponent(ARCamera);
+WL.registerComponent(ARSlamCamera);

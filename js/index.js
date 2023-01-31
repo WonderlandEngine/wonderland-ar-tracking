@@ -39,10 +39,12 @@ import './spawn-mesh-on-select.js';
 
 import './hit-test-location-new';
 
-import './components/AR/cameras/AR-camera';
-import './components/AR/cameras/AR-face-camera';
+import './components/AR/cameras/AR-SLAM-camera';
+import './components/AR/cameras/AR-face-tracking-camera';
+import './components/AR/cameras/AR-image-tracking-camera';
 
-import './clown-nose';
+import './components/examples/nose-tracking-example';
+import './components/examples/image-tracking-example';
 
 
 
