@@ -1,11 +1,11 @@
 declare var WL: any;
 declare var Module;
 
-declare var API_TOKEN_8THWALL: string;
-
+declare var API_TOKEN_XR8: string;
 
 declare type XR8CameraPipelineModule = {
   name: string;
+  onStart?: () => void;
   onException?: (error: string) => void;
 }
 
@@ -18,8 +18,8 @@ declare type XR8DeviceType = {
 declare type XR8CameraDirection = {
   FRONT: 'front',
   BACK: 'back',
-  ANY: 'any'
 }
+
 
 declare type XR8FaceMeshFeatures = {
   FACE: 'face',
@@ -44,9 +44,8 @@ declare var XR8: {
   };
 
   XrController: {
-    hitTest: (x: number, y: number, includedTypes: XR8HitTestType[keyof XR8HitTestType][]) => { type: XR8HitTestType, position: { x: number, y: number, z: number }, rotation: { x: number, y: number, z: number }, distance: number }[];
-    
     pipelineModule: () => XR8CameraPipelineModule;
+    hitTest: (x: number, y: number, includedTypes: XR8HitTestType[keyof XR8HitTestType][]) => { type: XR8HitTestType, position: { x: number, y: number, z: number }, rotation: { x: number, y: number, z: number }, distance: number }[];
     updateCameraProjectionMatrix: (options: {
       origin: { x: number, y: number, z: number },
       facing: { x: number, y: number, z: number, w: number },

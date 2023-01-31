@@ -66,13 +66,6 @@
                     "type": "mouse-look"
                 },
                 {
-                    "type": "AR-face-camera",
-                    "active": true,
-                    "AR-face-camera": {
-                        "cameraDirection": "back"
-                    }
-                },
-                {
                     "type": "AR-camera",
                     "active": false
                 },
@@ -81,6 +74,9 @@
                     "input": {
                         "type": "eye left"
                     }
+                },
+                {
+                    "type": "AR-face-camera"
                 }
             ]
         },

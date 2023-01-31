@@ -1,37 +1,24 @@
 
 import { ViewComponent } from "@wonderlandengine/api";
 import { TrackingProvider } from "../trackingProvider";
-import Setup8thwall from "../../8thwall-setup";
-import ARFaceCamera from "../../cameras/AR-face-camera";
 
-class FaceTracking_8thWall extends TrackingProvider {
-  public readonly name = "face_tracking_8thwall";
+import XR8Setup from "./xr8-setup";
 
-  private view?: ViewComponent;  // cache camera
+class WorldTracking_XR8 extends TrackingProvider {
+  // consumed by 8thwall
+  public readonly name = "world_tracking_XR8";
+  
+  private view?: ViewComponent; // cache camera
   private cachedPosition = [0, 0, 0]; // cache 8thwall cam position
   private cachedRotation = [0, 0, 0, -1]; // cache 8thwall cam rotation
-
-  public readonly onFaceFound: any[] = [];
-  public readonly onFaceUpdate: any[] = [];
-  public readonly onFaceLost: any[] = [];
 
   // consumed by 8thwall
   public readonly listeners = [
     {
-      event: 'facecontroller.facefound', process: (event) => {
-        this.onFaceFound.forEach(callback => callback(event));
+      event: 'reality.trackingstatus', process: (e) => {
+        // console.log("reality status", e);
       }
-    },
-    {
-      event: 'facecontroller.faceupdated', process: (event) => {
-        this.onFaceUpdate.forEach(callback => callback(event));
-      }
-    },
-    {
-      event: 'facecontroller.facelost', process: (event) => {
-        this.onFaceLost.forEach(callback => callback(event));
-      }
-    },
+    }
   ];
 
   public init() {
@@ -39,44 +26,36 @@ class FaceTracking_8thWall extends TrackingProvider {
   }
 
   public async startARSession() {
-    await Setup8thwall.checkPermissions();
-    XR8.FaceController.configure({
-      meshGeometry: [
-        XR8.FaceController.MeshGeometry.FACE,
-        XR8.FaceController.MeshGeometry.EYES,
-        XR8.FaceController.MeshGeometry.MOUTH,
-      ],
-      coordinates: { mirroredDisplay: false },
-    })
+    
+    const permissions = await XR8Setup.checkPermissions();
+    if(!permissions) {
+      return;
+    }
+
+    XR8.XrController.configure({
+      // enableLighting: true,
+      disableWorldTracking: false,
+      //scale: 'absolute'
+    });
 
     XR8.addCameraPipelineModules([
-      XR8.GlTextureRenderer.pipelineModule(),
-      XR8.FaceController.pipelineModule(),
+      XR8.XrController.pipelineModule(),
       this,
     ]);
     
-
-    console.log("Camera direction",  (this.component as any).cameraDirection);
     XR8.run({
       canvas: Module.canvas as HTMLCanvasElement,
-      //allowedDevices: XR8.XrConfig.device().ANY,
       allowedDevices: XR8.XrConfig.device().ANY,
       ownRunLoop: false,
       cameraConfig: {
-        direction: XR8.XrConfig.camera().FRONT,
+        direction: XR8.XrConfig.camera().BACK
       },
     })
   }
 
+
   public stopARSession() {
-
-  }
-
-  /**
-  * called by 8thwall
-  */
-  public onStart = () => {
-    Setup8thwall.enableCameraFeed();
+    // TODO: 
   }
 
   /**
@@ -85,7 +64,15 @@ class FaceTracking_8thWall extends TrackingProvider {
   * called by 8thwall
   */
   public onAttach = (_params) => {
-    WL.scene.colorClearEnabled = false;
+    // Sync the xr controller's 6DoF position and camera paremeters with our camera.
+    const rot = this.component.object.rotationWorld;
+    const pos = this.component.object.getTranslationWorld([]);
+    XR8.XrController.updateCameraProjectionMatrix({
+      origin: { x: pos[0], y: pos[1], z: pos[2] },
+      facing: { x: rot[0], y: rot[1], z: rot[2], w: rot[3] },
+      cam: { pixelRectWidth: Module.canvas.width, pixelRectHeight: Module.canvas.height, nearClipPlane: 0.01, farClipPlane: 100 }
+    })
+    //Factory.add8thwallCameraFeed();
   }
 
   /**
@@ -93,8 +80,8 @@ class FaceTracking_8thWall extends TrackingProvider {
    * 
    * called by 8thwall
    */
-  public onUpdate = (e: any) => {
-    const source = e.processCpuResult.facecontroller;
+  public onUpdate = (e) => {
+    const source = e.processCpuResult.reality;
     if (!source)
       return;
 
@@ -124,4 +111,4 @@ class FaceTracking_8thWall extends TrackingProvider {
   }
 }
 
-export default FaceTracking_8thWall;
+export default WorldTracking_XR8;

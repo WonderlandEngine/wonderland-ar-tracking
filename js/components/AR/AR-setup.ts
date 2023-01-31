@@ -52,14 +52,11 @@ const ARSetup = {
     xrButton.addEventListener("click", (event) => {
       // xrButton!.remove();
       xrButton!.style.display = "none";
-      this.onARStartClicked.forEach(cb => {
-        cb(event);
-      });
+      this.startSession();
     });
   },
 
   startSession: function (event) {
-    console.log("Should start session", this.onARStartClicked)
     this.onARStartClicked.forEach(cb => {
       cb(event);
     });

@@ -1,5 +1,5 @@
 
-const Setup8thwall = {
+const XR8Setup = {
   // Loading of 8thwall might be initiated by several components, make sure we load it only once
   loading: false,
 
@@ -22,13 +22,13 @@ const Setup8thwall = {
         return;
       }
 
-      if (!API_TOKEN_8THWALL) {
+      if (!API_TOKEN_XR8) {
         throw new Error("8thwall api is not defined");
       }
 
       const s = document.createElement('script');
       s.crossOrigin = "anonymous";
-      s.src = "https://apps.8thwall.com/xrweb?appKey=" + API_TOKEN_8THWALL;
+      s.src = "https://apps.8thwall.com/xrweb?appKey=" + API_TOKEN_XR8;
       /*s.onload = () => {
         document.querySelector("#WL-loading-8thwall-logo")?.remove();
         resolve();
@@ -38,8 +38,12 @@ const Setup8thwall = {
         document.querySelector("#WL-loading-8thwall-logo")?.remove();
 
         XR8.addCameraPipelineModules([
+          XR8.GlTextureRenderer.pipelineModule(),
           {
             name: "WLE-XR8-setup",
+            onStart: () => {
+              XR8Setup.enableCameraFeed();
+            },
             onException: (message) => {
               // console.log("Error happened", err);
               window.dispatchEvent(new CustomEvent("8thwall-error", { detail: { message } }))
@@ -184,18 +188,19 @@ const Setup8thwall = {
       }
     }
 
-    /*try {
+    try {
       // make sure we get the camera stream
       const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
 
       // If we successfully acquired the camera stream - we can stop it and wait until 8thwall requests it again
-      stream.getTracks().forEach((track) => {
+      // Update - if we don't stop it, xr8 initialises faster
+     /* stream.getTracks().forEach((track) => {
         track.stop();
-      });
+      });*/
 
     } catch (exception) {
       throw new Error("Camera");
-    }*/
+    }
   },
 
 
@@ -203,17 +208,19 @@ const Setup8thwall = {
     OverlaysHandler.init();
     try {
       await this.getPermissions();
+      return true;
+
     } catch (error) {
       // User did not grant the camera or motionEvent permissions
       window.dispatchEvent(new CustomEvent("8thwall-permission-fail", { detail: error }))
-      throw error;
+      return false;
     }
   }
 }
 
 
 const OverlaysHandler = {
-  init: function () {
+  init () {
     this.handleRequestUserInteraction = this.handleRequestUserInteraction.bind(this);
     this.handlePermissionFail = this.handlePermissionFail.bind(this);
     this.handleError = this.handleError.bind(this);
@@ -228,16 +235,15 @@ const OverlaysHandler = {
     window.addEventListener("8thwall-permissions-allowed", () => {
       overlay.remove();
     });
-
   },
 
   handlePermissionFail: function (_reason) {
     this.showOverlay(failedPermissionOverlay);
   },
 
-  handleError: function (error) {
+  handleError: function (error: CustomEvent) {
     console.error("XR8 encountered an error", error.detail.message);
-    this.showOverlay(runtimeErrorOverlay);
+    this.showOverlay(runtimeErrorOverlay(error.detail.message));
   },
 
   showOverlay: function (htmlContent) {
@@ -320,7 +326,7 @@ const failedPermissionOverlay = `
   <button class="failed-permission-overlay_button" onclick="window.location.reload()">Refresh the page</button>
   </div>`;
 
-const runtimeErrorOverlay = `
+const runtimeErrorOverlay = (message) => `
   <style>
   #wall-error-overlay {
     position: absolute;
@@ -340,6 +346,11 @@ const runtimeErrorOverlay = `
     font-size: 32px;
   }
 
+  .wall-error-overlay_message {
+    margin: 30px;
+    font-size: 24px;
+  }
+
   .wall-error-overlay_button {
     background-color: #e80086;
     font-size: 22px;
@@ -352,9 +363,10 @@ const runtimeErrorOverlay = `
 
   <div id="wall-error-overlay">
   <div class="wall-error-overlay_title">Error has occurred. Please reload the page</div>
+  <div class="wall-error-overlay_message">${message}</div>
 
   <button class="wall-error-overlay_button" onclick="window.location.reload()">Reload</button>
   </div>`;
 
 
-export default Setup8thwall;
+export default XR8Setup;
