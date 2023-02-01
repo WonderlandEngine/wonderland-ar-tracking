@@ -4,6 +4,7 @@ export interface ITrackingProvider {
   readonly component: Component;
   update?: (delta: number) => void;
   startARSession: () => void;
+  stopARSession: () => void;
 }
 
 export abstract class TrackingProvider implements ITrackingProvider {
@@ -13,5 +14,6 @@ export abstract class TrackingProvider implements ITrackingProvider {
     this.component = component;
   }
   abstract startARSession (): void;
+  abstract stopARSession (): void;
 }
 

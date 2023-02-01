@@ -1,4 +1,4 @@
-import { Component } from '@wonderlandengine/api';
+import { Component, init } from '@wonderlandengine/api';
 
 import ARSetup from '../AR-setup';
 
@@ -17,19 +17,25 @@ if (WL.arSupported) {
 
 const WLEComponentTypeName = "AR-SLAM-camera";
 
-class ARSlamCamera extends Component {
+export default class ARSLAMCamera extends Component {
   public static TypeName = WLEComponentTypeName;
   public static Properties = {};
 
   private worldTrackingProvider?: ITrackingProvider;
 
+  init() {
+    console.log("Initing world camera");
+  }
+
   public start() {
+    console.log("Starting World Camera");
 
     if (!this.object.getComponent("view")) {
       throw new Error("AR-camera requires a view component");
     }
 
-    if (WL.arSupported) {
+    //if (WL.arSupported) {
+    if (false) { // force xr8
       this.worldTrackingProvider = new WorldTracking_webAR(this);
     } else {
       this.worldTrackingProvider = new WorldTracking_XR8(this);
@@ -41,8 +47,22 @@ class ARSlamCamera extends Component {
     });
   }
 
+  onActivate(): void {
+    console.log("Activating world camera");
+  }
+
+  onDeactivate(): void {
+    console.log("Deactivating world camera");
+    this.worldTrackingProvider!.stopARSession()
+  }
+
+  startARSession() {
+    console.log("Starting world tracking session");
+    this.worldTrackingProvider!.startARSession();
+  }
+
   public update(dt) {
     this.worldTrackingProvider!.update?.(dt);
   }
 }
-WL.registerComponent(ARSlamCamera);
+WL.registerComponent(ARSLAMCamera);

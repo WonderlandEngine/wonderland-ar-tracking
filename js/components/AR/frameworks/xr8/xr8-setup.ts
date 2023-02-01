@@ -50,7 +50,6 @@ const XR8Setup = {
             }
           }
         ]);
-
         resolve();
       });
 
@@ -58,6 +57,18 @@ const XR8Setup = {
       // Wait until index.html has been fully parsed and append the 8thwall logo
       document.readyState === "complete" ? this.add8thwallLogo() : document.addEventListener("DOMContentLoaded", () => this.add8thwallLogo);
     })
+  },
+
+  currentXR8RunOptions: null,
+
+  run: function (options: Parameters<typeof XR8.run>[0]) {
+
+    /*if (this.currentXR8RunOptions) {
+      console.error("Some 8thwall camera is still running, this will override it's behavior");
+    }*/
+
+    this.currentXR8RunOptions = options;
+    XR8.run(options)
   },
 
   enableCameraFeed: function () {
@@ -194,9 +205,9 @@ const XR8Setup = {
 
       // If we successfully acquired the camera stream - we can stop it and wait until 8thwall requests it again
       // Update - if we don't stop it, xr8 initialises faster
-     /* stream.getTracks().forEach((track) => {
-        track.stop();
-      });*/
+      /* stream.getTracks().forEach((track) => {
+         track.stop();
+       });*/
 
     } catch (exception) {
       throw new Error("Camera");
@@ -220,7 +231,7 @@ const XR8Setup = {
 
 
 const OverlaysHandler = {
-  init () {
+  init() {
     this.handleRequestUserInteraction = this.handleRequestUserInteraction.bind(this);
     this.handlePermissionFail = this.handlePermissionFail.bind(this);
     this.handleError = this.handleError.bind(this);

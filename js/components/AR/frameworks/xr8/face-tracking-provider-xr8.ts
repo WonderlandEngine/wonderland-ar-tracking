@@ -46,8 +46,8 @@ class FaceTracking_XR8 extends TrackingProvider {
 
   public async startARSession() {
     const permissions = await XR8Setup.checkPermissions();
-    
-    if(!permissions) {
+
+    if (!permissions) {
       return;
     }
 
@@ -65,18 +65,25 @@ class FaceTracking_XR8 extends TrackingProvider {
       this,
     ]);
 
-    XR8.run({
+    const options = {
       canvas: Module.canvas as HTMLCanvasElement,
       allowedDevices: XR8.XrConfig.device().ANY,
       ownRunLoop: false,
       cameraConfig: {
         direction: (ARFaceTrackingCamera.Properties.cameraDirection.values[(this.component as ARFaceTrackingCamera).cameraDirection]),
       },
-    })
+    };
+
+    XR8Setup.run(options);
   }
 
   public stopARSession() {
-    // TODO
+    console.log("Stopping face tracking session");
+    XR8.stop();
+    XR8.removeCameraPipelineModules([
+      XR8.FaceController.pipelineModule(),
+      this,
+    ])
   }
 
 

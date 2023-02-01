@@ -29,16 +29,36 @@ export default class ARFaceTrackingCamera extends Component {
     return this.trackingProvider.onFaceLost;
   }
 
+  init() {
+    console.log("Initing face camera");
+  }
+
   public start() {
-    if(!this.object.getComponent("view")) {
+    console.log("Starting face Camera");
+
+    if (!this.object.getComponent("view")) {
       throw new Error("AR-camera requires a view component");
     }
 
     this.trackingProvider.init();
 
     ARSetup.onARStartClicked.push((_event) => {
-      this.trackingProvider.startARSession();
+      this.startARSession();
     });
+  }
+
+  onActivate(): void {
+    console.log("Activating Face camera");
+  }
+
+  onDeactivate(): void {
+    console.log("Deactivating Face camera");
+    this.trackingProvider.stopARSession();
+  }
+
+  startARSession() {
+    console.log("Starting face tracking session");
+    this.trackingProvider.startARSession();
   }
 }
 

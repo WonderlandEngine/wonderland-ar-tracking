@@ -9,7 +9,7 @@ type CanDisableSLAM = {
   EnableSLAM: boolean,
 }
 
-type CanUseAbsoluteScale =  {
+type CanUseAbsoluteScale = {
   UseAbsoluteScale: boolean
 }
 
@@ -57,15 +57,26 @@ class WorldTracking_XR8 extends TrackingProvider {
     }
 
     this.view = this.component.object.getComponent("view")!;
+
+    const rot = this.component.object.rotationWorld;
+    const pos = this.component.object.getTranslationWorld([]);
+
+    this.cachedPosition[0] = pos[0];
+    this.cachedPosition[1] = pos[1];
+    this.cachedPosition[2] = pos[2];
+
+    this.cachedRotation[0] = rot[0];
+    this.cachedRotation[1] = rot[1];
+    this.cachedRotation[2] = rot[2];
+    this.cachedRotation[3] = rot[3];
   }
 
   public async startARSession() {
-
     const permissions = await XR8Setup.checkPermissions();
     if (!permissions) {
       return;
     }
-    
+
     const componentEnablesSLAM = (this.component as Partial<CanDisableSLAM>).EnableSLAM;
     const componentUsesAbsoluteScale = (this.component as Partial<CanUseAbsoluteScale>).UseAbsoluteScale;
 
@@ -75,25 +86,34 @@ class WorldTracking_XR8 extends TrackingProvider {
       scale: componentUsesAbsoluteScale === undefined ? "responsive" : (componentUsesAbsoluteScale ? "absolute" : "responsive")
     });
 
+    console.log("What's the scale", componentUsesAbsoluteScale === undefined ? "responsive" : (componentUsesAbsoluteScale ? "absolute" : "responsive"))
+    console.log("What's the world tracking", componentEnablesSLAM === undefined ? false : !componentEnablesSLAM);
+
 
     XR8.addCameraPipelineModules([
       XR8.XrController.pipelineModule(),
       this,
     ]);
 
-    XR8.run({
+    const options = {
       canvas: Module.canvas as HTMLCanvasElement,
       allowedDevices: XR8.XrConfig.device().ANY,
       ownRunLoop: false,
       cameraConfig: {
         direction: XR8.XrConfig.camera().BACK
       },
-    })
+    };
+    XR8Setup.run(options)
   }
 
 
   public stopARSession() {
-    // TODO: 
+    XR8.stop();
+    console.log("Stoping XR8 world tracking");
+    XR8.removeCameraPipelineModules([
+      XR8.XrController.pipelineModule(),
+      this,
+    ])
   }
 
   /**
@@ -102,15 +122,15 @@ class WorldTracking_XR8 extends TrackingProvider {
   * called by 8thwall
   */
   public onAttach = (_params) => {
+    console.log("Attaching world tracking provider");
     // Sync the xr controller's 6DoF position and camera paremeters with our camera.
-    const rot = this.component.object.rotationWorld;
-    const pos = this.component.object.getTranslationWorld([]);
+   // const rot = this.component.object.rotationWorld;
+    // const pos = this.component.object.getTranslationWorld([]);
     XR8.XrController.updateCameraProjectionMatrix({
-      origin: { x: pos[0], y: pos[1], z: pos[2] },
-      facing: { x: rot[0], y: rot[1], z: rot[2], w: rot[3] },
+      origin: { x: this.cachedPosition[0], y: this.cachedPosition[1], z: this.cachedPosition[2] },
+      facing: { x: this.cachedRotation[0], y: this.cachedRotation[1], z: this.cachedRotation[2], w: this.cachedRotation[3] },
       cam: { pixelRectWidth: Module.canvas.width, pixelRectHeight: Module.canvas.height, nearClipPlane: 0.01, farClipPlane: 100 }
     })
-    //Factory.add8thwallCameraFeed();
   }
 
   /**

@@ -31,13 +31,31 @@ export default class ARImageTrackingCamera extends Component {
   public get onImageLost() {
     return this.trackingProvider.onImageLost;
   }
+  init() {
+    
+  }
 
   public start() {
+    console.log("Starting image Camera");
     this.trackingProvider.init();
 
     ARSetup.onARStartClicked.push((_event) => {
       this.trackingProvider.startARSession();
     });
+  }
+
+  onActivate(): void {
+    console.log("Activating image camera");
+  }
+
+  onDeactivate(): void {
+    console.log("Deactivating image camera");
+    this.trackingProvider.stopARSession();
+  }
+
+  startARSession() {
+    console.log("Starting image tracking session");
+    this.trackingProvider.startARSession();
   }
 }
 
