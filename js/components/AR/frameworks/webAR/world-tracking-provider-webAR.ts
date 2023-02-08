@@ -8,7 +8,7 @@ class WorldTracking_webAR extends TrackingProvider {
 
   public stopARSession(): void {
     // WL.xrSession.end();
-    console.log("This should top AR session");
+    console.log('This should top AR session');
   }
 }
 

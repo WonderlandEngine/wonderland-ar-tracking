@@ -73,7 +73,7 @@
                 },
                 {
                     "type": "AR-SLAM-camera",
-                    "active": true
+                    "active": false
                 },
                 {
                     "type": "AR-face-tracking-camera",

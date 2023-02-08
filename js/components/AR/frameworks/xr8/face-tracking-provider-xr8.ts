@@ -1,12 +1,12 @@
 
-import { ViewComponent } from "@wonderlandengine/api";
-import { TrackingProvider } from "../trackingProvider";
-import XR8Setup from "./xr8-setup";
-import ARFaceTrackingCamera from "../../cameras/AR-face-tracking-camera";
+import { ViewComponent } from '@wonderlandengine/api';
+import { TrackingProvider } from '../trackingProvider';
+import XR8Setup from './xr8-setup';
+import ARFaceTrackingCamera from '../../cameras/AR-face-tracking-camera';
 
 
 class FaceTracking_XR8 extends TrackingProvider {
-  public readonly name = "face_tracking_XR8";
+  public readonly name = 'face_tracking_XR8';
 
   private view?: ViewComponent;  // cache camera
   private cachedPosition = [0, 0, 0]; // cache 8thwall cam position
@@ -36,12 +36,12 @@ class FaceTracking_XR8 extends TrackingProvider {
   ];
 
   public init() {
-    const input = this.component.object.getComponent("input");
+    const input = this.component.object.getComponent('input');
     if (input) {
       input.active = false; // 8thwall will handle the camera pose
     }
 
-    this.view = this.component.object.getComponent("view")!;
+    this.view = this.component.object.getComponent('view')!;
   }
 
   public async startARSession() {
@@ -78,7 +78,7 @@ class FaceTracking_XR8 extends TrackingProvider {
   }
 
   public stopARSession() {
-    console.log("Stopping face tracking session");
+    console.log('Stopping face tracking session');
     XR8.stop();
     XR8.removeCameraPipelineModules([
       XR8.FaceController.pipelineModule(),
@@ -109,9 +109,10 @@ class FaceTracking_XR8 extends TrackingProvider {
     this.cachedPosition[2] = position.z;
 
     if (intrinsics) {
+      const projectionMatrix = this.view!.projectionMatrix;
       for (let i = 0; i < 16; i++) {
         if (Number.isFinite(intrinsics[i])) { // some processCpuResult.reality.intrinsics are set to Infinity, which WL brakes our projectionMatrix. So we just filter those elements out
-          this.view!.projectionMatrix[i] = intrinsics[i];
+          projectionMatrix[i] = intrinsics[i];
         }
       }
     }

@@ -1,4 +1,4 @@
-import { Component } from "@wonderlandengine/api";
+import { Component } from '@wonderlandengine/api';
 
 export interface ITrackingProvider {
   readonly component: Component;

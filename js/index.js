@@ -1,5 +1,3 @@
-/// <reference path="../index.d.ts" />
-
 /**
  * This is the entry point of your standalone application.
  *
@@ -13,40 +11,7 @@
  */
 
 /* Register all default components. */
-//import '@wonderlandengine/components';
-// import '@wonderlandengine/components/8thwall-camera.js';
-import '@wonderlandengine/components/cursor-target.js';
-import '@wonderlandengine/components/cursor.js';
-import '@wonderlandengine/components/debug-object.js';
-import '@wonderlandengine/components/device-orientation-look.js';
-import '@wonderlandengine/components/finger-cursor.js';
-import '@wonderlandengine/components/fixed-foveation.js';
-import '@wonderlandengine/components/hand-tracking.js';
-import '@wonderlandengine/components/hit-test-location.js';
-import '@wonderlandengine/components/howler-audio-listener.js';
-import '@wonderlandengine/components/howler-audio-source.js';
-import '@wonderlandengine/components/image-texture.js';
-import '@wonderlandengine/components/mouse-look.js';
-import '@wonderlandengine/components/target-framerate.js';
-import '@wonderlandengine/components/teleport.js';
-import '@wonderlandengine/components/two-joint-ik-solver.js';
-import '@wonderlandengine/components/video-texture.js';
-import '@wonderlandengine/components/vr-mode-active-switch.js';
-import '@wonderlandengine/components/vrm.js';
-import '@wonderlandengine/components/wasd-controls.js';
-
+import '@wonderlandengine/components';
+import './../../../../../../../Applications/WonderlandEditor.app/Contents/Resources/js/editor-components-bundle.js';
+import './hit-test-location-new.ts';
 import './spawn-mesh-on-select.js';
-
-import './hit-test-location-new';
-
-import './components/AR/cameras/AR-SLAM-camera';
-import './components/AR/cameras/AR-face-tracking-camera';
-import './components/AR/cameras/AR-image-tracking-camera';
-
-import './components/examples/nose-tracking-example';
-import './components/examples/image-tracking-example';
-import './components/examples/xr8-camera-switch';
-
-
-
-

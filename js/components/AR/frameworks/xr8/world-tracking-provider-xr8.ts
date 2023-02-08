@@ -1,8 +1,8 @@
 
-import { ViewComponent } from "@wonderlandengine/api";
-import { TrackingProvider } from "../trackingProvider";
+import { ViewComponent } from '@wonderlandengine/api';
+import { TrackingProvider } from '../trackingProvider';
 
-import XR8Setup from "./xr8-setup";
+import XR8Setup from './xr8-setup';
 
 // Just some helper types to determine if an object has some props
 type CanDisableSLAM = {
@@ -15,7 +15,7 @@ type CanUseAbsoluteScale = {
 
 class WorldTracking_XR8 extends TrackingProvider {
   // consumed by 8thwall
-  public readonly name = "world_tracking_XR8";
+  public readonly name = 'world_tracking_XR8';
 
   private view?: ViewComponent; // cache camera
   private cachedPosition = [0, 0, 0]; // cache 8thwall cam position
@@ -29,7 +29,7 @@ class WorldTracking_XR8 extends TrackingProvider {
   public readonly listeners = [
     {
       event: 'reality.trackingstatus', process: (e) => {
-        // console.log("reality status", e);
+        // console.log('reality status', e);
       },
     },
     {
@@ -51,12 +51,12 @@ class WorldTracking_XR8 extends TrackingProvider {
   ];
 
   public init() {
-    const input = this.component.object.getComponent("input");
+    const input = this.component.object.getComponent('input');
     if (input) {
       input.active = false; // 8thwall will handle the camera pose
     }
 
-    this.view = this.component.object.getComponent("view")!;
+    this.view = this.component.object.getComponent('view')!;
 
     const rot = this.component.object.rotationWorld;
     const pos = this.component.object.getTranslationWorld([]);
@@ -83,11 +83,11 @@ class WorldTracking_XR8 extends TrackingProvider {
     XR8.XrController.configure({
       // enableLighting: true,
       disableWorldTracking: componentEnablesSLAM === undefined ? false : !componentEnablesSLAM, // invert componentEnablesSLAM
-      scale: componentUsesAbsoluteScale === undefined ? "responsive" : (componentUsesAbsoluteScale ? "absolute" : "responsive")
+      scale: componentUsesAbsoluteScale === undefined ? 'responsive' : (componentUsesAbsoluteScale ? 'absolute' : 'responsive')
     });
 
-    console.log("What's the scale", componentUsesAbsoluteScale === undefined ? "responsive" : (componentUsesAbsoluteScale ? "absolute" : "responsive"))
-    console.log("What's the world tracking", componentEnablesSLAM === undefined ? false : !componentEnablesSLAM);
+    console.log('Whats the scale', componentUsesAbsoluteScale === undefined ? 'responsive' : (componentUsesAbsoluteScale ? 'absolute' : 'responsive'))
+    console.log('Whats the world tracking', componentEnablesSLAM === undefined ? false : !componentEnablesSLAM);
 
 
     XR8.addCameraPipelineModules([
@@ -109,7 +109,7 @@ class WorldTracking_XR8 extends TrackingProvider {
 
   public stopARSession() {
     XR8.stop();
-    console.log("Stoping XR8 world tracking");
+    console.log('Stoping XR8 world tracking');
     XR8.removeCameraPipelineModules([
       XR8.XrController.pipelineModule(),
       this,
@@ -117,14 +117,12 @@ class WorldTracking_XR8 extends TrackingProvider {
   }
 
   /**
-  * @param {*} params 
-  * 
   * called by 8thwall
   */
   public onAttach = (_params) => {
-    console.log("Attaching world tracking provider");
+    console.log('Attaching world tracking provider');
     // Sync the xr controller's 6DoF position and camera paremeters with our camera.
-   // const rot = this.component.object.rotationWorld;
+    // const rot = this.component.object.rotationWorld;
     // const pos = this.component.object.getTranslationWorld([]);
     XR8.XrController.updateCameraProjectionMatrix({
       origin: { x: this.cachedPosition[0], y: this.cachedPosition[1], z: this.cachedPosition[2] },
@@ -134,8 +132,6 @@ class WorldTracking_XR8 extends TrackingProvider {
   }
 
   /**
-   * @param {*} e 
-   * 
    * called by 8thwall
    */
   public onUpdate = (e) => {
@@ -155,9 +151,10 @@ class WorldTracking_XR8 extends TrackingProvider {
     this.cachedPosition[2] = position.z;
 
     if (intrinsics) {
+      const projectionMatrix = this.view!.projectionMatrix;
       for (let i = 0; i < 16; i++) {
         if (Number.isFinite(intrinsics[i])) { // some processCpuResult.reality.intrinsics are set to Infinity, which WL brakes our projectionMatrix. So we just filter those elements out
-          this.view!.projectionMatrix[i] = intrinsics[i];
+          projectionMatrix[i] = intrinsics[i];
         }
       }
     }

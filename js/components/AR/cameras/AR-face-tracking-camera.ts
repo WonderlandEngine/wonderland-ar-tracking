@@ -1,15 +1,15 @@
-import ARSetup from '../AR-setup';
+import ARSession from '../AR-session';
 import FaceTracking_XR8 from '../frameworks/xr8/face-tracking-provider-xr8';
 import XR8Setup from '../frameworks/xr8/xr8-setup';
 import { Component, Type } from '@wonderlandengine/api';
 
-const WLEComponentTypeName = "AR-face-tracking-camera";
+const WLEComponentTypeName = 'AR-face-tracking-camera';
 
-ARSetup.setUsage(ARSetup.ARUsage.FACE_TRACKING, [XR8Setup]);
+ARSession.setUsage(ARSession.ARUsage.FACE_TRACKING, [XR8Setup]);
 export default class ARFaceTrackingCamera extends Component {
   public static TypeName = WLEComponentTypeName;
   public static Properties = {
-    cameraDirection: { type: Type.Enum, values: ["front", "back"] as XR8CameraDirection[keyof XR8CameraDirection][], default: "front" },
+    cameraDirection: { type: Type.Enum, values: ['front', 'back'] as XR8CameraDirection[keyof XR8CameraDirection][], default: 'front' },
   };
 
   private trackingProvider = new FaceTracking_XR8(this);
@@ -30,34 +30,34 @@ export default class ARFaceTrackingCamera extends Component {
   }
 
   init() {
-    console.log("Initing face camera");
+    console.log('Initing face camera');
   }
 
   public start() {
-    console.log("Starting face Camera");
+    console.log('Starting face Camera');
 
-    if (!this.object.getComponent("view")) {
-      throw new Error("AR-camera requires a view component");
+    if (!this.object.getComponent('view')) {
+      throw new Error('AR-camera requires a view component');
     }
 
     this.trackingProvider.init();
 
-    ARSetup.onARStartClicked.push((_event) => {
+    ARSession.onARStartClicked.push((_event) => {
       this.startARSession();
     });
   }
 
   onActivate(): void {
-    console.log("Activating Face camera");
+    console.log('Activating Face camera');
   }
 
   onDeactivate(): void {
-    console.log("Deactivating Face camera");
+    console.log('Deactivating Face camera');
     this.trackingProvider.stopARSession();
   }
 
   startARSession() {
-    console.log("Starting face tracking session");
+    console.log('Starting face tracking session');
     this.trackingProvider.startARSession();
   }
 }

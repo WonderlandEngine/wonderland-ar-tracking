@@ -23,30 +23,30 @@ const XR8Setup = {
       }
 
       if (!API_TOKEN_XR8) {
-        throw new Error("8thwall api is not defined");
+        throw new Error('8thwall api is not defined');
       }
 
       const s = document.createElement('script');
-      s.crossOrigin = "anonymous";
-      s.src = "https://apps.8thwall.com/xrweb?appKey=" + API_TOKEN_XR8;
+      s.crossOrigin = 'anonymous';
+      s.src = 'https://apps.8thwall.com/xrweb?appKey=' + API_TOKEN_XR8;
       /*s.onload = () => {
-        document.querySelector("#WL-loading-8thwall-logo")?.remove();
+        document.querySelector('#WL-loading-8thwall-logo')?.remove();
         resolve();
       }**/
 
       window.addEventListener('xrloaded', () => {
-        document.querySelector("#WL-loading-8thwall-logo")?.remove();
+        document.querySelector('#WL-loading-8thwall-logo')?.remove();
 
         XR8.addCameraPipelineModules([
           XR8.GlTextureRenderer.pipelineModule(),
           {
-            name: "WLE-XR8-setup",
+            name: 'WLE-XR8-setup',
             onStart: () => {
               XR8Setup.enableCameraFeed();
             },
             onException: (message) => {
-              // console.log("Error happened", err);
-              window.dispatchEvent(new CustomEvent("8thwall-error", { detail: { message } }))
+              // console.log('Error happened', err);
+              window.dispatchEvent(new CustomEvent('8thwall-error', { detail: { message } }))
             }
           }
         ]);
@@ -55,7 +55,7 @@ const XR8Setup = {
 
       document.body.appendChild(s);
       // Wait until index.html has been fully parsed and append the 8thwall logo
-      document.readyState === "complete" ? this.add8thwallLogo() : document.addEventListener("DOMContentLoaded", () => this.add8thwallLogo);
+      document.readyState === 'complete' ? this.add8thwallLogo() : document.addEventListener('DOMContentLoaded', () => this.add8thwallLogo);
     })
   },
 
@@ -64,7 +64,7 @@ const XR8Setup = {
   run: function (options: Parameters<typeof XR8.run>[0]) {
 
     /*if (this.currentXR8RunOptions) {
-      console.error("Some 8thwall camera is still running, this will override it's behavior");
+      console.error('Some 8thwall camera is still running, this will override it's behavior');
     }*/
 
     this.currentXR8RunOptions = options;
@@ -107,18 +107,18 @@ const XR8Setup = {
   },
 
   add8thwallLogo: function () {
-    const a = document.createElement("a");
-    a.href = "https://www.8thwall.com/";
+    const a = document.createElement('a');
+    a.href = 'https://www.8thwall.com/';
     a.target = '_blank';
-    a.style.position = "absolute";
-    a.style.bottom = "20px";
-    a.style.left = "0";
-    a.style.right = "0";
-    a.style.margin = "0 auto";
-    a.style.width = "252px";
-    a.style.zIndex = "999";
+    a.style.position = 'absolute';
+    a.style.bottom = '20px';
+    a.style.left = '0';
+    a.style.right = '0';
+    a.style.margin = '0 auto';
+    a.style.width = '252px';
+    a.style.zIndex = '999';
     // a.style.pointerEvents='none';
-    a.id = "WL-loading-8thwall-logo";
+    a.id = 'WL-loading-8thwall-logo';
     a.innerHTML = `
     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" width="252px" height="48px" viewBox="0 0 252 48" style="enable-background:new 0 0 252 48;" xml:space="preserve"><script xmlns=""/>
       <style type="text/css">
@@ -156,14 +156,14 @@ const XR8Setup = {
   },
 
 
-  promptForDeviceMotion: async function () {
+  promptForDeviceMotion: function () {
     return new Promise(async (resolve, reject) => {
 
       // Tell anyone who's interested that we want to get some user interaction
-      window.dispatchEvent(new Event("8thwall-request-user-interaction"));
+      window.dispatchEvent(new Event('8thwall-request-user-interaction'));
 
       // Wait until someone response that user interaction happened
-      window.addEventListener("8thwall-permissions-allowed", async () => {
+      window.addEventListener('8thwall-safe-to-request-permissions', async () => {
         try {
           const motionEvent = await (DeviceMotionEvent as any).requestPermission();
           resolve(motionEvent);
@@ -182,19 +182,19 @@ const XR8Setup = {
         const result = await (DeviceMotionEvent as any).requestPermission();
 
         // The user must have rejected the motion event on previous page load. (safari remembers this choice).
-        if (result !== "granted") {
-          throw new Error("MotionEvent");
+        if (result !== 'granted') {
+          throw new Error('MotionEvent');
         }
       } catch (exception) {
 
         // User had no interaction with the page so far
-        if (exception.name === "NotAllowedError") {
+        if (exception.name === 'NotAllowedError') {
           const motionEvent = await this.promptForDeviceMotion();
-          if (motionEvent !== "granted") {
-            throw new Error("MotionEvent");
+          if (motionEvent !== 'granted') {
+            throw new Error('MotionEvent');
           }
         } else {
-          throw new Error("MotionEvent");
+          throw new Error('MotionEvent');
         }
       }
     }
@@ -210,7 +210,7 @@ const XR8Setup = {
        });*/
 
     } catch (exception) {
-      throw new Error("Camera");
+      throw new Error('Camera');
     }
   },
 
@@ -223,7 +223,7 @@ const XR8Setup = {
 
     } catch (error) {
       // User did not grant the camera or motionEvent permissions
-      window.dispatchEvent(new CustomEvent("8thwall-permission-fail", { detail: error }))
+      window.dispatchEvent(new CustomEvent('8thwall-permission-fail', { detail: error }))
       return false;
     }
   }
@@ -236,14 +236,14 @@ const OverlaysHandler = {
     this.handlePermissionFail = this.handlePermissionFail.bind(this);
     this.handleError = this.handleError.bind(this);
 
-    window.addEventListener("8thwall-request-user-interaction", this.handleRequestUserInteraction);
-    window.addEventListener("8thwall-permission-fail", this.handlePermissionFail);
-    window.addEventListener("8thwall-error", this.handleError);
+    window.addEventListener('8thwall-request-user-interaction', this.handleRequestUserInteraction);
+    window.addEventListener('8thwall-permission-fail', this.handlePermissionFail);
+    window.addEventListener('8thwall-error', this.handleError);
   },
 
   handleRequestUserInteraction: function () {
     const overlay = this.showOverlay(requestPermissionOverlay);
-    window.addEventListener("8thwall-permissions-allowed", () => {
+    window.addEventListener('8thwall-safe-to-request-permissions', () => {
       overlay.remove();
     });
   },
@@ -253,12 +253,12 @@ const OverlaysHandler = {
   },
 
   handleError: function (error: CustomEvent) {
-    console.error("XR8 encountered an error", error.detail.message);
+    console.error('XR8 encountered an error', error.detail.message);
     this.showOverlay(runtimeErrorOverlay(error.detail.message));
   },
 
   showOverlay: function (htmlContent) {
-    const overlay = document.createElement("div");
+    const overlay = document.createElement('div');
     overlay.innerHTML = htmlContent;
     document.body.appendChild(overlay);
     return overlay;
@@ -298,7 +298,7 @@ const requestPermissionOverlay = `
   <div id="request-permission-overlay">
   <div class="request-permission-overlay_title">This app requires to use your camera and motion sensors</div>
 
-  <button class="request-permission-overlay_button" onclick="window.dispatchEvent(new Event('8thwall-permissions-allowed'))">OK</button>
+  <button class="request-permission-overlay_button" onclick="window.dispatchEvent(new Event('8thwall-safe-to-request-permissions'))">OK</button>
   </div>`;
 
 const failedPermissionOverlay = `

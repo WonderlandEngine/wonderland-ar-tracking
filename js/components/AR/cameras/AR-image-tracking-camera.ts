@@ -1,11 +1,11 @@
-import ARSetup from '../AR-setup';
+import ARSession from '../AR-session';
 import  XR8Setup from '../frameworks/xr8/xr8-setup';
 import { Component, Type } from '@wonderlandengine/api';
 import WorldTracking_XR8 from '../frameworks/xr8/world-tracking-provider-xr8';
 
-ARSetup.setUsage(ARSetup.ARUsage.IMAGE_TRACKING, [XR8Setup]);
+ARSession.setUsage(ARSession.ARUsage.IMAGE_TRACKING, [XR8Setup]);
 
-const WLEComponentTypeName = "AR-image-tracking-camera";
+const WLEComponentTypeName = 'AR-image-tracking-camera';
 
 export default class ARImageTrackingCamera extends Component {
 
@@ -36,25 +36,25 @@ export default class ARImageTrackingCamera extends Component {
   }
 
   public start() {
-    console.log("Starting image Camera");
+    console.log('Starting image Camera');
     this.trackingProvider.init();
 
-    ARSetup.onARStartClicked.push((_event) => {
+    ARSession.onARStartClicked.push((_event) => {
       this.trackingProvider.startARSession();
     });
   }
 
   onActivate(): void {
-    console.log("Activating image camera");
+    console.log('Activating image camera');
   }
 
   onDeactivate(): void {
-    console.log("Deactivating image camera");
+    console.log('Deactivating image camera');
     this.trackingProvider.stopARSession();
   }
 
   startARSession() {
-    console.log("Starting image tracking session");
+    console.log('Starting image tracking session');
     this.trackingProvider.startARSession();
   }
 }

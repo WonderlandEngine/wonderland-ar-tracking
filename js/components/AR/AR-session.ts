@@ -4,8 +4,8 @@ enum ARUsage {
   IMAGE_TRACKING,
 };
 
-const ARSetup = {
-  ARUsage: ARUsage, // Just not to poison the global scope with ARUsage enum, we expose it using ARSetup.ARUsage
+const ARSession = {
+  ARUsage: ARUsage, // Just not to poison the global scope with ARUsage enum, we expose it using ARSession.ARUsage
   usage: null,
   ARSystem: null,
 
@@ -26,10 +26,10 @@ const ARSetup = {
       return;
     }*/
 
-    console.log("Scene is loaded");
+    console.log('Scene is loaded');
 
-    /*const xrButton = document.createElement("div")
-    xrButton.id = "ar-button";
+    /*const xrButton = document.createElement('div')
+    xrButton.id = 'ar-button';
     xrButton.innerHTML = `
       <svg id="Layer_1" data - name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 109.41 65">
         <path class="xr-button-label"
@@ -43,15 +43,15 @@ const ARSetup = {
       </svg>
       `;
     document.querySelector(".xr-button-container")?.appendChild(xrButton);*/
-    let xrButton = document.querySelector<HTMLElement>("#ar-button");
+    let xrButton = document.querySelector<HTMLElement>('#ar-button');
     if(xrButton === null) {
-      console.error("No #ar-button found. Session will not start.");
+      console.error('No #ar-button found. Session will not start.');
       return;
     }
     
-    xrButton.addEventListener("click", (event) => {
+    xrButton.addEventListener('click', (event) => {
       // xrButton!.remove();
-      xrButton!.style.display = "none";
+      xrButton!.style.display = 'none';
       this.startSession();
     });
   },
@@ -64,11 +64,11 @@ const ARSetup = {
 
   addARSystem: function (system) {
     if (this.ARSystem) {
-      console.error("Adding multiple tracking systems which might result in errors. Current", this.ARSystem, "next", system);
+      console.error('Adding multiple tracking systems which might result in errors. Current', this.ARSystem, 'next', system);
     }
     this.ARSystem = system;
   }
 };
 
-(window as any).ARSetup = ARSetup;
-export default ARSetup;
+(window as any).ARSession = ARSession;
+export default ARSession;

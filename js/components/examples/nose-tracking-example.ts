@@ -1,8 +1,8 @@
-import { Component, Object as WLEObject } from "@wonderlandengine/api";
-import ARFaceTrackingCamera from "../AR/cameras/AR-face-tracking-camera";
+import { Component, Object as WLEObject } from '@wonderlandengine/api';
+import ARFaceTrackingCamera from '../AR/cameras/AR-face-tracking-camera';
 
 class NoseTrackingExample extends Component {
-  public static TypeName = "nose-tracking-example";
+  public static TypeName = 'nose-tracking-example';
   public static Properties = {
     ARFaceTrackingCamera: { type: WL.Type.Object },
     nose: { type: WL.Type.Object },
