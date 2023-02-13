@@ -21,7 +21,7 @@
                 0.0,
                 1.0
             ],
-            "scale": [
+            "scaling": [
                 0.9999998,
                 1.0,
                 0.9999998
@@ -49,7 +49,7 @@
                 0.0,
                 1.0
             ],
-            "scale": [
+            "scaling": [
                 0.5,
                 0.5,
                 0.5
@@ -73,18 +73,25 @@
                 },
                 {
                     "type": "AR-SLAM-camera",
-                    "active": false
+                    "active": true
                 },
                 {
                     "type": "AR-face-tracking-camera",
-                    "active": false
+                    "active": false,
+                    "AR-face-tracking-camera": {
+                        "cameraDirection": "front"
+                    }
                 },
                 {
                     "type": "AR-image-tracking-camera",
-                    "active": true,
+                    "active": false,
                     "AR-image-tracking-camera": {
                         "EnableSLAM": true
                     }
+                },
+                {
+                    "type": "xr8-camera-switch-example",
+                    "active": true
                 }
             ]
         },
@@ -124,7 +131,7 @@
                 0.0,
                 1.0
             ],
-            "scale": [
+            "scaling": [
                 1.0,
                 1.0,
                 1.0
@@ -151,7 +158,7 @@
                 0.0,
                 1.0
             ],
-            "scale": [
+            "scaling": [
                 1.0,
                 1.0,
                 1.0
@@ -179,7 +186,7 @@
                 0.0,
                 1.0
             ],
-            "scale": [
+            "scaling": [
                 1.0,
                 1.0,
                 1.0
@@ -221,7 +228,7 @@
                 0.0,
                 1.0
             ],
-            "scale": [
+            "scaling": [
                 0.5,
                 0.5,
                 0.5
@@ -255,11 +262,6 @@
                 0.0,
                 1.0
             ],
-            "scale": [
-                1.0,
-                1.0,
-                1.0
-            ],
             "components": [
                 {
                     "type": "nose-tracking-example",
@@ -268,6 +270,11 @@
                         "nose": "66"
                     }
                 }
+            ],
+            "scaling": [
+                1.0,
+                1.0,
+                1.0
             ]
         },
         "66": {
@@ -291,16 +298,16 @@
                 -2.0,
                 -5.0
             ],
-            "scale": [
-                2.0,
-                2.0,
-                2.0
-            ],
             "rotation": [
                 0.0,
                 0.0,
                 0.0,
                 1.0
+            ],
+            "scaling": [
+                2.0,
+                2.0,
+                2.0
             ]
         },
         "68": {
@@ -615,7 +622,7 @@
             "customIndexHtml": true
         },
         "vr": {
-            "leftEyeObject": "17",
+            "leftEyeObject": "18",
             "rightEyeObject": "45",
             "enable": false
         },
@@ -624,7 +631,7 @@
                 "/js/editor-components-bundle.js",
                 "js/"
             ],
-            "useInternalBundler": false
+            "bundlingType": "esbuild"
         },
         "ar": {
             "framework": "webxr",

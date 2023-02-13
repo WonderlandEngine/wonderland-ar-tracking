@@ -1,48 +1,62 @@
-import { Component } from '@wonderlandengine/api';
+import { Component, init } from '@wonderlandengine/api';
 
-import ARSetup from '../AR-setup';
+import ARSession from '../AR-session';
 
-import WorldTracking_XR8 from '../frameworks/xr8/world-tracking-provider-xr8';
-import WorldTracking_webAR from '../frameworks/webAR/world-tracking-provider-webAR';
-import XR8Setup from '../frameworks/xr8/xr8-setup';
+import WorldTracking_XR8 from '../frameworks/xr8/world-tracking-mode-xr8';
+import WorldTracking_webAR from '../frameworks/webAR/world-tracking-mode-webAR';
+import XR8Provider from '../frameworks/xr8/xr8-provider';
 
-import { ITrackingProvider } from '../frameworks/trackingProvider';
+import { ITrackingMode } from '../frameworks/trackingMode';
+import WebXRProvider from '../frameworks/webAR/webXR-provider';
 
 
 if (WL.arSupported) {
-  ARSetup.setUsage(ARSetup.ARUsage.SLAM, []);
+  ARSession.registerTrackingProvider(WebXRProvider)
+  //ARSession.setUsage(ARSession.ARUsage.SLAM, []);
 } else {
-  ARSetup.setUsage(ARSetup.ARUsage.SLAM, [XR8Setup]);
+  ARSession.registerTrackingProvider(XR8Provider)
+  //ARSession.setUsage(ARSession.ARUsage.SLAM, [XR8Provider]);
 }
 
-const WLEComponentTypeName = "AR-SLAM-camera";
+const WLEComponentTypeName = 'AR-SLAM-camera';
 
-class ARSlamCamera extends Component {
+export default class ARSLAMCamera extends Component {
   public static TypeName = WLEComponentTypeName;
   public static Properties = {};
 
-  private worldTrackingProvider?: ITrackingProvider;
+  private trackingImpl?: ITrackingMode;
 
   public start() {
 
-    if (!this.object.getComponent("view")) {
-      throw new Error("AR-camera requires a view component");
+    if (!this.object.getComponent('view')) {
+      throw new Error('AR-camera requires a view component');
     }
 
     if (WL.arSupported) {
-      this.worldTrackingProvider = new WorldTracking_webAR(this);
+    //(if (false) { // force xr8
+      this.trackingImpl = new WorldTracking_webAR(this);
     } else {
-      this.worldTrackingProvider = new WorldTracking_XR8(this);
-      (this.worldTrackingProvider as WorldTracking_XR8).init();
+      this.trackingImpl = new WorldTracking_XR8(this);
+      (this.trackingImpl as WorldTracking_XR8).init();
     }
 
-    ARSetup.onARStartClicked.push((_event) => {
-      this.worldTrackingProvider!.startARSession();
-    });
+    ARSession.onARSessionRequested.push(this.startARSession);
+  }
+
+
+  startARSession = () => {
+    if (this.active) {
+      this.trackingImpl!.startSession();
+    }
+  }
+  
+  onDeactivate(): void {
+    this.trackingImpl!.endSession()
   }
 
   public update(dt) {
-    this.worldTrackingProvider!.update?.(dt);
+    this.trackingImpl!.update?.(dt);
   }
 }
-WL.registerComponent(ARSlamCamera);
+WL.registerComponent(ARSLAMCamera);
+

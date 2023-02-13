@@ -1,9 +1,9 @@
-import { Component, MeshComponent, Object as WLEObject, Type } from "@wonderlandengine/api";
-import ARImageTrackingCamera from "../AR/cameras/AR-image-tracking-camera";
+import { Component, MeshComponent, Object as WLEObject, Type } from '@wonderlandengine/api';
+import ARImageTrackingCamera from '../AR/cameras/AR-image-tracking-camera';
 
 class ImageTrackingExample extends Component {
 
-  public static TypeName = "image-tracking-example";
+  public static TypeName = 'image-tracking-example';
   public static Properties = {
     ARImageTrackingCamera: { type: Type.Object },
   };
@@ -24,7 +24,7 @@ class ImageTrackingExample extends Component {
     }
 
     //const mesh = this.object.getComponent(MeshComponent) // <-- fails, issue reported 
-    const mesh = this.object.getComponent("mesh");
+    const mesh = this.object.getComponent('mesh');
     if (!mesh) {
       return;
     }

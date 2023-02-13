@@ -75,6 +75,7 @@ declare var XR8: {
   };
 
   addCameraPipelineModules: (modules: XR8CameraPipelineModule[]) => void;
+  removeCameraPipelineModules: (modules: XR8CameraPipelineModule[]) => void;
 
   run: (options: {
     canvas: HTMLCanvasElement,
@@ -100,4 +101,6 @@ declare var XR8: {
       }
     }
   }) => void;
+
+  stop:() => void;
 }
