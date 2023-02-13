@@ -79,7 +79,6 @@ class WorldTracking_XR8 extends TrackingMode {
   }
 
   public async startSession() {
-    console.log("Starting XR8 world tracking mode");
     const permissions = await XR8Provider.checkPermissions();
     if (!permissions) {
       return;
@@ -111,7 +110,6 @@ class WorldTracking_XR8 extends TrackingMode {
   }
 
   public endSession() {
-    console.log('Stoping XR8 world tracking');
     XR8Provider.endSession();
   }
 
@@ -119,10 +117,6 @@ class WorldTracking_XR8 extends TrackingMode {
   * called by 8thwall
   */
   public onAttach = (_params) => {
-    console.log('Attaching world tracking provider');
-    // Sync the xr controller's 6DoF position and camera paremeters with our camera.
-    // const rot = this.component.object.rotationWorld;
-    // const pos = this.component.object.getTranslationWorld([]);
     XR8.XrController.updateCameraProjectionMatrix({
       origin: { x: this.cachedPosition[0], y: this.cachedPosition[1], z: this.cachedPosition[2] },
       facing: { x: this.cachedRotation[0], y: this.cachedRotation[1], z: this.cachedRotation[2], w: this.cachedRotation[3] },

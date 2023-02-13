@@ -89,8 +89,6 @@ abstract class ARSession {
 
   // some provider started AR session
   private static onProviderSessionStarted = (provider: ARProvider) => {
-    console.log("Provider session started");
-
     this.currentTrackingProvider = provider;
 
     let xrButton = document.querySelector<HTMLElement>('#ar-button');
@@ -100,7 +98,6 @@ abstract class ARSession {
 
   // some provider ended AR session
   private static onProviderSessionEnded = (provider: ARProvider) => {
-    console.log("Provider session ended");
     let xrButton = document.querySelector<HTMLElement>('#ar-button');
     xrButton!.style.display = 'block';
     this.onSessionEnded.forEach(cb => cb(provider));

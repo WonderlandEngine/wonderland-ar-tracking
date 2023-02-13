@@ -29,13 +29,7 @@ export default class ARFaceTrackingCamera extends Component {
     return this.trackingImpl.onFaceLost;
   }
 
-  init() {
-    console.log('Initing face camera');
-  }
-
   public start() {
-    console.log('Starting face Camera');
-
     if (!this.object.getComponent('view')) {
       throw new Error('AR-camera requires a view component');
     }
@@ -47,17 +41,11 @@ export default class ARFaceTrackingCamera extends Component {
 
   startARSession = () => {
     if (this.active) {
-      console.log('Starting face tracking session');
       this.trackingImpl.startSession();
     }
   }
 
-  onActivate(): void {
-    console.log('Activating Face camera with', this.cameraDirection);
-  }
-
   onDeactivate(): void {
-    console.log('Deactivating Face camera with', this.cameraDirection);
     this.trackingImpl.endSession();
   }
 }

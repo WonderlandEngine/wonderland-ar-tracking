@@ -26,12 +26,7 @@ export default class ARSLAMCamera extends Component {
 
   private trackingImpl?: ITrackingMode;
 
-  init() {
-    console.log('Initing world camera');
-  }
-
   public start() {
-    console.log('Starting World Camera');
 
     if (!this.object.getComponent('view')) {
       throw new Error('AR-camera requires a view component');
@@ -51,21 +46,11 @@ export default class ARSLAMCamera extends Component {
 
   startARSession = () => {
     if (this.active) {
-      console.log('Starting SLAM tracking session with provider', this.trackingImpl);
       this.trackingImpl!.startSession();
     }
   }
-
-  onARSessionStarted(): void {
-
-  }
-
-  onActivate(): void {
-    console.log('Activating world camera');
-  }
-
+  
   onDeactivate(): void {
-    console.log('Deactivating world camera');
     this.trackingImpl!.endSession()
   }
 

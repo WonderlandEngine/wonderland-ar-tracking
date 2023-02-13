@@ -34,29 +34,19 @@ export default class ARImageTrackingCamera extends Component {
   public get onImageLost() {
     return this.trackingImpl.onImageLost;
   }
-  init() {
-    
-  }
 
   public start() {
-    console.log('Starting image Camera');
     this.trackingImpl.init();
     ARSession.onARSessionRequested.push(this.startARSession);
   }
 
   startARSession = () => {
     if (this.active) {
-      console.log('Starting image tracking session');
       this.trackingImpl.startSession();
     }
   }
 
-  onActivate(): void {
-    console.log('Activating image camera');
-  }
-
   onDeactivate(): void {
-    console.log('Deactivating image camera');
     this.trackingImpl.endSession();
   }
 }

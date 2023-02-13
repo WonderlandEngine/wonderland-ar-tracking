@@ -33,7 +33,6 @@ class XR8CameraSwitch extends Component {
     container.querySelector('#XR8CameraSwitch-image')?.addEventListener('click', this.onImageCameraSelected);
     container.querySelector('#XR8CameraSwitch-world')?.addEventListener('click', this.onWorldCameraSelected);
     container.querySelector('#XR8CameraSwitch-kill')?.addEventListener('click', () => {
-      console.log("clicked on the kill")
       ARSession.stopARSession();
     });
 
