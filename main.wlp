@@ -73,7 +73,7 @@
                 },
                 {
                     "type": "AR-SLAM-camera",
-                    "active": false
+                    "active": true
                 },
                 {
                     "type": "AR-face-tracking-camera",
@@ -90,7 +90,8 @@
                     }
                 },
                 {
-                    "type": "xr8-camera-switch-example"
+                    "type": "xr8-camera-switch-example",
+                    "active": true
                 }
             ]
         },

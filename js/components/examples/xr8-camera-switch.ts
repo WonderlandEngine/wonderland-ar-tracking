@@ -1,4 +1,5 @@
 import { Component } from '@wonderlandengine/api';
+import ARSession from '../AR/AR-session';
 import ARFaceTrackingCamera from '../AR/cameras/AR-face-tracking-camera';
 import ARImageTrackingCamera from '../AR/cameras/AR-image-tracking-camera';
 import ARSLAMCamera from '../AR/cameras/AR-SLAM-camera';
@@ -18,6 +19,7 @@ class XR8CameraSwitch extends Component {
       <button style="line-height: 40px" id="XR8CameraSwitch-face">Turn on face camera</button>
       <button style="line-height: 40px"id="XR8CameraSwitch-image">Turn on image tracking camera</button>
       <button style="line-height: 40px" id="XR8CameraSwitch-world">Turn on world tracking camera</button>
+      <button style="line-height: 40px" id="XR8CameraSwitch-kill">Kill session</button>
     </div>`
 
     const container = document.createElement("div");
@@ -28,6 +30,10 @@ class XR8CameraSwitch extends Component {
     container.querySelector('#XR8CameraSwitch-face')?.addEventListener('click', this.onFaceCameraSelected);
     container.querySelector('#XR8CameraSwitch-image')?.addEventListener('click', this.onImageCameraSelected);
     container.querySelector('#XR8CameraSwitch-world')?.addEventListener('click', this.onWorldCameraSelected);
+    container.querySelector('#XR8CameraSwitch-kill')?.addEventListener('click', () => {
+      console.log("clicked on the kill")
+      ARSession.stopARSession();
+    });
 
     this.faceTrackingCamera = this.object.getComponent(ARFaceTrackingCamera)!;
     this.imageTrackingCamera = this.object.getComponent(ARImageTrackingCamera)!;

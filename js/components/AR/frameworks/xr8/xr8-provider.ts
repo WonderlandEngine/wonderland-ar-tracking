@@ -1,9 +1,12 @@
+import ARProvider from "../../AR-provider";
 
-const XR8Setup = {
+class XR8Provider extends ARProvider {
   // Loading of 8thwall might be initiated by several components, make sure we load it only once
-  loading: false,
+  private loading = false
 
-  load: async function () {
+  private currentXR8RunOptions?: any
+
+  public async load () {
     // Make sure we're no in the editor
     if (!window.document) {
       return;
@@ -35,6 +38,8 @@ const XR8Setup = {
       }**/
 
       window.addEventListener('xrloaded', () => {
+        this.loaded = true;
+
         document.querySelector('#WL-loading-8thwall-logo')?.remove();
 
         XR8.addCameraPipelineModules([
@@ -42,7 +47,7 @@ const XR8Setup = {
           {
             name: 'WLE-XR8-setup',
             onStart: () => {
-              XR8Setup.enableCameraFeed();
+              this.enableCameraFeed();
             },
             onException: (message) => {
               // console.log('Error happened', err);
@@ -57,21 +62,24 @@ const XR8Setup = {
       // Wait until index.html has been fully parsed and append the 8thwall logo
       document.readyState === 'complete' ? this.add8thwallLogo() : document.addEventListener('DOMContentLoaded', () => this.add8thwallLogo);
     })
-  },
+  };
 
-  currentXR8RunOptions: null,
-
-  run: function (options: Parameters<typeof XR8.run>[0]) {
+  public async startSession (options: Parameters<typeof XR8.run>[0]) {
 
     /*if (this.currentXR8RunOptions) {
       console.error('Some 8thwall camera is still running, this will override it's behavior');
     }*/
-
     this.currentXR8RunOptions = options;
     XR8.run(options)
-  },
+    this.onSessionStarted.forEach(cb => cb(this));
+  };
 
-  enableCameraFeed: function () {
+  public async endSession () {
+    XR8.stop();
+    this.onSessionEnded.forEach(cb => cb(this));
+  };
+
+  public enableCameraFeed () {
     // TODO: should we store the previous state of colorClearEnabled.
     WL.scene.colorClearEnabled = false;
 
@@ -82,9 +90,9 @@ const XR8Setup = {
     if (!WL.scene.onPostRender.includes(this.onWLPostRender)) {
       WL.scene.onPostRender.push(this.onWLPostRender)
     }
-  },
+  };
 
-  disableCameraFeed: function () {
+  public disableCameraFeed () {
     const indexPrerender = WL.scene.onPreRender.indexOf(this.onWLPreRender);
     if (indexPrerender !== -1) {
       WL.scene.onPreRender.splice(indexPrerender);
@@ -94,19 +102,19 @@ const XR8Setup = {
     if (indexPostRender !== -1) {
       WL.scene.onPostRender.splice(indexPostRender);
     }
-  },
+  };
 
-  onWLPreRender: function () {
+  public onWLPreRender () {
     Module.ctx.bindFramebuffer(Module.ctx.DRAW_FRAMEBUFFER, null); // <--- Should not be needed after next nightly is released (current 20230110)
     XR8.runPreRender(Date.now());
     XR8.runRender(); // <--- tell 8thwall to do it's thing (alternatively call this.GlTextureRenderer.onRender() if you only care about camera feed )
-  },
+  };
 
-  onWLPostRender: function () {
+  public onWLPostRender () {
     XR8.runPostRender(Date.now())
-  },
+  };
 
-  add8thwallLogo: function () {
+  private add8thwallLogo () {
     const a = document.createElement('a');
     a.href = 'https://www.8thwall.com/';
     a.target = '_blank';
@@ -153,10 +161,10 @@ const XR8Setup = {
       </svg>
     `;
     document.body.appendChild(a);
-  },
+  };
 
 
-  promptForDeviceMotion: function () {
+  private promptForDeviceMotion () {
     return new Promise(async (resolve, reject) => {
 
       // Tell anyone who's interested that we want to get some user interaction
@@ -172,9 +180,9 @@ const XR8Setup = {
         }
       });
     })
-  },
+  }
 
-  getPermissions: async function () {
+  private async getPermissions () {
     // iOS "feature". If we want to request the DeviceMotion permission, user has to interact with the page at first (touch it).
     // If there was no interaction done so far, we will render a HTML overlay with would get the user to interact with the screen
     if (DeviceMotionEvent && (DeviceMotionEvent as any).requestPermission) {
@@ -212,10 +220,10 @@ const XR8Setup = {
     } catch (exception) {
       throw new Error('Camera');
     }
-  },
+  };
 
 
-  checkPermissions: async function () {
+  public async checkPermissions () {
     OverlaysHandler.init();
     try {
       await this.getPermissions();
@@ -380,4 +388,4 @@ const runtimeErrorOverlay = (message) => `
   </div>`;
 
 
-export default XR8Setup;
+export default new XR8Provider();

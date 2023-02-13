@@ -1,11 +1,11 @@
 
 import { ViewComponent } from '@wonderlandengine/api';
-import { TrackingProvider } from '../trackingProvider';
-import XR8Setup from './xr8-setup';
+import { TrackingMode } from '../trackingMode';
+import XR8Provider from './xr8-provider';
 import ARFaceTrackingCamera from '../../cameras/AR-face-tracking-camera';
 
 
-class FaceTracking_XR8 extends TrackingProvider {
+class FaceTracking_XR8 extends TrackingMode {
   public readonly name = 'face_tracking_XR8';
 
   private view?: ViewComponent;  // cache camera
@@ -42,10 +42,17 @@ class FaceTracking_XR8 extends TrackingProvider {
     }
 
     this.view = this.component.object.getComponent('view')!;
+
+    XR8Provider.onSessionEnded.push(() => {
+      XR8.removeCameraPipelineModules([
+        XR8.FaceController.pipelineModule(),
+        this,
+      ])
+    })
   }
 
-  public async startARSession() {
-    const permissions = await XR8Setup.checkPermissions();
+  public async startSession() {
+    const permissions = await XR8Provider.checkPermissions();
 
     if (!permissions) {
       return;
@@ -74,18 +81,13 @@ class FaceTracking_XR8 extends TrackingProvider {
       },
     };
 
-    XR8Setup.run(options);
+    XR8Provider.startSession(options);
   }
 
-  public stopARSession() {
+  public endSession() {
     console.log('Stopping face tracking session');
-    XR8.stop();
-    XR8.removeCameraPipelineModules([
-      XR8.FaceController.pipelineModule(),
-      this,
-    ])
+    XR8Provider.endSession();
   }
-
 
   /**
    * @param {*} e 

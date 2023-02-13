@@ -1,32 +1,32 @@
 import ARSession from '../AR-session';
-import FaceTracking_XR8 from '../frameworks/xr8/face-tracking-provider-xr8';
-import XR8Setup from '../frameworks/xr8/xr8-setup';
+import FaceTracking_XR8 from '../frameworks/xr8/face-tracking-mode-xr8';
+import XR8Provider from '../frameworks/xr8/xr8-provider';
 import { Component, Type } from '@wonderlandengine/api';
 
 const WLEComponentTypeName = 'AR-face-tracking-camera';
 
-ARSession.setUsage(ARSession.ARUsage.FACE_TRACKING, [XR8Setup]);
+ARSession.registerTrackingProvider(XR8Provider);
 export default class ARFaceTrackingCamera extends Component {
   public static TypeName = WLEComponentTypeName;
   public static Properties = {
     cameraDirection: { type: Type.Enum, values: ['front', 'back'] as XR8CameraDirection[keyof XR8CameraDirection][], default: 'front' },
   };
 
-  private trackingProvider = new FaceTracking_XR8(this);
+  private trackingImpl = new FaceTracking_XR8(this);
 
   // will be set by WLE
   public readonly cameraDirection: number;
 
   public get onFaceFound() {
-    return this.trackingProvider.onFaceFound;
+    return this.trackingImpl.onFaceFound;
 
   }
   public get onFaceUpdate() {
-    return this.trackingProvider.onFaceUpdate;
+    return this.trackingImpl.onFaceUpdate;
   }
 
   public get onFaceLost() {
-    return this.trackingProvider.onFaceLost;
+    return this.trackingImpl.onFaceLost;
   }
 
   init() {
@@ -40,11 +40,16 @@ export default class ARFaceTrackingCamera extends Component {
       throw new Error('AR-camera requires a view component');
     }
 
-    this.trackingProvider.init();
+    this.trackingImpl.init();
 
-    ARSession.onARStartClicked.push((_event) => {
-      this.startARSession();
-    });
+    ARSession.onARSessionRequested.push(this.startARSession);
+  }
+
+  startARSession = () => {
+    if (this.active) {
+      console.log('Starting face tracking session');
+      this.trackingImpl.startSession();
+    }
   }
 
   onActivate(): void {
@@ -53,12 +58,7 @@ export default class ARFaceTrackingCamera extends Component {
 
   onDeactivate(): void {
     console.log('Deactivating Face camera');
-    this.trackingProvider.stopARSession();
-  }
-
-  startARSession() {
-    console.log('Starting face tracking session');
-    this.trackingProvider.startARSession();
+    this.trackingImpl.endSession();
   }
 }
 

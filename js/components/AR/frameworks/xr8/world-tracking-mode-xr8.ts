@@ -1,8 +1,8 @@
 
 import { ViewComponent } from '@wonderlandengine/api';
-import { TrackingProvider } from '../trackingProvider';
+import { TrackingMode } from '../trackingMode';
 
-import XR8Setup from './xr8-setup';
+import XR8Provider from './xr8-provider';
 
 // Just some helper types to determine if an object has some props
 type CanDisableSLAM = {
@@ -13,7 +13,7 @@ type CanUseAbsoluteScale = {
   UseAbsoluteScale: boolean
 }
 
-class WorldTracking_XR8 extends TrackingProvider {
+class WorldTracking_XR8 extends TrackingMode {
   // consumed by 8thwall
   public readonly name = 'world_tracking_XR8';
 
@@ -69,10 +69,18 @@ class WorldTracking_XR8 extends TrackingProvider {
     this.cachedRotation[1] = rot[1];
     this.cachedRotation[2] = rot[2];
     this.cachedRotation[3] = rot[3];
+
+    XR8Provider.onSessionEnded.push(() => {
+      XR8.removeCameraPipelineModules([
+        XR8.XrController.pipelineModule(),
+        this,
+      ])
+    })
   }
 
-  public async startARSession() {
-    const permissions = await XR8Setup.checkPermissions();
+  public async startSession() {
+    console.log("Starting XR8 world tracking mode");
+    const permissions = await XR8Provider.checkPermissions();
     if (!permissions) {
       return;
     }
@@ -85,10 +93,6 @@ class WorldTracking_XR8 extends TrackingProvider {
       disableWorldTracking: componentEnablesSLAM === undefined ? false : !componentEnablesSLAM, // invert componentEnablesSLAM
       scale: componentUsesAbsoluteScale === undefined ? 'responsive' : (componentUsesAbsoluteScale ? 'absolute' : 'responsive')
     });
-
-    console.log('Whats the scale', componentUsesAbsoluteScale === undefined ? 'responsive' : (componentUsesAbsoluteScale ? 'absolute' : 'responsive'))
-    console.log('Whats the world tracking', componentEnablesSLAM === undefined ? false : !componentEnablesSLAM);
-
 
     XR8.addCameraPipelineModules([
       XR8.XrController.pipelineModule(),
@@ -103,17 +107,12 @@ class WorldTracking_XR8 extends TrackingProvider {
         direction: XR8.XrConfig.camera().BACK
       },
     };
-    XR8Setup.run(options)
+    XR8Provider.startSession(options)
   }
 
-
-  public stopARSession() {
-    XR8.stop();
+  public endSession() {
     console.log('Stoping XR8 world tracking');
-    XR8.removeCameraPipelineModules([
-      XR8.XrController.pipelineModule(),
-      this,
-    ])
+    XR8Provider.endSession();
   }
 
   /**
