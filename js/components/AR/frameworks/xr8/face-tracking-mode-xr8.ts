@@ -44,6 +44,7 @@ class FaceTracking_XR8 extends TrackingMode {
     this.view = this.component.object.getComponent('view')!;
 
     XR8Provider.onSessionEnded.push(() => {
+      console.log("Ending Face tracking mode", ARFaceTrackingCamera.Properties.cameraDirection.values[(this.component as ARFaceTrackingCamera).cameraDirection]);
       XR8.removeCameraPipelineModules([
         XR8.FaceController.pipelineModule(),
         this,
@@ -81,6 +82,7 @@ class FaceTracking_XR8 extends TrackingMode {
       },
     };
 
+    console.log("Addind face tracking mode", ARFaceTrackingCamera.Properties.cameraDirection.values[(this.component as ARFaceTrackingCamera).cameraDirection])
     XR8Provider.startSession(options);
   }
 
@@ -96,6 +98,7 @@ class FaceTracking_XR8 extends TrackingMode {
    */
   public onUpdate = (e: any) => {
     const source = e.processCpuResult.facecontroller;
+    
     if (!source)
       return;
 

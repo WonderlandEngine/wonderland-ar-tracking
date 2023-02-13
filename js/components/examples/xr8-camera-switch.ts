@@ -16,7 +16,8 @@ class XR8CameraSwitch extends Component {
 
   start() {
     const html = `<div style="position: absolute; top: 0; left: 0; z-index: 999">
-      <button style="line-height: 40px" id="XR8CameraSwitch-face">Turn on face camera</button>
+      <button style="line-height: 40px" id="XR8CameraSwitch-frontface">Turn on front face camera</button>
+      <button style="line-height: 40px" id="XR8CameraSwitch-backface">Turn on back face camera</button>
       <button style="line-height: 40px"id="XR8CameraSwitch-image">Turn on image tracking camera</button>
       <button style="line-height: 40px" id="XR8CameraSwitch-world">Turn on world tracking camera</button>
       <button style="line-height: 40px" id="XR8CameraSwitch-kill">Kill session</button>
@@ -27,7 +28,8 @@ class XR8CameraSwitch extends Component {
 
     document.body.appendChild(container);
 
-    container.querySelector('#XR8CameraSwitch-face')?.addEventListener('click', this.onFaceCameraSelected);
+    container.querySelector('#XR8CameraSwitch-frontface')?.addEventListener('click', this.onFrontFaceCameraSelected);
+    container.querySelector('#XR8CameraSwitch-backface')?.addEventListener('click', this.onBackFaceCameraSelected);
     container.querySelector('#XR8CameraSwitch-image')?.addEventListener('click', this.onImageCameraSelected);
     container.querySelector('#XR8CameraSwitch-world')?.addEventListener('click', this.onWorldCameraSelected);
     container.querySelector('#XR8CameraSwitch-kill')?.addEventListener('click', () => {
@@ -38,19 +40,41 @@ class XR8CameraSwitch extends Component {
     this.faceTrackingCamera = this.object.getComponent(ARFaceTrackingCamera)!;
     this.imageTrackingCamera = this.object.getComponent(ARImageTrackingCamera)!;
     this.worldTrackingCamera = this.object.getComponent(ARSLAMCamera)!;
-
-    (window as any).mainCamera = this.object.getComponent("view");
   }
 
-  onFaceCameraSelected = () => {
-    //this.faceTrackingCamera!.active = false;
+  onFrontFaceCameraSelected = () => {
     this.imageTrackingCamera!.active = false;
     this.worldTrackingCamera!.active = false;
 
-    if(!this.faceTrackingCamera!.active) {
-      this.faceTrackingCamera!.active = true;
-      this.faceTrackingCamera!.startARSession();
-    }
+    /**
+     * TODO: this is a little bit dumb that we have to stop the camera
+     * and restart it with only a change in the parameter.
+     * 
+     * It should be possible just to change the param and seemlesly witch, at least with 8thwall
+     */
+    this.faceTrackingCamera!.active = false;
+    this.faceTrackingCamera!.cameraDirection = 0;
+    
+    this.faceTrackingCamera!.active = true;
+    this.faceTrackingCamera!.startARSession();
+  }
+
+  onBackFaceCameraSelected = () => {
+    //this.faceTrackingCamera!.active = false;
+    this.imageTrackingCamera!.active = false;
+    this.worldTrackingCamera!.active = false;
+    
+    /**
+     * TODO: this is a little bit dumb that we have to stop the camera
+     * and restart it with only a change in the parameter.
+     * 
+     * It should be possible just to change the param and seemlesly witch, at least with 8thwall
+     */
+    this.faceTrackingCamera!.active = false;
+    this.faceTrackingCamera!.cameraDirection = 1;
+    
+    this.faceTrackingCamera!.active = true;
+    this.faceTrackingCamera!.startARSession();
   }
 
   onImageCameraSelected = () => {

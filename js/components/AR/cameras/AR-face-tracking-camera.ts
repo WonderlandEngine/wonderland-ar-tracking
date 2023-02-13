@@ -15,7 +15,7 @@ export default class ARFaceTrackingCamera extends Component {
   private trackingImpl = new FaceTracking_XR8(this);
 
   // will be set by WLE
-  public readonly cameraDirection: number;
+  public cameraDirection: number;
 
   public get onFaceFound() {
     return this.trackingImpl.onFaceFound;
@@ -53,11 +53,11 @@ export default class ARFaceTrackingCamera extends Component {
   }
 
   onActivate(): void {
-    console.log('Activating Face camera');
+    console.log('Activating Face camera with', this.cameraDirection);
   }
 
   onDeactivate(): void {
-    console.log('Deactivating Face camera');
+    console.log('Deactivating Face camera with', this.cameraDirection);
     this.trackingImpl.endSession();
   }
 }
