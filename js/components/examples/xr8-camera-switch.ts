@@ -38,6 +38,8 @@ class XR8CameraSwitch extends Component {
     this.faceTrackingCamera = this.object.getComponent(ARFaceTrackingCamera)!;
     this.imageTrackingCamera = this.object.getComponent(ARImageTrackingCamera)!;
     this.worldTrackingCamera = this.object.getComponent(ARSLAMCamera)!;
+
+    (window as any).mainCamera = this.object.getComponent("view");
   }
 
   onFaceCameraSelected = () => {

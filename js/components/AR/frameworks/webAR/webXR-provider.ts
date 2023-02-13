@@ -7,6 +7,11 @@ class WebXRProvider extends ARProvider {
   constructor() {
     super();
 
+    // Safeguard that we are not running inside the editor
+    if(typeof(document) === 'undefined') {
+      return;
+    }
+    
     WL.onXRSessionStart.push((session) => {
       console.log("webXR session started", session, this);
       this.xrSession = session;
@@ -16,6 +21,8 @@ class WebXRProvider extends ARProvider {
     WL.onXRSessionEnd.push(() => {
       console.log("webXR session ended");
       this.onSessionEnded.forEach(cb => cb(this));
+
+      this.xrSession = null;
     });
   }
   
@@ -29,7 +36,6 @@ class WebXRProvider extends ARProvider {
 
     if(this.xrSession) {
       this.xrSession.end();
-      this.xrSession = null;
     }
   }
 
