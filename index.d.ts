@@ -56,6 +56,7 @@ declare var XR8: {
       disableWorldTracking?: boolean,
       scale?: 'absolute' | 'responsive',
       enableLighting?: boolean,
+      enableVps: boolean
     }) => void;
   };
 

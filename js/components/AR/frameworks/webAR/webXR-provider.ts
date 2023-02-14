@@ -19,7 +19,6 @@ class WebXRProvider extends ARProvider {
 
     WL.onXRSessionEnd.push(() => {
       this.onSessionEnded.forEach(cb => cb(this));
-
       this.xrSession = null;
     });
   }

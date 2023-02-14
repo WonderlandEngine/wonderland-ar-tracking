@@ -48,6 +48,30 @@ class WorldTracking_XR8 extends TrackingMode {
       }
     },
 
+    {
+      event: 'reality.meshfound', process: (event) => {
+       console.log("Mesh was found", event);
+      }
+    },
+
+    {
+      event: 'reality.projectwayspotscanning', process: (event) => {
+       console.log("projectwayspotscanning", event);
+      }
+    },
+
+    {
+      event: 'reality.projectwayspotfound', process: (event) => {
+       console.log("projectwayspotfound", event);
+      }
+    },
+
+    {
+      event: 'reality.projectwayspotlost', process: (event) => {
+       console.log("projectwayspotlost", event);
+      }
+    },
+
   ];
 
   public init() {
@@ -90,7 +114,8 @@ class WorldTracking_XR8 extends TrackingMode {
     XR8.XrController.configure({
       // enableLighting: true,
       disableWorldTracking: componentEnablesSLAM === undefined ? false : !componentEnablesSLAM, // invert componentEnablesSLAM
-      scale: componentUsesAbsoluteScale === undefined ? 'responsive' : (componentUsesAbsoluteScale ? 'absolute' : 'responsive')
+      scale: componentUsesAbsoluteScale === undefined ? 'responsive' : (componentUsesAbsoluteScale ? 'absolute' : 'responsive'),
+      enableVps: true,
     });
 
     XR8.addCameraPipelineModules([

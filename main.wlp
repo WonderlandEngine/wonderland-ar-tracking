@@ -328,6 +328,13 @@
                     }
                 }
             ]
+        },
+        "73": {
+            "link": {
+                "name": "object_0",
+                "file": "models\\18200b89d00e (1).glb"
+            },
+            "name": "vpsMesh"
         }
     },
     "meshes": {
@@ -371,6 +378,12 @@
             "link": {
                 "name": "AR Target Mesh",
                 "file": "models\\ar-target.glb"
+            }
+        },
+        "72": {
+            "link": {
+                "name": "mesh_0",
+                "file": "models\\18200b89d00e (1).glb"
             }
         }
     },
@@ -486,6 +499,12 @@
                     0.9999899,
                     1.0
                 ]
+            }
+        },
+        "71": {
+            "link": {
+                "name": "material_0",
+                "file": "models\\18200b89d00e (1).glb"
             }
         }
     },
@@ -746,10 +765,25 @@
         }
     },
     "files": [
-        "models/ar-target.glb"
+        "models/ar-target.glb",
+        "models/18200b89d00e (1).glb"
     ],
-    "textures": {},
-    "images": {},
+    "textures": {
+        "70": {
+            "link": {
+                "name": "texture_0",
+                "file": "models\\18200b89d00e (1).glb"
+            }
+        }
+    },
+    "images": {
+        "69": {
+            "link": {
+                "name": "image_0",
+                "file": "models\\18200b89d00e (1).glb"
+            }
+        }
+    },
     "fonts": {
         "59": {
             "link": {
