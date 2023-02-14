@@ -6,7 +6,7 @@ class XR8Provider extends ARProvider {
 
   private currentXR8RunOptions?: any
 
-  public async load () {
+  public async load() {
     // Make sure we're no in the editor
     if (!window.document) {
       return;
@@ -30,7 +30,7 @@ class XR8Provider extends ARProvider {
       }
 
       const s = document.createElement('script');
-      s.crossOrigin = 'anonymous';
+      // s.crossOrigin = 'anonymous';
       s.src = 'https://apps.8thwall.com/xrweb?appKey=' + API_TOKEN_XR8;
       /*s.onload = () => {
         document.querySelector('#WL-loading-8thwall-logo')?.remove();
@@ -64,7 +64,7 @@ class XR8Provider extends ARProvider {
     })
   };
 
-  public async startSession (options: Parameters<typeof XR8.run>[0]) {
+  public async startSession(options: Parameters<typeof XR8.run>[0]) {
 
     /*if (this.currentXR8RunOptions) {
       console.error('Some 8thwall camera is still running, this will override it's behavior');
@@ -74,12 +74,12 @@ class XR8Provider extends ARProvider {
     this.onSessionStarted.forEach(cb => cb(this));
   };
 
-  public async endSession () {
+  public async endSession() {
     XR8.stop();
     this.onSessionEnded.forEach(cb => cb(this));
   };
 
-  public enableCameraFeed () {
+  public enableCameraFeed() {
     // TODO: should we store the previous state of colorClearEnabled.
     WL.scene.colorClearEnabled = false;
 
@@ -92,7 +92,7 @@ class XR8Provider extends ARProvider {
     }
   };
 
-  public disableCameraFeed () {
+  public disableCameraFeed() {
     const indexPrerender = WL.scene.onPreRender.indexOf(this.onWLPreRender);
     if (indexPrerender !== -1) {
       WL.scene.onPreRender.splice(indexPrerender);
@@ -104,17 +104,17 @@ class XR8Provider extends ARProvider {
     }
   };
 
-  public onWLPreRender () {
+  public onWLPreRender() {
     Module.ctx.bindFramebuffer(Module.ctx.DRAW_FRAMEBUFFER, null); // <--- Should not be needed after next nightly is released (current 20230110)
     XR8.runPreRender(Date.now());
     XR8.runRender(); // <--- tell 8thwall to do it's thing (alternatively call this.GlTextureRenderer.onRender() if you only care about camera feed )
   };
 
-  public onWLPostRender () {
+  public onWLPostRender() {
     XR8.runPostRender(Date.now())
   };
 
-  private add8thwallLogo () {
+  private add8thwallLogo() {
     const a = document.createElement('a');
     a.href = 'https://www.8thwall.com/';
     a.target = '_blank';
@@ -164,7 +164,7 @@ class XR8Provider extends ARProvider {
   };
 
 
-  private promptForDeviceMotion () {
+  private promptForDeviceMotion() {
     return new Promise(async (resolve, reject) => {
 
       // Tell anyone who's interested that we want to get some user interaction
@@ -182,7 +182,7 @@ class XR8Provider extends ARProvider {
     })
   }
 
-  private async getPermissions () {
+  private async getPermissions() {
     // iOS "feature". If we want to request the DeviceMotion permission, user has to interact with the page at first (touch it).
     // If there was no interaction done so far, we will render a HTML overlay with would get the user to interact with the screen
     if (DeviceMotionEvent && (DeviceMotionEvent as any).requestPermission) {
@@ -220,10 +220,20 @@ class XR8Provider extends ARProvider {
     } catch (exception) {
       throw new Error('Camera');
     }
+
+    return new Promise<void>(resolve => {
+      navigator.geolocation.getCurrentPosition((position) => {
+        console.log("Your location", position);
+        resolve();
+      }, (error) => {
+        console.log("Error, geolocation", error);
+        throw new Error("Geolocation");
+      });
+    });
   };
 
 
-  public async checkPermissions () {
+  public async checkPermissions() {
     OverlaysHandler.init();
     try {
       await this.getPermissions();
