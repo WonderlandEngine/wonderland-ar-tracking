@@ -73,7 +73,7 @@
                 },
                 {
                     "type": "AR-SLAM-camera",
-                    "active": true
+                    "active": false
                 },
                 {
                     "type": "AR-face-tracking-camera",
@@ -91,7 +91,10 @@
                 },
                 {
                     "type": "xr8-camera-switch-example",
-                    "active": true
+                    "active": false
+                },
+                {
+                    "type": "AR-VPS-camera"
                 }
             ]
         },
@@ -334,7 +337,16 @@
                 "name": "object_0",
                 "file": "models\\18200b89d00e (1).glb"
             },
-            "name": "vpsMesh"
+            "name": "vpsMesh",
+            "components": [
+                null,
+                {
+                    "type": "vps-glb-example",
+                    "vps-glb-example": {
+                        "VPSCamera": "17"
+                    }
+                }
+            ]
         }
     },
     "meshes": {

@@ -12,7 +12,8 @@
     "wonderland-engine"
   ],
   "devDependencies": {
-    "esbuild": "^0.15.14"
+    "esbuild": "^0.15.14",
+    "typescript": "^4.9.5"
   },
   "dependencies": {
     "@wonderlandengine/api": "^0.9.0",

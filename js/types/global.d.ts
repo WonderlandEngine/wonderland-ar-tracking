@@ -1,5 +1,5 @@
 declare var WL: any;
-declare var Module;
+declare var Module: any;
 
 declare var API_TOKEN_XR8: string;
 

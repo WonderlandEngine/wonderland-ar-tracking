@@ -8,28 +8,31 @@ import WorldTracking_XR8 from '../frameworks/xr8/world-tracking-mode-xr8';
 
 ARSession.registerTrackingProvider(XR8Provider);
 
-const WLEComponentTypeName = 'AR-image-tracking-camera';
+const WLEComponentTypeName = 'AR-VPS-camera';
 
-export default class ARImageTrackingCamera extends Component {
+export default class ARVPSCamera extends Component {
 
   public static TypeName = WLEComponentTypeName;
   public static Properties = {
-    EnableSLAM: {type: Type.Bool, default: false,} // Imrpoves tracking, reduces performance
+   
   };
 
   private trackingImpl = new WorldTracking_XR8(this);
 
-
-  public get onImageFound () {
-    return this.trackingImpl.onImageFound;
+  public get onWaySpotFound () {
+    return this.trackingImpl.onWaySpotFound;
 
   }
-  public get onImageUpdate() {
-    return this.trackingImpl.onImageUpdate;
+  public get onWaySpotUpdated() {
+    return this.trackingImpl.onWaySpotUpdated;
   }
 
-  public get onImageLost() {
-    return this.trackingImpl.onImageLost;
+  public get onWaySpotLost() {
+    return this.trackingImpl.onWaySpotLost;
+  }
+
+  public get onMeshFound() {
+    return this.trackingImpl.onMeshFound;
   }
 
   public start() {
@@ -48,5 +51,5 @@ export default class ARImageTrackingCamera extends Component {
   }
 }
 
-WL.registerComponent(ARImageTrackingCamera);
+WL.registerComponent(ARVPSCamera);
 

@@ -41,7 +41,6 @@ export default class ARSLAMCamera extends Component {
     ARSession.onARSessionRequested.push(this.startARSession);
   }
 
-
   startARSession = () => {
     if (this.active) {
       this.trackingImpl!.startSession();
@@ -52,7 +51,7 @@ export default class ARSLAMCamera extends Component {
     this.trackingImpl!.endSession()
   }
 
-  public update(dt) {
+  public update(dt: number) {
     this.trackingImpl!.update?.(dt);
   }
 }
