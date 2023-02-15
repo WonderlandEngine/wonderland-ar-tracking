@@ -110,3 +110,5 @@ dist
 cache/
 deploy/
 .editor
+
+static/vps-mesh-data.js

@@ -1,6 +1,7 @@
-import { Component, MeshComponent, Object as WLEObject } from "@wonderlandengine/api";
-import ARSLAMCamera from "../AR/cameras/AR-SLAM-camera";
-import ARVPSCamera from "../AR/cameras/AR-VPS-camera";
+import { Component, Mesh, MeshComponent, Object as WLEObject } from '@wonderlandengine/api';
+
+import ARVPSCamera from '../AR/cameras/AR-VPS-camera';
+// import meshData from './mesh-data.js';
 
 class VPSGLBExample extends Component {
   public static TypeName = 'vps-glb-example';
@@ -33,6 +34,12 @@ class VPSGLBExample extends Component {
     camera.onWaySpotLost.push(() => {
       this.mesh.active = false;
     })
+
+    camera.onMeshFound.push(this.createMesh)
+  }
+
+  private createMesh = (data: unknown) => {
+    console.log("Create mesh", data);
   }
 
   private updateModelPose = (event: any) => {

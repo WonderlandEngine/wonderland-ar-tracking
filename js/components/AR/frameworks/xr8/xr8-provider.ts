@@ -4,8 +4,6 @@ class XR8Provider extends ARProvider {
   // Loading of 8thwall might be initiated by several components, make sure we load it only once
   private loading = false
 
-  private currentXR8RunOptions?: any
-
   public async load() {
     // Make sure we're no in the editor
     if (!window.document) {
@@ -65,11 +63,6 @@ class XR8Provider extends ARProvider {
   };
 
   public async startSession(options: Parameters<typeof XR8.run>[0]) {
-
-    /*if (this.currentXR8RunOptions) {
-      console.error('Some 8thwall camera is still running, this will override it's behavior');
-    }*/
-    this.currentXR8RunOptions = options;
     XR8.run(options)
     this.onSessionStarted.forEach(cb => cb(this));
   };
@@ -193,7 +186,7 @@ class XR8Provider extends ARProvider {
         if (result !== 'granted') {
           throw new Error('MotionEvent');
         }
-      } catch (exception) {
+      } catch (exception: any) {
 
         // User had no interaction with the page so far
         if (exception.name === 'NotAllowedError') {
@@ -266,16 +259,16 @@ const OverlaysHandler = {
     });
   },
 
-  handlePermissionFail: function (_reason) {
+  handlePermissionFail: function (_reason: Event) {
     this.showOverlay(failedPermissionOverlay);
   },
 
-  handleError: function (error: CustomEvent) {
-    console.error('XR8 encountered an error', error.detail.message);
-    this.showOverlay(runtimeErrorOverlay(error.detail.message));
+  handleError: function (error: Event) {
+    console.error('XR8 encountered an error', (error as CustomEvent).detail.message);
+    this.showOverlay(runtimeErrorOverlay((error as CustomEvent).detail.message));
   },
 
-  showOverlay: function (htmlContent) {
+  showOverlay: function (htmlContent: string) {
     const overlay = document.createElement('div');
     overlay.innerHTML = htmlContent;
     document.body.appendChild(overlay);
@@ -355,7 +348,7 @@ const failedPermissionOverlay = `
   <button class="failed-permission-overlay_button" onclick="window.location.reload()">Refresh the page</button>
   </div>`;
 
-const runtimeErrorOverlay = (message) => `
+const runtimeErrorOverlay = (message: string) => `
   <style>
   #wall-error-overlay {
     position: absolute;

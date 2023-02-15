@@ -339,11 +339,26 @@
             },
             "name": "vpsMesh",
             "components": [
-                null,
+                {
+                    "active": false
+                },
                 {
                     "type": "vps-glb-example",
                     "vps-glb-example": {
                         "VPSCamera": "17"
+                    },
+                    "active": false
+                }
+            ]
+        },
+        "74": {
+            "name": "vpsDynamicMesh",
+            "components": [
+                {
+                    "type": "vps-dynamic-mesh-example",
+                    "vps-dynamic-mesh-example": {
+                        "VPSCamera": "17",
+                        "material": "75"
                     }
                 }
             ]
@@ -517,6 +532,18 @@
             "link": {
                 "name": "material_0",
                 "file": "models\\18200b89d00e (1).glb"
+            }
+        },
+        "75": {
+            "name": "VPS-color-material",
+            "pipeline": "34",
+            "Flat": {
+                "color": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ]
             }
         }
     },
@@ -702,6 +729,9 @@
             "link": {
                 "name": "Flat Opaque",
                 "file": "default"
+            },
+            "features": {
+                "VERTEX_COLORS": true
             }
         },
         "35": {

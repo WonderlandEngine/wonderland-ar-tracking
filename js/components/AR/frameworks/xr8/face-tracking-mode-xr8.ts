@@ -19,17 +19,17 @@ class FaceTracking_XR8 extends TrackingMode {
   // consumed by 8thwall
   public readonly listeners = [
     {
-      event: 'facecontroller.facefound', process: (event) => {
+      event: 'facecontroller.facefound', process: (event: unknown) => {
         this.onFaceFound.forEach(callback => callback(event));
       }
     },
     {
-      event: 'facecontroller.faceupdated', process: (event) => {
+      event: 'facecontroller.faceupdated', process: (event: unknown) => {
         this.onFaceUpdate.forEach(callback => callback(event));
       }
     },
     {
-      event: 'facecontroller.facelost', process: (event) => {
+      event: 'facecontroller.facelost', process: (event: unknown) => {
         this.onFaceLost.forEach(callback => callback(event));
       }
     },

@@ -38,7 +38,7 @@ export default class ARSLAMCamera extends Component {
       (this.trackingImpl as WorldTracking_XR8).init();
     }
 
-    
+
 
     ARSession.onARSessionRequested.push(this.startARSession);
   }
@@ -60,6 +60,5 @@ export default class ARSLAMCamera extends Component {
 }
 
 
-console.log("REgistering AR Slam camera");
 WL.registerComponent(ARSLAMCamera);
 

@@ -1,6 +1,14 @@
+/**
+ * Visual Positioning System Camera.
+ * Currently works only using 8thwall Lightship VPS system. (https://www.8thwall.com/docs/web/#lightship-vps)
+ * 
+ * WLE 20230215 - for this camera to run correctly,
+ * clear the "Project Settings/Editor/serverCOEP" field.
+ * Warning - it will disable the WASM thread support.
+ */
 import ARSession from '../AR-session';
 
-import { Component, Type } from '@wonderlandengine/api';
+import { Component } from '@wonderlandengine/api';
 
 import XR8Provider from '../frameworks/xr8/xr8-provider';
 import WorldTracking_XR8 from '../frameworks/xr8/world-tracking-mode-xr8';

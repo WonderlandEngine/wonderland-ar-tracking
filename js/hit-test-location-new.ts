@@ -24,7 +24,7 @@ WL.registerComponent('hit-test-location-new', {
         this.visible = false;
         this.object.scale([0, 0, 0]);
     },
-    update: function (dt) {
+    update: function (dt: number) {
         const wasVisible = this.visible;
         if (this.xrHitTestSource) {
             const frame = Module['webxr_frame'];
@@ -63,16 +63,17 @@ WL.registerComponent('hit-test-location-new', {
             }
         }
     },
-    xrSessionStart: function (session) {
+    xrSessionStart: function (session: XRSession) {
         console.log("Session starting");
 
-        session.requestReferenceSpace('viewer').then(function (refSpace) {
+        session.requestReferenceSpace('viewer').then(function (refSpac: XRReferenceSpace) {
             this.xrViewerSpace = refSpace;
-            session.requestHitTestSource({ space: this.xrViewerSpace }).then(function (hitTestSource) {
+            session.requestHitTestSource({ space: this.xrViewerSpace }).then(function (hitTestSource: XRHitTestSource) {
                 this.xrHitTestSource = hitTestSource;
             }.bind(this)).catch(console.error);
         }.bind(this)).catch(console.error);
     },
+    
     xrSessionEnd: function () {
         console.log("Session startendingng");
         if (!this.xrHitTestSource) return;

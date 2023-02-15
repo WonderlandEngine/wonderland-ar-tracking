@@ -10,4 +10,5 @@ import './components/AR/cameras/AR-VPS-camera';
 
 import './components/examples/xr8-camera-switch';
 import './components/examples/vps-with-glb';
+import './components/examples/vps-with-dynamic-mesh';
 
