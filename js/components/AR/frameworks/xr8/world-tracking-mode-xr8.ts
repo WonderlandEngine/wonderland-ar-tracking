@@ -3,7 +3,6 @@ import { ViewComponent } from '@wonderlandengine/api';
 import { TrackingMode } from '../trackingMode';
 
 import XR8Provider from './xr8-provider';
-
 // Just some helper types to determine if an object has some props
 type CanDisableSLAM = {
   EnableSLAM: boolean,
@@ -96,7 +95,6 @@ class WorldTracking_XR8 extends TrackingMode {
     {
       event: 'reality.projectwayspotlost', process: (event: unknown) => {
         console.log("projectwayspotlost", event);
-        debugger;
         this.onWaySpotLost.forEach(callback => callback(event));
       }
     },

@@ -30,7 +30,7 @@ class XR8Provider extends ARProvider {
       }
 
       const s = document.createElement('script');
-      // s.crossOrigin = 'anonymous';
+      s.crossOrigin = 'anonymous';
       s.src = 'https://apps.8thwall.com/xrweb?appKey=' + API_TOKEN_XR8;
       /*s.onload = () => {
         document.querySelector('#WL-loading-8thwall-logo')?.remove();

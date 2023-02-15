@@ -662,7 +662,11 @@
                 "/js/editor-components-bundle.js",
                 "js/"
             ],
-            "bundlingType": "esbuild"
+            "bundlingType": "esbuild",
+            "libraryPaths": [
+                "/js/lib/"
+            ],
+            "autoManageEntryPoint": false
         },
         "ar": {
             "framework": "webxr",
@@ -680,6 +684,9 @@
             "bloom": {
                 "enabled": false
             }
+        },
+        "editor": {
+            "serverCOEP": ""
         }
     },
     "animations": {},
