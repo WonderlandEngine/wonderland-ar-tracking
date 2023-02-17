@@ -366,7 +366,14 @@
                     "vps-glb-example": {
                         "VPSCamera": "17"
                     },
-                    "active": false
+                    "active": true
+                },
+                {
+                    "type": "mesh",
+                    "mesh": {
+                        "mesh": "72",
+                        "material": "71"
+                    }
                 }
             ]
         }
