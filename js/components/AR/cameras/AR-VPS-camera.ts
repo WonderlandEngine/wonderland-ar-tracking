@@ -25,6 +25,9 @@ export default class ARVPSCamera extends Component {
    
   };
 
+  // WorldTracking_XR8 will check this
+  public readonly UsesVPS = true;
+
   private trackingImpl = new WorldTracking_XR8(this);
 
   public get onWaySpotFound () {
@@ -44,7 +47,7 @@ export default class ARVPSCamera extends Component {
   }
 
   public start() {
-    this.trackingImpl.init();
+    this.trackingImpl.init(["location"]);
     ARSession.onARSessionRequested.push(this.startARSession);
   }
 

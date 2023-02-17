@@ -95,7 +95,8 @@
                     "active": false
                 },
                 {
-                    "type": "AR-VPS-camera"
+                    "type": "AR-VPS-camera",
+                    "active": true
                 }
             ]
         },

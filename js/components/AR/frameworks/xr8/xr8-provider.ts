@@ -1,5 +1,10 @@
 import ARProvider from "../../AR-provider";
 
+/**
+  * Array of extra permissions which some tracking mode might need. By default XR8 will need camera/microphone permissions and deviceMotion permission (iOS only). VPS for example must pass an extra 'location' permission
+  */
+export type XR8ExtraPermissions = Array<'location'>;
+
 class XR8Provider extends ARProvider {
   // Loading of 8thwall might be initiated by several components, make sure we load it only once
   private loading = false
@@ -175,7 +180,7 @@ class XR8Provider extends ARProvider {
     })
   }
 
-  private async getPermissions() {
+  private async getPermissions(extraPermissions: XR8ExtraPermissions = []) {
     // iOS "feature". If we want to request the DeviceMotion permission, user has to interact with the page at first (touch it).
     // If there was no interaction done so far, we will render a HTML overlay with would get the user to interact with the screen
     if (DeviceMotionEvent && (DeviceMotionEvent as any).requestPermission) {
@@ -214,26 +219,33 @@ class XR8Provider extends ARProvider {
       throw new Error('Camera');
     }
 
-    return new Promise<void>(resolve => {
-      navigator.geolocation.getCurrentPosition((position) => {
-        console.log("Your location", position);
-        resolve();
-      }, (error) => {
-        console.log("Error, geolocation", error);
-        throw new Error("Geolocation");
+    if (extraPermissions.includes('location')) {
+      window.dispatchEvent(new Event('8thwall-waiting-for-device-location'))
+      return new Promise<void>((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition((position) => {
+          window.dispatchEvent(new Event('8thwall-device-location-resolved'))
+          
+          resolve();
+        }, (error) => {
+          window.dispatchEvent(new Event('8thwall-device-location-resolved'))
+          reject("Geolocation");
+        });
       });
-    });
+    }
+
+    return true;
   };
 
-
-  public async checkPermissions() {
+  public async checkPermissions(extraPermissions: XR8ExtraPermissions = []) {
     OverlaysHandler.init();
+   
     try {
-      await this.getPermissions();
+      await this.getPermissions(extraPermissions);
       return true;
 
     } catch (error) {
       // User did not grant the camera or motionEvent permissions
+      console.log("Permission failed", error);
       window.dispatchEvent(new CustomEvent('8thwall-permission-fail', { detail: error }))
       return false;
     }
@@ -242,14 +254,35 @@ class XR8Provider extends ARProvider {
 
 
 const OverlaysHandler = {
+  ready: false, // make sure we initialise only once
   init() {
+
+    if (this.ready) {
+      return;
+    }
+    this.ready = true;
     this.handleRequestUserInteraction = this.handleRequestUserInteraction.bind(this);
     this.handlePermissionFail = this.handlePermissionFail.bind(this);
     this.handleError = this.handleError.bind(this);
+    this.handleWaitingForDeviceLocation = this.handleWaitingForDeviceLocation.bind(this);
+    this.handleDeviceLocationResolved = this.handleDeviceLocationResolved.bind(this);
 
     window.addEventListener('8thwall-request-user-interaction', this.handleRequestUserInteraction);
     window.addEventListener('8thwall-permission-fail', this.handlePermissionFail);
     window.addEventListener('8thwall-error', this.handleError);
+    window.addEventListener('8thwall-waiting-for-device-location', this.handleWaitingForDeviceLocation);
+    window.addEventListener('8thwall-device-location-resolved', this.handleDeviceLocationResolved);
+  },
+
+  handleWaitingForDeviceLocation: function () {
+    const overlay = this.showOverlay(handleWaitingForDeviceLocationOverlay);
+  },
+
+  handleDeviceLocationResolved: function () {
+    const overlay = document.querySelector("#handleWaitingForDeviceLocationOverlay");
+    if(overlay) {
+      overlay.remove();
+    }
   },
 
   handleRequestUserInteraction: function () {
@@ -307,9 +340,8 @@ const requestPermissionOverlay = `
   </style>
 
   <div id="request-permission-overlay">
-  <div class="request-permission-overlay_title">This app requires to use your camera and motion sensors</div>
-
-  <button class="request-permission-overlay_button" onclick="window.dispatchEvent(new Event('8thwall-safe-to-request-permissions'))">OK</button>
+    <div class="request-permission-overlay_title">This app requires to use your camera and motion sensors</div>
+    <button class="request-permission-overlay_button" onclick="window.dispatchEvent(new Event('8thwall-safe-to-request-permissions'))">OK</button>
   </div>`;
 
 const failedPermissionOverlay = `
@@ -384,11 +416,36 @@ const runtimeErrorOverlay = (message: string) => `
   </style>
 
   <div id="wall-error-overlay">
-  <div class="wall-error-overlay_title">Error has occurred. Please reload the page</div>
-  <div class="wall-error-overlay_message">${message}</div>
+    <div class="wall-error-overlay_title">Error has occurred. Please reload the page</div>
+    <div class="wall-error-overlay_message">${message}</div>
 
-  <button class="wall-error-overlay_button" onclick="window.location.reload()">Reload</button>
+    <button class="wall-error-overlay_button" onclick="window.location.reload()">Reload</button>
   </div>`;
+
+const handleWaitingForDeviceLocationOverlay = `
+<style>
+#handleWaitingForDeviceLocationOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.5);
+  
+  font-family: sans-serif;
+
+  display: flex;
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+</style>
+<div id="handleWaitingForDeviceLocationOverlay">
+  Waiting for device location
+</div>`;
 
 
 export default new XR8Provider();

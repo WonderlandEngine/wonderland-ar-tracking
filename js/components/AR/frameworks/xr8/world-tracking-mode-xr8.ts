@@ -2,7 +2,7 @@
 import { ViewComponent } from '@wonderlandengine/api';
 import { TrackingMode } from '../trackingMode';
 
-import XR8Provider from './xr8-provider';
+import XR8Provider, { XR8ExtraPermissions } from './xr8-provider';
 // Just some helper types to determine if an object has some props
 type CanDisableSLAM = {
   EnableSLAM: boolean,
@@ -10,6 +10,10 @@ type CanDisableSLAM = {
 
 type CanUseAbsoluteScale = {
   UseAbsoluteScale: boolean
+}
+
+type UsesVPS = {
+  UsesVPS: boolean
 }
 
 class WorldTracking_XR8 extends TrackingMode {
@@ -20,9 +24,14 @@ class WorldTracking_XR8 extends TrackingMode {
   private cachedPosition = [0, 0, 0]; // cache 8thwall cam position
   private cachedRotation = [0, 0, 0, -1]; // cache 8thwall cam rotation
 
+  private extraPermissions: XR8ExtraPermissions = [];
+
+  public readonly onTrackingStatus: Array<(event: any) => void> = [];
+
   public readonly onImageFound: Array<(event: any) => void> = [];
   public readonly onImageUpdate: Array<(event: any) => void> = [];
   public readonly onImageLost: Array<(event: any) => void> = [];
+
 
 
   public readonly onMeshFound: Array<(event: any) => void> = [];
@@ -33,8 +42,8 @@ class WorldTracking_XR8 extends TrackingMode {
   // consumed by 8thwall
   public readonly listeners = [
     {
-      event: 'reality.trackingstatus', process: (e: unknown) => {
-        console.log('reality status', e);
+      event: 'reality.trackingstatus', process: (event: unknown) => {
+        this.onTrackingStatus.forEach(callback => callback(event));
       },
     },
     {
@@ -55,53 +64,53 @@ class WorldTracking_XR8 extends TrackingMode {
 
     {
       event: 'reality.meshfound', process: (event: unknown) => {
-        console.log("Mesh was found", event);
         this.onMeshFound.forEach(callback => callback(event));
       }
     },
 
     {
       event: 'reality.meshupdated', process: (event: unknown) => {
-        console.log("Mesh was updated", event);
+        // Seems like not implemented by xr8 yet
       }
     },
 
     {
       event: 'reality.meshlost', process: (event: unknown) => {
-        console.log("Mesh was lost", event);
+        // Seems like not implemented by xr8 yet
       }
     },
 
     {
       event: 'reality.projectwayspotscanning', process: (event: unknown) => {
-        console.log("projectwayspotscanning", event);
+        // TODO - this indicated that xr8 started looking for the feature points
+        // However, I feel this is not really informative event since your app logic
+        // will naturally expect that the scanning has started.
       }
     },
 
     {
       event: 'reality.projectwayspotfound', process: (event: unknown) => {
-        console.log("projectwayspotfound", event);
         this.onWaySpotFound.forEach(callback => callback(event));
       }
     },
 
     {
       event: 'reality.projectwayspotupdated', process: (event: unknown) => {
-        console.log("projectwayspotupdated", event);
         this.onWaySpotUpdated.forEach(callback => callback(event));
       }
     },
 
     {
       event: 'reality.projectwayspotlost', process: (event: unknown) => {
-        console.log("projectwayspotlost", event);
         this.onWaySpotLost.forEach(callback => callback(event));
       }
     },
 
   ];
 
-  public init() {
+  public init(extraPermissions: XR8ExtraPermissions = []) {
+    this.extraPermissions = extraPermissions;
+
     const input = this.component.object.getComponent('input');
     if (input) {
       input.active = false; // 8thwall will handle the camera pose
@@ -130,19 +139,20 @@ class WorldTracking_XR8 extends TrackingMode {
   }
 
   public async startSession() {
-    const permissions = await XR8Provider.checkPermissions();
+    const permissions = await XR8Provider.checkPermissions(this.extraPermissions);
     if (!permissions) {
       return;
     }
 
     const componentEnablesSLAM = (this.component as Partial<CanDisableSLAM>).EnableSLAM;
     const componentUsesAbsoluteScale = (this.component as Partial<CanUseAbsoluteScale>).UseAbsoluteScale;
+    const componentUsesVPS = !!(this.component as Partial<UsesVPS>).UsesVPS;
 
     XR8.XrController.configure({
       // enableLighting: true,
-      // disableWorldTracking: componentEnablesSLAM === undefined ? false : !componentEnablesSLAM, // invert componentEnablesSLAM
-      // scale: componentUsesAbsoluteScale === undefined ? 'responsive' : (componentUsesAbsoluteScale ? 'absolute' : 'responsive'),
-      enableVps: true,
+      disableWorldTracking: componentEnablesSLAM === undefined ? false : !componentEnablesSLAM, // invert componentEnablesSLAM
+      scale: componentUsesAbsoluteScale === undefined ? 'responsive' : (componentUsesAbsoluteScale ? 'absolute' : 'responsive'),
+      enableVps: componentUsesVPS,
     });
 
     XR8.addCameraPipelineModules([
