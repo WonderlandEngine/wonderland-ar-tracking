@@ -369,32 +369,6 @@
                     "active": false
                 }
             ]
-        },
-        "85": {
-            "link": {
-                "name": "Mesh_0",
-                "file": "models\\room2.glb"
-            },
-            "name": "VPSMeshMultiplayer",
-            "components": [
-                {
-                    "type": "vps-multiplayer-example",
-                    "vps-multiplayer-example": {
-                        "VPSCamera": "17",
-                        "playerMesh": "9",
-                        "playerMaterial": "22"
-                    },
-                    "active": true
-                },
-                {
-                    "type": "mesh",
-                    "mesh": {
-                        "mesh": "72",
-                        "material": "71"
-                    }
-                }
-            ],
-            "parent": null
         }
     },
     "meshes": {
