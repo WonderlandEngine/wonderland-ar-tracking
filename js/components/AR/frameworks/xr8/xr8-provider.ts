@@ -238,6 +238,12 @@ class XR8Provider extends ARProvider {
 
   public async checkPermissions(extraPermissions: XR8ExtraPermissions = []) {
     OverlaysHandler.init();
+
+
+    if(!XR8.XrDevice.isDeviceBrowserCompatible()) {
+      window.dispatchEvent(new CustomEvent('8thwall-device-incompatible'));
+      return;
+    }
    
     try {
       await this.getPermissions(extraPermissions);
@@ -266,12 +272,19 @@ const OverlaysHandler = {
     this.handleError = this.handleError.bind(this);
     this.handleWaitingForDeviceLocation = this.handleWaitingForDeviceLocation.bind(this);
     this.handleDeviceLocationResolved = this.handleDeviceLocationResolved.bind(this);
+    this.handleDeviceIncompatible = this.handleDeviceIncompatible.bind(this);
 
     window.addEventListener('8thwall-request-user-interaction', this.handleRequestUserInteraction);
     window.addEventListener('8thwall-permission-fail', this.handlePermissionFail);
     window.addEventListener('8thwall-error', this.handleError);
     window.addEventListener('8thwall-waiting-for-device-location', this.handleWaitingForDeviceLocation);
     window.addEventListener('8thwall-device-location-resolved', this.handleDeviceLocationResolved);
+    window.addEventListener('8thwall-device-incompatible', this.handleDeviceIncompatible);
+  },
+
+
+  handleDeviceIncompatible: function() {
+    const overlay = this.showOverlay(deviceIncompatibleOverlay()); 
   },
 
   handleWaitingForDeviceLocation: function () {
@@ -445,6 +458,51 @@ const handleWaitingForDeviceLocationOverlay = `
 </style>
 <div id="handleWaitingForDeviceLocationOverlay">
   Waiting for device location
+</div>`;
+
+
+const deviceIncompatibleOverlay = () => `
+<style>
+#deviceIncompatibleOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 30px;
+  box-sizing: border-box;
+  
+  font-family: sans-serif;
+
+  display: flex;
+  flex-direction: column;
+
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+
+
+#incompatible-redirect-QR-code {
+  height: 200px;
+  width: 200px;
+  margin: 30px;
+}
+</style>
+<div id="deviceIncompatibleOverlay">
+<div>
+  This device is not compatible with 8thwall. 
+  Please open it using your mobile device.
+  </div>
+  <div id="incompatible-redirect-QR-code">
+    <img src="https://8th.io/qr?v=2&margin=2&url=${encodeURIComponent(window.location.href)}" />
+  </div>
+  <div>${window.location.href}</div>
 </div>`;
 
 

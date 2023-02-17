@@ -138,7 +138,7 @@ class WorldTracking_XR8 extends TrackingMode {
     })
   }
 
-  public async startSession() {
+  public async startSession() { 
     const permissions = await XR8Provider.checkPermissions(this.extraPermissions);
     if (!permissions) {
       return;

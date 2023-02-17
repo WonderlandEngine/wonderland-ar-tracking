@@ -60,6 +60,10 @@ declare var XR8: {
     }) => void;
   };
 
+  XrDevice: {
+    isDeviceBrowserCompatible: () => boolean,
+  };
+
   FaceController: {
     pipelineModule: () => XR8CameraPipelineModule;
     MeshGeometry: XR8FaceMeshFeatures,
