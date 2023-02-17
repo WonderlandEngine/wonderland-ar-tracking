@@ -60,7 +60,6 @@ class VPSGLBExample extends Component {
 
     this.object.rotationWorld.set(cachedRotation);
     this.object.setTranslationWorld(cachedPosition);
-
   }
 }
 

@@ -35,7 +35,8 @@
                     "mesh": {
                         "mesh": "8",
                         "material": "22"
-                    }
+                    },
+                    "active": false
                 }
             ],
             "translation": [
@@ -175,7 +176,8 @@
                     "mesh": {
                         "mesh": "10",
                         "material": "25"
-                    }
+                    },
+                    "active": false
                 }
             ],
             "translation": [
@@ -332,15 +334,32 @@
                 }
             ]
         },
-        "73": {
-            "link": {
-                "name": "object_0",
-                "file": "models\\18200b89d00e (1).glb"
-            },
-            "name": "vpsMesh",
+        "74": {
+            "name": "vpsDynamicMesh",
             "components": [
                 {
+                    "type": "vps-dynamic-mesh-example",
+                    "vps-dynamic-mesh-example": {
+                        "VPSCamera": "17",
+                        "material": "75"
+                    },
                     "active": false
+                }
+            ]
+        },
+        "84": {
+            "link": {
+                "name": "Mesh_0",
+                "file": "models\\room2.glb"
+            },
+            "name": "VPSMesh",
+            "components": [
+                {
+                    "active": false,
+                    "mesh": {
+                        "mesh": "72",
+                        "material": "71"
+                    }
                 },
                 {
                     "type": "vps-glb-example",
@@ -351,17 +370,31 @@
                 }
             ]
         },
-        "74": {
-            "name": "vpsDynamicMesh",
+        "85": {
+            "link": {
+                "name": "Mesh_0",
+                "file": "models\\room2.glb"
+            },
+            "name": "VPSMeshMultiplayer",
             "components": [
                 {
-                    "type": "vps-dynamic-mesh-example",
-                    "vps-dynamic-mesh-example": {
+                    "type": "vps-multiplayer-example",
+                    "vps-multiplayer-example": {
                         "VPSCamera": "17",
-                        "material": "75"
+                        "playerMesh": "9",
+                        "playerMaterial": "22"
+                    },
+                    "active": true
+                },
+                {
+                    "type": "mesh",
+                    "mesh": {
+                        "mesh": "72",
+                        "material": "71"
                     }
                 }
-            ]
+            ],
+            "parent": null
         }
     },
     "meshes": {
@@ -544,6 +577,24 @@
                     0.0,
                     1.0
                 ]
+            }
+        },
+        "78": {
+            "link": {
+                "name": "Material_0",
+                "file": "models\\room.glb"
+            }
+        },
+        "82": {
+            "link": {
+                "name": "Material_0",
+                "file": "models\\room2.glb"
+            }
+        },
+        "88": {
+            "link": {
+                "name": "material_0",
+                "file": "models\\my-corner.glb"
             }
         }
     },
@@ -815,13 +866,34 @@
     },
     "files": [
         "models/ar-target.glb",
-        "models/18200b89d00e (1).glb"
+        "models/18200b89d00e (1).glb",
+        "models/room.glb",
+        "models/room2.glb",
+        "models/my-corner.glb"
     ],
     "textures": {
         "70": {
             "link": {
                 "name": "texture_0",
                 "file": "models\\18200b89d00e (1).glb"
+            }
+        },
+        "77": {
+            "link": {
+                "name": "texture_0",
+                "file": "models\\room.glb"
+            }
+        },
+        "81": {
+            "link": {
+                "name": "texture_0",
+                "file": "models\\room2.glb"
+            }
+        },
+        "87": {
+            "link": {
+                "name": "texture_0",
+                "file": "models\\my-corner.glb"
             }
         }
     },
@@ -830,6 +902,24 @@
             "link": {
                 "name": "image_0",
                 "file": "models\\18200b89d00e (1).glb"
+            }
+        },
+        "76": {
+            "link": {
+                "name": "Image_0",
+                "file": "models\\room.glb"
+            }
+        },
+        "80": {
+            "link": {
+                "name": "Image_0",
+                "file": "models\\room2.glb"
+            }
+        },
+        "86": {
+            "link": {
+                "name": "image_0",
+                "file": "models\\my-corner.glb"
             }
         }
     },

@@ -112,7 +112,7 @@ class VPSDynamicMeshExample extends Component {
 
 
     const positions = mesh.attribute(WL.MeshAttribute.Position);
-    const normals = mesh.attribute(WL.MeshAttribute.Normal);
+    // const normals = mesh.attribute(WL.MeshAttribute.Normal);
     const colors = mesh.attribute(WL.MeshAttribute.Color);
 
     let ci = 0;
@@ -147,7 +147,6 @@ class VPSDynamicMeshExample extends Component {
   }
 
   private updateModelPose = (event: any) => {
-    console.log("Updating mode");
     //this.mesh.active = true;
     const { position, rotation } = event.detail
     const cachedPosition = [];
