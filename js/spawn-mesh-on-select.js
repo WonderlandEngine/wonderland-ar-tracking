@@ -36,5 +36,4 @@ WL.registerComponent('spawn-mesh-on-select', {
         mesh.mesh = this.mesh;
         mesh.active = true;
     },
-
 });

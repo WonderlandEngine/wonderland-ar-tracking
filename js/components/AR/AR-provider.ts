@@ -4,9 +4,9 @@ export default abstract class ARProvider {
 
   public loaded = false;
 
-  abstract startSession(...args: any[]);
+  abstract startSession(...args: any[]): Promise<void>;
 
-  abstract endSession() 
+  abstract endSession(): Promise<void>;
   
-  abstract load();
+  abstract load(): Promise<void>;
 }

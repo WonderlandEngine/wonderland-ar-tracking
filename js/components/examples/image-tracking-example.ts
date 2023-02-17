@@ -9,7 +9,7 @@ class ImageTrackingExample extends Component {
   };
 
   // injected by WL..
-  private ARImageTrackingCamera: WLEObject;
+  private ARImageTrackingCamera!: WLEObject;
 
   start() {
     if (!this.ARImageTrackingCamera) {

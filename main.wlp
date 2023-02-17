@@ -35,7 +35,8 @@
                     "mesh": {
                         "mesh": "8",
                         "material": "22"
-                    }
+                    },
+                    "active": false
                 }
             ],
             "translation": [
@@ -73,7 +74,7 @@
                 },
                 {
                     "type": "AR-SLAM-camera",
-                    "active": true
+                    "active": false
                 },
                 {
                     "type": "AR-face-tracking-camera",
@@ -91,7 +92,10 @@
                 },
                 {
                     "type": "xr8-camera-switch-example",
-                    "active": true
+                    "active": false
+                },
+                {
+                    "type": "AR-VPS-camera"
                 }
             ]
         },
@@ -172,7 +176,8 @@
                     "mesh": {
                         "mesh": "10",
                         "material": "25"
-                    }
+                    },
+                    "active": false
                 }
             ],
             "translation": [
@@ -328,6 +333,49 @@
                     }
                 }
             ]
+        },
+        "74": {
+            "name": "vpsDynamicMesh",
+            "components": [
+                {
+                    "type": "vps-dynamic-mesh-example",
+                    "vps-dynamic-mesh-example": {
+                        "VPSCamera": "17",
+                        "material": "75"
+                    },
+                    "active": false
+                }
+            ]
+        },
+        "84": {
+            "link": {
+                "name": "Mesh_0",
+                "file": "models\\room2.glb"
+            },
+            "name": "VPSMesh",
+            "components": [
+                {
+                    "active": false,
+                    "mesh": {
+                        "mesh": "72",
+                        "material": "71"
+                    }
+                },
+                {
+                    "type": "vps-glb-example",
+                    "vps-glb-example": {
+                        "VPSCamera": "17"
+                    },
+                    "active": true
+                },
+                {
+                    "type": "mesh",
+                    "mesh": {
+                        "mesh": "72",
+                        "material": "71"
+                    }
+                }
+            ]
         }
     },
     "meshes": {
@@ -371,6 +419,12 @@
             "link": {
                 "name": "AR Target Mesh",
                 "file": "models\\ar-target.glb"
+            }
+        },
+        "72": {
+            "link": {
+                "name": "mesh_0",
+                "file": "models\\18200b89d00e (1).glb"
             }
         }
     },
@@ -486,6 +540,42 @@
                     0.9999899,
                     1.0
                 ]
+            }
+        },
+        "71": {
+            "link": {
+                "name": "material_0",
+                "file": "models\\18200b89d00e (1).glb"
+            }
+        },
+        "75": {
+            "name": "VPS-color-material",
+            "pipeline": "34",
+            "Flat": {
+                "color": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ]
+            }
+        },
+        "78": {
+            "link": {
+                "name": "Material_0",
+                "file": "models\\room.glb"
+            }
+        },
+        "82": {
+            "link": {
+                "name": "Material_0",
+                "file": "models\\room2.glb"
+            }
+        },
+        "88": {
+            "link": {
+                "name": "material_0",
+                "file": "models\\my-corner.glb"
             }
         }
     },
@@ -631,7 +721,11 @@
                 "/js/editor-components-bundle.js",
                 "js/"
             ],
-            "bundlingType": "esbuild"
+            "bundlingType": "esbuild",
+            "libraryPaths": [
+                "/js/lib/"
+            ],
+            "autoManageEntryPoint": false
         },
         "ar": {
             "framework": "webxr",
@@ -649,6 +743,9 @@
             "bloom": {
                 "enabled": false
             }
+        },
+        "editor": {
+            "serverCOEP": ""
         }
     },
     "animations": {},
@@ -664,6 +761,9 @@
             "link": {
                 "name": "Flat Opaque",
                 "file": "default"
+            },
+            "features": {
+                "VERTEX_COLORS": true
             }
         },
         "35": {
@@ -746,10 +846,64 @@
         }
     },
     "files": [
-        "models/ar-target.glb"
+        "models/ar-target.glb",
+        "models/18200b89d00e (1).glb",
+        "models/room.glb",
+        "models/room2.glb",
+        "models/my-corner.glb"
     ],
-    "textures": {},
-    "images": {},
+    "textures": {
+        "70": {
+            "link": {
+                "name": "texture_0",
+                "file": "models\\18200b89d00e (1).glb"
+            }
+        },
+        "77": {
+            "link": {
+                "name": "texture_0",
+                "file": "models\\room.glb"
+            }
+        },
+        "81": {
+            "link": {
+                "name": "texture_0",
+                "file": "models\\room2.glb"
+            }
+        },
+        "87": {
+            "link": {
+                "name": "texture_0",
+                "file": "models\\my-corner.glb"
+            }
+        }
+    },
+    "images": {
+        "69": {
+            "link": {
+                "name": "image_0",
+                "file": "models\\18200b89d00e (1).glb"
+            }
+        },
+        "76": {
+            "link": {
+                "name": "Image_0",
+                "file": "models\\room.glb"
+            }
+        },
+        "80": {
+            "link": {
+                "name": "Image_0",
+                "file": "models\\room2.glb"
+            }
+        },
+        "86": {
+            "link": {
+                "name": "image_0",
+                "file": "models\\my-corner.glb"
+            }
+        }
+    },
     "fonts": {
         "59": {
             "link": {

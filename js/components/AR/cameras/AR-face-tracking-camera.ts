@@ -15,7 +15,7 @@ export default class ARFaceTrackingCamera extends Component {
   private trackingImpl = new FaceTracking_XR8(this);
 
   // will be set by WLE
-  public cameraDirection: number;
+  public cameraDirection: number = 0;
 
   public get onFaceFound() {
     return this.trackingImpl.onFaceFound;

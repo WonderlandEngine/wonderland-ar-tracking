@@ -3,7 +3,6 @@ import { ViewComponent } from '@wonderlandengine/api';
 import { TrackingMode } from '../trackingMode';
 
 import XR8Provider from './xr8-provider';
-
 // Just some helper types to determine if an object has some props
 type CanDisableSLAM = {
   EnableSLAM: boolean,
@@ -25,26 +24,78 @@ class WorldTracking_XR8 extends TrackingMode {
   public readonly onImageUpdate: Array<(event: any) => void> = [];
   public readonly onImageLost: Array<(event: any) => void> = [];
 
+
+  public readonly onMeshFound: Array<(event: any) => void> = [];
+  public readonly onWaySpotFound: Array<(event: any) => void> = [];
+  public readonly onWaySpotUpdated: Array<(event: any) => void> = [];
+  public readonly onWaySpotLost: Array<(event: any) => void> = [];
+
   // consumed by 8thwall
   public readonly listeners = [
     {
-      event: 'reality.trackingstatus', process: (e) => {
-        // console.log('reality status', e);
+      event: 'reality.trackingstatus', process: (e: unknown) => {
+        console.log('reality status', e);
       },
     },
     {
-      event: 'reality.imagefound', process: (event) => {
+      event: 'reality.imagefound', process: (event: unknown) => {
         this.onImageFound.forEach(callback => callback(event));
       }
     },
     {
-      event: 'reality.imageupdated', process: (event) => {
+      event: 'reality.imageupdated', process: (event: unknown) => {
         this.onImageUpdate.forEach(callback => callback(event));
       }
     },
     {
-      event: 'reality.imagelost', process: (event) => {
+      event: 'reality.imagelost', process: (event: unknown) => {
         this.onImageLost.forEach(callback => callback(event));
+      }
+    },
+
+    {
+      event: 'reality.meshfound', process: (event: unknown) => {
+        console.log("Mesh was found", event);
+        this.onMeshFound.forEach(callback => callback(event));
+      }
+    },
+
+    {
+      event: 'reality.meshupdated', process: (event: unknown) => {
+        console.log("Mesh was updated", event);
+      }
+    },
+
+    {
+      event: 'reality.meshlost', process: (event: unknown) => {
+        console.log("Mesh was lost", event);
+      }
+    },
+
+    {
+      event: 'reality.projectwayspotscanning', process: (event: unknown) => {
+        console.log("projectwayspotscanning", event);
+      }
+    },
+
+    {
+      event: 'reality.projectwayspotfound', process: (event: unknown) => {
+        console.log("projectwayspotfound", event);
+        this.onWaySpotFound.forEach(callback => callback(event));
+      }
+    },
+
+    {
+      event: 'reality.projectwayspotupdated', process: (event: unknown) => {
+        console.log("projectwayspotupdated", event);
+        this.onWaySpotUpdated.forEach(callback => callback(event));
+      }
+    },
+
+    {
+      event: 'reality.projectwayspotlost', process: (event: unknown) => {
+        console.log("projectwayspotlost", event);
+        this.onWaySpotLost.forEach(callback => callback(event));
       }
     },
 
@@ -89,8 +140,9 @@ class WorldTracking_XR8 extends TrackingMode {
 
     XR8.XrController.configure({
       // enableLighting: true,
-      disableWorldTracking: componentEnablesSLAM === undefined ? false : !componentEnablesSLAM, // invert componentEnablesSLAM
-      scale: componentUsesAbsoluteScale === undefined ? 'responsive' : (componentUsesAbsoluteScale ? 'absolute' : 'responsive')
+      // disableWorldTracking: componentEnablesSLAM === undefined ? false : !componentEnablesSLAM, // invert componentEnablesSLAM
+      // scale: componentUsesAbsoluteScale === undefined ? 'responsive' : (componentUsesAbsoluteScale ? 'absolute' : 'responsive'),
+      enableVps: true,
     });
 
     XR8.addCameraPipelineModules([
@@ -100,7 +152,7 @@ class WorldTracking_XR8 extends TrackingMode {
 
     const options = {
       canvas: Module.canvas as HTMLCanvasElement,
-      allowedDevices: XR8.XrConfig.device().ANY,
+      allowedDevices: XR8.XrConfig.device().MOBILE,
       ownRunLoop: false,
       cameraConfig: {
         direction: XR8.XrConfig.camera().BACK
@@ -116,7 +168,7 @@ class WorldTracking_XR8 extends TrackingMode {
   /**
   * called by 8thwall
   */
-  public onAttach = (_params) => {
+  public onAttach = (_params: unknown) => {
     XR8.XrController.updateCameraProjectionMatrix({
       origin: { x: this.cachedPosition[0], y: this.cachedPosition[1], z: this.cachedPosition[2] },
       facing: { x: this.cachedRotation[0], y: this.cachedRotation[1], z: this.cachedRotation[2], w: this.cachedRotation[3] },
@@ -127,7 +179,7 @@ class WorldTracking_XR8 extends TrackingMode {
   /**
    * called by 8thwall
    */
-  public onUpdate = (e) => {
+  public onUpdate = (e: any) => {
     const source = e.processCpuResult.reality;
     if (!source)
       return;

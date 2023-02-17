@@ -18,9 +18,6 @@ export default class ARImageTrackingCamera extends Component {
   };
 
   private trackingImpl = new WorldTracking_XR8(this);
-  
-  // will be set by WLE
-  public readonly cameraDirection: number;
 
 
   public get onImageFound () {

@@ -12,14 +12,13 @@ class WebXRProvider extends ARProvider {
       return;
     }
     
-    WL.onXRSessionStart.push((session) => {
+    WL.onXRSessionStart.push((session: XRSession) => {
       this.xrSession = session;
       this.onSessionStarted.forEach(cb => cb(this));
     });
 
     WL.onXRSessionEnd.push(() => {
       this.onSessionEnded.forEach(cb => cb(this));
-
       this.xrSession = null;
     });
   }

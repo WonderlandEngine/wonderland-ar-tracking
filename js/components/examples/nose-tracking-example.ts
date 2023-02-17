@@ -9,10 +9,10 @@ class NoseTrackingExample extends Component {
   };
 
   // injected by WL..
-  private ARFaceTrackingCamera: WLEObject;
+  private ARFaceTrackingCamera!: WLEObject;
 
   // injected by WL..
-  private nose: WLEObject;
+  private nose!: WLEObject;
 
 
   start() {

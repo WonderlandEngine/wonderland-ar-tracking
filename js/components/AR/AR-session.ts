@@ -13,7 +13,7 @@ import ARProvider from "./AR-provider";
  */
 abstract class ARSession {
 
-  public static readonly onARSessionRequested: Array<(event: Event) => void> = [];
+  public static readonly onARSessionRequested: Array<() => void> = [];
   
   // tracking provider is basically a lib which has some tracking capabilities, so device native webXR, 8thwall, mind-ar-js, etc
   private static trackingProviders: Array<ARProvider> = [];
@@ -66,14 +66,14 @@ abstract class ARSession {
     }
 
     xrButton.addEventListener('click', (event) => {
-      this.requestARSession(event);
+      this.requestARSession();
     });
   };
 
   // AR button clicked, any AR-camera object might handle it
-  private static requestARSession(event) {
+  private static requestARSession() {
     this.onARSessionRequested.forEach(cb => {
-      cb(event);
+      cb();
     });
   }
 
