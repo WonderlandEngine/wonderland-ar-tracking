@@ -1,5 +1,5 @@
-import { Component, MeshComponent, Object as WLEObject, Type } from '@wonderlandengine/api';
-import ARImageTrackingCamera from '../AR/cameras/AR-image-tracking-camera';
+import { Component, Object as WLEObject, Type } from '@wonderlandengine/api';
+import { ARImageTrackingCamera } from '../AR/cameras/AR-image-tracking-camera';
 
 class ImageTrackingExample extends Component {
 

@@ -14,12 +14,14 @@ import ARProvider from "./AR-provider";
 abstract class ARSession {
 
   public static readonly onARSessionRequested: Array<() => void> = [];
-  
+
   // tracking provider is basically a lib which has some tracking capabilities, so device native webXR, 8thwall, mind-ar-js, etc
   private static trackingProviders: Array<ARProvider> = [];
 
   // current running provider
   private static currentTrackingProvider: ARProvider | null = null;
+
+  public static readonly onARSessionReady: Array<() => void> = [];
 
   public static readonly onSessionStarted: Array<(trackingProvider: ARProvider) => void> = [];
   public static readonly onSessionEnded: Array<(trackingProvider: any) => ARProvider> = [];
@@ -59,7 +61,7 @@ abstract class ARSession {
     /*if (document.querySelector('#ar-button')) {
       return;
     }*/
-    let xrButton = document.querySelector<HTMLElement>('#ar-button');
+    /*let xrButton = document.querySelector<HTMLElement>('#ar-button');
     if (xrButton === null) {
       console.error('No #ar-button found. Session will not start.');
       return;
@@ -67,19 +69,23 @@ abstract class ARSession {
 
     xrButton.addEventListener('click', (event) => {
       this.requestARSession();
-    });
+    });*/
+
+    this.onARSessionReady.forEach(cb => cb());
   };
 
   // AR button clicked, any AR-camera object might handle it
-  private static requestARSession() {
+  /*private static requestARSession() {
     this.onARSessionRequested.forEach(cb => {
       cb();
     });
-  }
+  }*/
+
+
 
   // stops a running AR session (if any)
   public static stopARSession() {
-    if(this.currentTrackingProvider === null) {
+    if (this.currentTrackingProvider === null) {
       console.warn("No tracking session is active, nothing will happen");
     }
 
@@ -105,4 +111,4 @@ abstract class ARSession {
 };
 
 // (window as any).ARSession = ARSession;
-export default ARSession;
+export { ARSession };

@@ -1,6 +1,6 @@
 import { Component, Mesh, MeshComponent, Material, Object as WLEObject } from '@wonderlandengine/api';
 
-import ARVPSCamera from '../AR/cameras/AR-VPS-camera';
+import { ARVPSCamera } from '../AR/cameras/AR-VPS-camera';
 // import meshData from './mesh-data.js';
 
 class VPSDynamicMeshExample extends Component {
@@ -98,7 +98,7 @@ class VPSDynamicMeshExample extends Component {
   private createMesh = (meshData: any) => {
     const meshComp = this.object.addComponent('mesh', {});
     meshComp.material = this.material;
-    
+
     const vertexData = meshData.detail.geometry.attributes[0].array;
     const colorData = meshData.detail.geometry.attributes[1].array;
     const indexData = meshData.detail.geometry.index.array;

@@ -726,7 +726,8 @@
             "libraryPaths": [
                 "/js/lib/"
             ],
-            "autoManageEntryPoint": false
+            "autoManageEntryPoint": false,
+            "entryPoint": "main.js"
         },
         "ar": {
             "framework": "webxr",

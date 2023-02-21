@@ -6,23 +6,24 @@
  * clear the "Project Settings/Editor/serverCOEP" field.
  * Warning - it will disable the WASM thread support.
  */
-import ARSession from '../AR-session';
+import { ARSession } from '../AR-session';
 
 import { Component } from '@wonderlandengine/api';
 
 import XR8Provider from '../frameworks/xr8/xr8-provider';
 import WorldTracking_XR8 from '../frameworks/xr8/world-tracking-mode-xr8';
+import { ARCamera } from './AR-Camera';
 
 
 ARSession.registerTrackingProvider(XR8Provider);
 
 const WLEComponentTypeName = 'AR-VPS-camera';
 
-export default class ARVPSCamera extends Component {
+class ARVPSCamera extends ARCamera {
 
   public static TypeName = WLEComponentTypeName;
   public static Properties = {
-   
+
   };
 
   // WorldTracking_XR8 will check this
@@ -30,7 +31,7 @@ export default class ARVPSCamera extends Component {
 
   private trackingImpl = new WorldTracking_XR8(this);
 
-  public get onWaySpotFound () {
+  public get onWaySpotFound() {
     return this.trackingImpl.onWaySpotFound;
 
   }
@@ -48,12 +49,18 @@ export default class ARVPSCamera extends Component {
 
   public start() {
     this.trackingImpl.init(["location"]);
-    ARSession.onARSessionRequested.push(this.startARSession);
+    ARSession.onARSessionRequested.push(this.startSession);
   }
 
-  startARSession = () => {
+  startSession = async () => {
     if (this.active) {
       this.trackingImpl.startSession();
+    }
+  }
+
+  endSession = async () => {
+    if (this.active) {
+      this.trackingImpl!.endSession();
     }
   }
 
@@ -63,4 +70,6 @@ export default class ARVPSCamera extends Component {
 }
 
 WL.registerComponent(ARVPSCamera);
+
+export { ARVPSCamera };
 

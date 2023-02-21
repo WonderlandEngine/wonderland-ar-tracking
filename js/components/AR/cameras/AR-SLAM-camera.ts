@@ -1,6 +1,6 @@
 import { Component, init } from '@wonderlandengine/api';
 
-import ARSession from '../AR-session';
+import { ARSession } from '../AR-session';
 
 import WorldTracking_XR8 from '../frameworks/xr8/world-tracking-mode-xr8';
 import WorldTracking_webAR from '../frameworks/webAR/world-tracking-mode-webAR';
@@ -8,6 +8,7 @@ import XR8Provider from '../frameworks/xr8/xr8-provider';
 
 import { ITrackingMode } from '../frameworks/trackingMode';
 import WebXRProvider from '../frameworks/webAR/webXR-provider';
+import { ARCamera } from './AR-Camera';
 
 
 if (WL.arSupported) {
@@ -18,7 +19,7 @@ if (WL.arSupported) {
 
 const WLEComponentTypeName = 'AR-SLAM-camera';
 
-export default class ARSLAMCamera extends Component {
+class ARSLAMCamera extends ARCamera {
   public static TypeName = WLEComponentTypeName;
   public static Properties = {};
 
@@ -31,25 +32,28 @@ export default class ARSLAMCamera extends Component {
     }
 
     if (WL.arSupported) {
-   // if (false) { // force xr8
+      // if (false) { // force xr8
       this.trackingImpl = new WorldTracking_webAR(this);
     } else {
       this.trackingImpl = new WorldTracking_XR8(this);
       (this.trackingImpl as WorldTracking_XR8).init();
     }
 
-
-
-    ARSession.onARSessionRequested.push(this.startARSession);
+    ARSession.onARSessionRequested.push(this.startSession);
   }
 
-  startARSession = () => {
-
+  startSession = async () => {
     if (this.active) {
       this.trackingImpl!.startSession();
     }
   }
-  
+
+  endSession = async () => {
+    if (this.active) {
+      this.trackingImpl!.endSession();
+    }
+  }
+
   onDeactivate(): void {
     this.trackingImpl!.endSession()
   }
@@ -59,6 +63,8 @@ export default class ARSLAMCamera extends Component {
   }
 }
 
-
 WL.registerComponent(ARSLAMCamera);
+
+
+export { ARSLAMCamera }
 

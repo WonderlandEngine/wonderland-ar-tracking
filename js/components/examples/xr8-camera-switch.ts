@@ -1,8 +1,8 @@
 import { Component } from '@wonderlandengine/api';
 import ARSession from '../AR/AR-session';
-import ARFaceTrackingCamera from '../AR/cameras/AR-face-tracking-camera';
-import ARImageTrackingCamera from '../AR/cameras/AR-image-tracking-camera';
-import ARSLAMCamera from '../AR/cameras/AR-SLAM-camera';
+import { ARFaceTrackingCamera } from '../AR/cameras/AR-face-tracking-camera';
+import { ARImageTrackingCamera } from '../AR/cameras/AR-image-tracking-camera';
+import { ARSLAMCamera } from '../AR/cameras/AR-SLAM-camera';
 
 
 class XR8CameraSwitch extends Component {
@@ -53,7 +53,7 @@ class XR8CameraSwitch extends Component {
      */
     this.faceTrackingCamera!.active = false;
     this.faceTrackingCamera!.cameraDirection = 0;
-    
+
     this.faceTrackingCamera!.active = true;
     this.faceTrackingCamera!.startARSession();
   }
@@ -62,7 +62,7 @@ class XR8CameraSwitch extends Component {
     //this.faceTrackingCamera!.active = false;
     this.imageTrackingCamera!.active = false;
     this.worldTrackingCamera!.active = false;
-    
+
     /**
      * TODO: this is a little bit dumb that we have to stop the camera
      * and restart it with only a change in the parameter.
@@ -71,7 +71,7 @@ class XR8CameraSwitch extends Component {
      */
     this.faceTrackingCamera!.active = false;
     this.faceTrackingCamera!.cameraDirection = 1;
-    
+
     this.faceTrackingCamera!.active = true;
     this.faceTrackingCamera!.startARSession();
   }
@@ -81,18 +81,18 @@ class XR8CameraSwitch extends Component {
     //this.imageTrackingCamera!.active = false;
     this.worldTrackingCamera!.active = false;
 
-    if(!this.imageTrackingCamera!.active) {
+    if (!this.imageTrackingCamera!.active) {
       this.imageTrackingCamera!.active = true;
       this.imageTrackingCamera!.startARSession();
     }
   }
 
-  onWorldCameraSelected = () => { 
+  onWorldCameraSelected = () => {
     this.faceTrackingCamera!.active = false;
     this.imageTrackingCamera!.active = false;
     //this.worldTrackingCamera!.active = false;
 
-    if(!this.worldTrackingCamera!.active) {
+    if (!this.worldTrackingCamera!.active) {
       this.worldTrackingCamera!.active = true;
       this.worldTrackingCamera!.startARSession();
     }

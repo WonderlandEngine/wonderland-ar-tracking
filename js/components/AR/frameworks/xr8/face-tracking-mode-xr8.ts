@@ -2,7 +2,7 @@
 import { ViewComponent } from '@wonderlandengine/api';
 import { TrackingMode } from '../trackingMode';
 import XR8Provider from './xr8-provider';
-import ARFaceTrackingCamera from '../../cameras/AR-face-tracking-camera';
+import { ARFaceTrackingCamera } from '../../cameras/AR-face-tracking-camera';
 
 
 class FaceTracking_XR8 extends TrackingMode {
@@ -95,7 +95,7 @@ class FaceTracking_XR8 extends TrackingMode {
    */
   public onUpdate = (e: any) => {
     const source = e.processCpuResult.facecontroller;
-    
+
     if (!source)
       return;
 

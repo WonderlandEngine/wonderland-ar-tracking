@@ -1,12 +1,13 @@
-import ARSession from '../AR-session';
+import { ARSession } from '../AR-session';
 import FaceTracking_XR8 from '../frameworks/xr8/face-tracking-mode-xr8';
 import XR8Provider from '../frameworks/xr8/xr8-provider';
-import { Component, Type } from '@wonderlandengine/api';
+import { Type } from '@wonderlandengine/api';
+import { ARCamera } from './AR-Camera';
 
 const WLEComponentTypeName = 'AR-face-tracking-camera';
 
 ARSession.registerTrackingProvider(XR8Provider);
-export default class ARFaceTrackingCamera extends Component {
+class ARFaceTrackingCamera extends ARCamera {
   public static TypeName = WLEComponentTypeName;
   public static Properties = {
     cameraDirection: { type: Type.Enum, values: ['front', 'back'] as XR8CameraDirection[keyof XR8CameraDirection][], default: 'front' },
@@ -36,12 +37,18 @@ export default class ARFaceTrackingCamera extends Component {
 
     this.trackingImpl.init();
 
-    ARSession.onARSessionRequested.push(this.startARSession);
+    ARSession.onARSessionRequested.push(this.startSession);
   }
 
-  startARSession = () => {
+  startSession = async () => {
     if (this.active) {
       this.trackingImpl.startSession();
+    }
+  }
+
+  endSession = async () => {
+    if (this.active) {
+      this.trackingImpl!.endSession();
     }
   }
 
@@ -51,4 +58,6 @@ export default class ARFaceTrackingCamera extends Component {
 }
 
 WL.registerComponent(ARFaceTrackingCamera);
+
+export { ARFaceTrackingCamera };
 

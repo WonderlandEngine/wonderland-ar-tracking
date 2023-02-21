@@ -1,6 +1,6 @@
 import { Component, Mesh, MeshComponent, Object as WLEObject } from '@wonderlandengine/api';
 
-import ARVPSCamera from '../AR/cameras/AR-VPS-camera';
+import { ARVPSCamera } from '../AR/cameras/AR-VPS-camera';
 // import meshData from './mesh-data.js';
 
 class VPSGLBExample extends Component {

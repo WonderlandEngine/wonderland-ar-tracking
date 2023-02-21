@@ -1,5 +1,5 @@
 import { Component, Object as WLEObject } from '@wonderlandengine/api';
-import ARFaceTrackingCamera from '../AR/cameras/AR-face-tracking-camera';
+import { ARFaceTrackingCamera } from '../AR/cameras/AR-face-tracking-camera';
 
 class NoseTrackingExample extends Component {
   public static TypeName = 'nose-tracking-example';
@@ -50,7 +50,7 @@ class NoseTrackingExample extends Component {
       cachedPosition[2] = transform.position.z;
 
       const scale = transform.scale / 10;
-      
+
 
       cachedScale[0] = scale;
       cachedScale[1] = scale;

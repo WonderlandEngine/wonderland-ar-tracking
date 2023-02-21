@@ -1,6 +1,5 @@
-import {TrackingMode} from '../trackingMode';
+import { TrackingMode } from '../trackingMode';
 import WebXRProvider from './webXR-provider';
-
 
 class WorldTracking_webAR extends TrackingMode {
   public startSession() {

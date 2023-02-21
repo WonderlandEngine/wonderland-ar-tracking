@@ -1,26 +1,27 @@
-import ARSession from '../AR-session';
+import { ARSession } from '../AR-session';
 
-import { Component, Type } from '@wonderlandengine/api';
+import { Type } from '@wonderlandengine/api';
 
 import XR8Provider from '../frameworks/xr8/xr8-provider';
 import WorldTracking_XR8 from '../frameworks/xr8/world-tracking-mode-xr8';
+import { ARCamera } from './AR-Camera';
 
 
 ARSession.registerTrackingProvider(XR8Provider);
 
 const WLEComponentTypeName = 'AR-image-tracking-camera';
 
-export default class ARImageTrackingCamera extends Component {
+class ARImageTrackingCamera extends ARCamera {
 
   public static TypeName = WLEComponentTypeName;
   public static Properties = {
-    EnableSLAM: {type: Type.Bool, default: false,} // Imrpoves tracking, reduces performance
+    EnableSLAM: { type: Type.Bool, default: false, } // Imrpoves tracking, reduces performance
   };
 
   private trackingImpl = new WorldTracking_XR8(this);
 
 
-  public get onImageFound () {
+  public get onImageFound() {
     return this.trackingImpl.onImageFound;
 
   }
@@ -34,12 +35,18 @@ export default class ARImageTrackingCamera extends Component {
 
   public start() {
     this.trackingImpl.init();
-    ARSession.onARSessionRequested.push(this.startARSession);
+    ARSession.onARSessionRequested.push(this.startSession);
   }
 
-  startARSession = () => {
+  startSession = async () => {
     if (this.active) {
       this.trackingImpl.startSession();
+    }
+  }
+
+  endSession = async () => {
+    if (this.active) {
+      this.trackingImpl!.endSession();
     }
   }
 
@@ -50,3 +57,4 @@ export default class ARImageTrackingCamera extends Component {
 
 WL.registerComponent(ARImageTrackingCamera);
 
+export { ARImageTrackingCamera }
