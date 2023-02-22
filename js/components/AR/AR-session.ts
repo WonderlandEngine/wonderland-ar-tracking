@@ -12,9 +12,6 @@ import { ARProvider } from "./AR-provider";
  * Instead, we want to show the engines native 'loading' screen until all the providers are loaded  
  */
 abstract class ARSession {
-
-  public static readonly onARSessionRequested: Array<() => void> = [];
-
   // tracking provider is basically a lib which has some tracking capabilities, so device native webXR, 8thwall, mind-ar-js, etc
   private static trackingProviders: Array<ARProvider> = [];
 

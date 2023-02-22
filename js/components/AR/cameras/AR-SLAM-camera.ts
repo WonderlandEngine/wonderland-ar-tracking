@@ -42,8 +42,6 @@ class ARSLAMCamera extends ARCamera {
       this.trackingImpl = new WorldTracking_XR8(this);
       (this.trackingImpl as WorldTracking_XR8).init();
     }
-
-    ARSession.onARSessionRequested.push(this.startSession);
   }
 
   startSession = async () => {

@@ -47,7 +47,6 @@ class ARVPSCamera extends ARCamera {
 
   public start() {
     this.trackingImpl.init(["location"]);
-    ARSession.onARSessionRequested.push(this.startSession);
   }
 
   startSession = async () => {

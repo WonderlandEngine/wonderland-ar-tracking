@@ -35,7 +35,6 @@ class ARImageTrackingCamera extends ARCamera {
 
   public start() {
     this.trackingImpl.init();
-    ARSession.onARSessionRequested.push(this.startSession);
   }
 
   startSession = async () => {
