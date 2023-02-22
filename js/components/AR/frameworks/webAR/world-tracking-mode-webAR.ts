@@ -1,13 +1,13 @@
 import { TrackingMode } from '../trackingMode';
-import WebXRProvider from './webXR-provider';
+import { webXRProvider } from './webXR-provider';
 
 class WorldTracking_webAR extends TrackingMode {
   public startSession() {
-    WebXRProvider.startSession(['local', 'hand-tracking', 'hit-test',]);
+    webXRProvider.startSession(['local', 'hand-tracking', 'hit-test',]);
   }
 
   public endSession(): void {
-    WebXRProvider.endSession();
+    webXRProvider.endSession();
   }
 }
 

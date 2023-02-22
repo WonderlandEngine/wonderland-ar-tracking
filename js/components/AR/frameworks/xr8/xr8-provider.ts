@@ -1,4 +1,4 @@
-import ARProvider from "../../AR-provider";
+import { ARProvider } from "../../AR-provider";
 
 /**
   * Array of extra permissions which some tracking mode might need. By default XR8 will need camera/microphone permissions and deviceMotion permission (iOS only). VPS for example must pass an extra 'location' permission
@@ -6,8 +6,32 @@ import ARProvider from "../../AR-provider";
 export type XR8ExtraPermissions = Array<'location'>;
 
 class XR8Provider extends ARProvider {
+
+  public get tag () {
+    return "xr8";
+  }
   // Loading of 8thwall might be initiated by several components, make sure we load it only once
   private loading = false
+  
+  // Enforce the singleton pattern
+  private instance: XR8Provider | null = null;
+
+  constructor () {
+    super();
+    
+
+     // Safeguard that we are not running inside the editor
+     if (typeof (document) === 'undefined') {
+      return;
+    }
+
+    if(this.instance !== null) {
+      throw "WebXRProvider cannot be instantiated";
+    }
+
+    this.instance = this;
+  
+  }
 
   public async load() {
     // Make sure we're no in the editor
@@ -224,7 +248,7 @@ class XR8Provider extends ARProvider {
       return new Promise<void>((resolve, reject) => {
         navigator.geolocation.getCurrentPosition((position) => {
           window.dispatchEvent(new Event('8thwall-device-location-resolved'))
-          
+
           resolve();
         }, (error) => {
           window.dispatchEvent(new Event('8thwall-device-location-resolved'))
@@ -240,11 +264,11 @@ class XR8Provider extends ARProvider {
     OverlaysHandler.init();
 
 
-    if(!XR8.XrDevice.isDeviceBrowserCompatible()) {
+    if (!XR8.XrDevice.isDeviceBrowserCompatible()) {
       window.dispatchEvent(new CustomEvent('8thwall-device-incompatible'));
       return;
     }
-   
+
     try {
       await this.getPermissions(extraPermissions);
       return true;
@@ -283,8 +307,8 @@ const OverlaysHandler = {
   },
 
 
-  handleDeviceIncompatible: function() {
-    const overlay = this.showOverlay(deviceIncompatibleOverlay()); 
+  handleDeviceIncompatible: function () {
+    const overlay = this.showOverlay(deviceIncompatibleOverlay());
   },
 
   handleWaitingForDeviceLocation: function () {
@@ -293,7 +317,7 @@ const OverlaysHandler = {
 
   handleDeviceLocationResolved: function () {
     const overlay = document.querySelector("#handleWaitingForDeviceLocationOverlay");
-    if(overlay) {
+    if (overlay) {
       overlay.remove();
     }
   },
@@ -505,5 +529,5 @@ const deviceIncompatibleOverlay = () => `
   <div>${window.location.href}</div>
 </div>`;
 
-
-export default new XR8Provider();
+const xr8Provider = new XR8Provider();
+export {XR8Provider, xr8Provider};

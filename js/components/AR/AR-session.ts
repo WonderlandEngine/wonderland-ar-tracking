@@ -1,4 +1,4 @@
-import ARProvider from "./AR-provider";
+import { ARProvider } from "./AR-provider";
 
 /**
  * ARSession - master control for the AR session.
@@ -58,30 +58,8 @@ abstract class ARSession {
 
   // WL scene AND all registered providers finished loading
   private static onWLSceneLoaded() {
-    /*if (document.querySelector('#ar-button')) {
-      return;
-    }*/
-    /*let xrButton = document.querySelector<HTMLElement>('#ar-button');
-    if (xrButton === null) {
-      console.error('No #ar-button found. Session will not start.');
-      return;
-    }
-
-    xrButton.addEventListener('click', (event) => {
-      this.requestARSession();
-    });*/
-
     this.onARSessionReady.forEach(cb => cb());
   };
-
-  // AR button clicked, any AR-camera object might handle it
-  /*private static requestARSession() {
-    this.onARSessionRequested.forEach(cb => {
-      cb();
-    });
-  }*/
-
-
 
   // stops a running AR session (if any)
   public static stopARSession() {
@@ -96,16 +74,11 @@ abstract class ARSession {
   // some provider started AR session
   private static onProviderSessionStarted = (provider: ARProvider) => {
     this.currentTrackingProvider = provider;
-
-    let xrButton = document.querySelector<HTMLElement>('#ar-button');
-    xrButton!.style.display = 'none';
     this.onSessionStarted.forEach(cb => cb(provider));
   }
 
   // some provider ended AR session
   private static onProviderSessionEnded = (provider: ARProvider) => {
-    let xrButton = document.querySelector<HTMLElement>('#ar-button');
-    xrButton!.style.display = 'block';
     this.onSessionEnded.forEach(cb => cb(provider));
   }
 };

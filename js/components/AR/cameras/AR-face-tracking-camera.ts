@@ -1,12 +1,12 @@
 import { ARSession } from '../AR-session';
 import FaceTracking_XR8 from '../frameworks/xr8/face-tracking-mode-xr8';
-import XR8Provider from '../frameworks/xr8/xr8-provider';
+import { xr8Provider } from '../frameworks/xr8/xr8-provider';
 import { Type } from '@wonderlandengine/api';
 import { ARCamera } from './AR-Camera';
 
 const WLEComponentTypeName = 'AR-face-tracking-camera';
 
-ARSession.registerTrackingProvider(XR8Provider);
+ARSession.registerTrackingProvider(xr8Provider);
 class ARFaceTrackingCamera extends ARCamera {
   public static TypeName = WLEComponentTypeName;
   public static Properties = {

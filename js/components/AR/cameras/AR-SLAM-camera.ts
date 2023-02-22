@@ -1,20 +1,25 @@
-import { Component, init } from '@wonderlandengine/api';
-
 import { ARSession } from '../AR-session';
 
 import WorldTracking_XR8 from '../frameworks/xr8/world-tracking-mode-xr8';
 import WorldTracking_webAR from '../frameworks/webAR/world-tracking-mode-webAR';
-import XR8Provider from '../frameworks/xr8/xr8-provider';
+
 
 import { ITrackingMode } from '../frameworks/trackingMode';
-import WebXRProvider from '../frameworks/webAR/webXR-provider';
+import { webXRProvider } from '../frameworks/webAR/webXR-provider';
+import { xr8Provider } from '../frameworks/xr8/xr8-provider';
 import { ARCamera } from './AR-Camera';
 
-
-if (WL.arSupported) {
-  ARSession.registerTrackingProvider(WebXRProvider)
-} else {
-  ARSession.registerTrackingProvider(XR8Provider)
+// running on a browser?
+if (window.document) {
+  WL.onXRSupported.push((type: string, supported: boolean) => {
+    if (type === 'ar') {
+      if (supported) {
+        ARSession.registerTrackingProvider(webXRProvider)
+      } else {
+        ARSession.registerTrackingProvider(xr8Provider)
+      }
+    }
+  });
 }
 
 const WLEComponentTypeName = 'AR-SLAM-camera';
@@ -30,9 +35,8 @@ class ARSLAMCamera extends ARCamera {
     if (!this.object.getComponent('view')) {
       throw new Error('AR-camera requires a view component');
     }
-
-    if (WL.arSupported) {
-      // if (false) { // force xr8
+    //if (WL.arSupported) {
+    if (false) { // force xr8
       this.trackingImpl = new WorldTracking_webAR(this);
     } else {
       this.trackingImpl = new WorldTracking_XR8(this);

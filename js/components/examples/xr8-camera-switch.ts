@@ -1,5 +1,5 @@
 import { Component } from '@wonderlandengine/api';
-import ARSession from '../AR/AR-session';
+import { ARSession } from '../AR/AR-session';
 import { ARFaceTrackingCamera } from '../AR/cameras/AR-face-tracking-camera';
 import { ARImageTrackingCamera } from '../AR/cameras/AR-image-tracking-camera';
 import { ARSLAMCamera } from '../AR/cameras/AR-SLAM-camera';
@@ -55,7 +55,7 @@ class XR8CameraSwitch extends Component {
     this.faceTrackingCamera!.cameraDirection = 0;
 
     this.faceTrackingCamera!.active = true;
-    this.faceTrackingCamera!.startARSession();
+    this.faceTrackingCamera!.startSession();
   }
 
   onBackFaceCameraSelected = () => {
@@ -73,7 +73,7 @@ class XR8CameraSwitch extends Component {
     this.faceTrackingCamera!.cameraDirection = 1;
 
     this.faceTrackingCamera!.active = true;
-    this.faceTrackingCamera!.startARSession();
+    this.faceTrackingCamera!.startSession();
   }
 
   onImageCameraSelected = () => {
@@ -83,7 +83,7 @@ class XR8CameraSwitch extends Component {
 
     if (!this.imageTrackingCamera!.active) {
       this.imageTrackingCamera!.active = true;
-      this.imageTrackingCamera!.startARSession();
+      this.imageTrackingCamera!.startSession();
     }
   }
 
@@ -94,7 +94,7 @@ class XR8CameraSwitch extends Component {
 
     if (!this.worldTrackingCamera!.active) {
       this.worldTrackingCamera!.active = true;
-      this.worldTrackingCamera!.startARSession();
+      this.worldTrackingCamera!.startSession();
     }
   }
 }

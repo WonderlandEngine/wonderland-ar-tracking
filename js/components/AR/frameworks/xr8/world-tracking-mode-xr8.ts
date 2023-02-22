@@ -2,7 +2,7 @@
 import { ViewComponent } from '@wonderlandengine/api';
 import { TrackingMode } from '../trackingMode';
 
-import XR8Provider, { XR8ExtraPermissions } from './xr8-provider';
+import { xr8Provider, XR8ExtraPermissions } from './xr8-provider';
 // Just some helper types to determine if an object has some props
 type CanDisableSLAM = {
   EnableSLAM: boolean,
@@ -31,8 +31,6 @@ class WorldTracking_XR8 extends TrackingMode {
   public readonly onImageFound: Array<(event: any) => void> = [];
   public readonly onImageUpdate: Array<(event: any) => void> = [];
   public readonly onImageLost: Array<(event: any) => void> = [];
-
-
 
   public readonly onMeshFound: Array<(event: any) => void> = [];
   public readonly onWaySpotFound: Array<(event: any) => void> = [];
@@ -130,7 +128,7 @@ class WorldTracking_XR8 extends TrackingMode {
     this.cachedRotation[2] = rot[2];
     this.cachedRotation[3] = rot[3];
 
-    XR8Provider.onSessionEnded.push(() => {
+    xr8Provider.onSessionEnded.push(() => {
       XR8.removeCameraPipelineModules([
         XR8.XrController.pipelineModule(),
         this,
@@ -138,8 +136,8 @@ class WorldTracking_XR8 extends TrackingMode {
     })
   }
 
-  public async startSession() { 
-    const permissions = await XR8Provider.checkPermissions(this.extraPermissions);
+  public async startSession() {
+    const permissions = await xr8Provider.checkPermissions(this.extraPermissions);
     if (!permissions) {
       return;
     }
@@ -168,11 +166,11 @@ class WorldTracking_XR8 extends TrackingMode {
         direction: XR8.XrConfig.camera().BACK
       },
     };
-    XR8Provider.startSession(options)
+    xr8Provider.startSession(options)
   }
 
   public endSession() {
-    XR8Provider.endSession();
+    xr8Provider.endSession();
   }
 
   /**
