@@ -30,7 +30,6 @@ class WebXRProvider extends ARProvider {
 
     WL.onXRSessionStart.push((session: XRSession) => {
       this._xrSession = session;
-      console.log("Session starterd in webAR", this.onSessionStarted);
       this.onSessionStarted.forEach(cb => cb(this));
     });
 
@@ -40,9 +39,8 @@ class WebXRProvider extends ARProvider {
     });
   }
 
-  public async startSession(params: string[] = ['local', 'hand-tracking', 'hit-test',]) {
-    console.log("Starting session webAR");
-    Module['webxr_request_session_func']('immersive-ar', ['local',], params);
+  public async startSession(webxrRequiredFeatures: string [] = ['local'], webxrOptionalFeatures: string[] = ['local', 'hit-test',]) {
+    Module['webxr_request_session_func']('immersive-ar', webxrRequiredFeatures, webxrOptionalFeatures);
   }
 
   public async endSession() {
