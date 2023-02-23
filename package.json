@@ -1,18 +1,17 @@
 {
-  "name": "wonderland-8thwall-tracking",
+  "name": "@wonderlandengine/8thwall-tracking",
   "version": "1.0.0",
-  "description": "My Wonderland project",
-  "main": "js/index.js",
+  "description": "Wonderland 8thwall implementation",
+  "main": "src/index.js",
   "type": "module",
-  "module": "js/index.js",
+  "module": "src/index.ts",
   "scripts": {
-    "build": "esbuild ./js/index.js --bundle --outfile=\"deploy/main-bundle.js\""
+    "build": "tsc"
   },
   "keywords": [
     "wonderland-engine"
   ],
   "devDependencies": {
-    "esbuild": "^0.15.14",
     "typescript": "^4.9.5"
   },
   "dependencies": {
