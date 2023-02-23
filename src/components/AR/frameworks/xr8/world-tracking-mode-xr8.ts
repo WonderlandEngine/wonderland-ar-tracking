@@ -219,4 +219,4 @@ class WorldTracking_XR8 extends TrackingMode {
   }
 }
 
-export default WorldTracking_XR8;
+export { WorldTracking_XR8 };

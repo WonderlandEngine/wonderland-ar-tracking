@@ -37,11 +37,11 @@ class ImageTrackingExample extends Component {
     const cachedRotation = new Array<number>(4);
     const cachedScale = new Array<number>(3);
 
-    camera.onImageFound.push((_event) => {
+    camera.onImageFound.push((_event: unknown) => {
       mesh.active = true;
     });
 
-    camera.onImageUpdate.push((event) => {
+    camera.onImageUpdate.push((event: any) => {
       const { rotation, position, scale } = event.detail
 
       cachedRotation[0] = rotation.x;
@@ -62,7 +62,7 @@ class ImageTrackingExample extends Component {
       this.object.scalingWorld.set(cachedScale);
     });
 
-    camera.onImageLost.push((_event) => {
+    camera.onImageLost.push((_event: unknown) => {
       mesh.active = false;
     });
   }

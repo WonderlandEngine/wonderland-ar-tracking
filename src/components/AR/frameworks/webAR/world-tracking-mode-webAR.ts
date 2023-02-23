@@ -11,4 +11,4 @@ class WorldTracking_webAR extends TrackingMode {
   }
 }
 
-export default WorldTracking_webAR;
+export { WorldTracking_webAR };

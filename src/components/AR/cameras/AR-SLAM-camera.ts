@@ -1,7 +1,7 @@
 import { ARSession } from '../AR-session';
 
-import WorldTracking_XR8 from '../frameworks/xr8/world-tracking-mode-xr8';
-import WorldTracking_webAR from '../frameworks/webAR/world-tracking-mode-webAR';
+import { WorldTracking_XR8 } from '../frameworks/xr8/world-tracking-mode-xr8';
+import { WorldTracking_webAR } from '../frameworks/webAR/world-tracking-mode-webAR';
 
 
 import { ITrackingMode } from '../frameworks/trackingMode';
@@ -36,7 +36,7 @@ class ARSLAMCamera extends ARCamera {
       throw new Error('AR-camera requires a view component');
     }
     if (WL.arSupported) {
-    //if (false) { // force xr8
+      //if (false) { // force xr8
       this.trackingImpl = new WorldTracking_webAR(this);
     } else {
       this.trackingImpl = new WorldTracking_XR8(this);

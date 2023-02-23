@@ -126,4 +126,4 @@ class FaceTracking_XR8 extends TrackingMode {
   }
 }
 
-export default FaceTracking_XR8;
+export { FaceTracking_XR8 }

@@ -1,4 +1,4 @@
-import { Component } from "@wonderlandengine/api";
+import { Component } from '@wonderlandengine/api';
 
 abstract class ARCamera extends Component {
   abstract startSession(): Promise<void>;

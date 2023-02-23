@@ -105,10 +105,3 @@ dist
 
 .DS_Store
 
-
-## WLE
-cache/
-deploy/
-.editor
-
-static/vps-mesh-data.js
