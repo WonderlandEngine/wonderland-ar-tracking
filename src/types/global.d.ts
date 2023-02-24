@@ -35,6 +35,25 @@ declare type XR8HitTestType = {
   DETECTED_SURFACE: 'DETECTED_SURFACE'
 }
 
+declare type XR8ImageTrackedEvent = {
+  name: string,
+  detail: {
+    name: string, // image name
+    position: { x: number, y: number, z: number }, // position of the tracked image
+    rotation: { x: number, y: number, z: number, w: number }, // rotation of the tracked image
+    scale: number, // A scale factor that should be applied to object attached to this image.
+    scaleWidth: number, // The width of the image in the scene, when multiplied by scale.
+    scaledHeight: number, // 	The height of the image in the scene, when multiplied by scale.
+    type: 'FLAT' | 'CYLINDRICAL' | 'CONICAL',
+
+    height?: number,//	Height of the curved target.
+    radiusTop?: number, //Radius of the curved target at the top.
+    radiusBottom?: number, //	Radius of the curved target at the bottom.
+    arcStartRadians?: number, // Starting angle in radians.
+    arcLengthRadians?: number, //	Central angle in radians.
+  }
+}
+
 
 declare var XR8: {
   runPreRender: (time: number) => void;
@@ -109,5 +128,5 @@ declare var XR8: {
     }
   }) => void;
 
-  stop:() => void;
+  stop: () => void;
 }

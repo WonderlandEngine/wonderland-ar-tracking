@@ -28,8 +28,8 @@ class WorldTracking_XR8 extends TrackingMode {
 
   public readonly onTrackingStatus: Array<(event: any) => void> = [];
 
-  public readonly onImageFound: Array<(event: any) => void> = [];
-  public readonly onImageUpdate: Array<(event: any) => void> = [];
+  public readonly onImageFound: Array<(event: XR8ImageTrackedEvent) => void> = [];
+  public readonly onImageUpdate: Array<(event: XR8ImageTrackedEvent) => void> = [];
   public readonly onImageLost: Array<(event: any) => void> = [];
 
   public readonly onMeshFound: Array<(event: any) => void> = [];
@@ -45,12 +45,12 @@ class WorldTracking_XR8 extends TrackingMode {
       },
     },
     {
-      event: 'reality.imagefound', process: (event: unknown) => {
+      event: 'reality.imagefound', process: (event: XR8ImageTrackedEvent) => {
         this.onImageFound.forEach(callback => callback(event));
       }
     },
     {
-      event: 'reality.imageupdated', process: (event: unknown) => {
+      event: 'reality.imageupdated', process: (event: XR8ImageTrackedEvent) => {
         this.onImageUpdate.forEach(callback => callback(event));
       }
     },
