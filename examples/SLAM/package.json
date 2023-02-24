@@ -6,7 +6,7 @@
   "type": "module",
   "module": "js/index.js",
   "scripts": {
-    "build": "esbuild ./js/index.js --bundle --outfile=\"deploy/image-tracking-camera-example-bundle.js\""
+    "build": "esbuild ./js/index.js --bundle --outfile=\"deploy/SLAM-camera-example-bundle.js\""
   },
   "keywords": [
     "wonderland-engine"
