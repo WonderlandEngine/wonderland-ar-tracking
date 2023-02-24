@@ -1,4 +1,4 @@
-import { Component, Object as WLEObject, Type } from '@wonderlandengine/api';
+import { Component, Object as WLEObject, Type, MeshComponent } from '@wonderlandengine/api';
 import { ARImageTrackingCamera } from '../../../';
 
 class ImageTrackingExample extends Component {
@@ -6,9 +6,23 @@ class ImageTrackingExample extends Component {
   public static TypeName = 'image-tracking-example';
   public static Properties = {
     ARImageTrackingCamera: { type: Type.Object },
+    imageId: { type: Type.String },
   };
   // injected by WL..
   private ARImageTrackingCamera!: WLEObject;
+
+  // injected by WL..
+  private imageId!: string;
+
+
+  // allocate some arrays
+  private cachedPosition = new Array<number>(3);
+  private cachedRotation = new Array<number>(4);
+  private cachedScale = new Array<number>(3);
+
+
+  private mesh: MeshComponent | null = null;
+
 
   start() {
     if (!this.ARImageTrackingCamera) {
@@ -23,47 +37,58 @@ class ImageTrackingExample extends Component {
     }
 
     //const mesh = this.object.getComponent(MeshComponent) // <-- fails, issue reported 
-    const mesh = this.object.getComponent('mesh');
-    if (!mesh) {
+    this.mesh = this.object.getComponent('mesh');
+    if (!this.mesh) {
       return;
     }
 
+    
+
     // hide by default
-    mesh.active = false;
+    this.mesh.active = false;
 
-    // allocate some arrays
-    const cachedPosition = new Array<number>(3);
-    const cachedRotation = new Array<number>(4);
-    const cachedScale = new Array<number>(3);
 
-    camera.onImageFound.push((_event: unknown) => {
-      mesh.active = true;
+    camera.onImageFound.push(this.onImageFound);
+
+    camera.onImageUpdate.push(this.onImageUpdated);
+
+    camera.onImageLost.push((event: XR8ImageTrackedEvent) => {
+      if (event.detail.name === this.imageId) {
+       this.mesh!.active = false;
+      }
     });
+  }
 
-    camera.onImageUpdate.push((event: any) => {
-      const { rotation, position, scale } = event.detail
+  private onImageFound = (event: XR8ImageTrackedEvent) => {
+    if (event.detail.name === this.imageId) {
+      this.mesh!.active = true;
+      this.onImageUpdated(event);
+    }
+  }
 
-      cachedRotation[0] = rotation.x;
-      cachedRotation[1] = rotation.y;
-      cachedRotation[2] = rotation.z;
-      cachedRotation[3] = rotation.w;
+  private onImageUpdated = (event: XR8ImageTrackedEvent) => {
+    if (event.detail.name !== this.imageId) {
+      return
+    }
 
-      cachedPosition[0] = position.x;
-      cachedPosition[1] = position.y;
-      cachedPosition[2] = position.z;
+    const { rotation, position, scale } = event.detail
 
-      cachedScale[0] = scale / 10;
-      cachedScale[1] = scale / 10;
-      cachedScale[2] = scale / 10;
+    this.cachedRotation[0] = rotation.x;
+    this.cachedRotation[1] = rotation.y;
+    this.cachedRotation[2] = rotation.z;
+    this.cachedRotation[3] = rotation.w;
 
-      this.object.rotationWorld.set(cachedRotation);
-      this.object.setTranslationWorld(cachedPosition);
-      this.object.scalingWorld.set(cachedScale);
-    });
+    this.cachedPosition[0] = position.x;
+    this.cachedPosition[1] = position.y;
+    this.cachedPosition[2] = position.z;
 
-    camera.onImageLost.push((_event: unknown) => {
-      mesh.active = false;
-    });
+    this.cachedScale[0] = scale / 10;
+    this.cachedScale[1] = scale / 10;
+    this.cachedScale[2] = scale / 10;
+
+    this.object.rotationWorld.set(this.cachedRotation);
+    this.object.setTranslationWorld(this.cachedPosition);
+    this.object.scalingWorld.set(this.cachedScale);
   }
 }
 WL.registerComponent(ImageTrackingExample);

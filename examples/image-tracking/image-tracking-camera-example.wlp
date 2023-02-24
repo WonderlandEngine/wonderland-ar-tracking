@@ -133,7 +133,7 @@
             ]
         },
         "16": {
-            "name": "Cube",
+            "name": "ImageTarget1",
             "components": [
                 {
                     "type": "mesh",
@@ -145,7 +145,8 @@
                 {
                     "type": "image-tracking-example",
                     "image-tracking-example": {
-                        "ARImageTrackingCamera": "17"
+                        "ARImageTrackingCamera": "17",
+                        "imageId": "tracking-logo"
                     },
                     "active": true
                 }
@@ -166,6 +167,80 @@
                 0.5,
                 0.5
             ]
+        },
+        "62": {
+            "name": "ImageTarget2",
+            "components": [
+                {
+                    "type": "mesh",
+                    "mesh": {
+                        "mesh": "10",
+                        "material": "25"
+                    }
+                },
+                {
+                    "type": "image-tracking-example",
+                    "image-tracking-example": {
+                        "ARImageTrackingCamera": "17",
+                        "imageId": "PXL_20230119_120208139_2"
+                    },
+                    "active": true
+                }
+            ],
+            "translation": [
+                0.0,
+                0.4999999,
+                5.960464477539065e-8
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "scaling": [
+                0.5,
+                0.5,
+                0.5
+            ],
+            "parent": null
+        },
+        "63": {
+            "name": "ImageTarget3",
+            "components": [
+                {
+                    "type": "mesh",
+                    "mesh": {
+                        "mesh": "9",
+                        "material": "26"
+                    }
+                },
+                {
+                    "type": "image-tracking-example",
+                    "image-tracking-example": {
+                        "ARImageTrackingCamera": "17",
+                        "imageId": "wonderland-social-card"
+                    },
+                    "active": true
+                }
+            ],
+            "translation": [
+                0.0,
+                0.4999999,
+                5.960464477539065e-8
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "scaling": [
+                0.5,
+                0.5,
+                0.5
+            ],
+            "parent": null
         }
     },
     "meshes": {
