@@ -279,12 +279,6 @@
                 "name": "PrimitiveCircle",
                 "file": "default"
             }
-        },
-        "43": {
-            "link": {
-                "name": "AR Target Mesh",
-                "file": "models\\ar-target.glb"
-            }
         }
     },
     "materials": {
