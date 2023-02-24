@@ -24,6 +24,7 @@ To successfully run in
 - Sign in with your account.
 - Create a new scan and upload it as a private scan.
 - Goto geospatial-browser in your project on the 8thwall platforms and assign a newly uploaded scan to your project.
+- More details at the [official 8thwall docs ](https://www.8thwall.com/docs/web/#lightship-vps)
 
 # Some notes
 If you need better quality scaned models, you can download the scans as .glb files from the geospatial-browser. You can show/hide those models depending on the detected waypoints.
