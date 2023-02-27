@@ -127,7 +127,8 @@
                     "type": "nose-tracking-example",
                     "nose-tracking-example": {
                         "ARFaceTrackingCamera": "17",
-                        "nose": "66"
+                        "nose": "66",
+                        "generatedMeshMaterial": "20"
                     }
                 }
             ],

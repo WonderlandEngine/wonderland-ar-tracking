@@ -1,4 +1,4 @@
-import { Component, Material, Mesh, MeshComponent, MeshIndexType, Object as WLEObject, Type } from '@wonderlandengine/api';
+import { Component, Material, Mesh, MeshAttribute, MeshComponent, MeshIndexType, Object as WLEObject, Type } from '@wonderlandengine/api';
 import { ARFaceTrackingCamera } from '../../../';
 
 class NoseTrackingExample extends Component {
@@ -15,8 +15,8 @@ class NoseTrackingExample extends Component {
   // injected by WL..
   private nose!: WLEObject;
 
-   // injected by WL..
-   private generatedMeshMaterial!: Material;
+  // injected by WL..
+  private generatedMeshMaterial!: Material;
 
 
   private mesh: Mesh | null = null;
@@ -40,32 +40,44 @@ class NoseTrackingExample extends Component {
 
     this.object.scalingWorld = [0, 0, 0];
 
-    camera.onFaceLoading.push(event => {
-      /*const {indices, uvs} = event.detail;
 
-      this.meshComp = this.object.addComponent('mesh', {})!;
-      this.meshComp.material = this.generatedMeshMaterial;
-  
-      const vertexData = event.detail.geometry.attributes[0].array;
+    camera.onFaceLoading.push(event => {
+      // console.log("event", event);
+      if (!this.mesh) {
+        this.meshComp = this.object.addComponent('mesh', {})!;
+        this.meshComp.material = this.generatedMeshMaterial;
+      }
+      const { indices, uvs, pointsPerDetection } = event.detail;
+
+      /*const vertexData = event.detail.geometry.attributes[0].array;
       const colorData = event.detail.geometry.attributes[1].array;
-      const indexData = event.detail.geometry.index.array;
-  
+      const indexData = event.detail.geometry.index.array;**/
+
+      const indexData = indices.reduce((data: any, current: any) => {
+        data.push(...Object.values(current));
+        return data;
+      }, []);
+
+      //  console.log("pointsPerDetection", pointsPerDetection * 3);
+
       this.mesh = new Mesh({
-        vertexCount: vertexData.length,
+        vertexCount: pointsPerDetection,
         indexData,
         indexType: MeshIndexType.UnsignedInt,
-      });*/
+      });
+
+      this.meshComp!.mesh = this.mesh;
     });
 
-    camera.onFaceFound.push((event) => {
-      /* do some animation? */
-    });
+    camera.onFaceFound.push(this.updateFaceMesh);
 
 
     camera.onFaceUpdate.push((event) => {
 
-      const { transform, attachmentPoints } = event.detail
+      this.updateFaceMesh(event);
 
+      const { transform, attachmentPoints } = event.detail;
+      
       cachedRotation[0] = transform.rotation.x;
       cachedRotation[1] = transform.rotation.y;
       cachedRotation[2] = transform.rotation.z;
@@ -85,16 +97,29 @@ class NoseTrackingExample extends Component {
       this.object.rotationWorld.set(cachedRotation);
       this.object.setTranslationWorld(cachedPosition);
       this.object.scalingWorld.set(cachedScale);
-      
+
       //this.nose.setTranslationWorld([attachmentPoints.noseTip.position.x, attachmentPoints.noseTip.position.y, attachmentPoints.noseTip.position.z]);
       this.nose.setTranslationLocal([attachmentPoints.noseTip.position.x, attachmentPoints.noseTip.position.y, attachmentPoints.noseTip.position.z])
       // console.log(attachmentPoints);
     })
 
-    camera.onFaceLost.push((event) => {
+    camera.onFaceLost.push((_event) => {
       this.object.scalingWorld = [0, 0, 0];
       cachedScale[0] = cachedScale[1] = cachedScale[2] = 0;
     });
+  }
+
+  private updateFaceMesh = (event: eny) => {
+    const { vertices, normals } = event.detail;
+
+    const meshNormals = this.mesh!.attribute(MeshAttribute.Normal)!;
+    const positions = this.mesh!.attribute(MeshAttribute.Position)!;
+
+    for (let i = 0; i < vertices.length; i++) {
+      positions.set(i, [vertices[i].x, vertices[i].y, vertices[i].z]);
+      meshNormals.set(i, [normals[i].x, normals[i].y, normals[i].z]);
+    }
+    this.mesh!.update();
   }
 }
 
