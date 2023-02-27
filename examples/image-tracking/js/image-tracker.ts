@@ -30,7 +30,7 @@ class ImageTrackingExample extends Component {
       return;
     }
 
-    const camera = this.ARImageTrackingCamera.getComponent(ARImageTrackingCamera.TypeName) as unknown as ARImageTrackingCamera;
+    const camera = this.ARImageTrackingCamera.getComponent(ARImageTrackingCamera);
 
     if (!camera) {
       throw new Error(`${ARImageTrackingCamera.TypeName} was not found on ARImageTrackingCamera`)
