@@ -7,6 +7,7 @@ declare var WEBXR_OPTIONAL_FEATURES: string[];
 
 declare type XR8CameraPipelineModule = {
   name: string;
+  onAttach?: (...args: any) => void; 
   onStart?: () => void;
   onException?: (error: string) => void;
 }

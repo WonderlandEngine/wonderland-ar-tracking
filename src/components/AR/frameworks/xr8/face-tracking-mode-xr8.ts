@@ -12,12 +12,19 @@ class FaceTracking_XR8 extends TrackingMode {
   private cachedPosition = [0, 0, 0]; // cache 8thwall cam position
   private cachedRotation = [0, 0, 0, -1]; // cache 8thwall cam rotation
 
+  public readonly onFaceLoading: Array<(event: any) => void> = [];
   public readonly onFaceFound: Array<(event: any) => void> = [];
   public readonly onFaceUpdate: Array<(event: any) => void> = [];
   public readonly onFaceLost: Array<(event: any) => void> = [];
 
   // consumed by 8thwall
   public readonly listeners = [
+    {
+      event: 'facecontroller.faceloading', process: (event: unknown) => {
+        this.onFaceLoading.forEach(callback => callback(event));
+      }
+    },
+
     {
       event: 'facecontroller.facefound', process: (event: unknown) => {
         this.onFaceFound.forEach(callback => callback(event));
@@ -36,6 +43,7 @@ class FaceTracking_XR8 extends TrackingMode {
   ];
 
   public init() {
+    
     const input = this.component.object.getComponent('input');
     if (input) {
       input.active = false; // 8thwall will handle the camera pose
