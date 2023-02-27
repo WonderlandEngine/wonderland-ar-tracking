@@ -35,6 +35,12 @@ declare type XR8HitTestType = {
   DETECTED_SURFACE: 'DETECTED_SURFACE'
 }
 
+
+declare type XR8TrackingStatusEvent = {
+  status: 'LIMITED' | 'NORMAL',
+  reason: 'INITIALIZING' | 'UNDEFINED'
+}
+
 declare type XR8ImageTrackedEvent = {
   name: string,
   detail: {
@@ -51,6 +57,56 @@ declare type XR8ImageTrackedEvent = {
     radiusBottom?: number, //	Radius of the curved target at the bottom.
     arcStartRadians?: number, // Starting angle in radians.
     arcLengthRadians?: number, //	Central angle in radians.
+  }
+}
+
+declare type XR8VPSMeshFoundEvent = {
+  name: string,
+  detail: {
+    id: string,
+    position: { x: number, y: number, z: number },
+    rotation: { x: number, y: number, z: number, w: number },
+    geometry: {
+      index: Uint32Array,
+      attributes: [
+        {
+          name: 'position',
+          array: Float32Array,
+          itemSize: 3
+        },
+        {
+          name: 'color',
+          array: Float32Array,
+          itemSize: 3
+        }
+      ]
+    }
+  }
+}
+
+declare type XR8VPSMeshUpdatedEvent = {
+  name: string,
+  detail: {
+    id: string,
+    position: { x: number, y: number, z: number },
+    rotation: { x: number, y: number, z: number, w: number },
+  }
+}
+
+declare type XR8VPSMeshLostEvent = {
+  name: string,
+  detail: {
+    id: string,
+  }
+}
+
+
+declare type XR8VPSWayPointEvent = {
+  name: string,
+  detail: {
+    name: string,
+    position: { x: number, y: number, z: number },
+    rotation: { x: number, y: number, z: number, w: number },
   }
 }
 

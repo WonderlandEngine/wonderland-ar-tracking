@@ -30,12 +30,12 @@ class WorldTracking_XR8 extends TrackingMode {
 
   public readonly onImageFound: Array<(event: XR8ImageTrackedEvent) => void> = [];
   public readonly onImageUpdate: Array<(event: XR8ImageTrackedEvent) => void> = [];
-  public readonly onImageLost: Array<(event: any) => void> = [];
+  public readonly onImageLost: Array<(event: XR8ImageTrackedEvent) => void> = [];
 
-  public readonly onMeshFound: Array<(event: any) => void> = [];
-  public readonly onWaySpotFound: Array<(event: any) => void> = [];
-  public readonly onWaySpotUpdated: Array<(event: any) => void> = [];
-  public readonly onWaySpotLost: Array<(event: any) => void> = [];
+  public readonly onMeshFound: Array<(event: XR8VPSMeshFoundEvent) => void> = [];
+  public readonly onWaySpotFound: Array<(event: XR8VPSWayPointEvent) => void> = [];
+  public readonly onWaySpotUpdated: Array<(event: XR8VPSWayPointEvent) => void> = [];
+  public readonly onWaySpotLost: Array<(event: XR8VPSWayPointEvent) => void> = [];
 
   // consumed by 8thwall
   public readonly listeners = [
@@ -44,6 +44,11 @@ class WorldTracking_XR8 extends TrackingMode {
         this.onTrackingStatus.forEach(callback => callback(event));
       },
     },
+
+    //////////////////////////
+    //// VPS Image Events ///
+    ////////////////////////
+
     {
       event: 'reality.imagefound', process: (event: XR8ImageTrackedEvent) => {
         this.onImageFound.forEach(callback => callback(event));
@@ -55,51 +60,67 @@ class WorldTracking_XR8 extends TrackingMode {
       }
     },
     {
-      event: 'reality.imagelost', process: (event: unknown) => {
+      event: 'reality.imagelost', process: (event: XR8ImageTrackedEvent) => {
         this.onImageLost.forEach(callback => callback(event));
       }
     },
 
+
+    //////////////////////////
+    /// VPS Mesh Events /////
+    ////////////////////////
     {
-      event: 'reality.meshfound', process: (event: unknown) => {
+      event: 'reality.meshfound', process: (event: XR8VPSMeshFoundEvent) => {
         this.onMeshFound.forEach(callback => callback(event));
       }
     },
 
+   
+    // Seems like not implemented by xr8 yet
     {
-      event: 'reality.meshupdated', process: (event: unknown) => {
-        // Seems like not implemented by xr8 yet
+      event: 'reality.meshupdated', process: (event: XR8VPSMeshUpdatedEvent) => {
+        console.log("Mesh is updated");
       }
     },
+   
 
+    /*
+    // Seems like not implemented by xr8 yet
     {
-      event: 'reality.meshlost', process: (event: unknown) => {
-        // Seems like not implemented by xr8 yet
+      event: 'reality.meshlost', process: (event: XR8VPSMeshLostEvent) => {
+        
       }
     },
+    */
 
+    /*
+    // TODO - this indicated that xr8 started looking for the feature points
+    // However, I feel this is not really informative event since your app logic
+    // will naturally expect that the scanning has started.
     {
       event: 'reality.projectwayspotscanning', process: (event: unknown) => {
-        // TODO - this indicated that xr8 started looking for the feature points
-        // However, I feel this is not really informative event since your app logic
-        // will naturally expect that the scanning has started.
+        
       }
-    },
+    },*/
 
+    //////////////////////////
+    // VPS Waypoint Events //
+    ////////////////////////
     {
-      event: 'reality.projectwayspotfound', process: (event: unknown) => {
+      event: 'reality.projectwayspotfound', process: (event: XR8VPSWayPointEvent) => {
         this.onWaySpotFound.forEach(callback => callback(event));
       }
     },
 
     {
-      event: 'reality.projectwayspotupdated', process: (event: unknown) => {
+      event: 'reality.projectwayspotupdated', process: (event: XR8VPSWayPointEvent) => {
+        console.log("wayspot updated");
         this.onWaySpotUpdated.forEach(callback => callback(event));
       }
     },
 
     {
-      event: 'reality.projectwayspotlost', process: (event: unknown) => {
+      event: 'reality.projectwayspotlost', process: (event: XR8VPSWayPointEvent) => {
         this.onWaySpotLost.forEach(callback => callback(event));
       }
     },

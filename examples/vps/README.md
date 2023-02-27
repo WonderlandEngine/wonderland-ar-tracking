@@ -28,4 +28,4 @@ To successfully run in
 
 # Some notes
 If you need better quality scaned models, you can download the scans as .glb files from the geospatial-browser. You can show/hide those models depending on the detected waypoints.
-Alternatively, the scanned mesh can be generated dynamically from the data received from the 8thwall. However, this mesh is lower quality and currently 8thwall is only sending you the mesh of the very first waypoint detected. 
+Alternatively, the scanned mesh can be generated dynamically from the data received from the 8thwall. However, this mesh is lower quality and currently 8thwall can send any mesh from the detected waypoints and there is no way knowing to which waypoint the mesh belongs..
