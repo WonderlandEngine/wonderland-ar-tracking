@@ -38,7 +38,6 @@ class ARFaceTrackingCamera extends ARCamera {
     if (!this.object.getComponent('view')) {
       throw new Error('AR-camera requires a view component');
     }
-
     this.trackingImpl.init();
   }
 

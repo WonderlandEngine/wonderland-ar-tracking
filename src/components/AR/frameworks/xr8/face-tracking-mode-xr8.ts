@@ -12,31 +12,40 @@ class FaceTracking_XR8 extends TrackingMode {
   private cachedPosition = [0, 0, 0]; // cache 8thwall cam position
   private cachedRotation = [0, 0, 0, -1]; // cache 8thwall cam rotation
 
-  public readonly onFaceLoading: Array<(event: any) => void> = [];
-  public readonly onFaceFound: Array<(event: any) => void> = [];
-  public readonly onFaceUpdate: Array<(event: any) => void> = [];
-  public readonly onFaceLost: Array<(event: any) => void> = [];
+  public readonly onFaceScanning: Array<(event: XR8FaceLoadingEvent) => void> = [];
+  public readonly onFaceLoading: Array<(event: XR8FaceLoadingEvent) => void> = [];
+  public readonly onFaceFound: Array<(event: XR8FaceFoundEvent) => void> = [];
+  public readonly onFaceUpdate: Array<(event: XR8FaceFoundEvent) => void> = [];
+  public readonly onFaceLost: Array<(event: xr8FaceLostEvent) => void> = [];
 
   // consumed by 8thwall
   public readonly listeners = [
     {
-      event: 'facecontroller.faceloading', process: (event: unknown) => {
+      // Fires when loading begins for additional face AR resources.
+      event: 'facecontroller.faceloading', process: (event: XR8FaceLoadingEvent) => { 
         this.onFaceLoading.forEach(callback => callback(event));
       }
     },
 
     {
-      event: 'facecontroller.facefound', process: (event: unknown) => {
+      // Fires when all face AR resources have been loaded and scanning has begun.
+      event: 'facecontroller.facescanning', process: (event: XR8FaceLoadingEvent) => {
+        this.onFaceLoading.forEach(callback => callback(event));
+      }
+    },
+
+    {
+      event: 'facecontroller.facefound', process: (event: XR8FaceFoundEvent) => {
         this.onFaceFound.forEach(callback => callback(event));
       }
     },
     {
-      event: 'facecontroller.faceupdated', process: (event: unknown) => {
+      event: 'facecontroller.faceupdated', process: (event: XR8FaceFoundEvent) => {
         this.onFaceUpdate.forEach(callback => callback(event));
       }
     },
     {
-      event: 'facecontroller.facelost', process: (event: unknown) => {
+      event: 'facecontroller.facelost', process: (event: xr8FaceLostEvent) => {
         this.onFaceLost.forEach(callback => callback(event));
       }
     },

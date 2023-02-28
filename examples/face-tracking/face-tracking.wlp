@@ -122,16 +122,6 @@
         },
         "27": {
             "name": "NoseTracking",
-            "components": [
-                {
-                    "type": "nose-tracking-example",
-                    "nose-tracking-example": {
-                        "ARFaceTrackingCamera": "17",
-                        "nose": "66",
-                        "generatedMeshMaterial": "20"
-                    }
-                }
-            ],
             "translation": [
                 0.0,
                 0.0,
@@ -147,6 +137,16 @@
                 1.0,
                 1.0,
                 1.0
+            ],
+            "components": [
+                {
+                    "type": "face-attachment-point-example",
+                    "face-attachment-point-example": {
+                        "ARFaceTrackingCamera": "17",
+                        "attachmentPoint": "noseTip",
+                        "attachedObject": "66"
+                    }
+                }
             ]
         },
         "45": {
@@ -203,11 +203,11 @@
                 -4.17432275412466e-8,
                 0.0440553,
                 -0.999029,
-                -4.559466759701536e-8
+                -4.5594667597015366e-8
             ],
             "translation": [
                 0.0,
-                5.681067705154419e-8,
+                5.6810677051544196e-8,
                 0.0
             ],
             "scaling": [
@@ -240,6 +240,127 @@
                 0.0,
                 0.0,
                 1.0
+            ]
+        },
+        "77": {
+            "name": "FaceMaskWireframe",
+            "translation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "scaling": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "parent": null,
+            "components": [
+                {
+                    "type": "face-mask-example",
+                    "face-mask-example": {
+                        "ARFaceTrackingCamera": "17",
+                        "faceMaskMaterial": "69"
+                    }
+                }
+            ]
+        },
+        "79": {
+            "name": "FaceMask",
+            "translation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "scaling": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "parent": null,
+            "components": [
+                {
+                    "type": "face-mask-example",
+                    "face-mask-example": {
+                        "ARFaceTrackingCamera": "17",
+                        "faceMaskMaterial": "78"
+                    }
+                }
+            ]
+        },
+        "81": {
+            "name": "Glasses-example",
+            "translation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "scaling": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "parent": null,
+            "components": [
+                {
+                    "type": "face-attachment-point-example",
+                    "face-attachment-point-example": {
+                        "ARFaceTrackingCamera": "17",
+                        "attachmentPoint": "noseBridge",
+                        "attachedObject": "83"
+                    }
+                }
+            ]
+        },
+        "83": {
+            "name": "Glasses",
+            "parent": "81"
+        },
+        "84": {
+            "name": "GlassesGeometry",
+            "parent": "83",
+            "components": [
+                {
+                    "type": "mesh",
+                    "mesh": {
+                        "mesh": "87",
+                        "material": "86"
+                    }
+                }
+            ],
+            "rotation": [
+                -3.090862321641907e-8,
+                -0.7071068,
+                0.7071068,
+                -3.090862321641907e-8
+            ],
+            "scaling": [
+                0.1,
+                0.1,
+                0.1
+            ],
+            "translation": [
+                0.5,
+                0.0,
+                0.0
             ]
         }
     },
@@ -284,6 +405,12 @@
             "link": {
                 "name": "headOccluder",
                 "file": "models\\head-occluder-cm92ohq49a.glb"
+            }
+        },
+        "87": {
+            "link": {
+                "name": "Mesh.004",
+                "file": "models\\stereo-glasses-9hc20dp5o8.glb"
             }
         }
     },
@@ -384,6 +511,29 @@
             "link": {
                 "name": "Default OBJ.001",
                 "file": "models\\head-occluder-cm92ohq49a.glb"
+            }
+        },
+        "69": {
+            "name": "FaceMaskWireframe",
+            "pipeline": "39",
+            "Phong": {
+                "diffuseTexture": "74"
+            },
+            "Particle": {
+                "mainTexture": "68"
+            }
+        },
+        "78": {
+            "name": "FaceMask",
+            "pipeline": "39",
+            "Phong": {
+                "diffuseTexture": "72"
+            }
+        },
+        "86": {
+            "link": {
+                "name": "blinn3",
+                "file": "models\\stereo-glasses-9hc20dp5o8.glb"
             }
         }
     },
@@ -654,10 +804,49 @@
     },
     "files": [
         "models/ar-target.glb",
-        "models/head-occluder-cm92ohq49a.glb"
+        "models/head-occluder-cm92ohq49a.glb",
+        "textures/tat-exk9qri648.png",
+        "textures/wonderland-xr8.png",
+        "textures/uv-bright.png",
+        "textures/uv-black.png",
+        "models/stereo-glasses-9hc20dp5o8.glb"
     ],
-    "textures": {},
-    "images": {},
+    "textures": {
+        "72": {
+            "link": {
+                "name": "wonderland-xr8.png",
+                "file": "textures\\wonderland-xr8.png"
+            }
+        },
+        "74": {
+            "link": {
+                "name": "uv-bright.png",
+                "file": "textures\\uv-bright.png"
+            }
+        }
+    },
+    "images": {
+        "71": {
+            "link": {
+                "name": "wonderland-xr8.png",
+                "file": "textures\\wonderland-xr8.png"
+            },
+            "maxSize": [
+                2048,
+                2048
+            ]
+        },
+        "73": {
+            "link": {
+                "name": "uv-bright.png",
+                "file": "textures\\uv-bright.png"
+            },
+            "maxSize": [
+                1024,
+                1024
+            ]
+        }
+    },
     "fonts": {
         "59": {
             "link": {

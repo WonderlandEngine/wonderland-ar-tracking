@@ -1,27 +1,22 @@
 import { Component, Material, Mesh, MeshAttribute, MeshComponent, MeshIndexType, Object as WLEObject, Type } from '@wonderlandengine/api';
-import { ARFaceTrackingCamera } from '../../../';
+import { ARFaceTrackingCamera } from '../../..';
 
-class NoseTrackingExample extends Component {
-  public static TypeName = 'nose-tracking-example';
+class FaceMaskExample extends Component {
+  public static TypeName = 'face-mask-example';
   public static Properties = {
-    ARFaceTrackingCamera: { type: Type.Object },
-    nose: { type: Type.Object },
-    generatedMeshMaterial: { type: Type.Material }, // MAterial to use for the generated mesh
+    ARFaceTrackingCamera: { type: Type.Object },  
+    faceMaskMaterial: { type: Type.Material }, // MAterial to use for the generated mesh
   };
 
   // injected by WL..
   private ARFaceTrackingCamera!: WLEObject;
 
   // injected by WL..
-  private nose!: WLEObject;
-
-  // injected by WL..
-  private generatedMeshMaterial!: Material;
+  private faceMaskMaterial!: Material;
 
 
   private mesh: Mesh | null = null;
   private meshComp: MeshComponent | null = null;
-
 
   start() {
     if (!this.ARFaceTrackingCamera) {
@@ -40,25 +35,20 @@ class NoseTrackingExample extends Component {
 
     this.object.scalingWorld = [0, 0, 0];
 
+    if (!this.mesh) {
+      this.meshComp = this.object.addComponent('mesh', {})!;
+      this.meshComp.material = this.faceMaskMaterial;
+    }
+
 
     camera.onFaceLoading.push(event => {
-      // console.log("event", event);
-      if (!this.mesh) {
-        this.meshComp = this.object.addComponent('mesh', {})!;
-        this.meshComp.material = this.generatedMeshMaterial;
-      }
+      
       const { indices, uvs, pointsPerDetection } = event.detail;
-
-      /*const vertexData = event.detail.geometry.attributes[0].array;
-      const colorData = event.detail.geometry.attributes[1].array;
-      const indexData = event.detail.geometry.index.array;**/
 
       const indexData = indices.reduce((data: any, current: any) => {
         data.push(...Object.values(current));
         return data;
       }, []);
-
-      //  console.log("pointsPerDetection", pointsPerDetection * 3);
 
       this.mesh = new Mesh({
         vertexCount: pointsPerDetection,
@@ -66,17 +56,22 @@ class NoseTrackingExample extends Component {
         indexType: MeshIndexType.UnsignedInt,
       });
 
+      const textureCoordinate = this.mesh!.attribute(MeshAttribute.TextureCoordinate)!;
+
+      for (let i = 0; i < uvs.length; i++) {
+        textureCoordinate.set(i, [uvs[i].u, uvs[i].v]);
+      }
+
       this.meshComp!.mesh = this.mesh;
     });
 
     camera.onFaceFound.push(this.updateFaceMesh);
 
-
     camera.onFaceUpdate.push((event) => {
 
       this.updateFaceMesh(event);
 
-      const { transform, attachmentPoints } = event.detail;
+      const { transform } = event.detail;
       
       cachedRotation[0] = transform.rotation.x;
       cachedRotation[1] = transform.rotation.y;
@@ -97,10 +92,6 @@ class NoseTrackingExample extends Component {
       this.object.rotationWorld.set(cachedRotation);
       this.object.setTranslationWorld(cachedPosition);
       this.object.scalingWorld.set(cachedScale);
-
-      //this.nose.setTranslationWorld([attachmentPoints.noseTip.position.x, attachmentPoints.noseTip.position.y, attachmentPoints.noseTip.position.z]);
-      this.nose.setTranslationLocal([attachmentPoints.noseTip.position.x, attachmentPoints.noseTip.position.y, attachmentPoints.noseTip.position.z])
-      // console.log(attachmentPoints);
     })
 
     camera.onFaceLost.push((_event) => {
@@ -109,11 +100,12 @@ class NoseTrackingExample extends Component {
     });
   }
 
-  private updateFaceMesh = (event: eny) => {
+  private updateFaceMesh = (event: any) => {
     const { vertices, normals } = event.detail;
 
     const meshNormals = this.mesh!.attribute(MeshAttribute.Normal)!;
     const positions = this.mesh!.attribute(MeshAttribute.Position)!;
+    const uvs = this.mesh!.attribute(MeshAttribute.TextureCoordinate)!;
 
     for (let i = 0; i < vertices.length; i++) {
       positions.set(i, [vertices[i].x, vertices[i].y, vertices[i].z]);
@@ -123,4 +115,4 @@ class NoseTrackingExample extends Component {
   }
 }
 
-WL.registerComponent(NoseTrackingExample);
+WL.registerComponent(FaceMaskExample);

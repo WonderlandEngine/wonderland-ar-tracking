@@ -2,4 +2,5 @@ import '@wonderlandengine/components';
 
 import '../../common-components';
 
-import './nose-tracking-example'
+import './face-attachment-point-example'
+import './face-mask-example'
