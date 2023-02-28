@@ -152,8 +152,6 @@ declare type XR8ImageScanningEvent = {
         originalWidth: number,
         physicalWidthInMeters: number | null
       } | null,
-
-
     }[],
   }
 }

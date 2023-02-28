@@ -1,6 +1,6 @@
 /**
  * Generates data for Cylindrical geometry.
- * Port from https://github.com/mrdoob/three.js/blob/dev/src/math/Cylindrical.js
+ * Port from https://github.com/mrdoob/three.js/blob/dev/src/geometries/CylinderGeometry.js
  * Modified to work with gl-matrix vectors
  */
 
@@ -12,16 +12,16 @@ const generateCylinderGeometry = (radiusTop = 1, radiusBottom = 1, height = 1, r
   heightSegments = Math.floor(heightSegments);
 
   // buffers
-  const indices: any = [];
-  const vertices: any = [];
-  const normals: any = [];
-  const uvs: any = [];
+  const indices: number[] = [];
+  const vertices: number[] = [];
+  const normals: number[] = [];
+  const uvs: number[] = [];
 
   // helper variables
   let index = 0;
-  const indexArray: any = [];
+  const indexArray: number[][]= [];
   const halfHeight = height / 2;
-  let groupStart = 0;
+  
 
   // generate geometry
   generateTorso();
@@ -47,7 +47,6 @@ const generateCylinderGeometry = (radiusTop = 1, radiusBottom = 1, height = 1, r
     const normal = vec3.create();
     const vertex = vec3.create();
 
-    let groupCount = 0;
 
     // this will be used to calculate the normal
     const slope = (radiusBottom - radiusTop) / height;
@@ -56,7 +55,7 @@ const generateCylinderGeometry = (radiusTop = 1, radiusBottom = 1, height = 1, r
 
     for (let y = 0; y <= heightSegments; y++) {
 
-      const indexRow = [];
+      const indexRow: number[] = [];
 
       const v = y / heightSegments;
 
@@ -81,8 +80,6 @@ const generateCylinderGeometry = (radiusTop = 1, radiusBottom = 1, height = 1, r
         vertices.push(vertex[0], vertex[1], vertex[2]);
 
         // normal
-
-        //normal.set(sinTheta, slope, cosTheta).normalize();
         vec3.normalize(normal, vec3.set(normal, sinTheta, slope, cosTheta));
         normals.push(normal[0], normal[1], normal[2]);
 
@@ -114,15 +111,8 @@ const generateCylinderGeometry = (radiusTop = 1, radiusBottom = 1, height = 1, r
         indices.push(a, b, d);
         indices.push(b, c, d);
 
-        // update group counter
-        groupCount += 6;
-
       }
     }
-
-    // calculate new start value for groups
-    groupStart += groupCount;
-
   }
 
   function generateCap(top: any) {
@@ -133,8 +123,7 @@ const generateCylinderGeometry = (radiusTop = 1, radiusBottom = 1, height = 1, r
     const uv = vec2.create();
     const vertex = vec3.create();
 
-    let groupCount = 0;
-
+    
     const radius = (top === true) ? radiusTop : radiusBottom;
     const sign = (top === true) ? 1 : - 1;
 
@@ -218,13 +207,7 @@ const generateCylinderGeometry = (radiusTop = 1, radiusBottom = 1, height = 1, r
         indices.push(i + 1, i, c);
 
       }
-
-      groupCount += 3;
-
     }
-
-    // calculate new start value for groups
-    groupStart += groupCount;
 
   }
 }

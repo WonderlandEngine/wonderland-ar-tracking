@@ -22,4 +22,4 @@ import '@wonderlandengine/components';
 import '../../common-components';
 
 import './image-tracker'
-import './cylindrical-image-target'
+import './physical-size-image-target'

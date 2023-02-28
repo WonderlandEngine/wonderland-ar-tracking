@@ -1,15 +1,15 @@
 import { Component, Object as WLEObject, Type, MeshComponent, Mesh, MeshIndexType, MeshAttribute, Material } from '@wonderlandengine/api';
 import { ARImageTrackingCamera, ARSession } from '../../..';
 import { generateCylinderGeometry } from './CylinderGeomtery';
+import { generatePlaneGeomtry } from './PlaneGeometry';
 
-class CylindricalImageTargetExample extends Component {
+class PhysicalSizeImageTarget extends Component {
 
-  public static TypeName = 'cylindrical-image-target-example';
+  public static TypeName = 'physical-size-image-target-example';
   public static Properties = {
     ARImageTrackingCamera: { type: Type.Object },
     imageId: { type: Type.String },
     meshMaterial: { type: Type.Material },
-
   };
 
   // injected by WL..
@@ -27,7 +27,6 @@ class CylindricalImageTargetExample extends Component {
   private mesh: Mesh | null = null;
   private meshComp: MeshComponent | null = null;
 
-
   start() {
     if (!this.ARImageTrackingCamera) {
       console.warn(`${this.object.name}/${this.type} requires a ${ARImageTrackingCamera.TypeName}`);
@@ -39,7 +38,7 @@ class CylindricalImageTargetExample extends Component {
     if (!camera) {
       throw new Error(`${ARImageTrackingCamera.TypeName} was not found on ARImageTrackingCamera`)
     }
-   
+
     camera.onImageScanning.push(this.onImageScanned);
 
     camera.onImageFound.push(this.onImageFound);
@@ -48,7 +47,7 @@ class CylindricalImageTargetExample extends Component {
 
     camera.onImageLost.push((event: XR8ImageTrackedEvent) => {
       if (event.detail.name === this.imageId) {
-       this.meshComp!.active = false;
+        this.meshComp!.active = false;
       }
     });
 
@@ -63,6 +62,21 @@ class CylindricalImageTargetExample extends Component {
     })
   }
 
+
+
+  private createCylinderMesh = (imageData: XR8ImageScanningEvent["detail"]["imageTargets"][0]) => {
+      const { geometry } = imageData;
+      const length = geometry.arcLengthRadians!;
+      return generateCylinderGeometry(geometry.radiusTop, geometry.radiusBottom, geometry.height, 50, 1, true, ((2 * Math.PI - length) / 2) + Math.PI, length)
+
+
+  }
+
+  private createFlatMesh = (imageData: XR8ImageScanningEvent["detail"]["imageTargets"][0]) => {
+    const { geometry } = imageData;
+    return generatePlaneGeomtry(geometry.scaleWidth!, geometry.scaledHeight!);
+  }
+
   private onImageScanned = (event: XR8ImageScanningEvent) => {
     const imageData = event.detail.imageTargets.find(target => target.name === this.imageId);
     if (!imageData) {
@@ -70,37 +84,39 @@ class CylindricalImageTargetExample extends Component {
       return;
     }
 
-    if (imageData.type === "CYLINDRICAL") {
-      // radiusTop = 1, radiusBottom = 1, height = 1, radialSegments = 32, heightSegments = 1, openEnded = false, thetaStart = 0, thetaLength = Math.PI * 2
-      const { geometry } = imageData;
-      const length = geometry.arcLengthRadians!;
-
-      const { indices, vertices, normals, uvs } = generateCylinderGeometry(geometry.radiusTop, geometry.radiusBottom, geometry.height, 50, 1, true, ((2 * Math.PI - length) / 2) + Math.PI, length)
-
-      this.meshComp = this.object.addComponent('mesh', {})!;
-      this.meshComp.material = this.meshMaterial;
-
-      this.mesh = new Mesh({
-        vertexCount: vertices.length / 3,
-        indexData: indices,
-        indexType: MeshIndexType.UnsignedInt,
-      });
-
-      const meshPositions = this.mesh!.attribute(MeshAttribute.Position)!;
-      const meshNormals = this.mesh!.attribute(MeshAttribute.Normal)!;
-      const meshUvs = this.mesh!.attribute(MeshAttribute.TextureCoordinate)!;
-      for (let i = 0; i < vertices.length; i += 3) {
-        meshPositions.set(i / 3, [vertices[i], vertices[i + 1], vertices[i + 2]]);
-        meshNormals.set(i / 3, [normals[i], normals[i + 1], normals[i + 2]]);
-      }
-
-      for (let i = 0; i < uvs.length; i += 2) {
-        meshUvs.set(i / 2, [uvs[i], uvs[i + 1]]);
-      }
-
-      this.meshComp.mesh = this.mesh;
-      this.meshComp.active = false; // hide until found
+    let geometryData;
+    if (imageData.type === 'FLAT') {
+      geometryData = this.createFlatMesh(imageData);
     }
+    else {
+      geometryData = this.createCylinderMesh(imageData)
+    }
+
+    const { indices, vertices, normals, uvs } = geometryData;
+
+    this.meshComp = this.object.addComponent('mesh', {})!;
+    this.meshComp.material = this.meshMaterial;
+
+    this.mesh = new Mesh({
+      vertexCount: vertices.length / 3,
+      indexData: indices,
+      indexType: MeshIndexType.UnsignedInt,
+    });
+
+    const meshPositions = this.mesh!.attribute(MeshAttribute.Position)!;
+    const meshNormals = this.mesh!.attribute(MeshAttribute.Normal)!;
+    const meshUvs = this.mesh!.attribute(MeshAttribute.TextureCoordinate)!;
+    for (let i = 0; i < vertices.length; i += 3) {
+      meshPositions.set(i / 3, [vertices[i], vertices[i + 1], vertices[i + 2]]);
+      meshNormals.set(i / 3, [normals[i], normals[i + 1], normals[i + 2]]);
+    }
+
+    for (let i = 0; i < uvs.length; i += 2) {
+      meshUvs.set(i / 2, [uvs[i], uvs[i + 1]]);
+    }
+
+    this.meshComp.mesh = this.mesh;
+    this.meshComp.active = false; // hide until found
   }
 
 
@@ -113,10 +129,10 @@ class CylindricalImageTargetExample extends Component {
 
   private onImageUpdated = (event: XR8ImageTrackedEvent) => {
     if (event.detail.name !== this.imageId) {
-      return
+      return;
     }
 
-    const { rotation, position, scale } = event.detail
+    const { rotation, position, scale } = event.detail;
 
     this.cachedRotation[0] = rotation.x;
     this.cachedRotation[1] = rotation.y;
@@ -137,4 +153,4 @@ class CylindricalImageTargetExample extends Component {
   }
 
 }
-WL.registerComponent(CylindricalImageTargetExample);
+WL.registerComponent(PhysicalSizeImageTarget);

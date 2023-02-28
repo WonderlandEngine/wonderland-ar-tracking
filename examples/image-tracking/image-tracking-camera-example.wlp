@@ -252,14 +252,28 @@
             "name": "CylindricalImageTarget",
             "components": [
                 {
-                    "type": "cylindrical-image-target-example",
-                    "cylindrical-image-target-example": {
+                    "type": "physical-size-image-target-example",
+                    "physical-size-image-target-example": {
                         "ARImageTrackingCamera": "17",
                         "imageId": "augustiner",
                         "meshMaterial": "67"
                     }
                 }
             ]
+        },
+        "70": {
+            "name": "FlatImageTarget",
+            "components": [
+                {
+                    "type": "physical-size-image-target-example",
+                    "physical-size-image-target-example": {
+                        "ARImageTrackingCamera": "17",
+                        "imageId": "PXL_20230119_120208139_2",
+                        "meshMaterial": "67"
+                    }
+                }
+            ],
+            "parent": null
         }
     },
     "meshes": {
