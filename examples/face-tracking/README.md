@@ -9,11 +9,4 @@ To successfully run in
 </script>
 ```
 
-- Make sure const `WEBXR_REQUIRED_FEATURES` and `WEBXR_OPTIONAL_FEATURES` are defined in the index.html file
-```
-<script>
-      const WEBXR_REQUIRED_FEATURES = [{{ webxrRequiredFeatures }}];
-      const WEBXR_OPTIONAL_FEATURES = [{{ webxrOptionalFeatures }}];
-</script>
-```
 - Make sure the app is running on HTTPS.
