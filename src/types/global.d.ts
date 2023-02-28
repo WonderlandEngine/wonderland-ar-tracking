@@ -191,7 +191,6 @@ declare type XR8VPSWayPointEvent = {
   }
 }
 
-
 declare type XR8FaceLoadingEvent = {
   name: string,
   detail: {
@@ -201,12 +200,6 @@ declare type XR8FaceLoadingEvent = {
     uvs: [{ u: number, v: number }]
   }
 }
-
-
-export var SomeVar: {
-  "SOME": "optionm",
-}
-
 
 declare type XR8FaceFoundEvent = {
   name: string,
