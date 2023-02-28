@@ -105,7 +105,6 @@ class FaceMaskExample extends Component {
 
     const meshNormals = this.mesh!.attribute(MeshAttribute.Normal)!;
     const positions = this.mesh!.attribute(MeshAttribute.Position)!;
-    const uvs = this.mesh!.attribute(MeshAttribute.TextureCoordinate)!;
 
     for (let i = 0; i < vertices.length; i++) {
       positions.set(i, [vertices[i].x, vertices[i].y, vertices[i].z]);

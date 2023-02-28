@@ -28,6 +28,7 @@ class WorldTracking_XR8 extends TrackingMode {
 
   public readonly onTrackingStatus: Array<(event: any) => void> = [];
 
+  public readonly onImageScanning: Array<(event: XR8ImageScanningEvent) => void> = [];
   public readonly onImageFound: Array<(event: XR8ImageTrackedEvent) => void> = [];
   public readonly onImageUpdate: Array<(event: XR8ImageTrackedEvent) => void> = [];
   public readonly onImageLost: Array<(event: XR8ImageTrackedEvent) => void> = [];
@@ -48,6 +49,12 @@ class WorldTracking_XR8 extends TrackingMode {
     //////////////////////////
     //// VPS Image Events ///
     ////////////////////////
+
+    {
+      event: 'reality.imagescanning', process: (event: XR8ImageScanningEvent) => {
+        this.onImageScanning.forEach(callback => callback(event));
+      }
+    },
 
     {
       event: 'reality.imagefound', process: (event: XR8ImageTrackedEvent) => {

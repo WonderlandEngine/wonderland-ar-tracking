@@ -7,9 +7,9 @@
     "declaration": true,
     "newLine": "LF",
     "allowJs": false,
-    "strict": true
+    "strict": true,
   },
 
-  "include": [ "./src/**/*.ts", "index.ts" ],
+  "include": [ "./src/**/*.ts", "index.ts"],
   "exclude": [ "node_modules" ]
 }

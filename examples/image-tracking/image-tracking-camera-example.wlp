@@ -8,6 +8,9 @@
                     "wasd-controls": {
                         "headObject": "17"
                     }
+                },
+                {
+                    "type": "mouse-look"
                 }
             ],
             "translation": [
@@ -38,7 +41,10 @@
                     "type": "input"
                 },
                 {
-                    "type": "AR-image-tracking-camera"
+                    "type": "AR-image-tracking-camera",
+                    "AR-image-tracking-camera": {
+                        "EnableSLAM": true
+                    }
                 },
                 {
                     "type": "button-start-ar-session"
@@ -241,6 +247,19 @@
                 0.5
             ],
             "parent": null
+        },
+        "64": {
+            "name": "CylindricalImageTarget",
+            "components": [
+                {
+                    "type": "cylindrical-image-target-example",
+                    "cylindrical-image-target-example": {
+                        "ARImageTrackingCamera": "17",
+                        "imageId": "augustiner",
+                        "meshMaterial": "67"
+                    }
+                }
+            ]
         }
     },
     "meshes": {
@@ -374,25 +393,14 @@
                 ]
             }
         },
-        "42": {
-            "link": {
-                "name": "AR Target Material",
-                "file": "models\\ar-target.glb"
+        "67": {
+            "name": "CylindricalImageTargetTexture",
+            "pipeline": "35",
+            "Physical": {
+                "albedoTexture": "66"
             },
-            "pipeline": "39",
-            "Phong": {
-                "ambientColor": [
-                    0.5921568,
-                    0.5921509,
-                    0.5921509,
-                    1.0
-                ],
-                "diffuseColor": [
-                    1.0,
-                    0.9999899,
-                    0.9999899,
-                    1.0
-                ]
+            "Flat": {
+                "flatTexture": "69"
             }
         }
     },
@@ -662,10 +670,46 @@
         }
     },
     "files": [
-        "models/ar-target.glb"
+        "models/ar-target.glb",
+        "textures/Wonderland_Horizontal_FullColor_Logo-2048x416.png",
+        "textures/wallpapersden.com_synthwave-and-retrowave_3840x2160.jpg"
     ],
-    "textures": {},
-    "images": {},
+    "textures": {
+        "66": {
+            "link": {
+                "name": "Wonderland_Horizontal_FullColor_Logo-2048x416.png",
+                "file": "textures\\Wonderland_Horizontal_FullColor_Logo-2048x416.png"
+            }
+        },
+        "69": {
+            "link": {
+                "name": "wallpapersden.com_synthwave-and-retrowave_3840x2160.jpg",
+                "file": "textures\\wallpapersden.com_synthwave-and-retrowave_3840x2160.jpg"
+            }
+        }
+    },
+    "images": {
+        "65": {
+            "link": {
+                "name": "Wonderland_Horizontal_FullColor_Logo-2048x416.png",
+                "file": "textures\\Wonderland_Horizontal_FullColor_Logo-2048x416.png"
+            },
+            "maxSize": [
+                512,
+                104
+            ]
+        },
+        "68": {
+            "link": {
+                "name": "wallpapersden.com_synthwave-and-retrowave_3840x2160.jpg",
+                "file": "textures\\wallpapersden.com_synthwave-and-retrowave_3840x2160.jpg"
+            },
+            "maxSize": [
+                960,
+                540
+            ]
+        }
+    },
     "fonts": {
         "59": {
             "link": {
