@@ -1,5 +1,5 @@
-# SLAM (World tracking) camera demo
-Runs an AR session using WebXR Device AP where available with a fallback to 8th-wall implementation.
+# Face tracking example
+Run face tracking using 8thwall. Provides examples of face mesh rendering and the usage of face attachment points.
 
 To successfully run in 
 - make sure `API_TOKEN_XR8` is defined in the index.html file
