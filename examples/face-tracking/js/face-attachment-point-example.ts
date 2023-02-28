@@ -1,19 +1,23 @@
-import { Component, Object as WLEObject } from '@wonderlandengine/api';
-import { ARFaceTrackingCamera } from '../AR/cameras/AR-face-tracking-camera';
+import { Component, Material, Mesh, MeshAttribute, MeshComponent, MeshIndexType, Object as WLEObject, Type } from '@wonderlandengine/api';
+import { ARFaceTrackingCamera } from '../../..';
 
-class NoseTrackingExample extends Component {
-  public static TypeName = 'nose-tracking-example';
+
+const ATTACHMENT_POINTS = ['forehead', 'rightEyebrowInner', 'rightEyebrowMiddle', 'rightEyebrowOuter', 'leftEyebrowInner', 'leftEyebrowMiddle', 'leftEyebrowOuter', 'leftEar', 'rightEar', 'leftCheek', 'rightCheek', 'noseBridge', 'noseTip', 'leftEye', 'rightEye', 'leftEyeOuterCorner', 'rightEyeOuterCorner', 'upperLip', 'lowerLip', 'mouth', 'mouthRightCorner', 'mouthLeftCorner', 'chin'];
+class FaceAttachmentPointExample extends Component {
+  public static TypeName = 'face-attachment-point-example';
   public static Properties = {
-    ARFaceTrackingCamera: { type: WL.Type.Object },
-    nose: { type: WL.Type.Object },
+    ARFaceTrackingCamera: { type: Type.Object },
+    attachmentPoint: {type: Type.Enum, values: ATTACHMENT_POINTS},
+    attachedObject: { type: Type.Object },
   };
 
   // injected by WL..
   private ARFaceTrackingCamera!: WLEObject;
 
-  // injected by WL..
-  private nose!: WLEObject;
+  private attachmentPoint: number = 0;
 
+  // injected by WL..
+  private attachedObject!: WLEObject;
 
   start() {
     if (!this.ARFaceTrackingCamera) {
@@ -32,14 +36,10 @@ class NoseTrackingExample extends Component {
 
     this.object.scalingWorld = [0, 0, 0];
 
-    camera.onFaceFound.push((event) => {
-      /* do some animation? */
-    });
-
     camera.onFaceUpdate.push((event) => {
 
-      const { transform, attachmentPoints } = event.detail
-
+      const { transform, attachmentPoints } = event.detail;
+      
       cachedRotation[0] = transform.rotation.x;
       cachedRotation[1] = transform.rotation.y;
       cachedRotation[2] = transform.rotation.z;
@@ -48,27 +48,28 @@ class NoseTrackingExample extends Component {
       cachedPosition[0] = transform.position.x;
       cachedPosition[1] = transform.position.y;
       cachedPosition[2] = transform.position.z;
+      
 
-      const scale = transform.scale / 10;
-
+      const scale = transform.scale;
 
       cachedScale[0] = scale;
       cachedScale[1] = scale;
       cachedScale[2] = scale;
 
-
       this.object.rotationWorld.set(cachedRotation);
       this.object.setTranslationWorld(cachedPosition);
       this.object.scalingWorld.set(cachedScale);
-
-      this.nose.setTranslationLocal([attachmentPoints.noseBridge.position.x, attachmentPoints.noseBridge.position.y, attachmentPoints.noseBridge.position.z])
+      
+      const attachmentPoint = attachmentPoints[ATTACHMENT_POINTS[this.attachmentPoint]].position;
+      this.attachedObject.setTranslationLocal([attachmentPoint.x, attachmentPoint.y, attachmentPoint.z])
+      // console.log(attachmentPoints);
     })
 
-    camera.onFaceLost.push((event) => {
+    camera.onFaceLost.push((_event) => {
       this.object.scalingWorld = [0, 0, 0];
       cachedScale[0] = cachedScale[1] = cachedScale[2] = 0;
     });
   }
 }
 
-WL.registerComponent(NoseTrackingExample);
+WL.registerComponent(FaceAttachmentPointExample);

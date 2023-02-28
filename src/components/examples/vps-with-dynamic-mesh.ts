@@ -47,7 +47,7 @@ class VPSDynamicMeshExample extends Component {
     const meshData = await (await fetch("/vps-mesh-data.js")).json();
 
     const meshComp = this.object.addComponent('mesh', {});
-    meshComp.material = this.material;
+    meshComp!.material = this.material;
 
     const vertexData = new Float32Array(Object.values(meshData.detail.geometry.attributes[0].array));
     const colorData = Object.values(meshData.detail.geometry.attributes[1].array);
@@ -75,7 +75,7 @@ class VPSDynamicMeshExample extends Component {
     }
 
 
-    meshComp.mesh = mesh;
+    meshComp!.mesh = mesh;
 
     const { position, rotation } = meshData.detail
     const cachedPosition = [];
@@ -97,7 +97,7 @@ class VPSDynamicMeshExample extends Component {
 
   private createMesh = (meshData: any) => {
     const meshComp = this.object.addComponent('mesh', {});
-    meshComp.material = this.material;
+    meshComp!.material = this.material;
 
     const vertexData = meshData.detail.geometry.attributes[0].array;
     const colorData = meshData.detail.geometry.attributes[1].array;
@@ -126,7 +126,7 @@ class VPSDynamicMeshExample extends Component {
     }
 
 
-    meshComp.mesh = mesh;
+    meshComp!.mesh = mesh;
 
     const { position, rotation } = meshData.detail
     const cachedPosition = [];

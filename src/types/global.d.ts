@@ -7,6 +7,7 @@ declare var WEBXR_OPTIONAL_FEATURES: string[];
 
 declare type XR8CameraPipelineModule = {
   name: string;
+  onAttach?: (...args: any) => void;
   onStart?: () => void;
   onException?: (error: string) => void;
 }
@@ -27,6 +28,87 @@ declare type XR8FaceMeshFeatures = {
   FACE: 'face',
   MOUTH: 'mouth',
   EYES: 'eyes',
+}
+
+
+/*declare var XR8FaceAttachmentPoints: {
+  FOREHEAD: 'forehead',
+  RIGHT_EYEBROW_INNER: 'rightEyebrowInner',
+  RIGHT_EYEBROW_MIDDLE: 'rightEyebrowMiddle',
+  RIGHT_EYEBROW_OUTER: 'rightEyebrowOuter',
+  LEFT_EYEBROW_INNER: 'leftEyebrowInner',
+  LEFT_EYEBROW_MIDDLE: 'leftEyebrowMiddle',
+  LEFT_EYEBROW_OUTER: 'leftEyebrowOuter',
+  LEFT_EAR: 'leftEar',
+  RIGHT_EAR: 'rightEar',
+  LEFT_CHEEK: 'leftCheek',
+  RIGHT_CHEEK: 'rightCheek',
+  NOSE_BRIDGE: 'noseBridge',
+  NOSE_TIP: 'noseTip',
+  LEFT_EYE: 'leftEye',
+  RIGHT_EYE: 'rightEye',
+  LEFT_EYE_OUTER_CORNER: 'leftEyeOuterCorner',
+  RIGHT_EYE_OUTER_CORNER: 'rightEyeOuterCorner',
+  UPPER_LIP: 'upperLip',
+  LOWER_LIP: 'lowerLip',
+  MOUTH: 'mouth',
+  MOUTH_RIGHT_CORNER: 'mouthRightCorner',
+  MOUTH_LEFT_CORNER: 'mouthLeftCorner',
+  CHIN: 'chin'
+}*/
+
+
+declare type XR8FaceAttachmentPointsType = {
+  FOREHEAD: 'forehead',
+  RIGHT_EYEBROW_INNER: 'rightEyebrowInner',
+  RIGHT_EYEBROW_MIDDLE: 'rightEyebrowMiddle',
+  RIGHT_EYEBROW_OUTER: 'rightEyebrowOuter',
+  LEFT_EYEBROW_INNER: 'leftEyebrowInner',
+  LEFT_EYEBROW_MIDDLE: 'leftEyebrowMiddle',
+  LEFT_EYEBROW_OUTER: 'leftEyebrowOuter',
+  LEFT_EAR: 'leftEar',
+  RIGHT_EAR: 'rightEar',
+  LEFT_CHEEK: 'leftCheek',
+  RIGHT_CHEEK: 'rightCheek',
+  NOSE_BRIDGE: 'noseBridge',
+  NOSE_TIP: 'noseTip',
+  LEFT_EYE: 'leftEye',
+  RIGHT_EYE: 'rightEye',
+  LEFT_EYE_OUTER_CORNER: 'leftEyeOuterCorner',
+  RIGHT_EYE_OUTER_CORNER: 'rightEyeOuterCorner',
+  UPPER_LIP: 'upperLip',
+  LOWER_LIP: 'lowerLip',
+  MOUTH: 'mouth',
+  MOUTH_RIGHT_CORNER: 'mouthRightCorner',
+  MOUTH_LEFT_CORNER: 'mouthLeftCorner',
+  CHIN: 'chin'
+}
+
+
+declare enum XR8FaceAttachmentPoints {
+  FOREHEAD = 'forehead',
+  RIGHT_EYEBROW_INNER = 'rightEyebrowInner',
+  RIGHT_EYEBROW_MIDDLE = 'rightEyebrowMiddle',
+  RIGHT_EYEBROW_OUTER = 'rightEyebrowOuter',
+  LEFT_EYEBROW_INNER = 'leftEyebrowInner',
+  LEFT_EYEBROW_MIDDLE = 'leftEyebrowMiddle',
+  LEFT_EYEBROW_OUTER = 'leftEyebrowOuter',
+  LEFT_EAR = 'leftEar',
+  RIGHT_EAR = 'rightEar',
+  LEFT_CHEEK = 'leftCheek',
+  RIGHT_CHEEK = 'rightCheek',
+  NOSE_BRIDGE = 'noseBridge',
+  NOSE_TIP = 'noseTip',
+  LEFT_EYE = 'leftEye',
+  RIGHT_EYE = 'rightEye',
+  LEFT_EYE_OUTER_CORNER = 'leftEyeOuterCorner',
+  RIGHT_EYE_OUTER_CORNER = 'rightEyeOuterCorner',
+  UPPER_LIP = 'upperLip',
+  LOWER_LIP = 'lowerLip',
+  MOUTH = 'mouth',
+  MOUTH_RIGHT_CORNER = 'mouthRightCorner',
+  MOUTH_LEFT_CORNER = 'mouthLeftCorner',
+  CHIN = 'chin'
 }
 
 declare type XR8HitTestType = {
@@ -100,7 +182,6 @@ declare type XR8VPSMeshLostEvent = {
   }
 }
 
-
 declare type XR8VPSWayPointEvent = {
   name: string,
   detail: {
@@ -110,6 +191,47 @@ declare type XR8VPSWayPointEvent = {
   }
 }
 
+declare type XR8FaceLoadingEvent = {
+  name: string,
+  detail: {
+    maxDetections: number,
+    pointsPerDetection: number,
+    indices: [{ a: number, b: number, c: number }],
+    uvs: [{ u: number, v: number }]
+  }
+}
+
+declare type XR8FaceFoundEvent = {
+  name: string,
+  detail: {
+    id: number,
+    vertices: [{ x: number, y: number, z: number }],
+    normals: [{ x: number, y: number, z: number }],
+
+    attachmentPoints: {
+      [key in XR8FaceAttachmentPoints]: {
+        position: { x: number, y: number, z: number }
+      }
+    },
+
+    transform: {
+      position: { x: number, y: number, z: number },
+      rotation: { x: number, y: number, z: number, w: number },
+      scale: number, // A scale factor that should be applied to objects attached to this face.
+      scaledWidth: number, // Approximate width of the head in the scene when multiplied by scale.
+      scaledHeight: number, // Approximate height of the head in the scene when multiplied by scale.
+      scaledDepth: number, // Approximate depth of the head in the scene when multiplied by scale.
+    }
+  }
+}
+
+
+declare type xr8FaceLostEvent = {
+  name: string,
+  detail: {
+    id: number
+  }
+}
 
 declare var XR8: {
   runPreRender: (time: number) => void;
@@ -122,7 +244,17 @@ declare var XR8: {
 
   XrController: {
     pipelineModule: () => XR8CameraPipelineModule;
-    hitTest: (x: number, y: number, includedTypes: XR8HitTestType[keyof XR8HitTestType][]) => { type: XR8HitTestType, position: { x: number, y: number, z: number }, rotation: { x: number, y: number, z: number }, distance: number }[];
+    hitTest: (
+      x: number,
+      y: number,
+      includedTypes: XR8HitTestType[keyof XR8HitTestType][]) =>
+      {
+        type: XR8HitTestType,
+        position: { x: number, y: number, z: number },
+        rotation: { x: number, y: number, z: number },
+        distance: number
+      }[];
+
     updateCameraProjectionMatrix: (options: {
       origin: { x: number, y: number, z: number },
       facing: { x: number, y: number, z: number, w: number },
@@ -144,6 +276,7 @@ declare var XR8: {
   FaceController: {
     pipelineModule: () => XR8CameraPipelineModule;
     MeshGeometry: XR8FaceMeshFeatures,
+    AttachmentPoints: XR8FaceAttachmentPointsType[keyof XR8FaceAttachmentPointsType][],
 
     configure: (options: {
       meshGeometry: XR8FaceMeshFeatures[keyof XR8FaceMeshFeatures][],

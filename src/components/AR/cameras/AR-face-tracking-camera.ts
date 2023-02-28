@@ -18,10 +18,14 @@ class ARFaceTrackingCamera extends ARCamera {
   // will be set by WLE
   public cameraDirection: number = 0;
 
+  public get onFaceLoading() {
+    return this.trackingImpl.onFaceLoading;
+  }
+
   public get onFaceFound() {
     return this.trackingImpl.onFaceFound;
-
   }
+
   public get onFaceUpdate() {
     return this.trackingImpl.onFaceUpdate;
   }
@@ -34,7 +38,6 @@ class ARFaceTrackingCamera extends ARCamera {
     if (!this.object.getComponent('view')) {
       throw new Error('AR-camera requires a view component');
     }
-
     this.trackingImpl.init();
   }
 
