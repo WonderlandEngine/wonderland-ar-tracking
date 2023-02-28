@@ -1,80 +1,29 @@
-class Vector3 {
-  public x: number = 0;
-  public y: number = 0;
-  public z: number = 0;
+/**
+ * Generates data for Cylindrical geometry.
+ * Port from https://github.com/mrdoob/three.js/blob/dev/src/math/Cylindrical.js
+ * Modified to work with gl-matrix vectors
+ */
 
-  public set(x: number, y: number, z: number) {
-    this.x = x;
-    this.y = y;
-    this.z = z;
+import { vec2, vec3 } from "gl-matrix";
 
-    return this;
-  };
-
-
-  normalize() {
-    return this.divideScalar(this.length() || 1);
-  }
-
-  length() {
-    return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
-  }
-
-  multiplyScalar(scalar: number) {
-
-    this.x *= scalar;
-    this.y *= scalar;
-    this.z *= scalar;
-
-    return this;
-
-  }
-
-  divideScalar(scalar: number) {
-
-    return this.multiplyScalar(1 / scalar);
-
-  }
-}
-
-class Vector2 {
-  public x: number = 0;
-  public y: number = 0;
-}
-const CylinderGeometry = (radiusTop = 1, radiusBottom = 1, height = 1, radialSegments = 32, heightSegments = 1, openEnded = false, thetaStart = 0, thetaLength = Math.PI * 2) => {
-
-  const parameters = {
-    radiusTop: radiusTop,
-    radiusBottom: radiusBottom,
-    height: height,
-    radialSegments: radialSegments,
-    heightSegments: heightSegments,
-    openEnded: openEnded,
-    thetaStart: thetaStart,
-    thetaLength: thetaLength
-  };
-
-  const scope = this;
+const generateCylinderGeometry = (radiusTop = 1, radiusBottom = 1, height = 1, radialSegments = 32, heightSegments = 1, openEnded = false, thetaStart = 0, thetaLength = Math.PI * 2) => {
 
   radialSegments = Math.floor(radialSegments);
   heightSegments = Math.floor(heightSegments);
 
   // buffers
-
   const indices: any = [];
   const vertices: any = [];
   const normals: any = [];
   const uvs: any = [];
 
   // helper variables
-
   let index = 0;
   const indexArray: any = [];
   const halfHeight = height / 2;
   let groupStart = 0;
 
   // generate geometry
-
   generateTorso();
 
   if (openEnded === false) {
@@ -95,8 +44,8 @@ const CylinderGeometry = (radiusTop = 1, radiusBottom = 1, height = 1, radialSeg
 
   function generateTorso() {
 
-    const normal = new Vector3();
-    const vertex = new Vector3();
+    const normal = vec3.create();
+    const vertex = vec3.create();
 
     let groupCount = 0;
 
@@ -126,34 +75,30 @@ const CylinderGeometry = (radiusTop = 1, radiusBottom = 1, height = 1, radialSeg
 
         // vertex
 
-        vertex.x = radius * sinTheta;
-        vertex.y = - v * height + halfHeight;
-        vertex.z = radius * cosTheta;
-        vertices.push(vertex.x, vertex.y, vertex.z);
+        vertex[0] = radius * sinTheta;
+        vertex[1] = - v * height + halfHeight;
+        vertex[2] = radius * cosTheta;
+        vertices.push(vertex[0], vertex[1], vertex[2]);
 
         // normal
 
-        normal.set(sinTheta, slope, cosTheta).normalize();
-        normals.push(normal.x, normal.y, normal.z);
+        //normal.set(sinTheta, slope, cosTheta).normalize();
+        vec3.normalize(normal, vec3.set(normal, sinTheta, slope, cosTheta));
+        normals.push(normal[0], normal[1], normal[2]);
 
         // uv
-
         uvs.push(u, 1 - v);
 
         // save index of vertex in respective row
-
         indexRow.push(index++);
-
       }
 
       // now save vertices of the row in our index array
-
       indexArray.push(indexRow);
 
     }
 
     // generate indices
-
     for (let x = 0; x < radialSegments; x++) {
 
       for (let y = 0; y < heightSegments; y++) {
@@ -166,23 +111,16 @@ const CylinderGeometry = (radiusTop = 1, radiusBottom = 1, height = 1, radialSeg
         const d = indexArray[y][x + 1];
 
         // faces
-
         indices.push(a, b, d);
         indices.push(b, c, d);
 
         // update group counter
-
         groupCount += 6;
 
       }
-
     }
 
-    // add a group to the geometry. this will ensure multi material support
-    //scope.addGroup( groupStart, groupCount, 0 );
-
     // calculate new start value for groups
-
     groupStart += groupCount;
 
   }
@@ -192,8 +130,8 @@ const CylinderGeometry = (radiusTop = 1, radiusBottom = 1, height = 1, radialSeg
     // save the index of the first center vertex
     const centerIndexStart = index;
 
-    const uv = new Vector2();
-    const vertex = new Vector3();
+    const uv = vec2.create();
+    const vertex = vec3.create();
 
     let groupCount = 0;
 
@@ -239,10 +177,10 @@ const CylinderGeometry = (radiusTop = 1, radiusBottom = 1, height = 1, radialSeg
 
       // vertex
 
-      vertex.x = radius * sinTheta;
-      vertex.y = halfHeight * sign;
-      vertex.z = radius * cosTheta;
-      vertices.push(vertex.x, vertex.y, vertex.z);
+      vertex[0] = radius * sinTheta;
+      vertex[1] = halfHeight * sign;
+      vertex[2] = radius * cosTheta;
+      vertices.push(vertex[0], vertex[1], vertex[2]);
 
       // normal
 
@@ -250,9 +188,9 @@ const CylinderGeometry = (radiusTop = 1, radiusBottom = 1, height = 1, radialSeg
 
       // uv
 
-      uv.x = (cosTheta * 0.5) + 0.5;
-      uv.y = (sinTheta * 0.5 * sign) + 0.5;
-      uvs.push(uv.x, uv.y);
+      uv[0] = (cosTheta * 0.5) + 0.5;
+      uv[1] = (sinTheta * 0.5 * sign) + 0.5;
+      uvs.push(uv[0], uv[1]);
 
       // increase index
 
@@ -285,17 +223,10 @@ const CylinderGeometry = (radiusTop = 1, radiusBottom = 1, height = 1, radialSeg
 
     }
 
-    // add a group to the geometry. this will ensure multi material support
-
-    //scope.addGroup( groupStart, groupCount, top === true ? 1 : 2 );
-
     // calculate new start value for groups
-
     groupStart += groupCount;
 
   }
-
 }
 
-
-export { CylinderGeometry };
+export { generateCylinderGeometry };

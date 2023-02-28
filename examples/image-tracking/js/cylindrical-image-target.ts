@@ -1,6 +1,6 @@
 import { Component, Object as WLEObject, Type, MeshComponent, Mesh, MeshIndexType, MeshAttribute, Material } from '@wonderlandengine/api';
 import { ARImageTrackingCamera, ARSession } from '../../..';
-import { CylinderGeometry } from './CylinderGeomtery';
+import { generateCylinderGeometry } from './CylinderGeomtery';
 
 class CylindricalImageTargetExample extends Component {
 
@@ -75,7 +75,7 @@ class CylindricalImageTargetExample extends Component {
       const { geometry } = imageData;
       const length = geometry.arcLengthRadians!;
 
-      const { indices, vertices, normals, uvs } = CylinderGeometry(geometry.radiusTop, geometry.radiusBottom, geometry.height, 50, 1, true, ((2 * Math.PI - length) / 2) + Math.PI, length)
+      const { indices, vertices, normals, uvs } = generateCylinderGeometry(geometry.radiusTop, geometry.radiusBottom, geometry.height, 50, 1, true, ((2 * Math.PI - length) / 2) + Math.PI, length)
 
       this.meshComp = this.object.addComponent('mesh', {})!;
       this.meshComp.material = this.meshMaterial;
