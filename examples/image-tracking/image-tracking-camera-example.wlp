@@ -271,7 +271,8 @@
                         "ARImageTrackingCamera": "17",
                         "imageId": "PXL_20230119_120208139_2",
                         "meshMaterial": "67"
-                    }
+                    },
+                    "active": false
                 }
             ],
             "parent": null
@@ -280,20 +281,23 @@
             "name": "CylindricalImageTargetWithVideoTexture",
             "components": [
                 {
-                    "type": "video-texture-image-target-example",
-                    "video-texture-image-target-example": {
-                        "ARImageTrackingCamera": "17",
-                        "imageId": "augustiner",
-                        "meshMaterial": "71"
-                    }
-                },
-                {
                     "type": "video-texture-fixed",
                     "video-texture-fixed": {
                         "url": "video.mp4",
                         "material": "71",
                         "autoplay": false
                     }
+                },
+                {
+                    "type": "physical-size-image-target-example",
+                    "physical-size-image-target-example": {
+                        "ARImageTrackingCamera": "17",
+                        "imageId": "augustiner",
+                        "meshMaterial": "71"
+                    }
+                },
+                {
+                    "type": "video-texture-image-target-example"
                 }
             ],
             "parent": null

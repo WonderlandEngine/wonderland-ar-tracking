@@ -14,18 +14,18 @@ class PhysicalSizeImageTarget extends Component {
   };
 
   // injected by WL..
-  private ARImageTrackingCamera!: WLEObject;
+  public ARImageTrackingCamera!: WLEObject;  // Marked this public, as video-taxture-image-target will need to access it
 
   // injected by WL..
   private meshMaterial!: Material;
 
   // injected by WL..
-  private imageId!: string;
+  public imageId!: string; // Marked this public, as video-taxture-image-target will need to access it
 
   // allocate some arrays
   private cachedPosition = new Float32Array(4);
   private cachedScale = new Array<number>(3);
-  
+
   // Because the tracking might not be super stable - sometimes it feels like the the tracked image is a bit "jumping" around.
   // We can try to fix if by caching the tracked pose and interpolating the mesh pose on each frame.
   // This does introduce some calculations on each frame, but might make the experience a bit more pleasant
@@ -36,7 +36,7 @@ class PhysicalSizeImageTarget extends Component {
   // generated mesh components and it's geometry
   private mesh: Mesh | null = null;
   private meshComp: MeshComponent | null = null;
-  
+
 
   // Sometimes the tracking is lost just for a fraction of the second before it's tracked again.
   // In this case we allow sometime before we hide the mesh to reduce the flickering. 
@@ -53,6 +53,7 @@ class PhysicalSizeImageTarget extends Component {
     if (!camera) {
       throw new Error(`${ARImageTrackingCamera.TypeName} was not found on ARImageTrackingCamera`)
     }
+
 
     camera.onImageScanning.push(this.onImageScanned);
 
@@ -81,9 +82,9 @@ class PhysicalSizeImageTarget extends Component {
   }
 
   private createCylinderMesh = (imageData: XR8ImageScanningEvent["detail"]["imageTargets"][0]) => {
-      const { geometry } = imageData;
-      const length = geometry.arcLengthRadians!;
-      return generateCylinderGeometry(geometry.radiusTop, geometry.radiusBottom, geometry.height, 50, 1, true, ((2 * Math.PI - length) / 2) + Math.PI, length)
+    const { geometry } = imageData;
+    const length = geometry.arcLengthRadians!;
+    return generateCylinderGeometry(geometry.radiusTop, geometry.radiusBottom, geometry.height, 50, 1, true, ((2 * Math.PI - length) / 2) + Math.PI, length)
   }
 
   private createFlatMesh = (imageData: XR8ImageScanningEvent["detail"]["imageTargets"][0]) => {
@@ -164,10 +165,11 @@ class PhysicalSizeImageTarget extends Component {
     if (this.meshComp?.active === false) {
       return;
     }
-    
+
     quat.lerp(this.object.rotationWorld, this.object.rotationWorld, this.cachedTrackedRotation, 0.9)
     vec3.lerp(this.cachedPosition, this.cachedPosition, this.cachedTrackedPosition, 0.9);
     this.object.setTranslationWorld(this.cachedPosition);
   }
 }
 WL.registerComponent(PhysicalSizeImageTarget);
+export { PhysicalSizeImageTarget }

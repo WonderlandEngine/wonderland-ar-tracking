@@ -21,7 +21,9 @@ import '@wonderlandengine/components';
 
 import '../../common-components';
 
-import './image-tracker'
-import './physical-size-image-target'
-import './video-texture-image-target'
-import './video-textures-fixed'
+import './image-tracker';
+import './physical-size-image-target';
+import './video-texture-image-target';
+import './video-textures-fixed';
+
+
