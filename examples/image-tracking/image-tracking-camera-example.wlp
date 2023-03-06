@@ -167,20 +167,6 @@
                 0.5
             ]
         },
-        "64": {
-            "name": "CylindricalImageTarget",
-            "components": [
-                {
-                    "type": "physical-size-image-target-example",
-                    "physical-size-image-target-example": {
-                        "ARImageTrackingCamera": "17",
-                        "imageId": "augustiner",
-                        "meshMaterial": "67"
-                    },
-                    "active": false
-                }
-            ]
-        },
         "70": {
             "name": "FlatImageTarget",
             "components": [
@@ -463,7 +449,7 @@
             "name": "VideoMaterial",
             "pipeline": "35",
             "Flat": {
-                "flatTexture": "66"
+                "flatTexture": "75"
             }
         }
     },
@@ -733,25 +719,10 @@
         }
     },
     "files": [
-        "models/ar-target.glb",
-        "textures/Wonderland_Horizontal_FullColor_Logo-2048x416.png",
-        "textures/wallpapersden.com_synthwave-and-retrowave_3840x2160.jpg",
         "textures/image-target-1-white.png",
         "textures/image-target-2-white.png"
     ],
     "textures": {
-        "66": {
-            "link": {
-                "name": "Wonderland_Horizontal_FullColor_Logo-2048x416.png",
-                "file": "textures\\Wonderland_Horizontal_FullColor_Logo-2048x416.png"
-            }
-        },
-        "69": {
-            "link": {
-                "name": "wallpapersden.com_synthwave-and-retrowave_3840x2160.jpg",
-                "file": "textures\\wallpapersden.com_synthwave-and-retrowave_3840x2160.jpg"
-            }
-        },
         "75": {
             "link": {
                 "name": "image-target-1-white.png",
@@ -766,26 +737,6 @@
         }
     },
     "images": {
-        "65": {
-            "link": {
-                "name": "Wonderland_Horizontal_FullColor_Logo-2048x416.png",
-                "file": "textures\\Wonderland_Horizontal_FullColor_Logo-2048x416.png"
-            },
-            "maxSize": [
-                512,
-                104
-            ]
-        },
-        "68": {
-            "link": {
-                "name": "wallpapersden.com_synthwave-and-retrowave_3840x2160.jpg",
-                "file": "textures\\wallpapersden.com_synthwave-and-retrowave_3840x2160.jpg"
-            },
-            "maxSize": [
-                960,
-                540
-            ]
-        },
         "74": {
             "link": {
                 "name": "image-target-1-white.png",
