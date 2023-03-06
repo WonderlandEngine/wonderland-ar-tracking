@@ -1,5 +1,6 @@
 import { Component, Object as WLEObject, Type, MeshComponent, Mesh, MeshIndexType, MeshAttribute, Material } from '@wonderlandengine/api';
 import { ARImageTrackingCamera, ARSession } from '../../..';
+import { quat, vec3 } from 'gl-matrix';
 import { generateCylinderGeometry } from './geometries/CylinderGeomtery';
 import { generatePlaneGeomtry } from './geometries/PlaneGeometry';
 
@@ -8,24 +9,38 @@ class PhysicalSizeImageTarget extends Component {
   public static TypeName = 'physical-size-image-target-example';
   public static Properties = {
     ARImageTrackingCamera: { type: Type.Object },
-    imageId: { type: Type.String },
-    meshMaterial: { type: Type.Material },
+    imageId: { type: Type.String }, // tracked image ID
+    meshMaterial: { type: Type.Material }, // which material to assign to the generated mesh
   };
 
   // injected by WL..
   private ARImageTrackingCamera!: WLEObject;
 
+  // injected by WL..
   private meshMaterial!: Material;
 
   // injected by WL..
   private imageId!: string;
 
   // allocate some arrays
-  private cachedPosition = new Array<number>(3);
-  private cachedRotation = new Array<number>(4);
+  private cachedPosition = new Float32Array(4);
   private cachedScale = new Array<number>(3);
+  
+  // Because the tracking might not be super stable - sometimes it feels like the the tracked image is a bit "jumping" around.
+  // We can try to fix if by caching the tracked pose and interpolating the mesh pose on each frame.
+  // This does introduce some calculations on each frame, but might make the experience a bit more pleasant
+  private cachedTrackedRotation = quat.create();
+  private cachedTrackedPosition = vec3.create();
+
+
+  // generated mesh components and it's geometry
   private mesh: Mesh | null = null;
   private meshComp: MeshComponent | null = null;
+  
+
+  // Sometimes the tracking is lost just for a fraction of the second before it's tracked again.
+  // In this case we allow sometime before we hide the mesh to reduce the flickering. 
+  private imageLostTimeout = 0;
 
   start() {
     if (!this.ARImageTrackingCamera) {
@@ -47,11 +62,14 @@ class PhysicalSizeImageTarget extends Component {
 
     camera.onImageLost.push((event: XR8ImageTrackedEvent) => {
       if (event.detail.name === this.imageId) {
-        this.meshComp!.active = false;
+        this.imageLostTimeout = setTimeout(() => {
+          this.meshComp!.active = false;
+        }, 250);
       }
     });
 
     ARSession.onSessionEnded.push(() => {
+      clearTimeout(this.imageLostTimeout);
       if (this.meshComp) {
         this.meshComp.destroy();
         this.mesh!.destroy();
@@ -128,25 +146,28 @@ class PhysicalSizeImageTarget extends Component {
       return;
     }
 
+    clearTimeout(this.imageLostTimeout);
+
     const { rotation, position, scale } = event.detail;
 
-    this.cachedRotation[0] = rotation.x;
-    this.cachedRotation[1] = rotation.y;
-    this.cachedRotation[2] = rotation.z;
-    this.cachedRotation[3] = rotation.w;
-
-    this.cachedPosition[0] = position.x;
-    this.cachedPosition[1] = position.y;
-    this.cachedPosition[2] = position.z;
+    quat.set(this.cachedTrackedRotation, rotation.x, rotation.y, rotation.z, rotation.w);
+    vec3.set(this.cachedTrackedPosition, position.x, position.y, position.z);
 
     this.cachedScale[0] = scale;
     this.cachedScale[1] = scale;
     this.cachedScale[2] = scale;
 
-    this.object.rotationWorld.set(this.cachedRotation);
-    this.object.setTranslationWorld(this.cachedPosition);
     this.object.scalingWorld.set(this.cachedScale);
   }
 
+  update() {
+    if (this.meshComp?.active === false) {
+      return;
+    }
+    
+    quat.lerp(this.object.rotationWorld, this.object.rotationWorld, this.cachedTrackedRotation, 0.9)
+    vec3.lerp(this.cachedPosition, this.cachedPosition, this.cachedTrackedPosition, 0.9);
+    this.object.setTranslationWorld(this.cachedPosition);
+  }
 }
 WL.registerComponent(PhysicalSizeImageTarget);

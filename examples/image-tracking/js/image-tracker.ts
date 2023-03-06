@@ -1,3 +1,10 @@
+/**
+ * class ImageTrackingExample
+ * 
+ * A very basic image tracking example.
+ * Moves the object of the component to tracked image position.
+ * 
+ */
 import { Component, Object as WLEObject, Type, MeshComponent } from '@wonderlandengine/api';
 import { ARImageTrackingCamera } from '../../../';
 
@@ -14,15 +21,12 @@ class ImageTrackingExample extends Component {
   // injected by WL..
   private imageId!: string;
 
-
   // allocate some arrays
   private cachedPosition = new Array<number>(3);
   private cachedRotation = new Array<number>(4);
   private cachedScale = new Array<number>(3);
 
-
   private mesh: MeshComponent | null = null;
-
 
   start() {
     if (!this.ARImageTrackingCamera) {
@@ -42,11 +46,8 @@ class ImageTrackingExample extends Component {
       return;
     }
 
-    
-
     // hide by default
     this.mesh.active = false;
-
 
     camera.onImageFound.push(this.onImageFound);
 
