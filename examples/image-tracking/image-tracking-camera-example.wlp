@@ -8,6 +8,9 @@
                     "wasd-controls": {
                         "headObject": "17"
                     }
+                },
+                {
+                    "type": "mouse-look"
                 }
             ],
             "translation": [
@@ -38,7 +41,10 @@
                     "type": "input"
                 },
                 {
-                    "type": "AR-image-tracking-camera"
+                    "type": "AR-image-tracking-camera",
+                    "AR-image-tracking-camera": {
+                        "EnableSLAM": true
+                    }
                 },
                 {
                     "type": "button-start-ar-session"
@@ -136,17 +142,10 @@
             "name": "ImageTarget1",
             "components": [
                 {
-                    "type": "mesh",
-                    "mesh": {
-                        "mesh": "8",
-                        "material": "22"
-                    }
-                },
-                {
                     "type": "image-tracking-example",
                     "image-tracking-example": {
                         "ARImageTrackingCamera": "17",
-                        "imageId": "tracking-logo"
+                        "imageId": "image-target-1-white"
                     },
                     "active": true
                 }
@@ -168,45 +167,49 @@
                 0.5
             ]
         },
-        "62": {
-            "name": "ImageTarget2",
+        "70": {
+            "name": "FlatImageTarget",
             "components": [
                 {
-                    "type": "mesh",
-                    "mesh": {
-                        "mesh": "10",
-                        "material": "25"
-                    }
-                },
-                {
-                    "type": "image-tracking-example",
-                    "image-tracking-example": {
+                    "type": "physical-size-image-target-example",
+                    "physical-size-image-target-example": {
                         "ARImageTrackingCamera": "17",
-                        "imageId": "PXL_20230119_120208139_2"
+                        "imageId": "image-target-2-white",
+                        "meshMaterial": "67"
                     },
                     "active": true
                 }
             ],
-            "translation": [
-                0.0,
-                0.4999999,
-                5.960464477539065e-8
-            ],
-            "rotation": [
-                0.0,
-                0.0,
-                0.0,
-                1.0
-            ],
-            "scaling": [
-                0.5,
-                0.5,
-                0.5
+            "parent": null
+        },
+        "73": {
+            "name": "CylindricalImageTargetWithVideoTexture",
+            "components": [
+                {
+                    "type": "video-texture-fixed",
+                    "video-texture-fixed": {
+                        "url": "video.mp4",
+                        "material": "71",
+                        "autoplay": false
+                    }
+                },
+                {
+                    "type": "physical-size-image-target-example",
+                    "physical-size-image-target-example": {
+                        "ARImageTrackingCamera": "17",
+                        "imageId": "augustiner",
+                        "meshMaterial": "71"
+                    }
+                },
+                {
+                    "type": "video-texture-image-target-example"
+                }
             ],
             "parent": null
         },
-        "63": {
-            "name": "ImageTarget3",
+        "78": {
+            "name": "Sphere",
+            "parent": "81",
             "components": [
                 {
                     "type": "mesh",
@@ -214,20 +217,12 @@
                         "mesh": "9",
                         "material": "26"
                     }
-                },
-                {
-                    "type": "image-tracking-example",
-                    "image-tracking-example": {
-                        "ARImageTrackingCamera": "17",
-                        "imageId": "wonderland-social-card"
-                    },
-                    "active": true
                 }
             ],
             "translation": [
+                -1.4763817,
                 0.0,
-                0.4999999,
-                5.960464477539065e-8
+                1.8734387
             ],
             "rotation": [
                 0.0,
@@ -236,11 +231,77 @@
                 1.0
             ],
             "scaling": [
-                0.5,
-                0.5,
-                0.5
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        "79": {
+            "name": "Cylinder",
+            "parent": "81",
+            "components": [
+                {
+                    "type": "mesh",
+                    "mesh": {
+                        "mesh": "11",
+                        "material": "22"
+                    }
+                }
             ],
-            "parent": null
+            "translation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "scaling": [
+                1.0,
+                1.1102669,
+                1.0
+            ]
+        },
+        "80": {
+            "name": "Cone",
+            "parent": "81",
+            "components": [
+                {
+                    "type": "mesh",
+                    "mesh": {
+                        "mesh": "10",
+                        "material": "25"
+                    }
+                }
+            ],
+            "translation": [
+                1.4982393,
+                0.0,
+                1.5479718
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "scaling": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        "81": {
+            "name": "geometries",
+            "parent": "16",
+            "scaling": [
+                0.2,
+                0.2,
+                0.2
+            ]
         }
     },
     "meshes": {
@@ -374,25 +435,21 @@
                 ]
             }
         },
-        "42": {
-            "link": {
-                "name": "AR Target Material",
-                "file": "models\\ar-target.glb"
+        "67": {
+            "name": "PhysicalImageTargetTexture",
+            "pipeline": "35",
+            "Physical": {
+                "albedoTexture": "66"
             },
-            "pipeline": "39",
-            "Phong": {
-                "ambientColor": [
-                    0.5921568,
-                    0.5921509,
-                    0.5921509,
-                    1.0
-                ],
-                "diffuseColor": [
-                    1.0,
-                    0.9999899,
-                    0.9999899,
-                    1.0
-                ]
+            "Flat": {
+                "flatTexture": "77"
+            }
+        },
+        "71": {
+            "name": "VideoMaterial",
+            "pipeline": "35",
+            "Flat": {
+                "flatTexture": "75"
             }
         }
     },
@@ -558,12 +615,12 @@
                 "enabled": false
             },
             "textureAtlasSize": [
-                2048,
-                2048
+                4096,
+                4096
             ],
             "compressedTextureAtlasSize": [
-                2048,
-                2048
+                4096,
+                4096
             ]
         }
     },
@@ -662,10 +719,41 @@
         }
     },
     "files": [
-        "models/ar-target.glb"
+        "textures/image-target-1-white.png",
+        "textures/image-target-2-white.png"
     ],
-    "textures": {},
-    "images": {},
+    "textures": {
+        "75": {
+            "link": {
+                "name": "image-target-1-white.png",
+                "file": "textures\\image-target-1-white.png"
+            }
+        },
+        "77": {
+            "link": {
+                "name": "image-target-2-white.png",
+                "file": "textures\\image-target-2-white.png"
+            }
+        }
+    },
+    "images": {
+        "74": {
+            "link": {
+                "name": "image-target-1-white.png",
+                "file": "textures\\image-target-1-white.png"
+            }
+        },
+        "76": {
+            "link": {
+                "name": "image-target-2-white.png",
+                "file": "textures\\image-target-2-white.png"
+            },
+            "maxSize": [
+                768,
+                576
+            ]
+        }
+    },
     "fonts": {
         "59": {
             "link": {

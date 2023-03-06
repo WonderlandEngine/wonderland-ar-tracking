@@ -90,7 +90,7 @@ class FaceTracking_XR8 extends TrackingMode {
     ]);
 
     const options = {
-      canvas: Module.canvas as HTMLCanvasElement,
+      canvas: WL.canvas as HTMLCanvasElement,
       allowedDevices: XR8.XrConfig.device().ANY,
       ownRunLoop: false,
       cameraConfig: {

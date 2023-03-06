@@ -20,11 +20,14 @@ class ARImageTrackingCamera extends ARCamera {
 
   private trackingImpl = new WorldTracking_XR8(this);
 
+  public get onImageScanning() {
+    return this.trackingImpl.onImageScanning;
+  }
 
   public get onImageFound() {
     return this.trackingImpl.onImageFound;
-
   }
+
   public get onImageUpdate() {
     return this.trackingImpl.onImageUpdate;
   }

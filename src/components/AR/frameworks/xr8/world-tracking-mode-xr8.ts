@@ -28,6 +28,7 @@ class WorldTracking_XR8 extends TrackingMode {
 
   public readonly onTrackingStatus: Array<(event: any) => void> = [];
 
+  public readonly onImageScanning: Array<(event: XR8ImageScanningEvent) => void> = [];
   public readonly onImageFound: Array<(event: XR8ImageTrackedEvent) => void> = [];
   public readonly onImageUpdate: Array<(event: XR8ImageTrackedEvent) => void> = [];
   public readonly onImageLost: Array<(event: XR8ImageTrackedEvent) => void> = [];
@@ -48,6 +49,12 @@ class WorldTracking_XR8 extends TrackingMode {
     //////////////////////////
     //// VPS Image Events ///
     ////////////////////////
+
+    {
+      event: 'reality.imagescanning', process: (event: XR8ImageScanningEvent) => {
+        this.onImageScanning.forEach(callback => callback(event));
+      }
+    },
 
     {
       event: 'reality.imagefound', process: (event: XR8ImageTrackedEvent) => {
@@ -180,7 +187,7 @@ class WorldTracking_XR8 extends TrackingMode {
     ]);
 
     const options = {
-      canvas: Module.canvas as HTMLCanvasElement,
+      canvas: WL.canvas as HTMLCanvasElement,
       allowedDevices: XR8.XrConfig.device().MOBILE,
       ownRunLoop: false,
       cameraConfig: {
@@ -201,7 +208,7 @@ class WorldTracking_XR8 extends TrackingMode {
     XR8.XrController.updateCameraProjectionMatrix({
       origin: { x: this.cachedPosition[0], y: this.cachedPosition[1], z: this.cachedPosition[2] },
       facing: { x: this.cachedRotation[0], y: this.cachedRotation[1], z: this.cachedRotation[2], w: this.cachedRotation[3] },
-      cam: { pixelRectWidth: Module.canvas.width, pixelRectHeight: Module.canvas.height, nearClipPlane: 0.01, farClipPlane: 100 }
+      cam: { pixelRectWidth: WL.canvas.width, pixelRectHeight: WL.canvas.height, nearClipPlane: 0.01, farClipPlane: 100 }
     })
   }
 

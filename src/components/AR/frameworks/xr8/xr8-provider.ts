@@ -10,6 +10,8 @@ class XR8Provider extends ARProvider {
   public get tag () {
     return "xr8";
   }
+
+  public cachedWebGLContext: WebGL2RenderingContext | null =  null;
   // Loading of 8thwall might be initiated by several components, make sure we load it only once
   private loading = false
   
@@ -18,7 +20,6 @@ class XR8Provider extends ARProvider {
 
   constructor () {
     super();
-    
 
      // Safeguard that we are not running inside the editor
      if (typeof (document) === 'undefined') {
@@ -105,6 +106,10 @@ class XR8Provider extends ARProvider {
     // TODO: should we store the previous state of colorClearEnabled.
     WL.scene.colorClearEnabled = false;
 
+    if(!this.cachedWebGLContext) {
+      this.cachedWebGLContext = WL.canvas.getContext("webgl2");
+    }
+
     if (!WL.scene.onPreRender.includes(this.onWLPreRender)) {
       WL.scene.onPreRender.push(this.onWLPreRender)
     }
@@ -126,8 +131,10 @@ class XR8Provider extends ARProvider {
     }
   };
 
-  public onWLPreRender() {
-    Module.ctx.bindFramebuffer(Module.ctx.DRAW_FRAMEBUFFER, null); // <--- Should not be needed after next nightly is released (current 20230110)
+  public onWLPreRender = () => {
+    //const ctx = WL.canvas.getContext('webgl2');
+    
+    this.cachedWebGLContext!.bindFramebuffer(this.cachedWebGLContext!.DRAW_FRAMEBUFFER, null); // <--- Should not be needed after next nightly is released (current 20230110)
     XR8.runPreRender(Date.now());
     XR8.runRender(); // <--- tell 8thwall to do it's thing (alternatively call this.GlTextureRenderer.onRender() if you only care about camera feed )
   };

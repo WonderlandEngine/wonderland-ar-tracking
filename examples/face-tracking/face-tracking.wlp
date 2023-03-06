@@ -40,7 +40,7 @@
                 {
                     "type": "AR-face-tracking-camera",
                     "AR-face-tracking-camera": {
-                        "cameraDirection": "back"
+                        "cameraDirection": "front"
                     }
                 },
                 {

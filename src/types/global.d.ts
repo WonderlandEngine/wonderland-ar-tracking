@@ -123,6 +123,39 @@ declare type XR8TrackingStatusEvent = {
   reason: 'INITIALIZING' | 'UNDEFINED'
 }
 
+declare type XR8ImageScanningEvent = {
+  name: 'reality.imagescanning',
+  detail: {
+    imageTargets: {
+      name: string, // image name
+      type: 'FLAT' | 'CYLINDRICAL' | 'CONICAL',
+      metadata: any | null,
+
+      geometry: {
+        arcLengthRadians?: number,
+        arcStartRadians?: number,
+        height?: number,
+        radiusBottom?: number,
+        radiusTop?: number,
+        scaleWidth?: number, // The width of the image in the scene, when multiplied by scale.
+        scaledHeight?: number, // 	The height of the image in the scene, when multiplied by scale.
+      }
+
+      properties?: {
+        height: number,
+        width: number
+        isRotated: boolean,
+        left: number
+        top: number,
+        moveable: boolean,
+        originalHeight: number,
+        originalWidth: number,
+        physicalWidthInMeters: number | null
+      } | null,
+    }[],
+  }
+}
+
 declare type XR8ImageTrackedEvent = {
   name: string,
   detail: {

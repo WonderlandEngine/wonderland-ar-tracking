@@ -23,7 +23,7 @@ class VPSMeshExample extends Component {
 
   start() {
     if (!this.VPSCamera) {
-      console.warn(`${this.object.name}/${this.type} requires a ${ARVPSCamera.TypeName}`);
+      console.warn(`${this.object.name}/${this.type} requires a ${ARVPSCamera}`);
       return;
     }
 
@@ -85,7 +85,7 @@ class VPSMeshExample extends Component {
     const colorData = event.detail.geometry.attributes[1].array;
     const indexData = event.detail.geometry.index.array;
 
-    this.mesh = new Mesh({
+    this.mesh = new Mesh(this.engine, {
       vertexCount: vertexData.length,
       indexData,
       indexType: MeshIndexType.UnsignedInt,
