@@ -23,3 +23,5 @@ import '../../common-components';
 
 import './image-tracker'
 import './physical-size-image-target'
+import './video-texture-image-target'
+import './video-textures-fixed'

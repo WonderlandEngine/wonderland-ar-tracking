@@ -50,7 +50,7 @@ class FaceMaskExample extends Component {
         return data;
       }, []);
 
-      this.mesh = new Mesh({
+      this.mesh = new Mesh(this.engine, {
         vertexCount: pointsPerDetection,
         indexData,
         indexType: MeshIndexType.UnsignedInt,

@@ -3,18 +3,19 @@ import { ARImageTrackingCamera, ARSession } from '../../..';
 import { generateCylinderGeometry } from './geometries/CylinderGeomtery';
 import { generatePlaneGeomtry } from './geometries/PlaneGeometry';
 
-class PhysicalSizeImageTarget extends Component {
+class VideoTextureImageTarget extends Component {
 
-  public static TypeName = 'physical-size-image-target-example';
+  public static TypeName = 'video-texture-image-target-example';
   public static Properties = {
     ARImageTrackingCamera: { type: Type.Object },
-    imageId: { type: Type.String },
-    meshMaterial: { type: Type.Material },
+    imageId: { type: Type.String }, // tracked image ID
+    meshMaterial: { type: Type.Material }, // which material to assign to the generated mesh
   };
 
   // injected by WL..
   private ARImageTrackingCamera!: WLEObject;
 
+  // injected by WL..
   private meshMaterial!: Material;
 
   // injected by WL..
@@ -24,8 +25,17 @@ class PhysicalSizeImageTarget extends Component {
   private cachedPosition = new Array<number>(3);
   private cachedRotation = new Array<number>(4);
   private cachedScale = new Array<number>(3);
+
+  // generated mesh components and it's geometry
   private mesh: Mesh | null = null;
   private meshComp: MeshComponent | null = null;
+
+  // cache videoTexture component
+  private videoTextureComp!: Component & { video: HTMLVideoElement };
+
+  // Sometimes the tracking is lost just for a fraction of the second before it's tracked again.
+  // In this case we allow sometime before we hide the mesh to reduce the flickering
+  private imageLostTimeout = 0;
 
   start() {
     if (!this.ARImageTrackingCamera) {
@@ -39,6 +49,8 @@ class PhysicalSizeImageTarget extends Component {
       throw new Error(`${ARImageTrackingCamera.TypeName} was not found on ARImageTrackingCamera`)
     }
 
+    this.videoTextureComp = this.object.getComponent("video-texture-fixed") as any; // video-texture component is not updated to match @wonderlandengine/api 0.9.8 ("@wonderlandengine/components": "^0.9.2"),
+
     camera.onImageScanning.push(this.onImageScanned);
 
     camera.onImageFound.push(this.onImageFound);
@@ -47,25 +59,31 @@ class PhysicalSizeImageTarget extends Component {
 
     camera.onImageLost.push((event: XR8ImageTrackedEvent) => {
       if (event.detail.name === this.imageId) {
-        this.meshComp!.active = false;
+        this.imageLostTimeout = setTimeout(() => {
+          this.meshComp!.active = false;
+          this.videoTextureComp.video.pause();
+        }, 250);
       }
     });
 
     ARSession.onSessionEnded.push(() => {
+      clearTimeout(this.imageLostTimeout);
+
       if (this.meshComp) {
         this.meshComp.destroy();
         this.mesh!.destroy();
 
         this.meshComp = null;
         this.mesh = null;
+        this.videoTextureComp.video.pause();
       }
     })
   }
 
   private createCylinderMesh = (imageData: XR8ImageScanningEvent["detail"]["imageTargets"][0]) => {
-      const { geometry } = imageData;
-      const length = geometry.arcLengthRadians!;
-      return generateCylinderGeometry(geometry.radiusTop, geometry.radiusBottom, geometry.height, 50, 1, true, ((2 * Math.PI - length) / 2) + Math.PI, length)
+    const { geometry } = imageData;
+    const length = geometry.arcLengthRadians!;
+    return generateCylinderGeometry(geometry.radiusTop, geometry.radiusBottom, geometry.height, 50, 1, true, ((2 * Math.PI - length) / 2) + Math.PI, length)
   }
 
   private createFlatMesh = (imageData: XR8ImageScanningEvent["detail"]["imageTargets"][0]) => {
@@ -120,6 +138,9 @@ class PhysicalSizeImageTarget extends Component {
     if (event.detail.name === this.imageId) {
       this.meshComp!.active = true;
       this.onImageUpdated(event);
+
+      //this.videoTextureComp.video.playsInline = true; // might be needed on native video-texture if not fixed yet ("@wonderlandengine/components": "^0.9.2"),
+      this.videoTextureComp.video.play();
     }
   }
 
@@ -127,6 +148,8 @@ class PhysicalSizeImageTarget extends Component {
     if (event.detail.name !== this.imageId) {
       return;
     }
+
+    clearTimeout(this.imageLostTimeout);
 
     const { rotation, position, scale } = event.detail;
 
@@ -147,6 +170,5 @@ class PhysicalSizeImageTarget extends Component {
     this.object.setTranslationWorld(this.cachedPosition);
     this.object.scalingWorld.set(this.cachedScale);
   }
-
 }
-WL.registerComponent(PhysicalSizeImageTarget);
+WL.registerComponent(VideoTextureImageTarget);

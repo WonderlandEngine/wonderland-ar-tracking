@@ -108,7 +108,8 @@ class VPSDynamicMeshExample extends Component {
       vertexCount: vertexData.length,
       indexData,
       indexType: WL.MeshIndexType.UnsignedInt,
-    });
+    }, this.engine);
+    console.log("My mesh", mesh);
 
 
     const positions = mesh.attribute(WL.MeshAttribute.Position);
