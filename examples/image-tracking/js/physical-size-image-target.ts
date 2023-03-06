@@ -139,6 +139,11 @@ class PhysicalSizeImageTarget extends Component {
     if (event.detail.name === this.imageId) {
       this.meshComp!.active = true;
       this.onImageUpdated(event);
+
+
+      quat.lerp(this.object.rotationWorld, this.object.rotationWorld, this.cachedTrackedRotation, 1)
+      vec3.lerp(this.cachedPosition, this.cachedPosition, this.cachedTrackedPosition, 1);
+      this.object.setTranslationWorld(this.cachedPosition);
     }
   }
 

@@ -6,7 +6,7 @@
  * 
  */
 import { Component, Object as WLEObject, Type, MeshComponent } from '@wonderlandengine/api';
-import { ARImageTrackingCamera } from '../../../';
+import { ARImageTrackingCamera, ARSession } from '../../../';
 
 class ImageTrackingExample extends Component {
 
@@ -26,7 +26,6 @@ class ImageTrackingExample extends Component {
   private cachedRotation = new Array<number>(4);
   private cachedScale = new Array<number>(3);
 
-  private mesh: MeshComponent | null = null;
 
   start() {
     if (!this.ARImageTrackingCamera) {
@@ -40,14 +39,6 @@ class ImageTrackingExample extends Component {
       throw new Error(`${ARImageTrackingCamera.TypeName} was not found on ARImageTrackingCamera`)
     }
 
-    //const mesh = this.object.getComponent(MeshComponent) // <-- fails, issue reported 
-    this.mesh = this.object.getComponent('mesh');
-    if (!this.mesh) {
-      return;
-    }
-
-    // hide by default
-    this.mesh.active = false;
 
     camera.onImageFound.push(this.onImageFound);
 
@@ -55,16 +46,21 @@ class ImageTrackingExample extends Component {
 
     camera.onImageLost.push((event: XR8ImageTrackedEvent) => {
       if (event.detail.name === this.imageId) {
-       this.mesh!.active = false;
+        this.object.scalingWorld = [0, 0, 0 ]
       }
     });
+
+    ARSession.onSessionEnded.push(() => {
+      this.object.scalingWorld = [0, 0, 0 ]
+    });
+
+    this.object.scalingWorld = [0, 0, 0 ]
   }
 
   private onImageFound = (event: XR8ImageTrackedEvent) => {
     if (event.detail.name === this.imageId) {
-      this.mesh!.active = true;
       this.onImageUpdated(event);
-    }
+     }
   }
 
   private onImageUpdated = (event: XR8ImageTrackedEvent) => {
@@ -83,13 +79,13 @@ class ImageTrackingExample extends Component {
     this.cachedPosition[1] = position.y;
     this.cachedPosition[2] = position.z;
 
-    this.cachedScale[0] = scale / 10;
-    this.cachedScale[1] = scale / 10;
-    this.cachedScale[2] = scale / 10;
+    this.cachedScale[0] = scale;
+    this.cachedScale[1] = scale;
+    this.cachedScale[2] = scale;
 
     this.object.rotationWorld.set(this.cachedRotation);
     this.object.setTranslationWorld(this.cachedPosition);
-    this.object.scalingWorld.set(this.cachedScale);
+    this.object.scalingWorld = this.cachedScale;
   }
 }
 WL.registerComponent(ImageTrackingExample);
