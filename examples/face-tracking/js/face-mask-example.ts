@@ -5,7 +5,9 @@ class FaceMaskExample extends Component {
   public static TypeName = 'face-mask-example';
   public static Properties = {
     ARFaceTrackingCamera: { type: Type.Object },  
-    faceMaskMaterial: { type: Type.Material }, // MAterial to use for the generated mesh
+     
+    // Material to use for the generated mesh
+    faceMaskMaterial: { type: Type.Material },
   };
 
   // injected by WL..
@@ -14,8 +16,10 @@ class FaceMaskExample extends Component {
   // injected by WL..
   private faceMaskMaterial!: Material;
 
-
+  // We'll fill this with the mesh data provided by xr8
   private mesh: Mesh | null = null;
+
+  // component to hold the mesh
   private meshComp: MeshComponent | null = null;
 
   start() {
@@ -40,24 +44,26 @@ class FaceMaskExample extends Component {
       this.meshComp.material = this.faceMaskMaterial;
     }
 
-
     camera.onFaceLoading.push(event => {
-      
+      // XR8 provides us with initial vertices, indices and uvs of the face mesh.
+      // We'll be updating the positions and normals of the face mesh in the onFaceUpdate loop
       const { indices, uvs, pointsPerDetection } = event.detail;
 
+      // Covert from {x: number, y: number, z: number} to Array<number> = [x, y, z]
       const indexData = indices.reduce((data: any, current: any) => {
         data.push(...Object.values(current));
         return data;
       }, []);
 
+      // Create mesh
       this.mesh = new Mesh(this.engine, {
         vertexCount: pointsPerDetection,
         indexData,
         indexType: MeshIndexType.UnsignedInt,
       });
 
+      // UV's won't change, fill them right away
       const textureCoordinate = this.mesh!.attribute(MeshAttribute.TextureCoordinate)!;
-
       for (let i = 0; i < uvs.length; i++) {
         textureCoordinate.set(i, [uvs[i].u, uvs[i].v]);
       }
@@ -83,7 +89,6 @@ class FaceMaskExample extends Component {
       cachedPosition[2] = transform.position.z;
 
       const scale = transform.scale;
-      //const scale = transform.scale / 10;
 
       cachedScale[0] = scale;
       cachedScale[1] = scale;
@@ -100,6 +105,7 @@ class FaceMaskExample extends Component {
     });
   }
 
+  // Update positions, normals of the face mesh
   private updateFaceMesh = (event: any) => {
     const { vertices, normals } = event.detail;
 

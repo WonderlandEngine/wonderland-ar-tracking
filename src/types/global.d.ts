@@ -234,6 +234,8 @@ declare type XR8FaceLoadingEvent = {
   }
 }
 
+
+
 declare type XR8FaceFoundEvent = {
   name: string,
   detail: {

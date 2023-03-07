@@ -200,27 +200,28 @@
                 "file": "models\\head-occluder-cm92ohq49a.glb"
             },
             "rotation": [
-                -4.17432275412466e-8,
-                0.0440553,
-                -0.999029,
-                -4.5594667597015366e-8
+                4.174256318378866e-8,
+                -0.0440537,
+                0.9990291,
+                4.5594585884600753e-8
             ],
             "translation": [
-                0.0,
-                5.6810677051544196e-8,
-                0.0
+                9.630767294765977e-8,
+                -0.1076431,
+                0.5102616
             ],
             "scaling": [
-                0.0769999,
-                0.0769999,
-                0.0979999
+                0.0659999,
+                0.0659999,
+                0.0659999
             ],
-            "parent": "27",
+            "parent": "83",
             "components": [
                 {
-                    "active": false
+                    "active": true
                 }
-            ]
+            ],
+            "name": "HeadOccluder"
         },
         "66": {
             "name": "Nose",
@@ -353,14 +354,14 @@
                 -3.090862321641907e-8
             ],
             "scaling": [
-                0.1,
-                0.1,
+                0.1099999,
+                0.1099999,
                 0.1
             ],
             "translation": [
-                0.5,
+                0.5299999,
                 0.0,
-                0.0
+                -0.0
             ]
         }
     },
@@ -511,6 +512,10 @@
             "link": {
                 "name": "Default OBJ.001",
                 "file": "models\\head-occluder-cm92ohq49a.glb"
+            },
+            "pipeline": "88",
+            "Flat": {
+                "flatTexture": "90"
             }
         },
         "69": {
@@ -534,7 +539,9 @@
             "link": {
                 "name": "blinn3",
                 "file": "models\\stereo-glasses-9hc20dp5o8.glb"
-            }
+            },
+            "pipeline": "91",
+            "name": "Glasses Material"
         }
     },
     "shaders": {
@@ -800,15 +807,37 @@
                 "name": "Phong Lightmapped",
                 "file": "default"
             }
+        },
+        "88": {
+            "link": {
+                "name": "Phong Lightmapped",
+                "file": "default"
+            },
+            "name": "Glasses Occluder",
+            "shader": "2",
+            "features": {
+                "ALPHA_MASKED": true,
+                "TEXTURED": false
+            },
+            "blending": true,
+            "blendSrcRgb": "zero",
+            "blendSrcAlpha": "zero",
+            "blendDestRgb": "one",
+            "blendDestAlpha": "one",
+            "depthWrite": true
+        },
+        "91": {
+            "link": {
+                "name": "Phong Opaque",
+                "file": "default"
+            },
+            "name": "Glasses"
         }
     },
     "files": [
-        "models/ar-target.glb",
         "models/head-occluder-cm92ohq49a.glb",
-        "textures/tat-exk9qri648.png",
         "textures/wonderland-xr8.png",
         "textures/uv-bright.png",
-        "textures/uv-black.png",
         "models/stereo-glasses-9hc20dp5o8.glb"
     ],
     "textures": {
@@ -854,5 +883,6 @@
                 "file": "default"
             }
         }
-    }
+    },
+    "languages": {}
 }
