@@ -132,9 +132,7 @@ class XR8Provider extends ARProvider {
   };
 
   public onWLPreRender = () => {
-    //const ctx = WL.canvas.getContext('webgl2');
-    
-    this.cachedWebGLContext!.bindFramebuffer(this.cachedWebGLContext!.DRAW_FRAMEBUFFER, null); // <--- Should not be needed after next nightly is released (current 20230110)
+    this.cachedWebGLContext!.bindFramebuffer(this.cachedWebGLContext!.DRAW_FRAMEBUFFER, null);
     XR8.runPreRender(Date.now());
     XR8.runRender(); // <--- tell 8thwall to do it's thing (alternatively call this.GlTextureRenderer.onRender() if you only care about camera feed )
   };
