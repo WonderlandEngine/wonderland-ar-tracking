@@ -197,7 +197,7 @@
                     "type": "physical-size-image-target-example",
                     "physical-size-image-target-example": {
                         "ARImageTrackingCamera": "17",
-                        "imageId": "augustiner",
+                        "imageId": "fanta",
                         "meshMaterial": "71"
                     }
                 },
