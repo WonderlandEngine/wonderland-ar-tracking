@@ -5,8 +5,9 @@
  * Moves the object of the component to tracked image position.
  * 
  */
-import { Component, Object as WLEObject, Type, MeshComponent } from '@wonderlandengine/api';
-import { ARImageTrackingCamera, ARSession } from '../../../';
+import { Component, Object as WLEObject, Type } from '@wonderlandengine/api';
+import { ARSession } from '../../../';
+import { ARImageTrackingCamera } from '../../../src/components/AR/cameras/AR-image-tracking-camera';
 
 class ImageTrackingExample extends Component {
 

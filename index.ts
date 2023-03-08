@@ -2,9 +2,10 @@
 /*
 export { ARFaceTrackingCamera } from './src/components/AR/cameras/AR-face-tracking-camera';
 export { ARSLAMCamera } from './src/components/AR/cameras/AR-SLAM-camera';
+export { ARImageTrackingCamera } from './src/components/AR/cameras/AR-image-tracking-camera';
 */
 
-export { ARImageTrackingCamera } from './src/components/AR/cameras/AR-image-tracking-camera';
+
 export { ARVPSCamera } from './src/components/AR/cameras/AR-VPS-camera';
 
 export { ARSession } from './src/components/AR/AR-session';

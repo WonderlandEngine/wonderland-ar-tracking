@@ -4,8 +4,8 @@
  * 
  */
 import { Component } from '@wonderlandengine/api';
-import { quat, vec3 } from 'gl-matrix';
-import { ARImageTrackingCamera, ARSession } from '../../..';
+import { ARSession } from '../../..';
+import { ARImageTrackingCamera } from '../../../src/components/AR/cameras/AR-image-tracking-camera';
 import { PhysicalSizeImageTarget } from './physical-size-image-target';
 
 class VideoTextureImageTarget extends Component {

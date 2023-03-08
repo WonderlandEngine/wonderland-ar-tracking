@@ -1,5 +1,6 @@
 import { Component, Object as WLEObject, Type, MeshComponent, Mesh, MeshIndexType, MeshAttribute, Material } from '@wonderlandengine/api';
-import { ARImageTrackingCamera, ARSession } from '../../..';
+import { ARSession } from '../../..';
+import { ARImageTrackingCamera } from '../../../src/components/AR/cameras/AR-image-tracking-camera';
 import { quat, vec3 } from 'gl-matrix';
 import { generateCylinderGeometry } from './geometries/CylinderGeomtery';
 import { generatePlaneGeomtry } from './geometries/PlaneGeometry';
