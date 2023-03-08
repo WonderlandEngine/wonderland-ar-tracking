@@ -23,10 +23,23 @@ abstract class ARSession {
   public static readonly onSessionStarted: Array<(trackingProvider: ARProvider) => void> = [];
   public static readonly onSessionEnded: Array<(trackingProvider: ARProvider) => void> = [];
 
+  private static sceneHasLoaded = false;
+  private static _arSessionIsReady = false;
+
+  public static get arSessionReady  () {
+    return this._arSessionIsReady;
+  }
+
+  static {
+    if (window.document) {
+      WL.onSceneLoaded.push(() => {
+        this.onWLSceneLoaded();
+      });
+    }
+  }
   /**
-   * registers tracking provider. Makes sure it is loaded
+   * Registers tracking provider. Makes sure it is loaded
    * and hooks into providers onSessionStarted, onSessionLoaded events.
-   * 
    */
   public static async registerTrackingProvider(provider: ARProvider) {
     if (this.trackingProviders.includes(provider)) {
@@ -34,28 +47,28 @@ abstract class ARSession {
     }
     this.trackingProviders.push(provider);
 
-    if (!WL.onSceneLoaded.includes(this.onWLSceneLoaded)) {
-      WL.onSceneLoaded.push(this.checkSceneLoadProgress);
-    }
-
     provider.onSessionStarted.push(this.onProviderSessionStarted);
     provider.onSessionEnded.push(this.onProviderSessionEnded);
 
     await provider.load();
-    this.checkSceneLoadProgress();
+    this.checkProviderLoadProgress();
   };
 
+  private static checkProviderLoadProgress = () => {
+    // prevent from calling onARSessionReady twice
+    if(this._arSessionIsReady === true) {
+      return;
+    }
 
-  // called after scene is loaded AND whenever each provider finished loading
-  private static checkSceneLoadProgress = () => {
-    if (this.trackingProviders.every(p => p.loaded === true)) {
-      this.onWLSceneLoaded();
+    if (this.trackingProviders.every(p => p.loaded === true) && this.sceneHasLoaded) {
+      this._arSessionIsReady = true;
+      this.onARSessionReady.forEach(cb => cb());
     }
   }
 
-  // WL scene AND all registered providers finished loading
-  private static onWLSceneLoaded() {
-    this.onARSessionReady.forEach(cb => cb());
+  private static onWLSceneLoaded = () => {
+    this.sceneHasLoaded = true;
+    this.checkProviderLoadProgress();
   };
 
   // stops a running AR session (if any)

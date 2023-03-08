@@ -11,32 +11,34 @@ import { ARCamera } from './AR-Camera';
 
 // running on a browser?
 if (window.document) {
-  WL.onXRSupported.push((type: string, supported: boolean) => {
-    if (type === 'ar') {
-      if (supported) {
+
+  // WL.onXRSupported will be removed, so we no longer rely on it and check the WL.arSupported manually.
+  (function checkARSupport() {
+    if (WL.arSupported === undefined) {
+      setTimeout(checkARSupport, 1);
+    } else {
+      if (WL.arSupported) {
         ARSession.registerTrackingProvider(webXRProvider)
       } else {
         ARSession.registerTrackingProvider(xr8Provider)
       }
     }
-  });
+  })();
 }
 
-const WLEComponentTypeName = 'AR-SLAM-camera';
-
 class ARSLAMCamera extends ARCamera {
-  public static TypeName = WLEComponentTypeName;
+  public static TypeName = 'AR-SLAM-camera';
   public static Properties = {};
 
   private trackingImpl?: ITrackingMode;
 
   public start() {
-
     if (!this.object.getComponent('view')) {
       throw new Error('AR-camera requires a view component');
     }
-   if (WL.arSupported) {
-  //if (false) { // force xr8
+
+    if (WL.arSupported) {
+      //if (false) { // force xr8
       this.trackingImpl = new WorldTracking_webAR(this);
     } else {
       this.trackingImpl = new WorldTracking_XR8(this);

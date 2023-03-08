@@ -86,7 +86,7 @@ class WorldTracking_XR8 extends TrackingMode {
     // Seems like not implemented by xr8 yet
     {
       event: 'reality.meshupdated', process: (event: XR8VPSMeshUpdatedEvent) => {
-        console.log("Mesh is updated");
+        //console.log("Mesh is updated");
       }
     },
    
@@ -121,7 +121,6 @@ class WorldTracking_XR8 extends TrackingMode {
 
     {
       event: 'reality.projectwayspotupdated', process: (event: XR8VPSWayPointEvent) => {
-        console.log("wayspot updated");
         this.onWaySpotUpdated.forEach(callback => callback(event));
       }
     },

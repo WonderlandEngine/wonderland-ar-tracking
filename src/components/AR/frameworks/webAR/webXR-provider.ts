@@ -40,7 +40,6 @@ class WebXRProvider extends ARProvider {
   }
 
   public async startSession(webxrRequiredFeatures: string [] = ['local'], webxrOptionalFeatures: string[] = ['local', 'hit-test',]) {
-    //Module['webxr_request_session_func']('immersive-ar', webxrRequiredFeatures, webxrOptionalFeatures);
     WL.requestXRSession('immersive-ar', webxrRequiredFeatures, webxrOptionalFeatures);
   }
 

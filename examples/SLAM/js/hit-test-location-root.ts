@@ -1,5 +1,5 @@
 import { Component, Object as WLEObject, Type } from '@wonderlandengine/api';
-import { ARSession, WebXRProvider, ARProvider } from '../../../';
+import { ARSession, WebXRProvider, ARProvider } from '../../..';
 /**
  * Sets up a [WebXR Device API "Hit Test"](https://immersive-web.github.io/hit-test/)
  * and places the object to the hit location.
@@ -72,13 +72,11 @@ class HitTestLocationRoot extends Component {
   }
 
   onSessionStarted = (provider: ARProvider) => {
-
     if (provider instanceof WebXRProvider) {
       this.tracking = true;
       (provider as WebXRProvider).xrSession!.requestReferenceSpace('viewer').then((refSpace: XRReferenceSpace) => {
         this.xrViewerSpace = refSpace;
         (provider as WebXRProvider).xrSession!.requestHitTestSource!({ space: this.xrViewerSpace! })!.then((hitTestSource: XRHitTestSource) => {
-
           this.xrHitTestSource = hitTestSource;
         });
       })
