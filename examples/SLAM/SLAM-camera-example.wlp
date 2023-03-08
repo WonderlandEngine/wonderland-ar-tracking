@@ -552,7 +552,15 @@
             ],
             "bloom": {
                 "enabled": false
-            }
+            },
+            "textureAtlasSize": [
+                4096,
+                4096
+            ],
+            "compressedTextureAtlasSize": [
+                4096,
+                4096
+            ]
         },
         "runtime": {
             "webxr": {

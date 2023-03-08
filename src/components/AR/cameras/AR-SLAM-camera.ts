@@ -11,19 +11,40 @@ import { ARCamera } from './AR-Camera';
 
 // running on a browser?
 if (window.document) {
-  WL.onXRSupported.push((type: string, supported: boolean) => {
-    if (type === 'ar') {
-      if (supported) {
+  (function checkARSupport() {
+    if (WL.arSupported === undefined) {
+      setTimeout(checkARSupport, 50);
+    } else {
+      if (WL.arSupported) {
         ARSession.registerTrackingProvider(webXRProvider)
       } else {
         ARSession.registerTrackingProvider(xr8Provider)
       }
     }
-  });
+  })();
 }
 
-const WLEComponentTypeName = 'AR-SLAM-camera';
+/*if (window.document) {
+  if (WL.arSupported === undefined) {
+    WL.onXRSupported.push((type: string, supported: boolean) => {
+      if (type === 'ar') {
+        if (supported) {
+          ARSession.registerTrackingProvider(webXRProvider)
+        } else {
+          ARSession.registerTrackingProvider(xr8Provider)
+        }
+      }
+    });
+  } else {
+    if (WL.arSupported) {
+      ARSession.registerTrackingProvider(webXRProvider)
+    } else {
+      ARSession.registerTrackingProvider(xr8Provider)
+    }
+  }
+}*/
 
+const WLEComponentTypeName = 'AR-SLAM-camera';
 class ARSLAMCamera extends ARCamera {
   public static TypeName = WLEComponentTypeName;
   public static Properties = {};
@@ -32,11 +53,16 @@ class ARSLAMCamera extends ARCamera {
 
   public start() {
 
+    console.log("STaring the darn thing here", this);
+    WL.onSceneLoaded.push(() => {
+      console.log("Scene has loaded");
+    })
     if (!this.object.getComponent('view')) {
       throw new Error('AR-camera requires a view component');
     }
-   if (WL.arSupported) {
-  //if (false) { // force xr8
+
+    if (WL.arSupported) {
+      //if (false) { // force xr8
       this.trackingImpl = new WorldTracking_webAR(this);
     } else {
       this.trackingImpl = new WorldTracking_XR8(this);

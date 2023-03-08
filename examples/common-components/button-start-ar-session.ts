@@ -8,9 +8,11 @@ class ButtonStartARSession extends Component {
 
   };
 
-  start() {
+  init() {
+    console.log("Imniting the button start");
     let xrButton = document.querySelector<HTMLElement>('#ar-button');
     ARSession.onARSessionReady.push(() => {
+      console.log("Session is ready in the init");
       if (xrButton === null) {
         console.error('No #ar-button found. Session will not start.');
         return;

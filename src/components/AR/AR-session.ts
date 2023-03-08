@@ -33,9 +33,16 @@ abstract class ARSession {
       return;
     }
     this.trackingProviders.push(provider);
+    console.log("Setting up the thing here")
+    WL.onSceneLoaded.push(() => {
+      console.log("Scene has loaded!!!!1111");
+    })
 
-    if (!WL.onSceneLoaded.includes(this.onWLSceneLoaded)) {
-      WL.onSceneLoaded.push(this.checkSceneLoadProgress);
+    console.log("Has scene loaded yet?", WL.scene);
+    if (!WL.scene) {
+      if (!WL.onSceneLoaded.includes(this.checkSceneLoadProgress)) {
+        WL.onSceneLoaded.push(this.checkSceneLoadProgress);
+      }
     }
 
     provider.onSessionStarted.push(this.onProviderSessionStarted);
@@ -48,6 +55,7 @@ abstract class ARSession {
 
   // called after scene is loaded AND whenever each provider finished loading
   private static checkSceneLoadProgress = () => {
+    console.log("Checking scene progress");
     if (this.trackingProviders.every(p => p.loaded === true)) {
       this.onWLSceneLoaded();
     }
@@ -55,6 +63,7 @@ abstract class ARSession {
 
   // WL scene AND all registered providers finished loading
   private static onWLSceneLoaded() {
+    console.log("Scene has loaded");
     this.onARSessionReady.forEach(cb => cb());
   };
 
