@@ -1,4 +1,5 @@
 # SLAM (World tracking) camera demo
+![Preview](previews/SLAM-example.webp?raw=true "Dynamically generated mesh")
 Runs an AR session using WebXR Device AP where available with a fallback to 8th-wall implementation.
 
 To successfully run in 
