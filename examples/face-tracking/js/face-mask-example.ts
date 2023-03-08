@@ -1,5 +1,6 @@
 import { Component, Material, Mesh, MeshAttribute, MeshComponent, MeshIndexType, Object as WLEObject, Type } from '@wonderlandengine/api';
-import { ARFaceTrackingCamera } from '../../..';
+// import { ARFaceTrackingCamera } from '../../..';
+import { ARFaceTrackingCamera } from '../../../src/components/AR/cameras/AR-face-tracking-camera';
 
 class FaceMaskExample extends Component {
   public static TypeName = 'face-mask-example';

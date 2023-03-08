@@ -182,7 +182,10 @@ declare type XR8VPSMeshFoundEvent = {
     position: { x: number, y: number, z: number },
     rotation: { x: number, y: number, z: number, w: number },
     geometry: {
-      index: Uint32Array,
+      index: {
+        array: Uint32Array,
+        itemSize: 1,
+      }
       attributes: [
         {
           name: 'position',

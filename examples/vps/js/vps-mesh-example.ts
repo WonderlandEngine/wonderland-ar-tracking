@@ -1,5 +1,5 @@
 import { Component, Mesh, MeshComponent, Material, Object as WLEObject, Type, MeshIndexType, MeshAttribute } from '@wonderlandengine/api';
-import { ARSession } from '../../../src/components/AR/AR-session';
+import { ARSession } from '../../../';
 import { ARVPSCamera } from '../../../src/components/AR/cameras/AR-VPS-camera';
 
 class VPSMeshExample extends Component {

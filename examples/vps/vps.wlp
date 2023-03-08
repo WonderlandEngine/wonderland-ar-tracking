@@ -117,8 +117,52 @@
                 1.0
             ]
         },
-        "27": {
-            "name": "VpsWaypoint1",
+        "45": {
+            "name": "EyeRight",
+            "parent": "14",
+            "components": [
+                {
+                    "type": "view"
+                },
+                {
+                    "type": "input",
+                    "input": {
+                        "type": "eye right"
+                    }
+                }
+            ]
+        },
+        "67": {
+            "name": "VpsMeshExample",
+            "components": [
+                {
+                    "type": "vps-mesh-example",
+                    "vps-mesh-example": {
+                        "VPSCamera": "17",
+                        "generatedMeshMaterial": "64"
+                    }
+                }
+            ],
+            "parent": null,
+            "translation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "scaling": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        "68": {
+            "name": "VpsWaypoint3",
             "translation": [
                 0.0,
                 0.0,
@@ -144,73 +188,13 @@
                         "positionIndicator": "63",
                         "generatedMeshMaterial": "64",
                         "waaypointId": "18200b89d00e",
-                        "waypointName": "18200b89d00e",
+                        "waypointName": "926be8aa14c9",
                         "wayspotOrigin": "63"
-                    },
-                    "active": true
-                }
-            ]
-        },
-        "45": {
-            "name": "EyeRight",
-            "parent": "14",
-            "components": [
-                {
-                    "type": "view"
-                },
-                {
-                    "type": "input",
-                    "input": {
-                        "type": "eye right"
-                    }
-                }
-            ]
-        },
-        "65": {
-            "name": "VpsWaypoint2",
-            "translation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "rotation": [
-                0.0,
-                0.0,
-                0.0,
-                1.0
-            ],
-            "scaling": [
-                0.1199999,
-                0.1199999,
-                0.1199999
-            ],
-            "components": [
-                {
-                    "type": "vps-example",
-                    "vps-example": {
-                        "VPSCamera": "17",
-                        "material": "20",
-                        "positionIndicator": "63",
-                        "generatedMeshMaterial": "64",
-                        "waaypointId": "18200b89d00e",
-                        "waypointName": "ca892e1bf992"
                     },
                     "active": true
                 }
             ],
             "parent": null
-        },
-        "67": {
-            "name": "VpsMeshExample",
-            "components": [
-                {
-                    "type": "vps-mesh-example",
-                    "vps-mesh-example": {
-                        "VPSCamera": "17",
-                        "generatedMeshMaterial": "64"
-                    }
-                }
-            ]
         }
     },
     "meshes": {
@@ -629,9 +613,7 @@
             }
         }
     },
-    "files": [
-        "models/ar-target.glb"
-    ],
+    "files": [],
     "textures": {},
     "images": {},
     "fonts": {
@@ -641,5 +623,6 @@
                 "file": "default"
             }
         }
-    }
+    },
+    "languages": {}
 }
