@@ -268,7 +268,6 @@ class XR8Provider extends ARProvider {
   public async checkPermissions(extraPermissions: XR8ExtraPermissions = []) {
     OverlaysHandler.init();
 
-
     if (!XR8.XrDevice.isDeviceBrowserCompatible()) {
       window.dispatchEvent(new CustomEvent('8thwall-device-incompatible'));
       return;
@@ -280,7 +279,6 @@ class XR8Provider extends ARProvider {
 
     } catch (error) {
       // User did not grant the camera or motionEvent permissions
-      console.log("Permission failed", error);
       window.dispatchEvent(new CustomEvent('8thwall-permission-fail', { detail: error }))
       return false;
     }

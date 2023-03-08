@@ -51,12 +51,7 @@ class WebXRProvider extends ARProvider {
 
   public async load() {
     this.loaded = true;
-
-    return new Promise<void>((resolve) => {
-      setTimeout(() => {
-        resolve();
-      }, 1000);
-    })
+    return Promise.resolve();
   }
 }
 const webXRProvider = new WebXRProvider();

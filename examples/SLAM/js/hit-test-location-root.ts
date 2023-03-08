@@ -72,14 +72,11 @@ class HitTestLocationRoot extends Component {
   }
 
   onSessionStarted = (provider: ARProvider) => {
-    console.log("WebXR AR session started here");
     if (provider instanceof WebXRProvider) {
       this.tracking = true;
       (provider as WebXRProvider).xrSession!.requestReferenceSpace('viewer').then((refSpace: XRReferenceSpace) => {
-        console.log("Got viewer space");
         this.xrViewerSpace = refSpace;
         (provider as WebXRProvider).xrSession!.requestHitTestSource!({ space: this.xrViewerSpace! })!.then((hitTestSource: XRHitTestSource) => {
-          console.log("Hoit hit test source");
           this.xrHitTestSource = hitTestSource;
         });
       })

@@ -132,7 +132,6 @@
                   loader: {{ withLoader }}
                 });
                 engine.onXRSupported.push((type, supported) => {
-                  console.log("XR support has loaded");
                     const button = document.getElementById(type + '-button');
                     if(button) button.dataset.supported = supported;
                 });
