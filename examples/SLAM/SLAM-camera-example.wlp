@@ -285,18 +285,6 @@
                 "file": "default"
             }
         },
-        "43": {
-            "link": {
-                "name": "AR Target Mesh",
-                "file": "models\\ar-target.glb"
-            }
-        },
-        "63": {
-            "link": {
-                "name": "AR Target Mesh",
-                "file": "js\\examples\\slam-camera\\models\\ar-target.glb"
-            }
-        },
         "66": {
             "link": {
                 "name": "AR Target Mesh",
@@ -395,33 +383,6 @@
                     0.1437908,
                     1.0
                 ]
-            }
-        },
-        "42": {
-            "link": {
-                "name": "AR Target Material",
-                "file": "models\\ar-target.glb"
-            },
-            "pipeline": "39",
-            "Phong": {
-                "ambientColor": [
-                    0.5921568,
-                    0.5921509,
-                    0.5921509,
-                    1.0
-                ],
-                "diffuseColor": [
-                    1.0,
-                    0.9999899,
-                    0.9999899,
-                    1.0
-                ]
-            }
-        },
-        "62": {
-            "link": {
-                "name": "AR Target Material",
-                "file": "js\\examples\\slam-camera\\models\\ar-target.glb"
             }
         },
         "65": {
@@ -697,8 +658,6 @@
         }
     },
     "files": [
-        "models/ar-target.glb",
-        "js/examples/slam-camera/models/ar-target.glb",
         "js/models/ar-target.glb"
     ],
     "textures": {},
@@ -710,5 +669,6 @@
                 "file": "default"
             }
         }
-    }
+    },
+    "languages": {}
 }
