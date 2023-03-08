@@ -65,7 +65,5 @@ class ARSLAMCamera extends ARCamera {
   }
 }
 
-//WL.registerComponent(ARSLAMCamera);
-
 export { ARSLAMCamera }
 

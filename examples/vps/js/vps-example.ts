@@ -1,5 +1,5 @@
-import { Component, Mesh, MeshComponent, Material, Object as WLEObject, Type, MeshIndexType, MeshAttribute } from '@wonderlandengine/api';
-import { ARSession } from '../../../src/components/AR/AR-session';
+import { Component, Object as WLEObject, Type} from '@wonderlandengine/api';
+import { ARSession } from '../../../';
 import { ARVPSCamera } from '../../../src/components/AR/cameras/AR-VPS-camera';
 // import meshData from './mesh-data.js';
 
@@ -60,7 +60,7 @@ class VPSExample extends Component {
     })
   }
 
-  private wayspotFound = (event: XR8VPSMeshFoundEvent) => {
+  private wayspotFound = (event: XR8VPSWayPointEvent) => {
     if (event.detail.name !== this.waypointName)
       return;
     VPSExample.debugText.innerHTML += '<br />Way spot found: ' + event.detail.name;
@@ -68,7 +68,7 @@ class VPSExample extends Component {
 
   }
 
-  private updateModelPose = (event: XR8VPSMeshUpdatedEvent) => {
+  private updateModelPose = (event: XR8VPSWayPointEvent) => {
     if (event.detail.name !== this.waypointName)
       return;
 

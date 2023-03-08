@@ -66,7 +66,5 @@ class ARVPSCamera extends ARCamera {
   }
 }
 
-WL.registerComponent(ARVPSCamera);
-
 export { ARVPSCamera };
 
