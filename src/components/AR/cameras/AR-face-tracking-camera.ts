@@ -58,7 +58,6 @@ class ARFaceTrackingCamera extends ARCamera {
   }
 }
 
-WL.registerComponent(ARFaceTrackingCamera);
-
+//WL.registerComponent(ARFaceTrackingCamera);
 export { ARFaceTrackingCamera };
 

@@ -1,5 +1,6 @@
 import { Component, Object as WLEObject, Type } from '@wonderlandengine/api';
-import { ARFaceTrackingCamera } from '../../..';
+import { ARFaceTrackingCamera } from '../../../src/components/AR/cameras/AR-face-tracking-camera';
+//import { ARFaceTrackingCamera } from '../../..';
 
 
 const ATTACHMENT_POINTS = ['forehead', 'rightEyebrowInner', 'rightEyebrowMiddle', 'rightEyebrowOuter', 'leftEyebrowInner', 'leftEyebrowMiddle', 'leftEyebrowOuter', 'leftEar', 'rightEar', 'leftCheek', 'rightCheek', 'noseBridge', 'noseTip', 'leftEye', 'rightEye', 'leftEyeOuterCorner', 'rightEyeOuterCorner', 'upperLip', 'lowerLip', 'mouth', 'mouthRightCorner', 'mouthLeftCorner', 'chin'];
