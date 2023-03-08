@@ -1,5 +1,7 @@
 # 8thwall VPS (visual positioning system) camera demo
 
+![Preview](previews/dynamic-mesh.webp?raw=true "Dynamically generated mesh")
+
 To successfully run in 
 - make sure `API_TOKEN_XR8` is defined in the index.html file
 ```
