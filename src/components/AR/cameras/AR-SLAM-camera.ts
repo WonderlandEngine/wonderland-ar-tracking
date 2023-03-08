@@ -35,8 +35,8 @@ class ARSLAMCamera extends ARCamera {
     if (!this.object.getComponent('view')) {
       throw new Error('AR-camera requires a view component');
     }
-    if (WL.arSupported) {
-      //if (false) { // force xr8
+   if (WL.arSupported) {
+  //if (false) { // force xr8
       this.trackingImpl = new WorldTracking_webAR(this);
     } else {
       this.trackingImpl = new WorldTracking_XR8(this);
@@ -65,8 +65,7 @@ class ARSLAMCamera extends ARCamera {
   }
 }
 
-WL.registerComponent(ARSLAMCamera);
-
+//WL.registerComponent(ARSLAMCamera);
 
 export { ARSLAMCamera }
 

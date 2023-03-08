@@ -1,5 +1,5 @@
 import { Component, Object as WLEObject, Type } from '@wonderlandengine/api';
-import { quat2, vec3 } from 'gl-matrix';
+import { vec3 } from 'gl-matrix';
 import { ARSession, XR8Provider, ARProvider } from '../../../';
 
 import { Plane } from './common/math/plane';
