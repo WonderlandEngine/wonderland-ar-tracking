@@ -1,4 +1,6 @@
+import * as QRCode from "qrcode-svg";
 import { ARProvider } from "../../AR-provider";
+
 
 /**
   * Array of extra permissions which some tracking mode might need. By default XR8 will need camera/microphone permissions and deviceMotion permission (iOS only). VPS for example must pass an extra 'location' permission
@@ -499,49 +501,58 @@ const handleWaitingForDeviceLocationOverlay = `
 </div>`;
 
 
-const deviceIncompatibleOverlay = () => `
-<style>
-#deviceIncompatibleOverlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 999;
-  color: #fff;
-  background-color: rgba(0, 0, 0, 0.5);
-  padding: 30px;
-  box-sizing: border-box;
+const deviceIncompatibleOverlay = () => {
+  // @ts-ignore ts(2339) 'qrcode-svg' has some funny export definition
+  const svg = new QRCode.default({
+    content: window.location.href,
+    width: 200,
+    height: 200
+  }).svg();
   
-  font-family: sans-serif;
 
-  display: flex;
-  flex-direction: column;
+  const html = `
+    <style>
+    #deviceIncompatibleOverlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 999;
+      color: #fff;
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 30px;
+      box-sizing: border-box;
+      
+      font-family: sans-serif;
 
-  align-content: center;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
+      display: flex;
+      flex-direction: column;
+
+      align-content: center;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+
+    #incompatible-redirect-QR-code {
+      height: 200px;
+      width: 200px;
+      margin: 30px;
+    }
+    </style>
+    <div id="deviceIncompatibleOverlay">
+    <div>
+      This device is not compatible with 8thwall. 
+      Please open it using your mobile device.
+      </div>
+      <div id="incompatible-redirect-QR-code">
+        ${svg}
+      </div>
+      <div>${window.location.href}</div>
+    </div>`;
+
+  return html;
 }
-
-
-
-#incompatible-redirect-QR-code {
-  height: 200px;
-  width: 200px;
-  margin: 30px;
-}
-</style>
-<div id="deviceIncompatibleOverlay">
-<div>
-  This device is not compatible with 8thwall. 
-  Please open it using your mobile device.
-  </div>
-  <div id="incompatible-redirect-QR-code">
-    <img src="https://8th.io/qr?v=2&margin=2&url=${encodeURIComponent(window.location.href)}" />
-  </div>
-  <div>${window.location.href}</div>
-</div>`;
-
 const xr8Provider = new XR8Provider();
 export { XR8Provider, xr8Provider };
