@@ -1,5 +1,6 @@
 import * as QRCode from "qrcode-svg";
 import { ARProvider } from "../../AR-provider";
+import { IXR8UIHandler } from "./ixr8-ui-handler";
 
 
 /**
@@ -12,6 +13,8 @@ class XR8Provider extends ARProvider {
   public get tag() {
     return "xr8";
   }
+
+  public uiHandler: IXR8UIHandler = new DefaultUIHandler;
 
   public cachedWebGLContext: WebGL2RenderingContext | null = null;
   // Loading of 8thwall might be initiated by several components, make sure we load it only once
@@ -36,7 +39,6 @@ class XR8Provider extends ARProvider {
     }
 
     this.instance = this;
-
   }
 
   public async load() {
@@ -89,8 +91,7 @@ class XR8Provider extends ARProvider {
             },
 
             onException: (message) => {
-              // console.log('Error happened', err);
-              window.dispatchEvent(new CustomEvent('8thwall-error', { detail: { message } }))
+              this.uiHandler.handleError(new CustomEvent('8thwall-error', { detail: { message } }));
             }
           }
         ]);
@@ -204,22 +205,13 @@ class XR8Provider extends ARProvider {
   };
 
 
-  private promptForDeviceMotion() {
-    return new Promise(async (resolve, reject) => {
+  private async promptForDeviceMotion() {
+    // wait until user interaction happens
+    await this.uiHandler.requestUserInteraction();
 
-      // Tell anyone who's interested that we want to get some user interaction
-      window.dispatchEvent(new Event('8thwall-request-user-interaction'));
-
-      // Wait until someone response that user interaction happened
-      window.addEventListener('8thwall-safe-to-request-permissions', async () => {
-        try {
-          const motionEvent = await (DeviceMotionEvent as any).requestPermission();
-          resolve(motionEvent);
-        } catch (exception) {
-          reject(exception)
-        }
-      });
-    })
+    // wait until motion permissions has happened
+    const motionEvent = await (DeviceMotionEvent as any).requestPermission();
+    return motionEvent;
   }
 
   private async getPermissions(extraPermissions: XR8ExtraPermissions = []) {
@@ -262,15 +254,16 @@ class XR8Provider extends ARProvider {
     }
 
     if (extraPermissions.includes('location')) {
-      window.dispatchEvent(new Event('8thwall-waiting-for-device-location'))
+
+      this.uiHandler.showWaitingForDeviceLocation();
+
       return new Promise<void>((resolve, reject) => {
         navigator.geolocation.getCurrentPosition((position) => {
-          window.dispatchEvent(new Event('8thwall-device-location-resolved'))
-
+          this.uiHandler.hideWaitingForDeviceLocation();
           resolve();
-        }, (error) => {
-          window.dispatchEvent(new Event('8thwall-device-location-resolved'))
-          reject("Geolocation");
+        }, (_error) => {
+          this.uiHandler.hideWaitingForDeviceLocation();
+          reject(new Error("Location"));
         });
       });
     }
@@ -279,82 +272,62 @@ class XR8Provider extends ARProvider {
   };
 
   public async checkPermissions(extraPermissions: XR8ExtraPermissions = []) {
-    OverlaysHandler.init();
-
     if (!XR8.XrDevice.isDeviceBrowserCompatible()) {
-      window.dispatchEvent(new CustomEvent('8thwall-device-incompatible'));
+      this.uiHandler.handleIncompatibleDevice()
       return;
     }
 
     try {
       await this.getPermissions(extraPermissions);
       return true;
-
-    } catch (error) {
+    } catch (error: unknown) {
       // User did not grant the camera or motionEvent permissions
-      window.dispatchEvent(new CustomEvent('8thwall-permission-fail', { detail: error }))
+      this.uiHandler.handlePermissionFail(error as Error);
       return false;
     }
   }
 }
 
+class DefaultUIHandler implements IXR8UIHandler {
+  requestUserInteraction = () => {
+    const overlay = this.showOverlay(requestPermissionOverlay);
 
-const OverlaysHandler = {
-  ready: false, // make sure we initialise only once
-  init() {
+    return new Promise<void>((resolve) => {
+      const button = document.querySelector<HTMLButtonElement>('#request-permission-overlay_button');
+      button?.addEventListener('click', () => {
+        overlay.remove();
+        resolve();
+      });
+    })
+  };
 
-    if (this.ready) {
-      return;
-    }
-    this.ready = true;
-    this.handleRequestUserInteraction = this.handleRequestUserInteraction.bind(this);
-    this.handlePermissionFail = this.handlePermissionFail.bind(this);
-    this.handleError = this.handleError.bind(this);
-    this.handleWaitingForDeviceLocation = this.handleWaitingForDeviceLocation.bind(this);
-    this.handleDeviceLocationResolved = this.handleDeviceLocationResolved.bind(this);
-    this.handleDeviceIncompatible = this.handleDeviceIncompatible.bind(this);
-
-    window.addEventListener('8thwall-request-user-interaction', this.handleRequestUserInteraction);
-    window.addEventListener('8thwall-permission-fail', this.handlePermissionFail);
-    window.addEventListener('8thwall-error', this.handleError);
-    window.addEventListener('8thwall-waiting-for-device-location', this.handleWaitingForDeviceLocation);
-    window.addEventListener('8thwall-device-location-resolved', this.handleDeviceLocationResolved);
-    window.addEventListener('8thwall-device-incompatible', this.handleDeviceIncompatible);
-  },
+  handlePermissionFail(error: Error) {
+    console.log("Permission failed", error);
+    this.showOverlay(failedPermissionOverlay(error.message));
+  };
 
 
-  handleDeviceIncompatible: function () {
-    const overlay = this.showOverlay(deviceIncompatibleOverlay());
-  },
+  handleError = (error: Event) => {
+    console.error("XR8 encountered an error", error);
+    this.showOverlay(runtimeErrorOverlay((error as CustomEvent).detail.message));
+  };
 
-  handleWaitingForDeviceLocation: function () {
-    const overlay = this.showOverlay(handleWaitingForDeviceLocationOverlay);
-  },
+  showWaitingForDeviceLocation = () => {
+    this.showOverlay(handleWaitingForDeviceLocationOverlay);
+  };
 
-  handleDeviceLocationResolved: function () {
+  hideWaitingForDeviceLocation = () => {
     const overlay = document.querySelector("#handleWaitingForDeviceLocationOverlay");
     if (overlay) {
       overlay.remove();
     }
-  },
+  };
 
-  handleRequestUserInteraction: function () {
-    const overlay = this.showOverlay(requestPermissionOverlay);
-    window.addEventListener('8thwall-safe-to-request-permissions', () => {
-      overlay.remove();
-    });
-  },
+  handleIncompatibleDevice = () => {
+    this.showOverlay(deviceIncompatibleOverlay());
+  };
 
-  handlePermissionFail: function (_reason: Event) {
-    this.showOverlay(failedPermissionOverlay);
-  },
-
-  handleError: function (error: Event) {
-    console.error('XR8 encountered an error', (error as CustomEvent).detail.message);
-    this.showOverlay(runtimeErrorOverlay((error as CustomEvent).detail.message));
-  },
-
-  showOverlay: function (htmlContent: string) {
+  showOverlay = (htmlContent: string) => {
     const overlay = document.createElement('div');
     overlay.innerHTML = htmlContent;
     document.body.appendChild(overlay);
@@ -382,7 +355,7 @@ const requestPermissionOverlay = `
     font-size: 32px;
   }
 
-  .request-permission-overlay_button {
+  #request-permission-overlay_button {
     background-color: #e80086;
     font-size: 22px;
     padding: 10px 30px;
@@ -394,10 +367,10 @@ const requestPermissionOverlay = `
 
   <div id="request-permission-overlay">
     <div class="request-permission-overlay_title">This app requires to use your camera and motion sensors</div>
-    <button class="request-permission-overlay_button" onclick="window.dispatchEvent(new Event('8thwall-safe-to-request-permissions'))">OK</button>
+    <button id="request-permission-overlay_button">OK</button>
   </div>`;
 
-const failedPermissionOverlay = `
+const failedPermissionOverlay = (reason: string) => `
   <style>
   #failed-permission-overlay {
     position: absolute;
@@ -428,7 +401,7 @@ const failedPermissionOverlay = `
   </style>
 
   <div id="failed-permission-overlay">
-  <div class="failed-permission-overlay_title">Failed to grant permissions. Reset the the permissions and refresh the page.</div>
+  <div class="failed-permission-overlay_title">Failed to grant permissions [${reason}]. Reset the the permissions and refresh the page.</div>
 
   <button class="failed-permission-overlay_button" onclick="window.location.reload()">Refresh the page</button>
   </div>`;
@@ -476,30 +449,30 @@ const runtimeErrorOverlay = (message: string) => `
   </div>`;
 
 const handleWaitingForDeviceLocationOverlay = `
-<style>
-#handleWaitingForDeviceLocationOverlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 999;
-  color: #fff;
-  background-color: rgba(0, 0, 0, 0.5);
-  
-  font-family: sans-serif;
+  <style>
+    #handleWaitingForDeviceLocationOverlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 999;
+      color: #fff;
+      background-color: rgba(0, 0, 0, 0.5);
+      
+      font-family: sans-serif;
 
-  display: flex;
-  align-content: center;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-}
-</style>
-<div id="handleWaitingForDeviceLocationOverlay">
-  Waiting for device location
-</div>`;
-
+      display: flex;
+      align-content: center;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+  </style>
+  <div id="handleWaitingForDeviceLocationOverlay">
+    Waiting for device location
+  </div>
+`;
 
 const deviceIncompatibleOverlay = () => {
   // @ts-ignore ts(2339) 'qrcode-svg' has some funny export definition
@@ -508,7 +481,7 @@ const deviceIncompatibleOverlay = () => {
     width: 200,
     height: 200
   }).svg();
-  
+
 
   const html = `
     <style>
@@ -546,13 +519,12 @@ const deviceIncompatibleOverlay = () => {
       This device is not compatible with 8thwall. 
       Please open it using your mobile device.
       </div>
-      <div id="incompatible-redirect-QR-code">
-        ${svg}
-      </div>
+      <div id="incompatible-redirect-QR-code">${svg}</div>
       <div>${window.location.href}</div>
     </div>`;
 
   return html;
 }
+
 const xr8Provider = new XR8Provider();
 export { XR8Provider, xr8Provider };
