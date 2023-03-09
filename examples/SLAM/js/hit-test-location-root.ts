@@ -1,4 +1,5 @@
 import { Component, Object as WLEObject, Type } from '@wonderlandengine/api';
+import { quat, quat2 } from 'gl-matrix';
 import { ARSession, WebXRProvider, ARProvider } from '../../..';
 /**
  * Sets up a [WebXR Device API "Hit Test"](https://immersive-web.github.io/hit-test/)
@@ -47,10 +48,27 @@ class HitTestLocationRoot extends Component {
         if (hitTestResults.length > 0) {
           let pose = hitTestResults[0].getPose(this.xrViewerSpace);
           this.visible = true;
+      
+          ////////////////////////////////////////////
+          //// This part does not behave correctly ///
+          ///////////////////////////////////////////
+          const local = quat2.create();
+          const world = quat2.create();
+          // create local transform
+          quat2.fromMat4(local, pose.transform.matrix);
+          // convert it to world
+          this.camera.toWorldSpaceTransform(world, local);
+          
+          // This does not work
+          this.object.transformWorld.set(world);
+          
+          
+          //////////////////////////////////////
+          //// Just translation works fine ////
+          ////////////////////////////////////
+          //const tw = this.camera.transformPointWorld(new Array(3), new Array(pose.transform.position.x, pose.transform.position.y, pose.transform.position.z));
+          //this.object.setTranslationWorld(tw);
 
-          // this is good;
-          const tw = this.camera.transformPointWorld(new Array(3), new Array(pose.transform.position.x, pose.transform.position.y, pose.transform.position.z));
-          this.object.setTranslationWorld(tw);
 
 
           // TODO: how do I get the world ROTATION
