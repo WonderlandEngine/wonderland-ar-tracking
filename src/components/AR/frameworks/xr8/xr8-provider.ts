@@ -85,6 +85,7 @@ class XR8Provider extends ARProvider {
               this.running = true;
               this.enableCameraFeed();
             },
+
             onDetach: () => {
               this.running = false;
               this.disableCameraFeed();
