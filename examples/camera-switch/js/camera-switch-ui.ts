@@ -36,6 +36,13 @@ class XR8CameraSwitch extends Component {
       ARSession.stopARSession();
     });
 
+    ARSession.onSessionEnded.push(() => {
+      console.trace("Killing the session - - CHECK THIS WHY TWICE");
+      this.faceTrackingCamera!.active = false;
+      this.imageTrackingCamera!.active = false;
+      this.worldTrackingCamera!.active = false;
+    })
+
     this.faceTrackingCamera = this.object.getComponent(ARFaceTrackingCamera)!;
     this.imageTrackingCamera = this.object.getComponent(ARImageTrackingCamera)!;
     this.worldTrackingCamera = this.object.getComponent(ARSLAMCamera)!;

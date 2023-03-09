@@ -41,7 +41,7 @@
             "translation": [
                 0.0,
                 0.4999999,
-                5.960464477539065e-8
+                5.960464477539063e-8
             ],
             "rotation": [
                 0.0,
@@ -53,7 +53,8 @@
                 0.5,
                 0.5,
                 0.5
-            ]
+            ],
+            "parent": "67"
         },
         "17": {
             "name": "NonVrCamera",
@@ -66,7 +67,19 @@
                     "type": "mouse-look"
                 },
                 {
-                    "type": "AR-SLAM-camera"
+                    "type": "xr8-camera-switch-example"
+                },
+                {
+                    "type": "AR-face-tracking-camera",
+                    "active": false
+                },
+                {
+                    "type": "AR-image-tracking-camera",
+                    "active": false
+                },
+                {
+                    "type": "AR-SLAM-camera",
+                    "active": false
                 }
             ]
         },
@@ -165,7 +178,8 @@
                 1.0,
                 1.0,
                 1.0
-            ]
+            ],
+            "parent": "67"
         },
         "27": {
             "name": "Sphere",
@@ -193,7 +207,8 @@
                 0.75,
                 0.75,
                 0.75
-            ]
+            ],
+            "parent": "67"
         },
         "45": {
             "name": "EyeRight",
@@ -209,6 +224,172 @@
                     }
                 }
             ]
+        },
+        "62": {
+            "name": "NoseTrackingExample",
+            "components": [
+                {
+                    "type": "face-attachment-point-example",
+                    "face-attachment-point-example": {
+                        "ARFaceTrackingCamera": "17",
+                        "attachmentPoint": "noseTip",
+                        "attachedObject": "63"
+                    }
+                }
+            ]
+        },
+        "63": {
+            "name": "Nose",
+            "parent": "62"
+        },
+        "64": {
+            "name": "Mesh",
+            "parent": "63",
+            "components": [
+                {
+                    "type": "mesh",
+                    "mesh": {
+                        "mesh": "9",
+                        "material": "26"
+                    }
+                }
+            ],
+            "scaling": [
+                0.1,
+                0.1,
+                0.1
+            ]
+        },
+        "65": {
+            "name": "Image-tracking-example",
+            "components": [
+                {
+                    "type": "image-tracking-example",
+                    "image-tracking-example": {
+                        "ARImageTrackingCamera": "17",
+                        "imageId": "image-target-1-white"
+                    }
+                }
+            ]
+        },
+        "67": {
+            "name": "ObjectContainer",
+            "parent": "65",
+            "scaling": [
+                0.3,
+                0.3,
+                0.3
+            ],
+            "translation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ]
+        },
+        "68": {
+            "name": "slam-tracking-example",
+            "parent": null,
+            "components": [
+                {
+                    "type": "slam-tracking-example",
+                    "slam-tracking-example": {
+                        "ARSlamCamera": "17"
+                    }
+                }
+            ]
+        },
+        "70": {
+            "name": "Cube",
+            "components": [
+                {
+                    "type": "mesh",
+                    "mesh": {
+                        "mesh": "8",
+                        "material": "22"
+                    }
+                }
+            ],
+            "translation": [
+                0.0,
+                0.1499999,
+                1.7881394143159923e-8
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "scaling": [
+                0.15,
+                0.15,
+                0.15
+            ],
+            "parent": "68"
+        },
+        "71": {
+            "name": "Cone",
+            "components": [
+                {
+                    "type": "mesh",
+                    "mesh": {
+                        "mesh": "10",
+                        "material": "25"
+                    }
+                }
+            ],
+            "translation": [
+                0.45,
+                0.3,
+                -0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "scaling": [
+                0.3,
+                0.3,
+                0.3
+            ],
+            "parent": "68"
+        },
+        "72": {
+            "name": "Sphere",
+            "components": [
+                {
+                    "type": "mesh",
+                    "mesh": {
+                        "mesh": "9",
+                        "material": "26"
+                    }
+                }
+            ],
+            "translation": [
+                0.1499999,
+                0.225,
+                -0.375
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "scaling": [
+                0.225,
+                0.225,
+                0.225
+            ],
+            "parent": "68"
         }
     },
     "meshes": {

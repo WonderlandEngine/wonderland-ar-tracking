@@ -7,31 +7,34 @@ export type XR8ExtraPermissions = Array<'location'>;
 
 class XR8Provider extends ARProvider {
 
-  public get tag () {
+  public get tag() {
     return "xr8";
   }
 
-  public cachedWebGLContext: WebGL2RenderingContext | null =  null;
+  public cachedWebGLContext: WebGL2RenderingContext | null = null;
   // Loading of 8thwall might be initiated by several components, make sure we load it only once
-  private loading = false
-  
+  private loading = false;
+
+  // XR8 currently provides no way to check if the session is running, only if the session is paused (and we never pause, we just XR8.end()). so we track this manually
+  private running = false;
+
   // Enforce the singleton pattern
   private instance: XR8Provider | null = null;
 
-  constructor () {
+  constructor() {
     super();
 
-     // Safeguard that we are not running inside the editor
-     if (typeof (document) === 'undefined') {
+    // Safeguard that we are not running inside the editor
+    if (typeof (document) === 'undefined') {
       return;
     }
 
-    if(this.instance !== null) {
+    if (this.instance !== null) {
       throw "WebXRProvider cannot be instantiated";
     }
 
     this.instance = this;
-  
+
   }
 
   public async load() {
@@ -75,8 +78,14 @@ class XR8Provider extends ARProvider {
           {
             name: 'WLE-XR8-setup',
             onStart: () => {
+              this.running = true;
               this.enableCameraFeed();
             },
+            onDetach: () => {
+              this.running = false;
+              this.disableCameraFeed();
+            },
+
             onException: (message) => {
               // console.log('Error happened', err);
               window.dispatchEvent(new CustomEvent('8thwall-error', { detail: { message } }))
@@ -98,15 +107,17 @@ class XR8Provider extends ARProvider {
   };
 
   public async endSession() {
-    XR8.stop();
-    this.onSessionEnded.forEach(cb => cb(this));
+    if (this.running) {
+      XR8.stop();
+      this.onSessionEnded.forEach(cb => cb(this));
+    }
   };
 
   public enableCameraFeed() {
     // TODO: should we store the previous state of colorClearEnabled.
     WL.scene.colorClearEnabled = false;
 
-    if(!this.cachedWebGLContext) {
+    if (!this.cachedWebGLContext) {
       this.cachedWebGLContext = WL.canvas.getContext("webgl2");
     }
 
@@ -125,7 +136,7 @@ class XR8Provider extends ARProvider {
       WL.scene.onPreRender.splice(indexPrerender);
     }
 
-    const indexPostRender = WL.scene.onPreRender.indexOf(this.onWLPostRender);
+    const indexPostRender = WL.scene.onPostRender.indexOf(this.onWLPostRender);
     if (indexPostRender !== -1) {
       WL.scene.onPostRender.splice(indexPostRender);
     }
@@ -533,4 +544,4 @@ const deviceIncompatibleOverlay = () => `
 </div>`;
 
 const xr8Provider = new XR8Provider();
-export {XR8Provider, xr8Provider};
+export { XR8Provider, xr8Provider };
