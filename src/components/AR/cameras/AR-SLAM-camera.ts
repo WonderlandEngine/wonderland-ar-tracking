@@ -12,7 +12,7 @@ import { ARCamera } from './AR-Camera';
 // running on a browser?
 if (window.document) {
 
-  // WL.onXRSupported will be removed, so we no longer rely on it and check the WL.arSupported manually.
+  // WL.arSupported might not exist at this point. so we wait until WLE resolves it
   (function checkARSupport() {
     if (WL.arSupported === undefined) {
       setTimeout(checkARSupport, 1);

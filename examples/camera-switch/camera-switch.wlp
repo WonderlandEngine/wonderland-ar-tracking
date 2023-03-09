@@ -41,7 +41,7 @@
             "translation": [
                 0.0,
                 0.4999999,
-                5.960464477539063e-8
+                5.960464477539065e-8
             ],
             "rotation": [
                 0.0,
@@ -428,12 +428,6 @@
                 "name": "PrimitiveCircle",
                 "file": "default"
             }
-        },
-        "43": {
-            "link": {
-                "name": "AR Target Mesh",
-                "file": "models\\ar-target.glb"
-            }
         }
     },
     "materials": {
@@ -525,27 +519,6 @@
                     0.0,
                     0.2352941,
                     0.1437908,
-                    1.0
-                ]
-            }
-        },
-        "42": {
-            "link": {
-                "name": "AR Target Material",
-                "file": "models\\ar-target.glb"
-            },
-            "pipeline": "39",
-            "Phong": {
-                "ambientColor": [
-                    0.5921568,
-                    0.5921509,
-                    0.5921509,
-                    1.0
-                ],
-                "diffuseColor": [
-                    1.0,
-                    0.9999899,
-                    0.9999899,
                     1.0
                 ]
             }
@@ -815,9 +788,7 @@
             }
         }
     },
-    "files": [
-        "models/ar-target.glb"
-    ],
+    "files": [],
     "textures": {},
     "images": {},
     "fonts": {
