@@ -1,7 +1,7 @@
 # Switching between different AR cameras demo
 
-![Preview](previews/SLAM-example.webp?raw=true "Dynamically generated mesh")
-Runs an AR session using WebXR Device AP where available with a fallback to 8th-wall implementation.
+![Preview](previews/preview.webp?raw=true "Preview")
+
 
 To successfully run in 
 - make sure `API_TOKEN_XR8` is defined in the index.html file
