@@ -139,7 +139,7 @@
 
                 const bundle = await loadScript("{{ settings.project.name }}-bundle.js?t={{timestamp}}");
                 bundle.id = 'bundle';
-
+  
                 engine.scene.load('{{ settings.project.name }}.bin');
             } catch(e) {
               console.error(e);
