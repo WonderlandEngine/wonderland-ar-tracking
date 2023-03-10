@@ -7,7 +7,24 @@ declare var WEBXR_OPTIONAL_FEATURES: string[];
 
 declare type XR8CameraPipelineModule = {
   name: string;
-  onAttach?: (...args: any) => void;
+  onAttach?: (details: {
+    framework: unknown,
+    canvas: HTMLCanvasElement,
+    GLctx: WebGLRenderingContext | WebGL2RenderingContext,
+    computeCtx: WebGLRenderingContext | WebGL2RenderingContext,
+    isWebgl2: boolean,
+    orientation: number,
+    videoWidth: number,
+    videoHeight: number,
+    canvasWidth: number,
+    canvasHeight: number,
+    status: ['requesting', 'hasStream', 'hasVideo', 'failed'],
+    stream: MediaStream,
+    video: HTMLVideoElement,
+    version?: string,
+    imageTargets?: [{ imagePath: string, metadata: unknown, name: string }],
+    config: unknown
+  }) => void;
   onDetach?: (...args: any) => void;
   onStart?: () => void;
   onException?: (error: string) => void;
