@@ -41,7 +41,7 @@
             "translation": [
                 0.0,
                 0.4999999,
-                5.960464477539065e-8
+                5.960464477539064e-8
             ],
             "rotation": [
                 0.0,
@@ -66,16 +66,13 @@
                     "type": "mouse-look"
                 },
                 {
-                    "type": "AR-SLAM-camera",
-                    "AR-SLAM-camera": {
+                    "type": "AR-XR8-SLAM-camera",
+                    "AR-XR8-SLAM-camera": {
                         "UseAbsoluteScale": true
                     }
                 },
                 {
-                    "type": "button-start-ar-session",
-                    "button-start-ar-session": {
-                        "ARCamera": "17"
-                    }
+                    "type": "button-start-ar-session"
                 },
                 {
                     "type": "button-end-ar-session"
@@ -222,30 +219,20 @@
                 }
             ]
         },
-        "67": {
-            "link": {
-                "name": "AR Target",
-                "file": "js\\models\\ar-target.glb"
-            },
+        "62": {
+            "name": "Reticle",
             "components": [
-                null,
                 {
-                    "type": "hit-test-location-xr8",
-                    "hit-test-location-xr8": {
-                        "camera": "17"
+                    "type": "mesh",
+                    "mesh": {
+                        "mesh": "43",
+                        "material": "25"
                     }
                 },
                 {
-                    "type": "hit-test-location-root",
-                    "hit-test-location-root": {
-                        "camera": "18"
-                    }
-                },
-                {
-                    "type": "spawn-mesh-on-reticle",
-                    "spawn-mesh-on-reticle": {
-                        "mesh": "10",
-                        "material": "22"
+                    "type": "absolute-scale-watcher",
+                    "absolute-scale-watcher": {
+                        "ARXR8SLAMCamera": "17"
                     }
                 }
             ]
@@ -288,10 +275,10 @@
                 "file": "default"
             }
         },
-        "66": {
+        "43": {
             "link": {
                 "name": "AR Target Mesh",
-                "file": "js\\models\\ar-target.glb"
+                "file": "models\\ar-target.glb"
             }
         }
     },
@@ -388,10 +375,25 @@
                 ]
             }
         },
-        "65": {
+        "42": {
             "link": {
                 "name": "AR Target Material",
-                "file": "js\\models\\ar-target.glb"
+                "file": "models\\ar-target.glb"
+            },
+            "pipeline": "39",
+            "Phong": {
+                "ambientColor": [
+                    0.5921568,
+                    0.5921509,
+                    0.5921509,
+                    1.0
+                ],
+                "diffuseColor": [
+                    1.0,
+                    0.9999899,
+                    0.9999899,
+                    1.0
+                ]
             }
         }
     },
@@ -519,7 +521,7 @@
     },
     "settings": {
         "project": {
-            "name": "SLAM-camera-example",
+            "name": "absolute-scale-example.wlp",
             "version": [
                 0,
                 9,
@@ -540,7 +542,6 @@
             "libraryPaths": [
                 "/js/lib/"
             ],
-            "entryPoint": "js/index.ts",
             "autoManageEntryPoint": false
         },
         "ar": {
@@ -564,14 +565,6 @@
                 4096,
                 4096
             ]
-        },
-        "runtime": {
-            "webxr": {
-                "optionalFeatures": {
-                    "hand-tracking": false,
-                    "occlusion": false
-                }
-            }
         }
     },
     "animations": {},
@@ -669,7 +662,7 @@
         }
     },
     "files": [
-        "js/models/ar-target.glb"
+        "models/ar-target.glb"
     ],
     "textures": {},
     "images": {},

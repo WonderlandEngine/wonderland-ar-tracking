@@ -26,7 +26,7 @@ class WorldTracking_XR8 extends TrackingMode {
 
   private extraPermissions: XR8ExtraPermissions = [];
 
-  public readonly onTrackingStatus: Array<(event: any) => void> = [];
+  public readonly onTrackingStatus: Array<(event: XR8TrackingStatusEvent) => void> = [];
 
   public readonly onImageScanning: Array<(event: XR8ImageScanningEvent) => void> = [];
   public readonly onImageFound: Array<(event: XR8ImageTrackedEvent) => void> = [];
@@ -41,7 +41,7 @@ class WorldTracking_XR8 extends TrackingMode {
   // consumed by 8thwall
   public readonly listeners = [
     {
-      event: 'reality.trackingstatus', process: (event: unknown) => {
+      event: 'reality.trackingstatus', process: (event: XR8TrackingStatusEvent) => {
         this.onTrackingStatus.forEach(callback => callback(event));
       },
     },
@@ -82,14 +82,14 @@ class WorldTracking_XR8 extends TrackingMode {
       }
     },
 
-   
+
     // Seems like not implemented by xr8 yet
     {
       event: 'reality.meshupdated', process: (event: XR8VPSMeshUpdatedEvent) => {
         //console.log("Mesh is updated");
       }
     },
-   
+
 
     /*
     // Seems like not implemented by xr8 yet
