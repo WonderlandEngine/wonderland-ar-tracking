@@ -28,6 +28,7 @@ class ButtonStartARSession extends Component {
           // and complains that `(components[i] as ARCamera)` does not overlap. 
           // So let's do ask it asks - convert the component to unknown first and only then to ARCamera
           ((components[i] as unknown) as ARCamera).startSession();
+          break;
         }
       }
     });

@@ -314,7 +314,7 @@ class DefaultUIHandler implements IXR8UIHandler {
   };
 
   showWaitingForDeviceLocation = () => {
-    this.showOverlay(handleWaitingForDeviceLocationOverlay);
+    this.showOverlay(waitingForDeviceLocationOverlay);
   };
 
   hideWaitingForDeviceLocation = () => {
@@ -449,7 +449,7 @@ const runtimeErrorOverlay = (message: string) => `
     <button class="wall-error-overlay_button" onclick="window.location.reload()">Reload</button>
   </div>`;
 
-const handleWaitingForDeviceLocationOverlay = `
+const waitingForDeviceLocationOverlay = `
   <style>
     #handleWaitingForDeviceLocationOverlay {
       position: absolute;
