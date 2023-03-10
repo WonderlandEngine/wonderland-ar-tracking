@@ -8,6 +8,21 @@ class ButtonStartARSession extends Component {
 
   };
 
+  init() {
+
+    if (ARSession.arSessionReady) {
+      this.onARSessionReady();
+    } else {
+      ARSession.onARSessionReady.push(() => this.onARSessionReady());
+    }
+
+
+    ARSession.onSessionEnded.push(() => {
+      let xrButton = document.querySelector<HTMLElement>('#ar-button');
+      xrButton!.style.display = 'block';
+    })
+  }
+
   onARSessionReady() {
     let xrButton = document.querySelector<HTMLElement>('#ar-button');
 
@@ -32,21 +47,6 @@ class ButtonStartARSession extends Component {
         }
       }
     });
-
-  }
-  init() {
-    
-    if(ARSession.arSessionReady) {
-      this.onARSessionReady();
-    } else {
-      ARSession.onARSessionReady.push(() => this.onARSessionReady());
-    }
-
-
-    ARSession.onSessionEnded.push(() => {
-      let xrButton = document.querySelector<HTMLElement>('#ar-button');
-      xrButton!.style.display = 'block';
-    })
   }
 }
 
