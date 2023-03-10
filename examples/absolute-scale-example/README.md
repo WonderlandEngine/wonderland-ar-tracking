@@ -1,6 +1,5 @@
-# SLAM (World tracking) camera demo
-![Preview](previews/SLAM-example.webp?raw=true "Dynamically generated mesh")
-Runs an AR session using WebXR Device AP where available with a fallback to 8th-wall implementation.
+# XR8 SLAM (World tracking) with absolute scale camera demo
+Setting the scale to “absolute” will dynamically set the virtual camera height to the actual height of the device camera. To estimate scale, the 8th Wall Engine needs data to determine the height of the camera, this requires users to move their device to generate data for determining scale. Device camera position is defined in meters.
 
 To successfully run in 
 - make sure `API_TOKEN_XR8` is defined in the index.html file
@@ -10,11 +9,4 @@ To successfully run in
 </script>
 ```
 
-- Make sure const `WEBXR_REQUIRED_FEATURES` and `WEBXR_OPTIONAL_FEATURES` are defined in the index.html file
-```
-<script>
-      const WEBXR_REQUIRED_FEATURES = [{{ webxrRequiredFeatures }}];
-      const WEBXR_OPTIONAL_FEATURES = [{{ webxrOptionalFeatures }}];
-</script>
-```
 - Make sure the app is running on HTTPS.
