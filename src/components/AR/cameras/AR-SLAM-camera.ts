@@ -8,6 +8,7 @@ import { ITrackingMode } from '../frameworks/trackingMode';
 import { webXRProvider } from '../frameworks/webAR/webXR-provider';
 import { xr8Provider } from '../frameworks/xr8/xr8-provider';
 import { ARCamera } from './AR-Camera';
+import { Type } from '@wonderlandengine/api';
 
 // running on a browser?
 if (window.document) {
@@ -28,20 +29,28 @@ if (window.document) {
 
 class ARSLAMCamera extends ARCamera {
   public static TypeName = 'AR-SLAM-camera';
-  public static Properties = {};
+  public static Properties = {
+   
+  };
 
   private trackingImpl?: ITrackingMode;
+
+  public init() {
+    if (WL.arSupported) {
+    //if (false) { // force xr8
+      this.trackingImpl = new WorldTracking_webAR(this);
+    } else {
+      this.trackingImpl = new WorldTracking_XR8(this);
+    }
+
+  }
 
   public start() {
     if (!this.object.getComponent('view')) {
       throw new Error('AR-camera requires a view component');
     }
 
-    if (WL.arSupported) {
-      //if (false) { // force xr8
-      this.trackingImpl = new WorldTracking_webAR(this);
-    } else {
-      this.trackingImpl = new WorldTracking_XR8(this);
+    if (!WL.arSupported) {
       (this.trackingImpl as WorldTracking_XR8).init();
     }
   }

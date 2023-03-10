@@ -48,34 +48,6 @@ declare type XR8FaceMeshFeatures = {
   EYES: 'eyes',
 }
 
-
-/*declare var XR8FaceAttachmentPoints: {
-  FOREHEAD: 'forehead',
-  RIGHT_EYEBROW_INNER: 'rightEyebrowInner',
-  RIGHT_EYEBROW_MIDDLE: 'rightEyebrowMiddle',
-  RIGHT_EYEBROW_OUTER: 'rightEyebrowOuter',
-  LEFT_EYEBROW_INNER: 'leftEyebrowInner',
-  LEFT_EYEBROW_MIDDLE: 'leftEyebrowMiddle',
-  LEFT_EYEBROW_OUTER: 'leftEyebrowOuter',
-  LEFT_EAR: 'leftEar',
-  RIGHT_EAR: 'rightEar',
-  LEFT_CHEEK: 'leftCheek',
-  RIGHT_CHEEK: 'rightCheek',
-  NOSE_BRIDGE: 'noseBridge',
-  NOSE_TIP: 'noseTip',
-  LEFT_EYE: 'leftEye',
-  RIGHT_EYE: 'rightEye',
-  LEFT_EYE_OUTER_CORNER: 'leftEyeOuterCorner',
-  RIGHT_EYE_OUTER_CORNER: 'rightEyeOuterCorner',
-  UPPER_LIP: 'upperLip',
-  LOWER_LIP: 'lowerLip',
-  MOUTH: 'mouth',
-  MOUTH_RIGHT_CORNER: 'mouthRightCorner',
-  MOUTH_LEFT_CORNER: 'mouthLeftCorner',
-  CHIN: 'chin'
-}*/
-
-
 declare type XR8FaceAttachmentPointsType = {
   FOREHEAD: 'forehead',
   RIGHT_EYEBROW_INNER: 'rightEyebrowInner',
@@ -135,10 +107,12 @@ declare type XR8HitTestType = {
   DETECTED_SURFACE: 'DETECTED_SURFACE'
 }
 
-
 declare type XR8TrackingStatusEvent = {
-  status: 'LIMITED' | 'NORMAL',
-  reason: 'INITIALIZING' | 'UNDEFINED'
+  name: 'reality.trackingstatus',
+  detail: {
+    status: 'LIMITED' | 'NORMAL',
+    reason: 'INITIALIZING' | 'UNDEFINED'
+  }
 }
 
 declare type XR8ImageScanningEvent = {

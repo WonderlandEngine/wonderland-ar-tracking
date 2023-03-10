@@ -27,34 +27,6 @@
                 0.9999998
             ]
         },
-        "16": {
-            "name": "Cube",
-            "components": [
-                {
-                    "type": "mesh",
-                    "mesh": {
-                        "mesh": "8",
-                        "material": "22"
-                    }
-                }
-            ],
-            "translation": [
-                0.0,
-                0.4999999,
-                5.960464477539065e-8
-            ],
-            "rotation": [
-                0.0,
-                0.0,
-                0.0,
-                1.0
-            ],
-            "scaling": [
-                0.5,
-                0.5,
-                0.5
-            ]
-        },
         "17": {
             "name": "NonVrCamera",
             "parent": "14",
@@ -66,16 +38,13 @@
                     "type": "mouse-look"
                 },
                 {
-                    "type": "AR-SLAM-camera",
-                    "AR-SLAM-camera": {
+                    "type": "AR-XR8-SLAM-camera",
+                    "AR-XR8-SLAM-camera": {
                         "UseAbsoluteScale": true
                     }
                 },
                 {
-                    "type": "button-start-ar-session",
-                    "button-start-ar-session": {
-                        "ARCamera": "17"
-                    }
+                    "type": "button-start-ar-session"
                 },
                 {
                     "type": "button-end-ar-session"
@@ -151,62 +120,6 @@
                 1.0
             ]
         },
-        "24": {
-            "name": "Cone",
-            "components": [
-                {
-                    "type": "mesh",
-                    "mesh": {
-                        "mesh": "10",
-                        "material": "25"
-                    }
-                }
-            ],
-            "translation": [
-                1.5,
-                1.0,
-                -1.4901161193847656e-8
-            ],
-            "rotation": [
-                0.0,
-                0.0,
-                0.0,
-                1.0
-            ],
-            "scaling": [
-                1.0,
-                1.0,
-                1.0
-            ]
-        },
-        "27": {
-            "name": "Sphere",
-            "components": [
-                {
-                    "type": "mesh",
-                    "mesh": {
-                        "mesh": "9",
-                        "material": "26"
-                    }
-                }
-            ],
-            "translation": [
-                0.4999999,
-                0.75,
-                -1.25
-            ],
-            "rotation": [
-                0.0,
-                0.0,
-                0.0,
-                1.0
-            ],
-            "scaling": [
-                0.75,
-                0.75,
-                0.75
-            ]
-        },
         "45": {
             "name": "EyeRight",
             "parent": "14",
@@ -222,30 +135,22 @@
                 }
             ]
         },
-        "67": {
-            "link": {
-                "name": "AR Target",
-                "file": "js\\models\\ar-target.glb"
-            },
+        "62": {
+            "name": "Reticle",
             "components": [
-                null,
                 {
-                    "type": "hit-test-location-xr8",
-                    "hit-test-location-xr8": {
-                        "camera": "17"
+                    "type": "mesh",
+                    "mesh": {
+                        "mesh": "43",
+                        "material": "25"
                     }
                 },
                 {
-                    "type": "hit-test-location-root",
-                    "hit-test-location-root": {
-                        "camera": "18"
-                    }
-                },
-                {
-                    "type": "spawn-mesh-on-reticle",
-                    "spawn-mesh-on-reticle": {
+                    "type": "absolute-scale-watcher",
+                    "absolute-scale-watcher": {
+                        "ARXR8SLAMCamera": "17",
                         "mesh": "10",
-                        "material": "22"
+                        "material": "25"
                     }
                 }
             ]
@@ -288,10 +193,10 @@
                 "file": "default"
             }
         },
-        "66": {
+        "43": {
             "link": {
                 "name": "AR Target Mesh",
-                "file": "js\\models\\ar-target.glb"
+                "file": "models\\ar-target.glb"
             }
         }
     },
@@ -388,10 +293,25 @@
                 ]
             }
         },
-        "65": {
+        "42": {
             "link": {
                 "name": "AR Target Material",
-                "file": "js\\models\\ar-target.glb"
+                "file": "models\\ar-target.glb"
+            },
+            "pipeline": "39",
+            "Phong": {
+                "ambientColor": [
+                    0.5921568,
+                    0.5921509,
+                    0.5921509,
+                    1.0
+                ],
+                "diffuseColor": [
+                    1.0,
+                    0.9999899,
+                    0.9999899,
+                    1.0
+                ]
             }
         }
     },
@@ -519,7 +439,7 @@
     },
     "settings": {
         "project": {
-            "name": "SLAM-camera-example",
+            "name": "absolute-scale-example.wlp",
             "version": [
                 0,
                 9,
@@ -540,7 +460,6 @@
             "libraryPaths": [
                 "/js/lib/"
             ],
-            "entryPoint": "js/index.ts",
             "autoManageEntryPoint": false
         },
         "ar": {
@@ -564,14 +483,6 @@
                 4096,
                 4096
             ]
-        },
-        "runtime": {
-            "webxr": {
-                "optionalFeatures": {
-                    "hand-tracking": false,
-                    "occlusion": false
-                }
-            }
         }
     },
     "animations": {},
@@ -669,7 +580,7 @@
         }
     },
     "files": [
-        "js/models/ar-target.glb"
+        "models/ar-target.glb"
     ],
     "textures": {},
     "images": {},
