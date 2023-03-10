@@ -14,7 +14,7 @@ import { Type } from '@wonderlandengine/api';
 if (window.document) {
 
   // WL.arSupported might not exist at this point. so we wait until WLE resolves it
-  /*(function checkARSupport() {
+  (function checkARSupport() {
     if (WL.arSupported === undefined) {
       setTimeout(checkARSupport, 1);
     } else {
@@ -24,10 +24,8 @@ if (window.document) {
         ARSession.registerTrackingProvider(xr8Provider)
       }
     }
-  })();**/
+  })();
 }
-
-ARSession.registerTrackingProvider(xr8Provider)
 
 class ARSLAMCamera extends ARCamera {
   public static TypeName = 'AR-SLAM-camera';
@@ -38,8 +36,8 @@ class ARSLAMCamera extends ARCamera {
   private trackingImpl?: ITrackingMode;
 
   public init() {
-    // if (WL.arSupported) {
-    if (false) { // force xr8
+    if (WL.arSupported) {
+    //if (false) { // force xr8
       this.trackingImpl = new WorldTracking_webAR(this);
     } else {
       this.trackingImpl = new WorldTracking_XR8(this);
