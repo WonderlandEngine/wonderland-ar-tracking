@@ -1,4 +1,3 @@
-
 import '@wonderlandengine/components';
 
 import './hit-test-location-root';
@@ -7,5 +6,5 @@ import './spawn-mesh-on-reticle';
 
 import '../../common-components/';
 
-import { ARSLAMCamera } from '../../../src/components/AR/cameras/AR-SLAM-camera';
+import {ARSLAMCamera} from '../../../src/components/AR/cameras/AR-SLAM-camera';
 WL.registerComponent(ARSLAMCamera);

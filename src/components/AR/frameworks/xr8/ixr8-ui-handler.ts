@@ -7,4 +7,4 @@ interface IXR8UIHandler {
     handleIncompatibleDevice: () => void;
 }
 
-export { IXR8UIHandler }
+export {IXR8UIHandler};

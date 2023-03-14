@@ -1,53 +1,52 @@
-import { ARSession } from '../AR-session';
+import {ARSession} from '../AR-session';
 
-import { WorldTracking_XR8 } from '../frameworks/xr8/world-tracking-mode-xr8';
+import {WorldTracking_XR8} from '../frameworks/xr8/world-tracking-mode-xr8';
 
-import { xr8Provider } from '../frameworks/xr8/xr8-provider';
-import { ARCamera } from './AR-Camera';
-import { Type } from '@wonderlandengine/api';
+import {xr8Provider} from '../frameworks/xr8/xr8-provider';
+import {ARCamera} from './AR-Camera';
+import {Type} from '@wonderlandengine/api';
 
-ARSession.registerTrackingProvider(xr8Provider)
+ARSession.registerTrackingProvider(xr8Provider);
 
 class ARXR8SLAMCamera extends ARCamera {
-  public static TypeName = 'AR-XR8-SLAM-camera';
-  public static Properties = {
-    UseAbsoluteScale: { type: Type.Bool, default: false }
-  };
+    public static TypeName = 'AR-XR8-SLAM-camera';
+    public static Properties = {
+        UseAbsoluteScale: {type: Type.Bool, default: false},
+    };
 
-  private trackingImpl!: WorldTracking_XR8;
+    private trackingImpl!: WorldTracking_XR8;
 
-  public get onTrackingStatus() {
-    return this.trackingImpl!.onTrackingStatus;
-  }
-
-  public init () {
-    this.trackingImpl = new WorldTracking_XR8(this);
-  }
-
-  public start() {
-    if (!this.object.getComponent('view')) {
-      throw new Error('AR-camera requires a view component');
+    public get onTrackingStatus() {
+        return this.trackingImpl!.onTrackingStatus;
     }
-    
-    this.trackingImpl.init();
-  }
 
-  startSession = async () => {
-    if (this.active) {
-      this.trackingImpl!.startSession();
+    public init() {
+        this.trackingImpl = new WorldTracking_XR8(this);
     }
-  }
 
-  endSession = async () => {
-    if (this.active) {
-      this.trackingImpl!.endSession();
+    public start() {
+        if (!this.object.getComponent('view')) {
+            throw new Error('AR-camera requires a view component');
+        }
+
+        this.trackingImpl.init();
     }
-  }
 
-  onDeactivate(): void {
-    this.trackingImpl!.endSession()
-  }
+    startSession = async () => {
+        if (this.active) {
+            this.trackingImpl!.startSession();
+        }
+    };
+
+    endSession = async () => {
+        if (this.active) {
+            this.trackingImpl!.endSession();
+        }
+    };
+
+    onDeactivate(): void {
+        this.trackingImpl!.endSession();
+    }
 }
 
-export { ARXR8SLAMCamera }
-
+export {ARXR8SLAMCamera};
