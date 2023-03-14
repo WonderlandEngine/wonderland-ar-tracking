@@ -519,7 +519,7 @@
     },
     "settings": {
         "project": {
-            "name": "SLAM-camera-example",
+            "name": "SLAMCamera",
             "version": [
                 0,
                 9,

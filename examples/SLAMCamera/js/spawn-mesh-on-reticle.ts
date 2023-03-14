@@ -1,5 +1,5 @@
 import {Component, Material, Mesh, Type} from '@wonderlandengine/api';
-import {ARSession, ARProvider, WebXRProvider} from '../../../';
+import {ARSession, ARProvider, WebXRProvider} from '../../..';
 class SpawnMeshOnReticle extends Component {
     public static TypeName = 'spawn-mesh-on-reticle';
     public static Properties = {
