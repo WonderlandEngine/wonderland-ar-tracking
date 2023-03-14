@@ -2,9 +2,6 @@ import {Component, Object as WLEObject, Type} from '@wonderlandengine/api';
 import {vec3} from 'gl-matrix';
 import {ARSession, XR8Provider, ARProvider} from '../../../';
 
-import {Plane} from './common/math/plane';
-import {Ray} from './common/math/ray';
-
 /**
  * Hit test location for XR8 implementation
  */
@@ -13,17 +10,15 @@ class HitTestLocationXR8 extends Component {
     public static Properties = {
         camera: {type: Type.Object},
     };
-    private tempScaling = new Float32Array(3);
+
     // injected by WLE
     camera!: WLEObject;
 
     private tracking = false;
-    private glPlane: Plane = new Plane(vec3.fromValues(0, 1, 0), 0);
 
-    private camForward = new Array(3);
-    private camForwardVec3 = vec3.create();
+    private camForward = vec3.create();
     private intersectionVec3 = vec3.create();
-    private tmpWorldPosition = new Array(3);
+    private tmpWorldPosition = vec3.create();
 
     init() {
         ARSession.onSessionStarted.push(this.onSessionStarted);
@@ -33,24 +28,13 @@ class HitTestLocationXR8 extends Component {
     update() {
         if (this.tracking) {
             this.camera.getForward(this.camForward);
-            vec3.set(
-                this.camForwardVec3,
-                this.camForward[0],
-                this.camForward[1],
-                this.camForward[2]
-            );
-            this.camera.getTranslationWorld(this.tmpWorldPosition);
-            const ray = new Ray(
-                vec3.fromValues(
-                    this.tmpWorldPosition[0],
-                    this.tmpWorldPosition[1],
-                    this.tmpWorldPosition[2]
-                ),
-                this.camForwardVec3
-            );
-            const intersection = ray.intersectPlane(this.glPlane, this.intersectionVec3);
-            if (intersection) {
-                this.object.setTranslationWorld(intersection);
+          
+            /* Intersect with origin XY plane. We always intersect if camera facing downwards */
+            if(this.camForward[1] < 0) { 
+                this.camera.getTranslationWorld(this.tmpWorldPosition);
+                const t = -this.tmpWorldPosition[1] / this.camForward[1];
+                vec3.add(this.intersectionVec3, this.tmpWorldPosition, vec3.scale(this.intersectionVec3, this.camForward, t));
+                this.object.setTranslationWorld(this.intersectionVec3);
             }
         }
     }

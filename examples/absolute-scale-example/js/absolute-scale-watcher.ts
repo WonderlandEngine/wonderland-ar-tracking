@@ -3,9 +3,6 @@ import {ARSession} from '../../../';
 import {ARXR8SLAMCamera} from '../../../src/components/AR/cameras/AR-XR8-SLAM-camera';
 
 import {vec3} from 'gl-matrix';
-import {Plane} from './common/math/plane';
-import {Ray} from './common/math/ray';
-
 class AbsoluteScaleWatcher extends Component {
     public static TypeName = 'absolute-scale-watcher';
     public static Properties = {
@@ -26,11 +23,10 @@ class AbsoluteScaleWatcher extends Component {
 
     private tracking = false;
 
-    private glPlane: Plane = new Plane(vec3.fromValues(0, 1, 0), 0);
-    private camForward = new Array(3);
-    private camForwardVec3 = vec3.create();
+
+    private camForward = vec3.create();
     private intersectionVec3 = vec3.create();
-    private tmpWorldPosition = new Array(3);
+    private tmpWorldPosition = vec3.create();
 
     start() {
         if (!this.ARXR8SLAMCamera) {
@@ -85,24 +81,13 @@ class AbsoluteScaleWatcher extends Component {
     update() {
         if (this.tracking) {
             this.ARXR8SLAMCamera.getForward(this.camForward);
-            vec3.set(
-                this.camForwardVec3,
-                this.camForward[0],
-                this.camForward[1],
-                this.camForward[2]
-            );
-            this.ARXR8SLAMCamera.getTranslationWorld(this.tmpWorldPosition);
-            const ray = new Ray(
-                vec3.fromValues(
-                    this.tmpWorldPosition[0],
-                    this.tmpWorldPosition[1],
-                    this.tmpWorldPosition[2]
-                ),
-                this.camForwardVec3
-            );
-            const intersection = ray.intersectPlane(this.glPlane, this.intersectionVec3);
-            if (intersection) {
-                this.object.setTranslationWorld(intersection);
+          
+            /* Intersect with origin XY plane. We always intersect if camera facing downwards */
+            if(this.camForward[1] < 0) { 
+                this.ARXR8SLAMCamera.getTranslationWorld(this.tmpWorldPosition);
+                const t = -this.tmpWorldPosition[1] / this.camForward[1];
+                vec3.add(this.intersectionVec3, this.tmpWorldPosition, vec3.scale(this.intersectionVec3, this.camForward, t));
+                this.object.setTranslationWorld(this.intersectionVec3);
             }
         }
     }
