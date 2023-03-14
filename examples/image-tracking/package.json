@@ -1,7 +1,7 @@
 {
   "name": "image-tracking-example",
   "version": "1.0.0",
-  "description": "Wonderland engine 8thwall image tracking example",
+  "description": "Wonderland engine 8th Wall image tracking example",
   "main": "js/index.js",
   "type": "module",
   "module": "js/index.js",

@@ -1,7 +1,7 @@
 {
   "name": "vps",
   "version": "1.0.0",
-  "description": "wonderland engine 8thwall visual positioning system example",
+  "description": "wonderland engine 8th Wall visual positioning system example",
   "main": "js/index.js",
   "type": "module",
   "module": "js/index.js",

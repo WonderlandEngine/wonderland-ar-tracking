@@ -9,8 +9,8 @@ class FaceTracking_XR8 extends TrackingMode {
   public readonly name = 'face_tracking_XR8';
 
   private view?: ViewComponent;  // cache camera
-  private cachedPosition = [0, 0, 0]; // cache 8thwall cam position
-  private cachedRotation = [0, 0, 0, -1]; // cache 8thwall cam rotation
+  private cachedPosition = [0, 0, 0]; // cache 8th Wall cam position
+  private cachedRotation = [0, 0, 0, -1]; // cache 8th Wall cam rotation
 
   public readonly onFaceScanning: Array<(event: XR8FaceLoadingEvent) => void> = [];
   public readonly onFaceLoading: Array<(event: XR8FaceLoadingEvent) => void> = [];
@@ -18,7 +18,7 @@ class FaceTracking_XR8 extends TrackingMode {
   public readonly onFaceUpdate: Array<(event: XR8FaceFoundEvent) => void> = [];
   public readonly onFaceLost: Array<(event: xr8FaceLostEvent) => void> = [];
 
-  // consumed by 8thwall
+  // consumed by 8th Wall
   public readonly listeners = [
     {
       // Fires when loading begins for additional face AR resources.
@@ -55,7 +55,7 @@ class FaceTracking_XR8 extends TrackingMode {
     
     const input = this.component.object.getComponent('input');
     if (input) {
-      input.active = false; // 8thwall will handle the camera pose
+      input.active = false; // 8th Wall will handle the camera pose
     }
 
     this.view = this.component.object.getComponent('view')!;
@@ -108,7 +108,7 @@ class FaceTracking_XR8 extends TrackingMode {
   /**
    * @param {*} e 
    * 
-   * called by 8thwall
+   * called by 8th Wall
    */
   public onUpdate = (e: any) => {
     const source = e.processCpuResult.facecontroller;

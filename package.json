@@ -1,7 +1,7 @@
 {
   "name": "@wonderlandengine/8thwall-tracking",
   "version": "1.0.0",
-  "description": "Wonderland 8thwall implementation",
+  "description": "Wonderland 8th Wall implementation",
   "main": "src/index.js",
   "type": "module",
   "module": "src/index.ts",

@@ -1,6 +1,6 @@
 /**
  * Visual Positioning System Camera.
- * Currently works only using 8thwall Lightship VPS system. (https://www.8thwall.com/docs/web/#lightship-vps)
+ * Currently works only using 8th Wall Lightship VPS system. (https://www.8thwall.com/docs/web/#lightship-vps)
  * 
  * WLE 20230215 - for this camera to run correctly,
  * clear the "Project Settings/Editor/serverCOEP" field.

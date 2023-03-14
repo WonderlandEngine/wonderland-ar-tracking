@@ -68,7 +68,7 @@ class VPSMeshExample extends Component {
   }
 
   /**
-   * Just a heads up, 8thwall sends only one mesh to the client
+   * Just a heads up, 8th Wall sends only one mesh to the client
    * and it seems like at that the mesh is not connected to the waypoint in any way.
    */
   private createMesh = (event: XR8VPSMeshFoundEvent) => {

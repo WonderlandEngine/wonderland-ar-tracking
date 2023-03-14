@@ -16,7 +16,7 @@ class XR8Provider extends ARProvider {
   public uiHandler: IXR8UIHandler = new DefaultUIHandler;
 
   public cachedWebGLContext: WebGL2RenderingContext | null = null;
-  // Loading of 8thwall might be initiated by several components, make sure we load it only once
+  // Loading of 8th Wall might be initiated by several components, make sure we load it only once
   private loading = false;
 
   // XR8 currently provides no way to check if the session is running, only if the session is paused (and we never pause, we just XR8.end()). so we track this manually
@@ -53,14 +53,14 @@ class XR8Provider extends ARProvider {
     this.loading = true;
 
     return new Promise<void>((resolve, _reject) => {
-      // Just some safety flag, if 8thwall was loaded before by something, like a index.html file
+      // Just some safety flag, if 8th Wall was loaded before by something, like a index.html file
       if (window['XR8']) {
         resolve();
         return;
       }
 
       if (!API_TOKEN_XR8) {
-        throw new Error('8thwall api is not defined');
+        throw new Error('8th Wall api is not defined');
       }
 
       const s = document.createElement('script');
@@ -95,7 +95,7 @@ class XR8Provider extends ARProvider {
       });
 
       document.body.appendChild(s);
-      // Wait until index.html has been fully parsed and append the 8thwall logo
+      // Wait until index.html has been fully parsed and append the 8th Wall logo
       document.readyState === 'complete' ? this.add8thwallLogo() : document.addEventListener('DOMContentLoaded', () => this.add8thwallLogo);
     })
   };
@@ -144,7 +144,7 @@ class XR8Provider extends ARProvider {
   public onWLPreRender = () => {
     this.cachedWebGLContext!.bindFramebuffer(this.cachedWebGLContext!.DRAW_FRAMEBUFFER, null);
     XR8.runPreRender(Date.now());
-    XR8.runRender(); // <--- tell 8thwall to do it's thing (alternatively call this.GlTextureRenderer.onRender() if you only care about camera feed )
+    XR8.runRender(); // <--- tell 8th Wall to do it's thing (alternatively call this.GlTextureRenderer.onRender() if you only care about camera feed )
   };
 
   public onWLPostRender() {
@@ -207,7 +207,7 @@ class XR8Provider extends ARProvider {
       // make sure we get the camera stream
       const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
 
-      // If we successfully acquired the camera stream - we can stop it and wait until 8thwall requests it again
+      // If we successfully acquired the camera stream - we can stop it and wait until 8th Wall requests it again
       // Update - if we don't stop it, xr8 initializes faster
       /* stream.getTracks().forEach((track) => {
          track.stop();
@@ -480,7 +480,7 @@ const deviceIncompatibleOverlay = () => {
   <div id="failed-permission-overlay" class="xr8-overlay">
   ${overlayLogo}
     <div class="xr8-overlay-description">
-      This device is not compatible with 8thwall. Please open it using your mobile device.<br />
+      This device is not compatible with 8th Wall. Please open it using your mobile device.<br />
       <div id="xr8-overlay-qr-code">${svg}</div>
       <br />
       <div id="xr8-overlay-epxerience-url">${window.location.href}</div>

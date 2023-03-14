@@ -5,7 +5,7 @@ To successfully run in
 - make sure `API_TOKEN_XR8` is defined in the index.html file
 ```
 <script>
-  const API_TOKEN_XR8 = "your 8thwall project API token";
+  const API_TOKEN_XR8 = "your 8th Wall project API token";
 </script>
 ```
 

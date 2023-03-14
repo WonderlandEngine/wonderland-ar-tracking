@@ -49,7 +49,7 @@ class XR8CameraSwitch extends Component {
      * TODO: this is a little bit dumb that we have to stop the camera
      * and restart it with only a change in the parameter.
      * 
-     * It should be possible just to change the param and seemlesly witch, at least with 8thwall
+     * It should be possible just to change the param and seemlesly witch, at least with 8th Wall
      */
     this.faceTrackingCamera!.active = false;
     this.faceTrackingCamera!.cameraDirection = 0;
@@ -67,7 +67,7 @@ class XR8CameraSwitch extends Component {
      * TODO: this is a little bit dumb that we have to stop the camera
      * and restart it with only a change in the parameter.
      * 
-     * It should be possible just to change the param and seemlesly witch, at least with 8thwall
+     * It should be possible just to change the param and seemlesly witch, at least with 8th Wall
      */
     this.faceTrackingCamera!.active = false;
     this.faceTrackingCamera!.cameraDirection = 1;

@@ -1,12 +1,12 @@
 # SLAM (World tracking) camera demo
 ![Preview](previews/SLAM-example.webp?raw=true "Dynamically generated mesh")
-Runs an AR session using WebXR Device AP where available with a fallback to 8th-wall implementation.
+Runs an AR session using WebXR Device API where available with a fallback to 8th Wall implementation.
 
 To successfully run in 
 - make sure `API_TOKEN_XR8` is defined in the index.html file
 ```
 <script>
-  const API_TOKEN_XR8 = "your 8thwall project API token";
+  const API_TOKEN_XR8 = "your 8th Wall project API token";
 </script>
 ```
 

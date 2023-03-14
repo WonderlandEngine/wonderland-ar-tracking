@@ -1,7 +1,7 @@
 {
   "name": "slam-camera-example",
   "version": "1.0.0",
-  "description": "SLAM camera demo. Runs using webAPI with fallback to 8thwall",
+  "description": "SLAM camera demo. Runs using webAPI with fallback to 8th Wall",
   "main": "js/index.js",
   "type": "module",
   "module": "js/index.js",

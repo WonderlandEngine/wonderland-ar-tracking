@@ -17,12 +17,12 @@ type UsesVPS = {
 }
 
 class WorldTracking_XR8 extends TrackingMode {
-  // consumed by 8thwall
+  // consumed by 8th Wall
   public readonly name = 'world_tracking_XR8';
 
   private view?: ViewComponent; // cache camera
-  private cachedPosition = [0, 0, 0]; // cache 8thwall cam position
-  private cachedRotation = [0, 0, 0, -1]; // cache 8thwall cam rotation
+  private cachedPosition = [0, 0, 0]; // cache 8th Wall cam position
+  private cachedRotation = [0, 0, 0, -1]; // cache 8th Wall cam rotation
 
   private extraPermissions: XR8ExtraPermissions = [];
 
@@ -38,7 +38,7 @@ class WorldTracking_XR8 extends TrackingMode {
   public readonly onWaySpotUpdated: Array<(event: XR8VPSWayPointEvent) => void> = [];
   public readonly onWaySpotLost: Array<(event: XR8VPSWayPointEvent) => void> = [];
 
-  // consumed by 8thwall
+  // consumed by 8th Wall
   public readonly listeners = [
     {
       event: 'reality.trackingstatus', process: (event: XR8TrackingStatusEvent) => {
@@ -138,7 +138,7 @@ class WorldTracking_XR8 extends TrackingMode {
 
     const input = this.component.object.getComponent('input');
     if (input) {
-      input.active = false; // 8thwall will handle the camera pose
+      input.active = false; // 8th Wall will handle the camera pose
     }
 
     this.view = this.component.object.getComponent('view')!;
@@ -201,7 +201,7 @@ class WorldTracking_XR8 extends TrackingMode {
   }
 
   /**
-  * called by 8thwall
+  * called by 8th Wall
   */
   public onAttach = (_params: unknown) => {
     XR8.XrController.updateCameraProjectionMatrix({
@@ -212,7 +212,7 @@ class WorldTracking_XR8 extends TrackingMode {
   }
 
   /**
-   * called by 8thwall
+   * called by 8th Wall
    */
   public onUpdate = (e: any) => {
     const source = e.processCpuResult.reality;

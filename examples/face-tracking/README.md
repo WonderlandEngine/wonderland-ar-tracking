@@ -7,13 +7,13 @@
 - `js/face-mask-example.ts` - renders a generated mesh of the face, to which you can attach any texture.
 ___
 
-Run face tracking using 8thwall. Provides examples of face mesh rendering and the usage of face attachment points.
+Run face tracking using 8th Wall. Provides examples of face mesh rendering and the usage of face attachment points.
 
 To successfully run in 
 - make sure `API_TOKEN_XR8` is defined in the index.html file
 ```
 <script>
-  const API_TOKEN_XR8 = "your 8thwall project API token";
+  const API_TOKEN_XR8 = "your 8th Wall project API token";
 </script>
 ```
 
