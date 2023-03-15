@@ -668,7 +668,7 @@
     },
     "settings": {
         "project": {
-            "name": "FaceTracking.wlp",
+            "name": "FaceTracking",
             "version": [
                 0,
                 9,
