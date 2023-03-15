@@ -1,5 +1,5 @@
 import {Component, Type, Object as WLEObject, Mesh, Material} from '@wonderlandengine/api';
-import {ARSession} from '../../../';
+import {ARSession} from '../../..';
 import {ARXR8SLAMCamera} from '../../../src/components/AR/cameras/AR-XR8-SLAM-camera';
 
 import {vec3} from 'gl-matrix';
