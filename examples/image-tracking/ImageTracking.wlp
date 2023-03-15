@@ -577,7 +577,7 @@
     },
     "settings": {
         "project": {
-            "name": "image-tracking-camera-example",
+            "name": "ImageTracking",
             "version": [
                 0,
                 9,
