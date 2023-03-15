@@ -12,7 +12,7 @@ type CanUseAbsoluteScale = {
 };
 
 type UsesVPS = {
-    UsesVPS: boolean;
+    usesVPS: boolean;
 };
 
 class WorldTracking_XR8 extends TrackingMode {
@@ -174,7 +174,7 @@ class WorldTracking_XR8 extends TrackingMode {
         const componentEnablesSLAM = (this.component as Partial<CanDisableSLAM>).EnableSLAM;
         const componentUsesAbsoluteScale = (this.component as Partial<CanUseAbsoluteScale>)
             .UseAbsoluteScale;
-        const componentUsesVPS = !!(this.component as Partial<UsesVPS>).UsesVPS;
+        const componentUsesVPS = !!(this.component as Partial<UsesVPS>).usesVPS;
 
         XR8.XrController.configure({
             // enableLighting: true,

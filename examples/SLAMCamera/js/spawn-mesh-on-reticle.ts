@@ -34,6 +34,7 @@ class SpawnMeshOnReticle extends Component {
 
     onSessionEnded = (provider: ARProvider) => {
         if (provider instanceof WebXRProvider) {
+            // Clean up - let the browser garbage collect the xrSession
             (provider as WebXRProvider).xrSession!.removeEventListener(
                 'select',
                 this.spawnMesh

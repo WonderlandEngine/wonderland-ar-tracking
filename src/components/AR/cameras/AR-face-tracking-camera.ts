@@ -1,7 +1,9 @@
+import {Type} from '@wonderlandengine/api';
+
 import {ARSession} from '../AR-session';
 import {FaceTracking_XR8} from '../frameworks/xr8/face-tracking-mode-xr8';
 import {xr8Provider} from '../frameworks/xr8/xr8-provider';
-import {Type} from '@wonderlandengine/api';
+
 import {ARCamera} from './AR-Camera';
 
 const WLEComponentTypeName = 'AR-face-tracking-camera';

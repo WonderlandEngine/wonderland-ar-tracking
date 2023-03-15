@@ -7,7 +7,7 @@ import {ITrackingMode} from '../frameworks/trackingMode';
 import {webXRProvider} from '../frameworks/webAR/webXR-provider';
 import {xr8Provider} from '../frameworks/xr8/xr8-provider';
 import {ARCamera} from './AR-Camera';
-import {Type} from '@wonderlandengine/api';
+
 
 // running on a browser?
 if (window.document) {

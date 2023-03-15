@@ -14,14 +14,12 @@ import {ARCamera} from './AR-Camera';
 
 ARSession.registerTrackingProvider(xr8Provider);
 
-const WLEComponentTypeName = 'AR-VPS-camera';
-
 class ARVPSCamera extends ARCamera {
-    public static TypeName = WLEComponentTypeName;
+    public static TypeName = 'AR-VPS-camera';
     public static Properties = {};
 
     // WorldTracking_XR8 will check this
-    public readonly UsesVPS = true;
+    public readonly usesVPS = true;
 
     private trackingImpl = new WorldTracking_XR8(this);
 
