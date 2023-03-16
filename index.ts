@@ -6,6 +6,6 @@ export {
     WebXRProvider,
     webXRProvider,
 } from './src/components/AR/frameworks/webAR/webXR-provider';
-export {XR8Provider, xr8Provider, IXR8UIHandler} from './src/components/AR/frameworks/xr8/xr8-provider';
+export {XR8Provider, xr8Provider, XR8UIHandler} from './src/components/AR/frameworks/xr8/xr8-provider';
 
 export {ARCamera} from './src/components/AR/cameras/AR-Camera';

@@ -7,7 +7,7 @@ import { ARProvider } from '../../AR-provider';
 export type XR8ExtraPermissions = Array<'location'>;
 
 
-interface IXR8UIHandler {
+interface XR8UIHandler {
     requestUserInteraction: () => Promise<void>;
     handlePermissionFail: (error: Error) => void;
     handleError: (error: Event) => void;
@@ -18,7 +18,7 @@ interface IXR8UIHandler {
 
 class XR8Provider extends ARProvider {
 
-    public uiHandler: IXR8UIHandler = new DefaultUIHandler();
+    public uiHandler: XR8UIHandler = new DefaultUIHandler();
 
     public cachedWebGLContext: WebGL2RenderingContext | null = null;
 
@@ -266,7 +266,7 @@ class XR8Provider extends ARProvider {
     }
 }
 
-class DefaultUIHandler implements IXR8UIHandler {
+class DefaultUIHandler implements XR8UIHandler {
     requestUserInteraction = () => {
         const overlay = this.showOverlay(requestPermissionOverlay);
         return new Promise<void>((resolve) => {
@@ -540,4 +540,4 @@ const xr8logo = `
 `;
 
 const xr8Provider = new XR8Provider();
-export { XR8Provider, xr8Provider, IXR8UIHandler };
+export { XR8Provider, xr8Provider, XR8UIHandler};
