@@ -1,10 +1,6 @@
 import {ARProvider} from '../../AR-provider';
 
 class WebXRProvider extends ARProvider {
-    public get tag() {
-        return 'webXR';
-    }
-
     private _xrSession: XRSession | null = null;
     public get xrSession() {
         return this._xrSession;

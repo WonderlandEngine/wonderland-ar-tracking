@@ -1,16 +1,22 @@
 import * as QRCode from 'qrcode-svg';
-import {ARProvider} from '../../AR-provider';
-import {IXR8UIHandler} from './ixr8-ui-handler';
+import { ARProvider } from '../../AR-provider';
 
 /**
  * Array of extra permissions which some tracking mode might need. By default XR8 will need camera/microphone permissions and deviceMotion permission (iOS only). VPS for example must pass an extra 'location' permission
  */
 export type XR8ExtraPermissions = Array<'location'>;
 
+
+interface IXR8UIHandler {
+    requestUserInteraction: () => Promise<void>;
+    handlePermissionFail: (error: Error) => void;
+    handleError: (error: Event) => void;
+    showWaitingForDeviceLocation: () => void;
+    hideWaitingForDeviceLocation: () => void;
+    handleIncompatibleDevice: () => void;
+}
+
 class XR8Provider extends ARProvider {
-    public get tag() {
-        return 'xr8';
-    }
 
     public uiHandler: IXR8UIHandler = new DefaultUIHandler();
 
@@ -88,7 +94,7 @@ class XR8Provider extends ARProvider {
 
                         onException: (message) => {
                             this.uiHandler.handleError(
-                                new CustomEvent('8thwall-error', {detail: {message}})
+                                new CustomEvent('8thwall-error', { detail: { message } })
                             );
                         },
                     },
@@ -534,4 +540,4 @@ const xr8logo = `
 `;
 
 const xr8Provider = new XR8Provider();
-export {XR8Provider, xr8Provider};
+export { XR8Provider, xr8Provider, IXR8UIHandler };

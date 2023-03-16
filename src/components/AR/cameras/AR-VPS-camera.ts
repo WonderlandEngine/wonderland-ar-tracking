@@ -18,8 +18,9 @@ class ARVPSCamera extends ARCamera {
     public static TypeName = 'AR-VPS-camera';
     public static Properties = {};
 
-    // WorldTracking_XR8 will check this
-    public readonly usesVPS = true;
+    
+    // make sure noone can overwrite this
+    public get usesVPS() { return true; }
 
     private _trackingImpl = new WorldTracking_XR8(this);
 

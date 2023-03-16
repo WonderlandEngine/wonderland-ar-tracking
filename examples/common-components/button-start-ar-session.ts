@@ -29,15 +29,11 @@ class ButtonStartARSession extends Component {
         xrButton.style.display = 'block';
 
         xrButton.addEventListener('click', () => {
-            // console.log("ARDCamera", this.ARCamera);
             xrButton!.style.display = 'none';
             const components = this.object.getComponents();
             for (let i = 0; i < components.length; i++) {
                 if (components[i] instanceof ARCamera) {
-                    // Seems like typescript looses the context of `if (components[i] instanceof ARCamera)`
-                    // and complains that `(components[i] as ARCamera)` does not overlap.
-                    // So let's do ask it asks - convert the component to unknown first and only then to ARCamera
-                    (components[i] as unknown as ARCamera).startSession();
+                    (components[i] as ARCamera).startSession();
                     break;
                 }
             }
