@@ -17,7 +17,7 @@ type UsesVPS = {
 
 class WorldTracking_XR8 extends TrackingMode {
     // consumed by 8th Wall
-    public readonly name = 'world_tracking_XR8';
+    public readonly name = 'world-tracking-XR8';
 
     private view?: ViewComponent; // cache camera
     private cachedPosition = [0, 0, 0]; // cache 8th Wall cam position

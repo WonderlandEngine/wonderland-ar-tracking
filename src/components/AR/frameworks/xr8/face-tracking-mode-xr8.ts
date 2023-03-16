@@ -4,7 +4,7 @@ import {xr8Provider} from './xr8-provider';
 import {ARFaceTrackingCamera} from '../../cameras/AR-face-tracking-camera';
 
 class FaceTracking_XR8 extends TrackingMode {
-    public readonly name = 'face_tracking_XR8';
+    public readonly name = 'face-tracking-XR8';
 
     private view?: ViewComponent; // cache camera
     private cachedPosition = [0, 0, 0]; // cache 8th Wall cam position

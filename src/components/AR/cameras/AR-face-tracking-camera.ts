@@ -6,11 +6,10 @@ import {xr8Provider} from '../frameworks/xr8/xr8-provider';
 
 import {ARCamera} from './AR-Camera';
 
-const WLEComponentTypeName = 'AR-face-tracking-camera';
 
 ARSession.registerTrackingProvider(xr8Provider);
 class ARFaceTrackingCamera extends ARCamera {
-    public static TypeName = WLEComponentTypeName;
+    public static TypeName = 'AR-face-tracking-camera';
     public static Properties = {
         cameraDirection: {
             type: Type.Enum,

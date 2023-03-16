@@ -8,10 +8,8 @@ import {ARCamera} from './AR-Camera';
 
 ARSession.registerTrackingProvider(xr8Provider);
 
-const WLEComponentTypeName = 'AR-image-tracking-camera';
-
 class ARImageTrackingCamera extends ARCamera {
-    public static TypeName = WLEComponentTypeName;
+    public static TypeName = 'AR-image-tracking-camera';
     public static Properties = {
         EnableSLAM: {type: Type.Bool, default: false}, // Imrpoves tracking, reduces performance
     };

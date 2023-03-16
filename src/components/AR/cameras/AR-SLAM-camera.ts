@@ -32,7 +32,7 @@ class ARSLAMCamera extends ARCamera {
     private trackingImpl?: ITrackingMode;
 
     public init() {
-        if (WL.arSupported) {
+        if (this.engine.arSupported) {
             //if (false) { // force xr8
             this.trackingImpl = new WorldTracking_webAR(this);
         } else {
