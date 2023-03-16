@@ -18,48 +18,48 @@ class ARFaceTrackingCamera extends ARCamera {
         },
     };
 
-    private trackingImpl = new FaceTracking_XR8(this);
+    private _trackingImpl = new FaceTracking_XR8(this);
 
     // will be set by WLE
     public cameraDirection: number = 0;
 
     public get onFaceLoading() {
-        return this.trackingImpl.onFaceLoading;
+        return this._trackingImpl.onFaceLoading;
     }
 
     public get onFaceFound() {
-        return this.trackingImpl.onFaceFound;
+        return this._trackingImpl.onFaceFound;
     }
 
     public get onFaceUpdate() {
-        return this.trackingImpl.onFaceUpdate;
+        return this._trackingImpl.onFaceUpdate;
     }
 
     public get onFaceLost() {
-        return this.trackingImpl.onFaceLost;
+        return this._trackingImpl.onFaceLost;
     }
 
     public start() {
         if (!this.object.getComponent('view')) {
             throw new Error('AR-camera requires a view component');
         }
-        this.trackingImpl.init();
+        this._trackingImpl.init();
     }
 
     startSession = async () => {
         if (this.active) {
-            this.trackingImpl.startSession();
+            this._trackingImpl.startSession();
         }
     };
 
     endSession = async () => {
         if (this.active) {
-            this.trackingImpl!.endSession();
+            this._trackingImpl!.endSession();
         }
     };
 
     onDeactivate(): void {
-        this.trackingImpl.endSession();
+        this._trackingImpl.endSession();
     }
 }
 

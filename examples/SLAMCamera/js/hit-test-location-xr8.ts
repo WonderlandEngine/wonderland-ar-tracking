@@ -14,11 +14,11 @@ class HitTestLocationXR8 extends Component {
     // injected by WLE
     camera!: WLEObject;
 
-    private tracking = false;
+    private _tracking = false;
 
-    private camForward = vec3.create();
-    private intersectionVec3 = vec3.create();
-    private tmpWorldPosition = vec3.create();
+    private _camForward = vec3.create();
+    private _intersectionVec3 = vec3.create();
+    private _tmpWorldPosition = vec3.create();
 
     init() {
         ARSession.onSessionStarted.push(this.onSessionStarted);
@@ -26,15 +26,15 @@ class HitTestLocationXR8 extends Component {
     }
 
     update() {
-        if (this.tracking) {
-            this.camera.getForward(this.camForward);
+        if (this._tracking) {
+            this.camera.getForward(this._camForward);
           
             /* Intersect with origin XY plane. We always intersect if camera facing downwards */
-            if(this.camForward[1] < 0) { 
-                this.camera.getTranslationWorld(this.tmpWorldPosition);
-                const t = -this.tmpWorldPosition[1] / this.camForward[1];
-                vec3.add(this.intersectionVec3, this.tmpWorldPosition, vec3.scale(this.intersectionVec3, this.camForward, t));
-                this.object.setTranslationWorld(this.intersectionVec3);
+            if(this._camForward[1] < 0) { 
+                this.camera.getTranslationWorld(this._tmpWorldPosition);
+                const t = -this._tmpWorldPosition[1] / this._camForward[1];
+                vec3.add(this._intersectionVec3, this._tmpWorldPosition, vec3.scale(this._intersectionVec3, this._camForward, t));
+                this.object.setTranslationWorld(this._intersectionVec3);
             }
         }
     }
@@ -42,13 +42,13 @@ class HitTestLocationXR8 extends Component {
     onSessionStarted = (provider: ARProvider) => {
         if (provider instanceof XR8Provider) {
             this.object.scalingWorld = [1, 1, 1];
-            this.tracking = true;
+            this._tracking = true;
         }
     };
 
     onSessionEnded = (provider: ARProvider) => {
         if (provider instanceof XR8Provider) {
-            this.tracking = false;
+            this._tracking = false;
             this.object.scalingWorld = [0, 0, 0];
         }
     };

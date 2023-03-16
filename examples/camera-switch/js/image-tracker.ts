@@ -22,9 +22,9 @@ class ImageTrackingExample extends Component {
     private imageId!: string;
 
     // allocate some arrays
-    private cachedPosition = new Array<number>(3);
-    private cachedRotation = new Array<number>(4);
-    private cachedScale = new Array<number>(3);
+    private _cachedPosition = new Array<number>(3);
+    private _cachedRotation = new Array<number>(4);
+    private _cachedScale = new Array<number>(3);
 
     start() {
         if (!this.ARImageTrackingCamera) {
@@ -72,22 +72,22 @@ class ImageTrackingExample extends Component {
 
         const {rotation, position, scale} = event.detail;
 
-        this.cachedRotation[0] = rotation.x;
-        this.cachedRotation[1] = rotation.y;
-        this.cachedRotation[2] = rotation.z;
-        this.cachedRotation[3] = rotation.w;
+        this._cachedRotation[0] = rotation.x;
+        this._cachedRotation[1] = rotation.y;
+        this._cachedRotation[2] = rotation.z;
+        this._cachedRotation[3] = rotation.w;
 
-        this.cachedPosition[0] = position.x;
-        this.cachedPosition[1] = position.y;
-        this.cachedPosition[2] = position.z;
+        this._cachedPosition[0] = position.x;
+        this._cachedPosition[1] = position.y;
+        this._cachedPosition[2] = position.z;
 
-        this.cachedScale[0] = scale;
-        this.cachedScale[1] = scale;
-        this.cachedScale[2] = scale;
+        this._cachedScale[0] = scale;
+        this._cachedScale[1] = scale;
+        this._cachedScale[2] = scale;
 
-        this.object.rotationWorld.set(this.cachedRotation);
-        this.object.setTranslationWorld(this.cachedPosition);
-        this.object.scalingWorld = this.cachedScale;
+        this.object.rotationWorld.set(this._cachedRotation);
+        this.object.setTranslationWorld(this._cachedPosition);
+        this.object.scalingWorld = this._cachedScale;
     };
 }
 WL.registerComponent(ImageTrackingExample);

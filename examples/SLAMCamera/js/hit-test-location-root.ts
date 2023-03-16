@@ -19,32 +19,32 @@ class HitTestLocationRoot extends Component {
     // injected by WLE
     camera!: WLEObject;
 
-    private tempScaling = new Float32Array(3);
-    private visible = false;
+    private _tempScaling = new Float32Array(3);
+    private _visible = false;
 
-    private xrViewerSpace?: XRReferenceSpace;
-    private xrHitTestSource: XRHitTestSource | null = null;
+    private _xrViewerSpace?: XRReferenceSpace;
+    private _xrHitTestSource: XRHitTestSource | null = null;
 
-    private tracking = false;
+    private _tracking = false;
     init() {
         ARSession.onSessionStarted.push(this.onSessionStarted);
         ARSession.onSessionEnded.push(this.onSessionEnded);
-        this.tempScaling.set(this.object.scalingLocal);
-        this.visible = false;
+        this._tempScaling.set(this.object.scalingLocal);
+        this._visible = false;
         this.object.scale([0, 0, 0]);
     }
 
     update() {
-        if (this.tracking) {
-            const wasVisible = this.visible;
-            if (this.xrHitTestSource) {
+        if (this._tracking) {
+            const wasVisible = this._visible;
+            if (this._xrHitTestSource) {
                 const frame = WL.xrFrame;
                 if (!frame) return;
 
-                let hitTestResults = frame.getHitTestResults(this.xrHitTestSource);
+                let hitTestResults = frame.getHitTestResults(this._xrHitTestSource);
                 if (hitTestResults.length > 0) {
-                    let pose = hitTestResults[0].getPose(this.xrViewerSpace);
-                    this.visible = true;
+                    let pose = hitTestResults[0].getPose(this._xrViewerSpace);
+                    this._visible = true;
 
                     // this is good;
                     const tw = this.camera.transformPointWorld(
@@ -59,16 +59,16 @@ class HitTestLocationRoot extends Component {
 
                     // TODO: how do I get the world ROTATION
                 } else {
-                    this.visible = false;
+                    this._visible = false;
                 }
             }
 
-            if (this.visible != wasVisible) {
-                if (!this.visible) {
-                    this.tempScaling.set(this.object.scalingLocal);
+            if (this._visible != wasVisible) {
+                if (!this._visible) {
+                    this._tempScaling.set(this.object.scalingLocal);
                     this.object.scale([0, 0, 0]);
                 } else {
-                    this.object.scalingLocal.set(this.tempScaling);
+                    this.object.scalingLocal.set(this._tempScaling);
                     this.object.setDirty();
                 }
             }
@@ -77,15 +77,15 @@ class HitTestLocationRoot extends Component {
 
     onSessionStarted = (provider: ARProvider) => {
         if (provider instanceof WebXRProvider) {
-            this.tracking = true;
+            this._tracking = true;
             (provider as WebXRProvider)
                 .xrSession!.requestReferenceSpace('viewer')
                 .then((refSpace: XRReferenceSpace) => {
-                    this.xrViewerSpace = refSpace;
+                    this._xrViewerSpace = refSpace;
                     (provider as WebXRProvider).xrSession!.requestHitTestSource!({
-                        space: this.xrViewerSpace!,
+                        space: this._xrViewerSpace!,
                     })!.then((hitTestSource: XRHitTestSource) => {
-                        this.xrHitTestSource = hitTestSource;
+                        this._xrHitTestSource = hitTestSource;
                     });
                 });
         }
@@ -93,15 +93,15 @@ class HitTestLocationRoot extends Component {
 
     onSessionEnded = (provider: ARProvider) => {
         if (provider instanceof WebXRProvider) {
-            this.tracking = false;
+            this._tracking = false;
 
             this.object.scale([0, 0, 0]);
-            this.visible = false;
+            this._visible = false;
 
-            if (!this.xrHitTestSource) return;
+            if (!this._xrHitTestSource) return;
 
-            this.xrHitTestSource.cancel();
-            this.xrHitTestSource = null;
+            this._xrHitTestSource.cancel();
+            this._xrHitTestSource = null;
         }
     };
 }

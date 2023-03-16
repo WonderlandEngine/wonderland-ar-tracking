@@ -19,11 +19,11 @@ class WorldTracking_XR8 extends TrackingMode {
     // consumed by 8th Wall
     public readonly name = 'world-tracking-XR8';
 
-    private view?: ViewComponent; // cache camera
-    private cachedPosition = [0, 0, 0]; // cache 8th Wall cam position
-    private cachedRotation = [0, 0, 0, -1]; // cache 8th Wall cam rotation
+    private _view?: ViewComponent; // cache camera
+    private _cachedPosition = [0, 0, 0]; // cache 8th Wall cam position
+    private _cachedRotation = [0, 0, 0, -1]; // cache 8th Wall cam rotation
 
-    private extraPermissions: XR8ExtraPermissions = [];
+    private _extraPermissions: XR8ExtraPermissions = [];
 
     public readonly onTrackingStatus: Array<(event: XR8TrackingStatusEvent) => void> = [];
 
@@ -139,26 +139,26 @@ class WorldTracking_XR8 extends TrackingMode {
     ];
 
     public init(extraPermissions: XR8ExtraPermissions = []) {
-        this.extraPermissions = extraPermissions;
+        this._extraPermissions = extraPermissions;
 
         const input = this.component.object.getComponent('input');
         if (input) {
             input.active = false; // 8th Wall will handle the camera pose
         }
 
-        this.view = this.component.object.getComponent('view')!;
+        this._view = this.component.object.getComponent('view')!;
 
         const rot = this.component.object.rotationWorld;
         const pos = this.component.object.getTranslationWorld([]);
 
-        this.cachedPosition[0] = pos[0];
-        this.cachedPosition[1] = pos[1];
-        this.cachedPosition[2] = pos[2];
+        this._cachedPosition[0] = pos[0];
+        this._cachedPosition[1] = pos[1];
+        this._cachedPosition[2] = pos[2];
 
-        this.cachedRotation[0] = rot[0];
-        this.cachedRotation[1] = rot[1];
-        this.cachedRotation[2] = rot[2];
-        this.cachedRotation[3] = rot[3];
+        this._cachedRotation[0] = rot[0];
+        this._cachedRotation[1] = rot[1];
+        this._cachedRotation[2] = rot[2];
+        this._cachedRotation[3] = rot[3];
 
         xr8Provider.onSessionEnded.push(() => {
             XR8.removeCameraPipelineModules([XR8.XrController.pipelineModule(), this]);
@@ -166,7 +166,7 @@ class WorldTracking_XR8 extends TrackingMode {
     }
 
     public async startSession() {
-        const permissions = await xr8Provider.checkPermissions(this.extraPermissions);
+        const permissions = await xr8Provider.checkPermissions(this._extraPermissions);
         if (!permissions) {
             return;
         }
@@ -212,15 +212,15 @@ class WorldTracking_XR8 extends TrackingMode {
     public onAttach = (_params: unknown) => {
         XR8.XrController.updateCameraProjectionMatrix({
             origin: {
-                x: this.cachedPosition[0],
-                y: this.cachedPosition[1],
-                z: this.cachedPosition[2],
+                x: this._cachedPosition[0],
+                y: this._cachedPosition[1],
+                z: this._cachedPosition[2],
             },
             facing: {
-                x: this.cachedRotation[0],
-                y: this.cachedRotation[1],
-                z: this.cachedRotation[2],
-                w: this.cachedRotation[3],
+                x: this._cachedRotation[0],
+                y: this._cachedRotation[1],
+                z: this._cachedRotation[2],
+                w: this._cachedRotation[3],
             },
             cam: {
                 pixelRectWidth: WL.canvas.width,
@@ -240,17 +240,17 @@ class WorldTracking_XR8 extends TrackingMode {
 
         const {rotation, position, intrinsics} = source;
 
-        this.cachedRotation[0] = rotation.x;
-        this.cachedRotation[1] = rotation.y;
-        this.cachedRotation[2] = rotation.z;
-        this.cachedRotation[3] = rotation.w;
+        this._cachedRotation[0] = rotation.x;
+        this._cachedRotation[1] = rotation.y;
+        this._cachedRotation[2] = rotation.z;
+        this._cachedRotation[3] = rotation.w;
 
-        this.cachedPosition[0] = position.x;
-        this.cachedPosition[1] = position.y;
-        this.cachedPosition[2] = position.z;
+        this._cachedPosition[0] = position.x;
+        this._cachedPosition[1] = position.y;
+        this._cachedPosition[2] = position.z;
 
         if (intrinsics) {
-            const projectionMatrix = this.view!.projectionMatrix;
+            const projectionMatrix = this._view!.projectionMatrix;
             for (let i = 0; i < 16; i++) {
                 if (Number.isFinite(intrinsics[i])) {
                     // some processCpuResult.reality.intrinsics are set to Infinity, which WL brakes our projectionMatrix. So we just filter those elements out
@@ -260,8 +260,8 @@ class WorldTracking_XR8 extends TrackingMode {
         }
 
         if (position && rotation) {
-            this.component.object.rotationWorld = this.cachedRotation;
-            this.component.object.setTranslationWorld(this.cachedPosition);
+            this.component.object.rotationWorld = this._cachedRotation;
+            this.component.object.setTranslationWorld(this._cachedPosition);
         }
     };
 }

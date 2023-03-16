@@ -15,14 +15,15 @@ class XR8Provider extends ARProvider {
     public uiHandler: IXR8UIHandler = new DefaultUIHandler();
 
     public cachedWebGLContext: WebGL2RenderingContext | null = null;
+
     // Loading of 8th Wall might be initiated by several components, make sure we load it only once
-    private loading = false;
+    private _loading = false;
 
     // XR8 currently provides no way to check if the session is running, only if the session is paused (and we never pause, we just XR8.end()). so we track this manually
-    private running = false;
+    private _running = false;
 
     // Enforce the singleton pattern
-    private instance: XR8Provider | null = null;
+    private _instance: XR8Provider | null = null;
 
     constructor() {
         super();
@@ -32,11 +33,11 @@ class XR8Provider extends ARProvider {
             return;
         }
 
-        if (this.instance !== null) {
+        if (this._instance !== null) {
             throw 'WebXRProvider cannot be instantiated';
         }
 
-        this.instance = this;
+        this._instance = this;
     }
 
     public async load() {
@@ -45,11 +46,11 @@ class XR8Provider extends ARProvider {
             return;
         }
 
-        if (this.loading) {
+        if (this._loading) {
             return;
         }
 
-        this.loading = true;
+        this._loading = true;
 
         return new Promise<void>((resolve, _reject) => {
             // Just some safety flag, if 8th Wall was loaded before by something, like a index.html file
@@ -76,12 +77,12 @@ class XR8Provider extends ARProvider {
                     {
                         name: 'WLE-XR8-setup',
                         onStart: () => {
-                            this.running = true;
+                            this._running = true;
                             this.enableCameraFeed();
                         },
 
                         onDetach: () => {
-                            this.running = false;
+                            this._running = false;
                             this.disableCameraFeed();
                         },
 
@@ -109,7 +110,7 @@ class XR8Provider extends ARProvider {
     }
 
     public async endSession() {
-        if (this.running) {
+        if (this._running) {
             XR8.stop();
             this.onSessionEnded.forEach((cb) => cb(this));
         }

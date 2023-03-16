@@ -41,13 +41,13 @@ class FaceAttachmentPointExample extends Component {
     };
 
     // injected by WL..
-    private ARFaceTrackingCamera!: WLEObject;
+    ARFaceTrackingCamera!: WLEObject;
 
     // injected by WL..
-    private attachmentPoint: number = 0;
+    attachmentPoint: number = 0;
 
     // injected by WL..
-    private attachedObject!: WLEObject;
+    attachedObject!: WLEObject;
 
     start() {
         if (!this.ARFaceTrackingCamera) {

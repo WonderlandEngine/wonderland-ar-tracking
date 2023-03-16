@@ -27,10 +27,10 @@ class FaceMaskExample extends Component {
     private faceMaskMaterial!: Material;
 
     // We'll fill this with the mesh data provided by xr8
-    private mesh: Mesh | null = null;
+    private _mesh: Mesh | null = null;
 
     // component to hold the mesh
-    private meshComp: MeshComponent | null = null;
+    private _meshComp: MeshComponent | null = null;
 
     start() {
         if (!this.ARFaceTrackingCamera) {
@@ -53,9 +53,9 @@ class FaceMaskExample extends Component {
 
         this.object.scalingWorld = [0, 0, 0];
 
-        if (!this.mesh) {
-            this.meshComp = this.object.addComponent('mesh', {})!;
-            this.meshComp.material = this.faceMaskMaterial;
+        if (!this._mesh) {
+            this._meshComp = this.object.addComponent('mesh', {})!;
+            this._meshComp.material = this.faceMaskMaterial;
         }
 
         camera.onFaceLoading.push((event) => {
@@ -70,21 +70,21 @@ class FaceMaskExample extends Component {
             }, []);
 
             // Create mesh
-            this.mesh = new Mesh(this.engine, {
+            this._mesh = new Mesh(this.engine, {
                 vertexCount: pointsPerDetection,
                 indexData,
                 indexType: MeshIndexType.UnsignedInt,
             });
 
             // UV's won't change, fill them right away
-            const textureCoordinate = this.mesh!.attribute(
+            const textureCoordinate = this._mesh!.attribute(
                 MeshAttribute.TextureCoordinate
             )!;
             for (let i = 0; i < uvs.length; i++) {
                 textureCoordinate.set(i, [uvs[i].u, uvs[i].v]);
             }
 
-            this.meshComp!.mesh = this.mesh;
+            this._meshComp!.mesh = this._mesh;
         });
 
         camera.onFaceFound.push(this.updateFaceMesh);
@@ -124,14 +124,14 @@ class FaceMaskExample extends Component {
     private updateFaceMesh = (event: any) => {
         const {vertices, normals} = event.detail;
 
-        const meshNormals = this.mesh!.attribute(MeshAttribute.Normal)!;
-        const positions = this.mesh!.attribute(MeshAttribute.Position)!;
+        const meshNormals = this._mesh!.attribute(MeshAttribute.Normal)!;
+        const positions = this._mesh!.attribute(MeshAttribute.Position)!;
 
         for (let i = 0; i < vertices.length; i++) {
             positions.set(i, [vertices[i].x, vertices[i].y, vertices[i].z]);
             meshNormals.set(i, [normals[i].x, normals[i].y, normals[i].z]);
         }
-        this.mesh!.update();
+        this._mesh!.update();
     };
 }
 

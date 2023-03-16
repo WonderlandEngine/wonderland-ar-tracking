@@ -13,10 +13,10 @@ import {ARProvider} from './AR-provider';
  */
 abstract class ARSession {
     // tracking provider is basically a lib which has some tracking capabilities, so device native webXR, 8th Wall, mind-ar-js, etc
-    private static trackingProviders: Array<ARProvider> = [];
+    private static _trackingProviders: Array<ARProvider> = [];
 
     // current running provider
-    private static currentTrackingProvider: ARProvider | null = null;
+    private static _currentTrackingProvider: ARProvider | null = null;
 
     public static readonly onARSessionReady: Array<() => void> = [];
 
@@ -25,7 +25,7 @@ abstract class ARSession {
     public static readonly onSessionEnded: Array<(trackingProvider: ARProvider) => void> =
         [];
 
-    private static sceneHasLoaded = false;
+    private static _sceneHasLoaded = false;
     private static _arSessionIsReady = false;
 
     public static get arSessionReady() {
@@ -44,10 +44,10 @@ abstract class ARSession {
      * and hooks into providers onSessionStarted, onSessionLoaded events.
      */
     public static async registerTrackingProvider(provider: ARProvider) {
-        if (this.trackingProviders.includes(provider)) {
+        if (this._trackingProviders.includes(provider)) {
             return;
         }
-        this.trackingProviders.push(provider);
+        this._trackingProviders.push(provider);
 
         provider.onSessionStarted.push(this.onProviderSessionStarted);
         provider.onSessionEnded.push(this.onProviderSessionEnded);
@@ -62,30 +62,30 @@ abstract class ARSession {
             return;
         }
 
-        if (this.trackingProviders.every((p) => p.loaded === true) && this.sceneHasLoaded) {
+        if (this._trackingProviders.every((p) => p.loaded === true) && this._sceneHasLoaded) {
             this._arSessionIsReady = true;
             this.onARSessionReady.forEach((cb) => cb());
         }
     };
 
     private static onWLSceneLoaded = () => {
-        this.sceneHasLoaded = true;
+        this._sceneHasLoaded = true;
         this.checkProviderLoadProgress();
     };
 
     // stops a running AR session (if any)
     public static stopARSession() {
-        if (this.currentTrackingProvider === null) {
+        if (this._currentTrackingProvider === null) {
             console.warn('No tracking session is active, nothing will happen');
         }
 
-        this.currentTrackingProvider?.endSession();
-        this.currentTrackingProvider = null;
+        this._currentTrackingProvider?.endSession();
+        this._currentTrackingProvider = null;
     }
 
     // some provider started AR session
     private static onProviderSessionStarted = (provider: ARProvider) => {
-        this.currentTrackingProvider = provider;
+        this._currentTrackingProvider = provider;
         this.onSessionStarted.forEach((cb) => cb(provider));
     };
 

@@ -506,6 +506,9 @@
                 4096,
                 4096
             ]
+        },
+        "editor": {
+            "serverCOEP": ""
         }
     },
     "animations": {},

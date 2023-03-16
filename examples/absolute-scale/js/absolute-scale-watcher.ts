@@ -21,12 +21,12 @@ class AbsoluteScaleWatcher extends Component {
     // injected by WL..
     material!: Material;
 
-    private tracking = false;
+    private _tracking = false;
 
 
-    private camForward = vec3.create();
-    private intersectionVec3 = vec3.create();
-    private tmpWorldPosition = vec3.create();
+    private _camForward = vec3.create();
+    private _intersectionVec3 = vec3.create();
+    private _tmpWorldPosition = vec3.create();
 
     start() {
         if (!this.ARXR8SLAMCamera) {
@@ -62,16 +62,16 @@ class AbsoluteScaleWatcher extends Component {
 
         ARSession.onSessionEnded.push(() => {
             div.style.display = 'none';
-            this.tracking = false;
+            this._tracking = false;
         });
 
         camera.onTrackingStatus.push((event) => {
             if (event.detail.status === 'NORMAL') {
                 div.style.display = 'none';
-                this.tracking = true;
+                this._tracking = true;
                 this.object.scalingWorld = [1, 1, 1];
             } else {
-                this.tracking = false;
+                this._tracking = false;
                 div.style.display = 'block';
                 this.object.scalingWorld = [0, 0, 0];
             }
@@ -79,21 +79,21 @@ class AbsoluteScaleWatcher extends Component {
     }
 
     update() {
-        if (this.tracking) {
-            this.ARXR8SLAMCamera.getForward(this.camForward);
+        if (this._tracking) {
+            this.ARXR8SLAMCamera.getForward(this._camForward);
           
             /* Intersect with origin XY plane. We always intersect if camera facing downwards */
-            if(this.camForward[1] < 0) { 
-                this.ARXR8SLAMCamera.getTranslationWorld(this.tmpWorldPosition);
-                const t = -this.tmpWorldPosition[1] / this.camForward[1];
-                vec3.add(this.intersectionVec3, this.tmpWorldPosition, vec3.scale(this.intersectionVec3, this.camForward, t));
-                this.object.setTranslationWorld(this.intersectionVec3);
+            if(this._camForward[1] < 0) { 
+                this.ARXR8SLAMCamera.getTranslationWorld(this._tmpWorldPosition);
+                const t = -this._tmpWorldPosition[1] / this._camForward[1];
+                vec3.add(this._intersectionVec3, this._tmpWorldPosition, vec3.scale(this._intersectionVec3, this._camForward, t));
+                this.object.setTranslationWorld(this._intersectionVec3);
             }
         }
     }
 
     spawnMesh = () => {
-        if (!this.tracking) {
+        if (!this._tracking) {
             return;
         }
 

@@ -17,7 +17,7 @@ class VPSExample extends Component {
     private waypointName!: string;
 
     // private static toggleMeshButton: HTMLButtonElement;
-    private static debugText: HTMLDivElement;
+    private static _debugText: HTMLDivElement;
 
     start() {
         if (!this.VPSCamera) {
@@ -33,43 +33,43 @@ class VPSExample extends Component {
             throw new Error(`${ARVPSCamera.TypeName} was not found on VPSCamera`);
         }
 
-        if (!VPSExample.debugText) {
-            VPSExample.debugText = document.createElement('div');
-            VPSExample.debugText.id = 'vps-example-debug-text';
-            VPSExample.debugText.style.fontSize = '14px';
-            VPSExample.debugText.style.position = 'absolute';
-            VPSExample.debugText.style.bottom = '0';
-            VPSExample.debugText.style.left = '0';
-            VPSExample.debugText.style.color = 'white';
-            VPSExample.debugText.style.textShadow = '2px 2px 4px #FFFF00';
+        if (!VPSExample._debugText) {
+            VPSExample._debugText = document.createElement('div');
+            VPSExample._debugText.id = 'vps-example-debug-text';
+            VPSExample._debugText.style.fontSize = '14px';
+            VPSExample._debugText.style.position = 'absolute';
+            VPSExample._debugText.style.bottom = '0';
+            VPSExample._debugText.style.left = '0';
+            VPSExample._debugText.style.color = 'white';
+            VPSExample._debugText.style.textShadow = '2px 2px 4px #FFFF00';
         }
 
         ARSession.onSessionStarted.push(() => {
-            document.body.appendChild(VPSExample.debugText);
-            VPSExample.debugText.innerHTML = 'Looking for a waypoint';
+            document.body.appendChild(VPSExample._debugText);
+            VPSExample._debugText.innerHTML = 'Looking for a waypoint';
         });
 
         ARSession.onSessionEnded.push(() => {
-            VPSExample.debugText.remove();
+            VPSExample._debugText.remove();
         });
 
         camera.onWaySpotFound.push(this.wayspotFound);
         camera.onWaySpotUpdated.push(this.updateModelPose);
         camera.onWaySpotLost.push(() => {
-            VPSExample.debugText.innerHTML += '<br />Way spot lost';
+            VPSExample._debugText.innerHTML += '<br />Way spot lost';
         });
     }
 
     private wayspotFound = (event: XR8VPSWayPointEvent) => {
         if (event.detail.name !== this.waypointName) return;
-        VPSExample.debugText.innerHTML += '<br />Way spot found: ' + event.detail.name;
+        VPSExample._debugText.innerHTML += '<br />Way spot found: ' + event.detail.name;
         this.updateModelPose(event);
     };
 
     private updateModelPose = (event: XR8VPSWayPointEvent) => {
         if (event.detail.name !== this.waypointName) return;
 
-        VPSExample.debugText.innerHTML += '<br />Way spot updated: ' + event.detail.name;
+        VPSExample._debugText.innerHTML += '<br />Way spot updated: ' + event.detail.name;
 
         const {position, rotation} = event.detail;
         const cachedPosition = [];

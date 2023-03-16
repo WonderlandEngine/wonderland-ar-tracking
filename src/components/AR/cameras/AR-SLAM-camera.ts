@@ -29,14 +29,14 @@ class ARSLAMCamera extends ARCamera {
     public static TypeName = 'AR-SLAM-camera';
     public static Properties = {};
 
-    private trackingImpl?: ITrackingMode;
+    private _trackingImpl!: ITrackingMode;
 
     public init() {
         if (this.engine.arSupported) {
             //if (false) { // force xr8
-            this.trackingImpl = new WorldTracking_webAR(this);
+            this._trackingImpl = new WorldTracking_webAR(this);
         } else {
-            this.trackingImpl = new WorldTracking_XR8(this);
+            this._trackingImpl = new WorldTracking_XR8(this);
         }
     }
 
@@ -46,28 +46,28 @@ class ARSLAMCamera extends ARCamera {
         }
 
         if (!WL.arSupported) {
-            (this.trackingImpl as WorldTracking_XR8).init();
+            (this._trackingImpl as WorldTracking_XR8).init();
         }
     }
 
     startSession = async () => {
         if (this.active) {
-            this.trackingImpl!.startSession();
+            this._trackingImpl!.startSession();
         }
     };
 
     endSession = async () => {
         if (this.active) {
-            this.trackingImpl!.endSession();
+            this._trackingImpl.endSession();
         }
     };
 
     onDeactivate(): void {
-        this.trackingImpl!.endSession();
+        this._trackingImpl.endSession();
     }
 
     public update(dt: number) {
-        this.trackingImpl!.update?.(dt);
+        this._trackingImpl.update?.(dt);
     }
 }
 

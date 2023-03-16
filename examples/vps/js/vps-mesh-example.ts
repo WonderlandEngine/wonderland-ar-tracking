@@ -24,10 +24,10 @@ class VPSMeshExample extends Component {
     // injected by WL..
     private generatedMeshMaterial!: Material;
 
-    private mesh: Mesh | null = null;
-    private meshComp: MeshComponent | null = null;
+    private _mesh: Mesh | null = null;
+    private _meshComp: MeshComponent | null = null;
 
-    private toggleMeshButton!: HTMLButtonElement;
+    private _toggleMeshButton!: HTMLButtonElement;
 
     start() {
         if (!this.VPSCamera) {
@@ -41,33 +41,33 @@ class VPSMeshExample extends Component {
             throw new Error(`${ARVPSCamera.TypeName} was not found on VPSCamera`);
         }
 
-        this.toggleMeshButton = document.createElement('button');
-        this.toggleMeshButton.innerHTML = 'Toggle Mesh';
-        this.toggleMeshButton.id = 'toggle-vps-mesh-button';
-        this.toggleMeshButton.style.lineHeight = '40px';
-        this.toggleMeshButton.style.position = 'absolute';
-        this.toggleMeshButton.style.top = '0';
-        this.toggleMeshButton.style.right = '0';
+        this._toggleMeshButton = document.createElement('button');
+        this._toggleMeshButton.innerHTML = 'Toggle Mesh';
+        this._toggleMeshButton.id = 'toggle-vps-mesh-button';
+        this._toggleMeshButton.style.lineHeight = '40px';
+        this._toggleMeshButton.style.position = 'absolute';
+        this._toggleMeshButton.style.top = '0';
+        this._toggleMeshButton.style.right = '0';
 
-        this.toggleMeshButton.addEventListener('click', () => {
-            if (this.meshComp) {
-                this.meshComp.active = !this.meshComp.active;
+        this._toggleMeshButton.addEventListener('click', () => {
+            if (this._meshComp) {
+                this._meshComp.active = !this._meshComp.active;
             }
         });
 
         ARSession.onSessionStarted.push(() => {
-            document.body.appendChild(this.toggleMeshButton);
+            document.body.appendChild(this._toggleMeshButton);
         });
 
         ARSession.onSessionEnded.push(() => {
-            this.toggleMeshButton.remove();
+            this._toggleMeshButton.remove();
 
-            if (this.meshComp) {
-                this.meshComp.destroy();
-                this.mesh!.destroy();
+            if (this._meshComp) {
+                this._meshComp.destroy();
+                this._mesh!.destroy();
 
-                this.meshComp = null;
-                this.mesh = null;
+                this._meshComp = null;
+                this._mesh = null;
             }
         });
 
@@ -85,22 +85,22 @@ class VPSMeshExample extends Component {
             debugText.innerHTML += '<br />Mesh received: ' + event.detail.id;
         }
 
-        this.meshComp = this.object.addComponent('mesh', {})!;
-        this.meshComp.material = this.generatedMeshMaterial;
+        this._meshComp = this.object.addComponent('mesh', {})!;
+        this._meshComp.material = this.generatedMeshMaterial;
 
         const vertexData = event.detail.geometry.attributes[0].array;
         const colorData = event.detail.geometry.attributes[1].array;
         const indexData = event.detail.geometry.index.array;
 
-        this.mesh = new Mesh(this.engine, {
+        this._mesh = new Mesh(this.engine, {
             vertexCount: vertexData.length,
             indexData,
             indexType: MeshIndexType.UnsignedInt,
         });
 
-        const positions = this.mesh.attribute(MeshAttribute.Position)!;
+        const positions = this._mesh.attribute(MeshAttribute.Position)!;
         // const normals = mesh.attribute(WL.MeshAttribute.Normal);
-        const colors = this.mesh.attribute(MeshAttribute.Color)!;
+        const colors = this._mesh.attribute(MeshAttribute.Color)!;
 
         let ci = 0;
         for (let i = 0; i < colorData.length; i += 3) {
@@ -112,7 +112,7 @@ class VPSMeshExample extends Component {
             positions.set(i / 3, [vertexData[i], vertexData[i + 1], vertexData[i + 2]]);
         }
 
-        this.meshComp.mesh = this.mesh;
+        this._meshComp.mesh = this._mesh;
 
         const {position, rotation} = event.detail;
         const cachedPosition = [];

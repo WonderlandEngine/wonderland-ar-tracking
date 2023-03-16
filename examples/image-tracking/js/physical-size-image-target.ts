@@ -32,22 +32,22 @@ class PhysicalSizeImageTarget extends Component {
     public imageId!: string; // Marked this public, as video-taxture-image-target will need to access it
 
     // allocate some arrays
-    private cachedPosition = new Float32Array(4);
-    private cachedScale = new Array<number>(3);
+    private _cachedPosition = new Float32Array(4);
+    private _cachedScale = new Array<number>(3);
 
     // Because the tracking might not be super stable - sometimes it feels like the the tracked image is a bit "jumping" around.
     // We can try to fix if by caching the tracked pose and interpolating the mesh pose on each frame.
     // This does introduce some calculations on each frame, but might make the experience a bit more pleasant
-    private cachedTrackedRotation = quat.create();
-    private cachedTrackedPosition = vec3.create();
+    private _cachedTrackedRotation = quat.create();
+    private _cachedTrackedPosition = vec3.create();
 
     // generated mesh components and it's geometry
-    private mesh: Mesh | null = null;
-    private meshComp: MeshComponent | null = null;
+    private _mesh: Mesh | null = null;
+    private _meshComp: MeshComponent | null = null;
 
     // Sometimes the tracking is lost just for a fraction of the second before it's tracked again.
     // In this case we allow sometime before we hide the mesh to reduce the flickering.
-    private imageLostTimeout = 0;
+    private _imageLostTimeout = 0;
 
     start() {
         if (!this.ARImageTrackingCamera) {
@@ -73,20 +73,20 @@ class PhysicalSizeImageTarget extends Component {
 
         camera.onImageLost.push((event: XR8ImageTrackedEvent) => {
             if (event.detail.name === this.imageId) {
-                this.imageLostTimeout = setTimeout(() => {
-                    this.meshComp!.active = false;
+                this._imageLostTimeout = setTimeout(() => {
+                    this._meshComp!.active = false;
                 }, 250);
             }
         });
 
         ARSession.onSessionEnded.push(() => {
-            clearTimeout(this.imageLostTimeout);
-            if (this.meshComp) {
-                this.meshComp.destroy();
-                this.mesh!.destroy();
+            clearTimeout(this._imageLostTimeout);
+            if (this._meshComp) {
+                this._meshComp.destroy();
+                this._mesh!.destroy();
 
-                this.meshComp = null;
-                this.mesh = null;
+                this._meshComp = null;
+                this._mesh = null;
             }
         });
     }
@@ -133,18 +133,18 @@ class PhysicalSizeImageTarget extends Component {
 
         const {indices, vertices, normals, uvs} = geometryData;
 
-        this.meshComp = this.object.addComponent('mesh', {})!;
-        this.meshComp.material = this.meshMaterial;
+        this._meshComp = this.object.addComponent('mesh', {})!;
+        this._meshComp.material = this.meshMaterial;
 
-        this.mesh = new Mesh(this.engine, {
+        this._mesh = new Mesh(this.engine, {
             vertexCount: vertices.length / 3,
             indexData: indices,
             indexType: MeshIndexType.UnsignedInt,
         });
 
-        const meshPositions = this.mesh!.attribute(MeshAttribute.Position)!;
-        const meshNormals = this.mesh!.attribute(MeshAttribute.Normal)!;
-        const meshUvs = this.mesh!.attribute(MeshAttribute.TextureCoordinate)!;
+        const meshPositions = this._mesh!.attribute(MeshAttribute.Position)!;
+        const meshNormals = this._mesh!.attribute(MeshAttribute.Normal)!;
+        const meshUvs = this._mesh!.attribute(MeshAttribute.TextureCoordinate)!;
         for (let i = 0; i < vertices.length; i += 3) {
             meshPositions.set(i / 3, [vertices[i], vertices[i + 1], vertices[i + 2]]);
             meshNormals.set(i / 3, [normals[i], normals[i + 1], normals[i + 2]]);
@@ -154,28 +154,28 @@ class PhysicalSizeImageTarget extends Component {
             meshUvs.set(i / 2, [uvs[i], uvs[i + 1]]);
         }
 
-        this.meshComp.mesh = this.mesh;
-        this.meshComp.active = false; // hide until found
+        this._meshComp.mesh = this._mesh;
+        this._meshComp.active = false; // hide until found
     };
 
     private onImageFound = (event: XR8ImageTrackedEvent) => {
         if (event.detail.name === this.imageId) {
-            this.meshComp!.active = true;
+            this._meshComp!.active = true;
             this.onImageUpdated(event);
 
             quat.lerp(
                 this.object.rotationWorld,
                 this.object.rotationWorld,
-                this.cachedTrackedRotation,
+                this._cachedTrackedRotation,
                 1
             );
             vec3.lerp(
-                this.cachedPosition,
-                this.cachedPosition,
-                this.cachedTrackedPosition,
+                this._cachedPosition,
+                this._cachedPosition,
+                this._cachedTrackedPosition,
                 1
             );
-            this.object.setTranslationWorld(this.cachedPosition);
+            this.object.setTranslationWorld(this._cachedPosition);
         }
     };
 
@@ -184,44 +184,44 @@ class PhysicalSizeImageTarget extends Component {
             return;
         }
 
-        clearTimeout(this.imageLostTimeout);
+        clearTimeout(this._imageLostTimeout);
 
         const {rotation, position, scale} = event.detail;
 
         quat.set(
-            this.cachedTrackedRotation,
+            this._cachedTrackedRotation,
             rotation.x,
             rotation.y,
             rotation.z,
             rotation.w
         );
-        vec3.set(this.cachedTrackedPosition, position.x, position.y, position.z);
+        vec3.set(this._cachedTrackedPosition, position.x, position.y, position.z);
 
-        this.cachedScale[0] = scale;
-        this.cachedScale[1] = scale;
-        this.cachedScale[2] = scale;
+        this._cachedScale[0] = scale;
+        this._cachedScale[1] = scale;
+        this._cachedScale[2] = scale;
 
-        this.object.scalingWorld.set(this.cachedScale);
+        this.object.scalingWorld.set(this._cachedScale);
     };
 
     update() {
-        if (this.meshComp?.active === false) {
+        if (this._meshComp?.active === false) {
             return;
         }
 
         quat.lerp(
             this.object.rotationWorld,
             this.object.rotationWorld,
-            this.cachedTrackedRotation,
+            this._cachedTrackedRotation,
             0.9
         );
         vec3.lerp(
-            this.cachedPosition,
-            this.cachedPosition,
-            this.cachedTrackedPosition,
+            this._cachedPosition,
+            this._cachedPosition,
+            this._cachedTrackedPosition,
             0.9
         );
-        this.object.setTranslationWorld(this.cachedPosition);
+        this.object.setTranslationWorld(this._cachedPosition);
     }
 }
 WL.registerComponent(PhysicalSizeImageTarget);

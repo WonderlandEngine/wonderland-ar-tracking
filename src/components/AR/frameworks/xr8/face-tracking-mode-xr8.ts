@@ -6,9 +6,9 @@ import {ARFaceTrackingCamera} from '../../cameras/AR-face-tracking-camera';
 class FaceTracking_XR8 extends TrackingMode {
     public readonly name = 'face-tracking-XR8';
 
-    private view?: ViewComponent; // cache camera
-    private cachedPosition = [0, 0, 0]; // cache 8th Wall cam position
-    private cachedRotation = [0, 0, 0, -1]; // cache 8th Wall cam rotation
+    private _view?: ViewComponent; // cache camera
+    private _cachedPosition = [0, 0, 0]; // cache 8th Wall cam position
+    private _cachedRotation = [0, 0, 0, -1]; // cache 8th Wall cam rotation
 
     public readonly onFaceScanning: Array<(event: XR8FaceLoadingEvent) => void> = [];
     public readonly onFaceLoading: Array<(event: XR8FaceLoadingEvent) => void> = [];
@@ -60,7 +60,7 @@ class FaceTracking_XR8 extends TrackingMode {
             input.active = false; // 8th Wall will handle the camera pose
         }
 
-        this.view = this.component.object.getComponent('view')!;
+        this._view = this.component.object.getComponent('view')!;
 
         xr8Provider.onSessionEnded.push(() => {
             XR8.removeCameraPipelineModules([XR8.FaceController.pipelineModule(), this]);
@@ -116,17 +116,17 @@ class FaceTracking_XR8 extends TrackingMode {
 
         const {rotation, position, intrinsics} = source;
 
-        this.cachedRotation[0] = rotation.x;
-        this.cachedRotation[1] = rotation.y;
-        this.cachedRotation[2] = rotation.z;
-        this.cachedRotation[3] = rotation.w;
+        this._cachedRotation[0] = rotation.x;
+        this._cachedRotation[1] = rotation.y;
+        this._cachedRotation[2] = rotation.z;
+        this._cachedRotation[3] = rotation.w;
 
-        this.cachedPosition[0] = position.x;
-        this.cachedPosition[1] = position.y;
-        this.cachedPosition[2] = position.z;
+        this._cachedPosition[0] = position.x;
+        this._cachedPosition[1] = position.y;
+        this._cachedPosition[2] = position.z;
 
         if (intrinsics) {
-            const projectionMatrix = this.view!.projectionMatrix;
+            const projectionMatrix = this._view!.projectionMatrix;
             for (let i = 0; i < 16; i++) {
                 if (Number.isFinite(intrinsics[i])) {
                     // some processCpuResult.reality.intrinsics are set to Infinity, which WL brakes our projectionMatrix. So we just filter those elements out
@@ -136,8 +136,8 @@ class FaceTracking_XR8 extends TrackingMode {
         }
 
         if (position && rotation) {
-            this.component.object.rotationWorld = this.cachedRotation;
-            this.component.object.setTranslationWorld(this.cachedPosition);
+            this.component.object.rotationWorld = this._cachedRotation;
+            this.component.object.setTranslationWorld(this._cachedPosition);
         }
     };
 }

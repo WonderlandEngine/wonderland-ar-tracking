@@ -21,41 +21,41 @@ class ARVPSCamera extends ARCamera {
     // WorldTracking_XR8 will check this
     public readonly usesVPS = true;
 
-    private trackingImpl = new WorldTracking_XR8(this);
+    private _trackingImpl = new WorldTracking_XR8(this);
 
     public get onWaySpotFound() {
-        return this.trackingImpl.onWaySpotFound;
+        return this._trackingImpl.onWaySpotFound;
     }
     public get onWaySpotUpdated() {
-        return this.trackingImpl.onWaySpotUpdated;
+        return this._trackingImpl.onWaySpotUpdated;
     }
 
     public get onWaySpotLost() {
-        return this.trackingImpl.onWaySpotLost;
+        return this._trackingImpl.onWaySpotLost;
     }
 
     public get onMeshFound() {
-        return this.trackingImpl.onMeshFound;
+        return this._trackingImpl.onMeshFound;
     }
 
     public start() {
-        this.trackingImpl.init(['location']);
+        this._trackingImpl.init(['location']);
     }
 
     startSession = async () => {
         if (this.active) {
-            this.trackingImpl.startSession();
+            this._trackingImpl.startSession();
         }
     };
 
     endSession = async () => {
         if (this.active) {
-            this.trackingImpl!.endSession();
+            this._trackingImpl!.endSession();
         }
     };
 
     onDeactivate(): void {
-        this.trackingImpl.endSession();
+        this._trackingImpl.endSession();
     }
 }
 

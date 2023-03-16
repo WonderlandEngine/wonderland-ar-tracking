@@ -11,7 +11,7 @@ class WebXRProvider extends ARProvider {
     }
 
     // Enforce the singleton pattern
-    private instance: WebXRProvider | null = null;
+    private _instance: WebXRProvider | null = null;
 
     constructor() {
         super();
@@ -21,11 +21,11 @@ class WebXRProvider extends ARProvider {
             return;
         }
 
-        if (this.instance !== null) {
+        if (this._instance !== null) {
             throw 'WebXRProvider cannot be instantiated';
         }
 
-        this.instance = this;
+        this._instance = this;
 
         WL.onXRSessionStart.push((session: XRSession) => {
             this._xrSession = session;
@@ -34,8 +34,6 @@ class WebXRProvider extends ARProvider {
 
         WL.onXRSessionEnd.push(() => {
             this.onSessionEnded.forEach((cb) => cb(this));
-            console.log("MY xr session", this._xrSession);
-            this._xrSession = null;
         });
     }
 
@@ -48,7 +46,13 @@ class WebXRProvider extends ARProvider {
 
     public async endSession() {
         if (this._xrSession) {
-            this._xrSession.end();
+            try {
+                await this._xrSession.end();
+            } catch {
+                // Session was ended for some
+            }
+            
+            this._xrSession = null;
         }
     }
 

@@ -16,14 +16,14 @@ class ARXR8SLAMCamera extends ARCamera {
         UseAbsoluteScale: {type: Type.Bool, default: false},
     };
 
-    private trackingImpl!: WorldTracking_XR8;
+    private _trackingImpl!: WorldTracking_XR8;
 
     public get onTrackingStatus() {
-        return this.trackingImpl!.onTrackingStatus;
+        return this._trackingImpl!.onTrackingStatus;
     }
 
     public init() {
-        this.trackingImpl = new WorldTracking_XR8(this);
+        this._trackingImpl = new WorldTracking_XR8(this);
     }
 
     public start() {
@@ -31,23 +31,23 @@ class ARXR8SLAMCamera extends ARCamera {
             throw new Error('AR-camera requires a view component');
         }
 
-        this.trackingImpl.init();
+        this._trackingImpl.init();
     }
 
     startSession = async () => {
         if (this.active) {
-            this.trackingImpl!.startSession();
+            this._trackingImpl!.startSession();
         }
     };
 
     endSession = async () => {
         if (this.active) {
-            this.trackingImpl!.endSession();
+            this._trackingImpl!.endSession();
         }
     };
 
     onDeactivate(): void {
-        this.trackingImpl!.endSession();
+        this._trackingImpl!.endSession();
     }
 }
 

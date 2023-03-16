@@ -14,42 +14,42 @@ class ARImageTrackingCamera extends ARCamera {
         EnableSLAM: {type: Type.Bool, default: false}, // Imrpoves tracking, reduces performance
     };
 
-    private trackingImpl = new WorldTracking_XR8(this);
+    private _trackingImpl = new WorldTracking_XR8(this);
 
     public get onImageScanning() {
-        return this.trackingImpl.onImageScanning;
+        return this._trackingImpl.onImageScanning;
     }
 
     public get onImageFound() {
-        return this.trackingImpl.onImageFound;
+        return this._trackingImpl.onImageFound;
     }
 
     public get onImageUpdate() {
-        return this.trackingImpl.onImageUpdate;
+        return this._trackingImpl.onImageUpdate;
     }
 
     public get onImageLost() {
-        return this.trackingImpl.onImageLost;
+        return this._trackingImpl.onImageLost;
     }
 
     public start() {
-        this.trackingImpl.init();
+        this._trackingImpl.init();
     }
 
     startSession = async () => {
         if (this.active) {
-            this.trackingImpl.startSession();
+            this._trackingImpl.startSession();
         }
     };
 
     endSession = async () => {
         if (this.active) {
-            this.trackingImpl!.endSession();
+            this._trackingImpl!.endSession();
         }
     };
 
     onDeactivate(): void {
-        this.trackingImpl.endSession();
+        this._trackingImpl.endSession();
     }
 }
 

@@ -8,9 +8,9 @@ class XR8CameraSwitch extends Component {
     public static TypeName = 'xr8-camera-switch-example';
     public static Properties = {};
 
-    private faceTrackingCamera?: ARFaceTrackingCamera;
-    private imageTrackingCamera?: ARImageTrackingCamera;
-    private worldTrackingCamera?: ARSLAMCamera;
+    private _faceTrackingCamera?: ARFaceTrackingCamera;
+    private _imageTrackingCamera?: ARImageTrackingCamera;
+    private _worldTrackingCamera?: ARSLAMCamera;
 
     start() {
         const html = `<div style="position: absolute; top: 0; left: 0; z-index: 999">
@@ -43,19 +43,19 @@ class XR8CameraSwitch extends Component {
         });
 
         ARSession.onSessionEnded.push(() => {
-            this.faceTrackingCamera!.active = false;
-            this.imageTrackingCamera!.active = false;
-            this.worldTrackingCamera!.active = false;
+            this._faceTrackingCamera!.active = false;
+            this._imageTrackingCamera!.active = false;
+            this._worldTrackingCamera!.active = false;
         });
 
-        this.faceTrackingCamera = this.object.getComponent(ARFaceTrackingCamera)!;
-        this.imageTrackingCamera = this.object.getComponent(ARImageTrackingCamera)!;
-        this.worldTrackingCamera = this.object.getComponent(ARSLAMCamera)!;
+        this._faceTrackingCamera = this.object.getComponent(ARFaceTrackingCamera)!;
+        this._imageTrackingCamera = this.object.getComponent(ARImageTrackingCamera)!;
+        this._worldTrackingCamera = this.object.getComponent(ARSLAMCamera)!;
     }
 
     onFrontFaceCameraSelected = () => {
-        this.imageTrackingCamera!.active = false;
-        this.worldTrackingCamera!.active = false;
+        this._imageTrackingCamera!.active = false;
+        this._worldTrackingCamera!.active = false;
 
         /**
          * TODO: this is a little bit dumb that we have to stop the camera
@@ -63,17 +63,17 @@ class XR8CameraSwitch extends Component {
          *
          * It should be possible just to change the param and seemlesly witch, at least with 8th Wall
          */
-        this.faceTrackingCamera!.active = false;
-        this.faceTrackingCamera!.cameraDirection = 0;
+        this._faceTrackingCamera!.active = false;
+        this._faceTrackingCamera!.cameraDirection = 0;
 
-        this.faceTrackingCamera!.active = true;
-        this.faceTrackingCamera!.startSession();
+        this._faceTrackingCamera!.active = true;
+        this._faceTrackingCamera!.startSession();
     };
 
     onBackFaceCameraSelected = () => {
         //this.faceTrackingCamera!.active = false;
-        this.imageTrackingCamera!.active = false;
-        this.worldTrackingCamera!.active = false;
+        this._imageTrackingCamera!.active = false;
+        this._worldTrackingCamera!.active = false;
 
         /**
          * TODO: this is a little bit dumb that we have to stop the camera
@@ -81,32 +81,32 @@ class XR8CameraSwitch extends Component {
          *
          * It should be possible just to change the param and seemlesly witch, at least with 8th Wall
          */
-        this.faceTrackingCamera!.active = false;
-        this.faceTrackingCamera!.cameraDirection = 1;
+        this._faceTrackingCamera!.active = false;
+        this._faceTrackingCamera!.cameraDirection = 1;
 
-        this.faceTrackingCamera!.active = true;
-        this.faceTrackingCamera!.startSession();
+        this._faceTrackingCamera!.active = true;
+        this._faceTrackingCamera!.startSession();
     };
 
     onImageCameraSelected = () => {
-        this.faceTrackingCamera!.active = false;
+        this._faceTrackingCamera!.active = false;
         //this.imageTrackingCamera!.active = false;
-        this.worldTrackingCamera!.active = false;
+        this._worldTrackingCamera!.active = false;
 
-        if (!this.imageTrackingCamera!.active) {
-            this.imageTrackingCamera!.active = true;
-            this.imageTrackingCamera!.startSession();
+        if (!this._imageTrackingCamera!.active) {
+            this._imageTrackingCamera!.active = true;
+            this._imageTrackingCamera!.startSession();
         }
     };
 
     onWorldCameraSelected = () => {
-        this.faceTrackingCamera!.active = false;
-        this.imageTrackingCamera!.active = false;
+        this._faceTrackingCamera!.active = false;
+        this._imageTrackingCamera!.active = false;
         //this.worldTrackingCamera!.active = false;
 
-        if (!this.worldTrackingCamera!.active) {
-            this.worldTrackingCamera!.active = true;
-            this.worldTrackingCamera!.startSession();
+        if (!this._worldTrackingCamera!.active) {
+            this._worldTrackingCamera!.active = true;
+            this._worldTrackingCamera!.startSession();
         }
     };
 }
