@@ -2,14 +2,6 @@
     "objects": {
         "14": {
             "name": "Player",
-            "components": [
-                {
-                    "type": "wasd-controls",
-                    "wasd-controls": {
-                        "headObject": "17"
-                    }
-                }
-            ],
             "translation": [
                 -2.6877918,
                 1.1786487,
@@ -62,9 +54,6 @@
             "components": [
                 {
                     "type": "view"
-                },
-                {
-                    "type": "mouse-look"
                 },
                 {
                     "type": "xr8-camera-switch-example"
@@ -650,9 +639,9 @@
         "project": {
             "name": "CameraSwitch",
             "version": [
+                1,
                 0,
-                9,
-                5
+                0
             ],
             "customIndexHtml": true
         },

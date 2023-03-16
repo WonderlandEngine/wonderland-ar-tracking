@@ -1,5 +1,3 @@
-import '@wonderlandengine/components';
-
 import '../../common-components/button-start-ar-session';
 import '../../common-components/button-end-ar-session';
 

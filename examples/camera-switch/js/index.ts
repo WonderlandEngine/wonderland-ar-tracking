@@ -1,5 +1,3 @@
-import '@wonderlandengine/components';
-
 import '../../common-components';
 
 import './camera-switch-ui';

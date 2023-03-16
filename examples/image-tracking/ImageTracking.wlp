@@ -2,17 +2,6 @@
     "objects": {
         "14": {
             "name": "Player",
-            "components": [
-                {
-                    "type": "wasd-controls",
-                    "wasd-controls": {
-                        "headObject": "17"
-                    }
-                },
-                {
-                    "type": "mouse-look"
-                }
-            ],
             "translation": [
                 -2.6877918,
                 1.1786487,
@@ -579,9 +568,9 @@
         "project": {
             "name": "ImageTracking",
             "version": [
+                1,
                 0,
-                9,
-                5
+                0
             ],
             "customIndexHtml": true
         },
@@ -761,5 +750,6 @@
                 "file": "default"
             }
         }
-    }
+    },
+    "languages": {}
 }
