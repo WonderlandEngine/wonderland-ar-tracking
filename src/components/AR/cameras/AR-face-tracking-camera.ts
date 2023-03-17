@@ -1,62 +1,66 @@
-import { ARSession } from '../AR-session';
-import { FaceTracking_XR8 } from '../frameworks/xr8/face-tracking-mode-xr8';
-import { xr8Provider } from '../frameworks/xr8/xr8-provider';
-import { Type } from '@wonderlandengine/api';
-import { ARCamera } from './AR-Camera';
+import {Type} from '@wonderlandengine/api';
 
-const WLEComponentTypeName = 'AR-face-tracking-camera';
+import {ARSession} from '../AR-session';
+import {FaceTracking_XR8} from '../frameworks/xr8/face-tracking-mode-xr8';
+import {xr8Provider} from '../frameworks/xr8/xr8-provider';
+
+import {ARCamera} from './AR-Camera';
+
 
 ARSession.registerTrackingProvider(xr8Provider);
 class ARFaceTrackingCamera extends ARCamera {
-  public static TypeName = WLEComponentTypeName;
-  public static Properties = {
-    cameraDirection: { type: Type.Enum, values: ['front', 'back'] as XR8CameraDirection[keyof XR8CameraDirection][], default: 'front' },
-  };
+    public static TypeName = 'AR-face-tracking-camera';
+    public static Properties = {
+        cameraDirection: {
+            type: Type.Enum,
+            values: ['front', 'back'] as XR8CameraDirection[keyof XR8CameraDirection][],
+            default: 'front',
+        },
+    };
 
-  private trackingImpl = new FaceTracking_XR8(this);
+    private _trackingImpl = new FaceTracking_XR8(this);
 
-  // will be set by WLE
-  public cameraDirection: number = 0;
+    // will be set by WLE
+    public cameraDirection: number = 0;
 
-  public get onFaceLoading() {
-    return this.trackingImpl.onFaceLoading;
-  }
-
-  public get onFaceFound() {
-    return this.trackingImpl.onFaceFound;
-  }
-
-  public get onFaceUpdate() {
-    return this.trackingImpl.onFaceUpdate;
-  }
-
-  public get onFaceLost() {
-    return this.trackingImpl.onFaceLost;
-  }
-
-  public start() {
-    if (!this.object.getComponent('view')) {
-      throw new Error('AR-camera requires a view component');
+    public get onFaceLoading() {
+        return this._trackingImpl.onFaceLoading;
     }
-    this.trackingImpl.init();
-  }
 
-  startSession = async () => {
-    if (this.active) {
-      this.trackingImpl.startSession();
+    public get onFaceFound() {
+        return this._trackingImpl.onFaceFound;
     }
-  }
 
-  endSession = async () => {
-    if (this.active) {
-      this.trackingImpl!.endSession();
+    public get onFaceUpdate() {
+        return this._trackingImpl.onFaceUpdate;
     }
-  }
 
-  onDeactivate(): void {
-    this.trackingImpl.endSession();
-  }
+    public get onFaceLost() {
+        return this._trackingImpl.onFaceLost;
+    }
+
+    public start() {
+        if (!this.object.getComponent('view')) {
+            throw new Error('AR-camera requires a view component');
+        }
+        this._trackingImpl.init();
+    }
+
+    startSession = async () => {
+        if (this.active) {
+            this._trackingImpl.startSession();
+        }
+    };
+
+    endSession = async () => {
+        if (this.active) {
+            this._trackingImpl!.endSession();
+        }
+    };
+
+    onDeactivate(): void {
+        this._trackingImpl.endSession();
+    }
 }
 
-export { ARFaceTrackingCamera };
-
+export {ARFaceTrackingCamera};

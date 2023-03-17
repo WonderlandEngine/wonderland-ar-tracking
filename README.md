@@ -1,4 +1,5 @@
-# wonderland-8thwall-tracking
+# General AR system which currently support 8th Wall tracking and webXR device API
+- Supported webXR features - SLAM tracking.
+- Supported 8th Wall features - SLAM tracking, image tracking, face tracking, VPS.
 
-Make sure you run `npm install`before running the examples.
-You can find the examples in the `examples` folder.
+

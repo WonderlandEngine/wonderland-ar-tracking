@@ -4,212 +4,202 @@
  * Modified to work with gl-matrix vectors
  */
 
-import { vec2, vec3 } from "gl-matrix";
+import {vec2, vec3} from 'gl-matrix';
 
-const generateCylinderGeometry = (radiusTop = 1, radiusBottom = 1, height = 1, radialSegments = 32, heightSegments = 1, openEnded = false, thetaStart = 0, thetaLength = Math.PI * 2) => {
+const generateCylinderGeometry = (
+    radiusTop = 1,
+    radiusBottom = 1,
+    height = 1,
+    radialSegments = 32,
+    heightSegments = 1,
+    openEnded = false,
+    thetaStart = 0,
+    thetaLength = Math.PI * 2
+) => {
+    radialSegments = Math.floor(radialSegments);
+    heightSegments = Math.floor(heightSegments);
 
-  radialSegments = Math.floor(radialSegments);
-  heightSegments = Math.floor(heightSegments);
+    // buffers
+    const indices: number[] = [];
+    const vertices: number[] = [];
+    const normals: number[] = [];
+    const uvs: number[] = [];
 
-  // buffers
-  const indices: number[] = [];
-  const vertices: number[] = [];
-  const normals: number[] = [];
-  const uvs: number[] = [];
+    // helper variables
+    let index = 0;
+    const indexArray: number[][] = [];
+    const halfHeight = height / 2;
 
-  // helper variables
-  let index = 0;
-  const indexArray: number[][]= [];
-  const halfHeight = height / 2;
-  
+    // generate geometry
+    generateTorso();
 
-  // generate geometry
-  generateTorso();
+    if (openEnded === false) {
+        if (radiusTop > 0) generateCap(true);
+        if (radiusBottom > 0) generateCap(false);
+    }
 
-  if (openEnded === false) {
-    if (radiusTop > 0) generateCap(true);
-    if (radiusBottom > 0) generateCap(false);
-  }
+    return {
+        indices,
+        vertices,
+        normals,
+        uvs,
+    };
 
-  return {
-    indices, vertices, normals, uvs
-  }
-  
-  // build geometry
+    // build geometry
 
-  /*this.setIndex( indices );
+    /*this.setIndex( indices );
   this.setAttribute( 'position', new Float32BufferAttribute( vertices, 3 ) );
   this.setAttribute( 'normal', new Float32BufferAttribute( normals, 3 ) );
   this.setAttribute( 'uv', new Float32BufferAttribute( uvs, 2 ) );*/
 
-  function generateTorso() {
+    function generateTorso() {
+        const normal = vec3.create();
+        const vertex = vec3.create();
 
-    const normal = vec3.create();
-    const vertex = vec3.create();
+        // this will be used to calculate the normal
+        const slope = (radiusBottom - radiusTop) / height;
 
+        // generate vertices, normals and uvs
 
-    // this will be used to calculate the normal
-    const slope = (radiusBottom - radiusTop) / height;
+        for (let y = 0; y <= heightSegments; y++) {
+            const indexRow: number[] = [];
 
-    // generate vertices, normals and uvs
+            const v = y / heightSegments;
 
-    for (let y = 0; y <= heightSegments; y++) {
+            // calculate the radius of the current row
 
-      const indexRow: number[] = [];
+            const radius = v * (radiusBottom - radiusTop) + radiusTop;
 
-      const v = y / heightSegments;
+            for (let x = 0; x <= radialSegments; x++) {
+                const u = x / radialSegments;
 
-      // calculate the radius of the current row
+                const theta = u * thetaLength + thetaStart;
 
-      const radius = v * (radiusBottom - radiusTop) + radiusTop;
+                const sinTheta = Math.sin(theta);
+                const cosTheta = Math.cos(theta);
 
-      for (let x = 0; x <= radialSegments; x++) {
+                // vertex
 
-        const u = x / radialSegments;
+                vertex[0] = radius * sinTheta;
+                vertex[1] = -v * height + halfHeight;
+                vertex[2] = radius * cosTheta;
+                vertices.push(vertex[0], vertex[1], vertex[2]);
 
-        const theta = u * thetaLength + thetaStart;
+                // normal
+                vec3.normalize(normal, vec3.set(normal, sinTheta, slope, cosTheta));
+                normals.push(normal[0], normal[1], normal[2]);
 
-        const sinTheta = Math.sin(theta);
-        const cosTheta = Math.cos(theta);
+                // uv
+                uvs.push(u, 1 - v);
 
-        // vertex
+                // save index of vertex in respective row
+                indexRow.push(index++);
+            }
 
-        vertex[0] = radius * sinTheta;
-        vertex[1] = - v * height + halfHeight;
-        vertex[2] = radius * cosTheta;
-        vertices.push(vertex[0], vertex[1], vertex[2]);
+            // now save vertices of the row in our index array
+            indexArray.push(indexRow);
+        }
 
-        // normal
-        vec3.normalize(normal, vec3.set(normal, sinTheta, slope, cosTheta));
-        normals.push(normal[0], normal[1], normal[2]);
+        // generate indices
+        for (let x = 0; x < radialSegments; x++) {
+            for (let y = 0; y < heightSegments; y++) {
+                // we use the index array to access the correct indices
 
-        // uv
-        uvs.push(u, 1 - v);
+                const a = indexArray[y][x];
+                const b = indexArray[y + 1][x];
+                const c = indexArray[y + 1][x + 1];
+                const d = indexArray[y][x + 1];
 
-        // save index of vertex in respective row
-        indexRow.push(index++);
-      }
-
-      // now save vertices of the row in our index array
-      indexArray.push(indexRow);
-
+                // faces
+                indices.push(a, b, d);
+                indices.push(b, c, d);
+            }
+        }
     }
 
-    // generate indices
-    for (let x = 0; x < radialSegments; x++) {
+    function generateCap(top: any) {
+        // save the index of the first center vertex
+        const centerIndexStart = index;
 
-      for (let y = 0; y < heightSegments; y++) {
+        const uv = vec2.create();
+        const vertex = vec3.create();
 
-        // we use the index array to access the correct indices
+        const radius = top === true ? radiusTop : radiusBottom;
+        const sign = top === true ? 1 : -1;
 
-        const a = indexArray[y][x];
-        const b = indexArray[y + 1][x];
-        const c = indexArray[y + 1][x + 1];
-        const d = indexArray[y][x + 1];
+        // first we generate the center vertex data of the cap.
+        // because the geometry needs one set of uvs per face,
+        // we must generate a center vertex per face/segment
 
-        // faces
-        indices.push(a, b, d);
-        indices.push(b, c, d);
+        for (let x = 1; x <= radialSegments; x++) {
+            // vertex
 
-      }
+            vertices.push(0, halfHeight * sign, 0);
+
+            // normal
+
+            normals.push(0, sign, 0);
+
+            // uv
+
+            uvs.push(0.5, 0.5);
+
+            // increase index
+
+            index++;
+        }
+
+        // save the index of the last center vertex
+        const centerIndexEnd = index;
+
+        // now we generate the surrounding vertices, normals and uvs
+
+        for (let x = 0; x <= radialSegments; x++) {
+            const u = x / radialSegments;
+            const theta = u * thetaLength + thetaStart;
+
+            const cosTheta = Math.cos(theta);
+            const sinTheta = Math.sin(theta);
+
+            // vertex
+
+            vertex[0] = radius * sinTheta;
+            vertex[1] = halfHeight * sign;
+            vertex[2] = radius * cosTheta;
+            vertices.push(vertex[0], vertex[1], vertex[2]);
+
+            // normal
+
+            normals.push(0, sign, 0);
+
+            // uv
+
+            uv[0] = cosTheta * 0.5 + 0.5;
+            uv[1] = sinTheta * 0.5 * sign + 0.5;
+            uvs.push(uv[0], uv[1]);
+
+            // increase index
+
+            index++;
+        }
+
+        // generate indices
+
+        for (let x = 0; x < radialSegments; x++) {
+            const c = centerIndexStart + x;
+            const i = centerIndexEnd + x;
+
+            if (top === true) {
+                // face top
+
+                indices.push(i, i + 1, c);
+            } else {
+                // face bottom
+
+                indices.push(i + 1, i, c);
+            }
+        }
     }
-  }
+};
 
-  function generateCap(top: any) {
-
-    // save the index of the first center vertex
-    const centerIndexStart = index;
-
-    const uv = vec2.create();
-    const vertex = vec3.create();
-
-    
-    const radius = (top === true) ? radiusTop : radiusBottom;
-    const sign = (top === true) ? 1 : - 1;
-
-    // first we generate the center vertex data of the cap.
-    // because the geometry needs one set of uvs per face,
-    // we must generate a center vertex per face/segment
-
-    for (let x = 1; x <= radialSegments; x++) {
-
-      // vertex
-
-      vertices.push(0, halfHeight * sign, 0);
-
-      // normal
-
-      normals.push(0, sign, 0);
-
-      // uv
-
-      uvs.push(0.5, 0.5);
-
-      // increase index
-
-      index++;
-
-    }
-
-    // save the index of the last center vertex
-    const centerIndexEnd = index;
-
-    // now we generate the surrounding vertices, normals and uvs
-
-    for (let x = 0; x <= radialSegments; x++) {
-
-      const u = x / radialSegments;
-      const theta = u * thetaLength + thetaStart;
-
-      const cosTheta = Math.cos(theta);
-      const sinTheta = Math.sin(theta);
-
-      // vertex
-
-      vertex[0] = radius * sinTheta;
-      vertex[1] = halfHeight * sign;
-      vertex[2] = radius * cosTheta;
-      vertices.push(vertex[0], vertex[1], vertex[2]);
-
-      // normal
-
-      normals.push(0, sign, 0);
-
-      // uv
-
-      uv[0] = (cosTheta * 0.5) + 0.5;
-      uv[1] = (sinTheta * 0.5 * sign) + 0.5;
-      uvs.push(uv[0], uv[1]);
-
-      // increase index
-
-      index++;
-
-    }
-
-    // generate indices
-
-    for (let x = 0; x < radialSegments; x++) {
-
-      const c = centerIndexStart + x;
-      const i = centerIndexEnd + x;
-
-      if (top === true) {
-
-        // face top
-
-        indices.push(i, i + 1, c);
-
-      } else {
-
-        // face bottom
-
-        indices.push(i + 1, i, c);
-
-      }
-    }
-
-  }
-}
-
-export { generateCylinderGeometry };
+export {generateCylinderGeometry};

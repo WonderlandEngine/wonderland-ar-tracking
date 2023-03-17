@@ -1,300 +1,316 @@
-import * as QRCode from "qrcode-svg";
-import { ARProvider } from "../../AR-provider";
-import { IXR8UIHandler } from "./ixr8-ui-handler";
+import * as QRCode from 'qrcode-svg';
+import { ARProvider } from '../../AR-provider';
 
 /**
-  * Array of extra permissions which some tracking mode might need. By default XR8 will need camera/microphone permissions and deviceMotion permission (iOS only). VPS for example must pass an extra 'location' permission
-  */
+ * Array of extra permissions which some tracking mode might need. By default XR8 will need camera/microphone permissions and deviceMotion permission (iOS only). VPS for example must pass an extra 'location' permission
+ */
 export type XR8ExtraPermissions = Array<'location'>;
+
+
+interface XR8UIHandler {
+    requestUserInteraction: () => Promise<void>;
+    handlePermissionFail: (error: Error) => void;
+    handleError: (error: Event) => void;
+    showWaitingForDeviceLocation: () => void;
+    hideWaitingForDeviceLocation: () => void;
+    handleIncompatibleDevice: () => void;
+}
 
 class XR8Provider extends ARProvider {
 
-  public get tag() {
-    return "xr8";
-  }
+    public uiHandler: XR8UIHandler = new DefaultUIHandler();
 
-  public uiHandler: IXR8UIHandler = new DefaultUIHandler;
+    public cachedWebGLContext: WebGL2RenderingContext | null = null;
 
-  public cachedWebGLContext: WebGL2RenderingContext | null = null;
-  // Loading of 8thwall might be initiated by several components, make sure we load it only once
-  private loading = false;
+    // Loading of 8th Wall might be initiated by several components, make sure we load it only once
+    private _loading = false;
 
-  // XR8 currently provides no way to check if the session is running, only if the session is paused (and we never pause, we just XR8.end()). so we track this manually
-  private running = false;
+    // XR8 currently provides no way to check if the session is running, only if the session is paused (and we never pause, we just XR8.end()). so we track this manually
+    private _running = false;
 
-  // Enforce the singleton pattern
-  private instance: XR8Provider | null = null;
+    // Enforce the singleton pattern
+    private _instance: XR8Provider | null = null;
 
-  constructor() {
-    super();
+    constructor() {
+        super();
 
-    // Safeguard that we are not running inside the editor
-    if (typeof (document) === 'undefined') {
-      return;
+        // Safeguard that we are not running inside the editor
+        if (typeof document === 'undefined') {
+            return;
+        }
+
+        if (this._instance !== null) {
+            throw 'WebXRProvider cannot be instantiated';
+        }
+
+        this._instance = this;
     }
 
-    if (this.instance !== null) {
-      throw "WebXRProvider cannot be instantiated";
-    }
+    public async load() {
+        // Make sure we're no in the editor
+        if (!window.document) {
+            return;
+        }
 
-    this.instance = this;
-  }
+        if (this._loading) {
+            return;
+        }
 
-  public async load() {
-    // Make sure we're no in the editor
-    if (!window.document) {
-      return;
-    }
+        this._loading = true;
 
-    if (this.loading) {
-      return;
-    }
-
-    this.loading = true;
-
-    return new Promise<void>((resolve, _reject) => {
-      // Just some safety flag, if 8thwall was loaded before by something, like a index.html file
-      if (window['XR8']) {
-        resolve();
-        return;
-      }
-
-      if (!API_TOKEN_XR8) {
-        throw new Error('8thwall api is not defined');
-      }
-
-      const s = document.createElement('script');
-      s.crossOrigin = 'anonymous';
-      s.src = 'https://apps.8thwall.com/xrweb?appKey=' + API_TOKEN_XR8;
-
-      window.addEventListener('xrloaded', () => {
-        this.loaded = true;
-
-        document.querySelector('#WL-loading-8thwall-logo')?.remove();
-
-        XR8.addCameraPipelineModules([
-          XR8.GlTextureRenderer.pipelineModule(),
-          {
-            name: 'WLE-XR8-setup',
-            onStart: () => {
-              this.running = true;
-              this.enableCameraFeed();
-            },
-
-            onDetach: () => {
-              this.running = false;
-              this.disableCameraFeed();
-            },
-
-            onException: (message) => {
-              this.uiHandler.handleError(new CustomEvent('8thwall-error', { detail: { message } }));
+        return new Promise<void>((resolve, _reject) => {
+            // Just some safety flag, if 8th Wall was loaded before by something, like a index.html file
+            if (window['XR8']) {
+                resolve();
+                return;
             }
-          }
-        ]);
-        resolve();
-      });
 
-      document.body.appendChild(s);
-      // Wait until index.html has been fully parsed and append the 8thwall logo
-      document.readyState === 'complete' ? this.add8thwallLogo() : document.addEventListener('DOMContentLoaded', () => this.add8thwallLogo);
-    })
-  };
+            if (!API_TOKEN_XR8) {
+                throw new Error('8th Wall api is not defined');
+            }
 
-  public async startSession(options: Parameters<typeof XR8.run>[0]) {
-    XR8.run(options)
-    this.onSessionStarted.forEach(cb => cb(this));
-  };
+            const s = document.createElement('script');
+            s.crossOrigin = 'anonymous';
+            s.src = 'https://apps.8thwall.com/xrweb?appKey=' + API_TOKEN_XR8;
 
-  public async endSession() {
-    if (this.running) {
-      XR8.stop();
-      this.onSessionEnded.forEach(cb => cb(this));
+            window.addEventListener('xrloaded', () => {
+                this.loaded = true;
+
+                document.querySelector('#WL-loading-8thwall-logo')?.remove();
+
+                XR8.addCameraPipelineModules([
+                    XR8.GlTextureRenderer.pipelineModule(),
+                    {
+                        name: 'WLE-XR8-setup',
+                        onStart: () => {
+                            this._running = true;
+                            this.enableCameraFeed();
+                        },
+
+                        onDetach: () => {
+                            this._running = false;
+                            this.disableCameraFeed();
+                        },
+
+                        onException: (message) => {
+                            this.uiHandler.handleError(
+                                new CustomEvent('8thwall-error', { detail: { message } })
+                            );
+                        },
+                    },
+                ]);
+                resolve();
+            });
+
+            document.body.appendChild(s);
+            // Wait until index.html has been fully parsed and append the 8th Wall logo
+            document.readyState === 'complete'
+                ? this.add8thwallLogo()
+                : document.addEventListener('DOMContentLoaded', () => this.add8thwallLogo);
+        });
     }
-  };
 
-  public enableCameraFeed() {
-    // TODO: should we store the previous state of colorClearEnabled.
-    WL.scene.colorClearEnabled = false;
-
-    if (!this.cachedWebGLContext) {
-      this.cachedWebGLContext = WL.canvas.getContext("webgl2");
+    public async startSession(options: Parameters<typeof XR8.run>[0]) {
+        XR8.run(options);
+        this.onSessionStarted.forEach((cb) => cb(this));
     }
 
-    if (!WL.scene.onPreRender.includes(this.onWLPreRender)) {
-      WL.scene.onPreRender.push(this.onWLPreRender)
-    }
-
-    if (!WL.scene.onPostRender.includes(this.onWLPostRender)) {
-      WL.scene.onPostRender.push(this.onWLPostRender)
-    }
-  };
-
-  public disableCameraFeed() {
-    const indexPrerender = WL.scene.onPreRender.indexOf(this.onWLPreRender);
-    if (indexPrerender !== -1) {
-      WL.scene.onPreRender.splice(indexPrerender);
-    }
-
-    const indexPostRender = WL.scene.onPostRender.indexOf(this.onWLPostRender);
-    if (indexPostRender !== -1) {
-      WL.scene.onPostRender.splice(indexPostRender);
-    }
-  };
-
-  public onWLPreRender = () => {
-    this.cachedWebGLContext!.bindFramebuffer(this.cachedWebGLContext!.DRAW_FRAMEBUFFER, null);
-    XR8.runPreRender(Date.now());
-    XR8.runRender(); // <--- tell 8thwall to do it's thing (alternatively call this.GlTextureRenderer.onRender() if you only care about camera feed )
-  };
-
-  public onWLPostRender() {
-    XR8.runPostRender(Date.now())
-  };
-
-  private add8thwallLogo() {
-    const a = document.createElement('a');
-    a.href = 'https://www.8thwall.com/';
-    a.target = '_blank';
-    a.style.position = 'absolute';
-    a.style.bottom = '20px';
-    a.style.left = '0';
-    a.style.right = '0';
-    a.style.margin = '0 auto';
-    a.style.width = '252px';
-    a.style.zIndex = '999';
-    // a.style.pointerEvents='none';
-    a.id = 'WL-loading-8thwall-logo';
-    a.innerHTML = xr8logo;
-    document.body.appendChild(a);
-  };
-
-
-  private async promptForDeviceMotion() {
-    // wait until user interaction happens
-    await this.uiHandler.requestUserInteraction();
-
-    // wait until motion permissions has happened
-    const motionEvent = await (DeviceMotionEvent as any).requestPermission();
-    return motionEvent;
-  }
-
-  private async getPermissions(extraPermissions: XR8ExtraPermissions = []) {
-    // iOS "feature". If we want to request the DeviceMotion permission, user has to interact with the page at first (touch it).
-    // If there was no interaction done so far, we will render a HTML overlay with would get the user to interact with the screen
-    if (DeviceMotionEvent && (DeviceMotionEvent as any).requestPermission) {
-      try {
-        const result = await (DeviceMotionEvent as any).requestPermission();
-
-        // The user must have rejected the motion event on previous page load. (safari remembers this choice).
-        if (result !== 'granted') {
-          throw new Error('MotionEvent');
+    public async endSession() {
+        if (this._running) {
+            XR8.stop();
+            this.onSessionEnded.forEach((cb) => cb(this));
         }
-      } catch (exception: any) {
-
-        // User had no interaction with the page so far
-        if (exception.name === 'NotAllowedError') {
-          const motionEvent = await this.promptForDeviceMotion();
-          if (motionEvent !== 'granted') {
-            throw new Error('MotionEvent');
-          }
-        } else {
-          throw new Error('MotionEvent');
-        }
-      }
     }
 
-    try {
-      // make sure we get the camera stream
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+    public enableCameraFeed() {
+        // TODO: should we store the previous state of colorClearEnabled.
+        WL.scene.colorClearEnabled = false;
 
-      // If we successfully acquired the camera stream - we can stop it and wait until 8thwall requests it again
-      // Update - if we don't stop it, xr8 initializes faster
-      /* stream.getTracks().forEach((track) => {
+        if (!this.cachedWebGLContext) {
+            this.cachedWebGLContext = WL.canvas.getContext('webgl2');
+        }
+
+        if (!WL.scene.onPreRender.includes(this.onWLPreRender)) {
+            WL.scene.onPreRender.push(this.onWLPreRender);
+        }
+
+        if (!WL.scene.onPostRender.includes(this.onWLPostRender)) {
+            WL.scene.onPostRender.push(this.onWLPostRender);
+        }
+    }
+
+    public disableCameraFeed() {
+        const indexPrerender = WL.scene.onPreRender.indexOf(this.onWLPreRender);
+        if (indexPrerender !== -1) {
+            WL.scene.onPreRender.splice(indexPrerender);
+        }
+
+        const indexPostRender = WL.scene.onPostRender.indexOf(this.onWLPostRender);
+        if (indexPostRender !== -1) {
+            WL.scene.onPostRender.splice(indexPostRender);
+        }
+    }
+
+    public onWLPreRender = () => {
+        this.cachedWebGLContext!.bindFramebuffer(
+            this.cachedWebGLContext!.DRAW_FRAMEBUFFER,
+            null
+        );
+        XR8.runPreRender(Date.now());
+        XR8.runRender(); // <--- tell 8th Wall to do it's thing (alternatively call this.GlTextureRenderer.onRender() if you only care about camera feed )
+    };
+
+    public onWLPostRender() {
+        XR8.runPostRender(Date.now());
+    }
+
+    private add8thwallLogo() {
+        const a = document.createElement('a');
+        a.href = 'https://www.8thwall.com/';
+        a.target = '_blank';
+        a.style.position = 'absolute';
+        a.style.bottom = '20px';
+        a.style.left = '0';
+        a.style.right = '0';
+        a.style.margin = '0 auto';
+        a.style.width = '252px';
+        a.style.zIndex = '999';
+        // a.style.pointerEvents='none';
+        a.id = 'WL-loading-8thwall-logo';
+        a.innerHTML = xr8logo;
+        document.body.appendChild(a);
+    }
+
+    private async promptForDeviceMotion() {
+        // wait until user interaction happens
+        await this.uiHandler.requestUserInteraction();
+
+        // wait until motion permissions has happened
+        const motionEvent = await (DeviceMotionEvent as any).requestPermission();
+        return motionEvent;
+    }
+
+    private async getPermissions(extraPermissions: XR8ExtraPermissions = []) {
+        // iOS "feature". If we want to request the DeviceMotion permission, user has to interact with the page at first (touch it).
+        // If there was no interaction done so far, we will render a HTML overlay with would get the user to interact with the screen
+        if (DeviceMotionEvent && (DeviceMotionEvent as any).requestPermission) {
+            try {
+                const result = await (DeviceMotionEvent as any).requestPermission();
+
+                // The user must have rejected the motion event on previous page load. (safari remembers this choice).
+                if (result !== 'granted') {
+                    throw new Error('MotionEvent');
+                }
+            } catch (exception: any) {
+                // User had no interaction with the page so far
+                if (exception.name === 'NotAllowedError') {
+                    const motionEvent = await this.promptForDeviceMotion();
+                    if (motionEvent !== 'granted') {
+                        throw new Error('MotionEvent');
+                    }
+                } else {
+                    throw new Error('MotionEvent');
+                }
+            }
+        }
+
+        try {
+            // make sure we get the camera stream
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: true,
+                audio: true,
+            });
+
+            // If we successfully acquired the camera stream - we can stop it and wait until 8th Wall requests it again
+            // Update - if we don't stop it, xr8 initializes faster
+            /* stream.getTracks().forEach((track) => {
          track.stop();
        });*/
+        } catch (exception) {
+            throw new Error('Camera');
+        }
 
-    } catch (exception) {
-      throw new Error('Camera');
+        if (extraPermissions.includes('location')) {
+            this.uiHandler.showWaitingForDeviceLocation();
+
+            return new Promise<void>((resolve, reject) => {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        this.uiHandler.hideWaitingForDeviceLocation();
+                        resolve();
+                    },
+                    (_error) => {
+                        this.uiHandler.hideWaitingForDeviceLocation();
+                        reject(new Error('Location'));
+                    }
+                );
+            });
+        }
+        return true;
     }
 
-    if (extraPermissions.includes('location')) {
+    public async checkPermissions(extraPermissions: XR8ExtraPermissions = []) {
+        if (!XR8.XrDevice.isDeviceBrowserCompatible()) {
+            this.uiHandler.handleIncompatibleDevice();
+            return;
+        }
 
-      this.uiHandler.showWaitingForDeviceLocation();
-
-      return new Promise<void>((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition((position) => {
-          this.uiHandler.hideWaitingForDeviceLocation();
-          resolve();
-        }, (_error) => {
-          this.uiHandler.hideWaitingForDeviceLocation();
-          reject(new Error("Location"));
-        });
-      });
+        try {
+            await this.getPermissions(extraPermissions);
+            return true;
+        } catch (error: unknown) {
+            // User did not grant the camera or motionEvent permissions
+            this.uiHandler.handlePermissionFail(error as Error);
+            return false;
+        }
     }
-    return true;
-  };
-
-  public async checkPermissions(extraPermissions: XR8ExtraPermissions = []) {
-    if (!XR8.XrDevice.isDeviceBrowserCompatible()) {
-      this.uiHandler.handleIncompatibleDevice()
-      return;
-    }
-
-    try {
-      await this.getPermissions(extraPermissions);
-      return true;
-    } catch (error: unknown) {
-      // User did not grant the camera or motionEvent permissions
-      this.uiHandler.handlePermissionFail(error as Error);
-      return false;
-    }
-  }
 }
 
-class DefaultUIHandler implements IXR8UIHandler {
-  requestUserInteraction = () => {
-    const overlay = this.showOverlay(requestPermissionOverlay);
-    return new Promise<void>((resolve) => {
-      const button = document.querySelector<HTMLButtonElement>('#request-permission-overlay-button');
-      button?.addEventListener('click', () => {
-        overlay.remove();
-        resolve();
-      });
-    })
-  };
+class DefaultUIHandler implements XR8UIHandler {
+    requestUserInteraction = () => {
+        const overlay = this.showOverlay(requestPermissionOverlay);
+        return new Promise<void>((resolve) => {
+            const button = document.querySelector<HTMLButtonElement>(
+                '#request-permission-overlay-button'
+            );
+            button?.addEventListener('click', () => {
+                overlay.remove();
+                resolve();
+            });
+        });
+    };
 
-  handlePermissionFail(error: Error) {
-    console.log("Permission failed", error);
-    this.showOverlay(failedPermissionOverlay(error.message));
-  };
-
-
-  handleError = (error: Event) => {
-    console.error("XR8 encountered an error", error);
-    this.showOverlay(runtimeErrorOverlay((error as CustomEvent).detail.message));
-  };
-
-  showWaitingForDeviceLocation = () => {
-    this.showOverlay(waitingForDeviceLocationOverlay);
-  };
-
-  hideWaitingForDeviceLocation = () => {
-    const overlay = document.querySelector("#waiting-for-device-location-overlay");
-    if (overlay) {
-      overlay.remove();
+    handlePermissionFail(error: Error) {
+        console.log('Permission failed', error);
+        this.showOverlay(failedPermissionOverlay(error.message));
     }
-  };
 
-  handleIncompatibleDevice = () => {
-    this.showOverlay(deviceIncompatibleOverlay());
-  };
+    handleError = (error: Event) => {
+        console.error('XR8 encountered an error', error);
+        this.showOverlay(runtimeErrorOverlay((error as CustomEvent).detail.message));
+    };
 
-  showOverlay = (htmlContent: string) => {
-    const overlay = document.createElement('div');
-    overlay.innerHTML = htmlContent;
-    document.body.appendChild(overlay);
-    return overlay;
-  }
+    showWaitingForDeviceLocation = () => {
+        this.showOverlay(waitingForDeviceLocationOverlay);
+    };
+
+    hideWaitingForDeviceLocation = () => {
+        const overlay = document.querySelector('#waiting-for-device-location-overlay');
+        if (overlay) {
+            overlay.remove();
+        }
+    };
+
+    handleIncompatibleDevice = () => {
+        this.showOverlay(deviceIncompatibleOverlay());
+    };
+
+    showOverlay = (htmlContent: string) => {
+        const overlay = document.createElement('div');
+        overlay.innerHTML = htmlContent;
+        document.body.appendChild(overlay);
+        return overlay;
+    };
 }
 
 const overlayStyles = `
@@ -338,13 +354,13 @@ const overlayStyles = `
   border: none;
 }
 </style>
-`
+`;
 
 const overlayLogo = `
   <div class="xr8-overlay-wle-logo">
     <img src="data:image/png;base64,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" />
   </div>
-`
+`;
 
 const requestPermissionOverlay = `
 ${overlayStyles}
@@ -458,15 +474,14 @@ ${overlayLogo}
 `;
 
 const deviceIncompatibleOverlay = () => {
-  // @ts-ignore ts(2339) 'qrcode-svg' has some funny export definition
-  const svg = new QRCode.default({
-    content: window.location.href,
-    width: 200,
-    height: 200
-  }).svg();
+    // @ts-ignore ts(2339) 'qrcode-svg' has some funny export definition
+    const svg = new QRCode.default({
+        content: window.location.href,
+        width: 200,
+        height: 200,
+    }).svg();
 
-
-  const html = `
+    const html = `
     ${overlayStyles}
     <style>
     #xr8-overlay-epxerience-url {
@@ -480,16 +495,15 @@ const deviceIncompatibleOverlay = () => {
   <div id="failed-permission-overlay" class="xr8-overlay">
   ${overlayLogo}
     <div class="xr8-overlay-description">
-      This device is not compatible with 8thwall. Please open it using your mobile device.<br />
+      This device is not compatible with 8th Wall. Please open it using your mobile device.<br />
       <div id="xr8-overlay-qr-code">${svg}</div>
       <br />
       <div id="xr8-overlay-epxerience-url">${window.location.href}</div>
     </div>
   </div>`;
 
-  return html;
-}
-
+    return html;
+};
 
 const xr8logo = `
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" width="252px" height="48px" viewBox="0 0 252 48" style="enable-background:new 0 0 252 48;" xml:space="preserve"><script xmlns=""/>
@@ -526,4 +540,4 @@ const xr8logo = `
 `;
 
 const xr8Provider = new XR8Provider();
-export { XR8Provider, xr8Provider };
+export { XR8Provider, xr8Provider, XR8UIHandler};
