@@ -1,11 +1,11 @@
 import {Type} from '@wonderlandengine/api';
 
-import {ARSession} from '../AR-session';
+import {ARSession} from '../AR-session.js';
 
-import {WorldTracking_XR8} from '../frameworks/xr8/world-tracking-mode-xr8';
+import {WorldTracking_XR8} from '../frameworks/xr8/world-tracking-mode-xr8.js';
 
-import {xr8Provider} from '../frameworks/xr8/xr8-provider';
-import {ARCamera} from './AR-Camera';
+import {xr8Provider} from '../frameworks/xr8/xr8-provider.js';
+import {ARCamera} from './AR-Camera.js';
 
 
 ARSession.registerTrackingProvider(xr8Provider);

@@ -1,5 +1,5 @@
 import * as QRCode from 'qrcode-svg';
-import { ARProvider } from '../../AR-provider';
+import { ARProvider } from '../../AR-provider.js';
 
 /**
  * Array of extra permissions which some tracking mode might need. By default XR8 will need camera/microphone permissions and deviceMotion permission (iOS only). VPS for example must pass an extra 'location' permission

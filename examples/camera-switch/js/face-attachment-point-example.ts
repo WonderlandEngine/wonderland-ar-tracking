@@ -1,7 +1,10 @@
+/**
+ * FaceAttachmentPointExample
+ * A quick example demonstrating tracking of a face feature
+ */
 import {Component, Object as WLEObject, Type} from '@wonderlandengine/api';
-import {ARSession} from '../../../src/components/AR/AR-session';
-import {ARFaceTrackingCamera} from '../../../src/components/AR/cameras/AR-face-tracking-camera';
-//import { ARFaceTrackingCamera } from '../../..';
+import {ARSession} from '../../../src/components/AR/AR-session.js';
+import {ARFaceTrackingCamera} from '../../../src/components/AR/cameras/AR-face-tracking-camera.js';
 
 const ATTACHMENT_POINTS = [
     'forehead',

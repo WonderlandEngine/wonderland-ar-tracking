@@ -5,10 +5,11 @@
  * This way we can expect to all UI's to be requested (check iOS for full experience, since Android does not require so many user interactions to start)
  */
 import {Component} from '@wonderlandengine/api';
-import {ARSession, xr8Provider, XR8UIHandler} from '../../../../';
-
-import {ARVPSCamera} from '../../../../src/components/AR/cameras/AR-VPS-camera';
 import QrCodeWithLogo from 'qrcode-with-logos';
+
+import {ARSession, xr8Provider, XR8UIHandler} from '../../../../';
+import {ARVPSCamera} from '../../../../src/components/AR/cameras/AR-VPS-camera.js';
+
 
 WL.registerComponent(ARVPSCamera);
 

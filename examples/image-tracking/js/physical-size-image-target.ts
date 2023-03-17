@@ -1,3 +1,8 @@
+/**
+ * PhysicalSizeImageTarget
+ * Renders a textured plane or a cylinder that exactly matches the dimensions of the detected image.
+ * for the cylindrical targets, make sure the dimensions are set correctly on the 8th Wall platform.
+ */
 import {
     Component,
     Object as WLEObject,
@@ -8,11 +13,12 @@ import {
     MeshAttribute,
     Material,
 } from '@wonderlandengine/api';
-import {ARSession} from '../../..';
-import {ARImageTrackingCamera} from '../../../src/components/AR/cameras/AR-image-tracking-camera';
 import {quat, vec3} from 'gl-matrix';
-import {generateCylinderGeometry} from './geometries/CylinderGeomtery';
-import {generatePlaneGeomtry} from './geometries/PlaneGeometry';
+
+import {ARSession} from '../../../';
+import {ARImageTrackingCamera} from '../../../src/components/AR/cameras/AR-image-tracking-camera.js';
+import {generateCylinderGeometry} from './geometries/cylinder-geomtery.js';
+import {generatePlaneGeomtry} from './geometries/plane-geometry.js';
 
 class PhysicalSizeImageTarget extends Component {
     public static TypeName = 'physical-size-image-target-example';

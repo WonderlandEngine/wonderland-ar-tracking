@@ -1,3 +1,9 @@
+/**
+ * ButtonStartARSession
+ * Waits until the ARSession is ready and shows the default AR button.
+ * AR button, when clicked, searches for the first component which is `instanceOf ARCamera`
+ * and starts that components AR session
+ */
 import {Component} from '@wonderlandengine/api';
 import {ARSession, ARCamera} from '../../';
 

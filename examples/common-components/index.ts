@@ -1,2 +1,2 @@
-import './button-start-ar-session';
-import './button-end-ar-session';
+import './button-start-ar-session.js';
+import './button-end-ar-session.js';

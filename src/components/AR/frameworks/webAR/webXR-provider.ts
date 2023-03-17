@@ -1,4 +1,4 @@
-import {ARProvider} from '../../AR-provider';
+import {ARProvider} from '../../AR-provider.js';
 
 class WebXRProvider extends ARProvider {
     private _xrSession: XRSession | null = null;

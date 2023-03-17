@@ -1,23 +1,8 @@
 /**
- * Downloads a video from URL and applies it as `diffuseTexture` or `flatTexture`
- * on given material.
- *
- * Video textures need to be updated regularly whenever
- * a new frame is available. This component handles the
- * detection of a new frame and updates the texture to
- * reflect the video's current frame.
- * Only "Phong Opaque Textured" and "Flat Opaque Textured" materials are supported.
- *
- * The video can be accessed through `this.video`:
- *
- * ```js
- *   let videoTexture = this.object.getComponent('video-texture');
- *   videoTexture.video.play();
- *   videoTexture.video.pause();
- * ```
- *
- * See [Video Example](/showcase/video).
+ * video-texture-fixed
+ * Until it the original import {VideoTexture} from '@wonderlandengine/components' is fixed
  */
+
 WL.registerComponent(
     'video-texture-fixed',
     {

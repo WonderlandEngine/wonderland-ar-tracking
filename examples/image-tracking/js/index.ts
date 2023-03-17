@@ -1,9 +1,9 @@
 import '../../common-components';
 
-import './image-tracker';
-import './physical-size-image-target';
-import './video-texture-image-target';
-import './video-textures-fixed';
+import './image-tracker.js';
+import './physical-size-image-target.js';
+import './video-texture-image-target.js';
+import './video-textures-fixed.js';
 
-import {ARImageTrackingCamera} from '../../../src/components/AR/cameras/AR-image-tracking-camera';
+import {ARImageTrackingCamera} from '../../../src/components/AR/cameras/AR-image-tracking-camera.js';
 WL.registerComponent(ARImageTrackingCamera);

@@ -46,12 +46,6 @@ const generateCylinderGeometry = (
     };
 
     // build geometry
-
-    /*this.setIndex( indices );
-  this.setAttribute( 'position', new Float32BufferAttribute( vertices, 3 ) );
-  this.setAttribute( 'normal', new Float32BufferAttribute( normals, 3 ) );
-  this.setAttribute( 'uv', new Float32BufferAttribute( uvs, 2 ) );*/
-
     function generateTorso() {
         const normal = vec3.create();
         const vertex = vec3.create();

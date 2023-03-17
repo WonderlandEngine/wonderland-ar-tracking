@@ -1,3 +1,9 @@
+/**
+ * VPSMeshExample 
+ * Demonstrates how to render a Mesh from the data provided by the 8th Wall.
+ * 8th Wall provides the vertices, index and color data for the simplified mesh of the waypoint.
+ * So make sure your material supports vertex colors.
+ */
 import {
     Component,
     Mesh,
@@ -9,9 +15,9 @@ import {
     MeshAttribute,
 } from '@wonderlandengine/api';
 import {ARSession} from '../../../';
-import {ARVPSCamera} from '../../../src/components/AR/cameras/AR-VPS-camera';
+import {ARVPSCamera} from '../../../src/components/AR/cameras/AR-VPS-camera.js';
 
-class VPSMeshExample extends Component {
+export class VPSMeshExample extends Component {
     public static TypeName = 'vps-mesh-example';
     public static Properties = {
         VPSCamera: {type: Type.Object},
@@ -131,5 +137,3 @@ class VPSMeshExample extends Component {
         this.object.setTranslationWorld(cachedPosition);
     };
 }
-
-WL.registerComponent(VPSMeshExample);

@@ -1,8 +1,19 @@
+/**
+ * AbsoluteScaleWatcher
+ * Demonstrates the use of absolute scale feature of the 8th Wall SLAM camera.
+ * Absolute scale is the 8th Wall feature where the SLAM tracking provides the pose of the smartphone
+ * in real dimensional units (aka meters) relative to the physical surface the camera is pointing at.
+ * NOTE: it takes a while for the 8th Wall to resolve the this 'absolute' pose
+ * 
+ * Basically when camera.onTrackingStatus is NORMAL - tracking in absolute scale
+ * If camera.onTrackingStatus is anything else - tracking in relative (aka non physically correct dimensions)
+ */
 import {Component, Type, Object as WLEObject, Mesh, Material} from '@wonderlandengine/api';
-import {ARSession} from '../../..';
-import {ARXR8SLAMCamera} from '../../../src/components/AR/cameras/AR-XR8-SLAM-camera';
-
 import {vec3} from 'gl-matrix';
+
+import {ARSession} from '../../../';
+import {ARXR8SLAMCamera} from '../../../src/components/AR/cameras/AR-XR8-SLAM-camera.js';
+
 class AbsoluteScaleWatcher extends Component {
     public static TypeName = 'absolute-scale-watcher';
     public static Properties = {
@@ -22,7 +33,6 @@ class AbsoluteScaleWatcher extends Component {
     material!: Material;
 
     private _tracking = false;
-
 
     private _camForward = vec3.create();
     private _intersectionVec3 = vec3.create();

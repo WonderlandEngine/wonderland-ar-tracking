@@ -1,8 +1,13 @@
+/**
+ * XR8CameraSwitch
+ * Creates several HTML buttons, which, when clicked, activates a corresponding AR tracking camera. 
+ */
+
 import {Component} from '@wonderlandengine/api';
 import {ARSession} from '../../../';
-import {ARFaceTrackingCamera} from '../../../src/components/AR/cameras/AR-face-tracking-camera';
-import {ARImageTrackingCamera} from '../../../src/components/AR/cameras/AR-image-tracking-camera';
-import {ARSLAMCamera} from '../../../src/components/AR/cameras/AR-SLAM-camera';
+import {ARFaceTrackingCamera} from '../../../src/components/AR/cameras/AR-face-tracking-camera.js';
+import {ARImageTrackingCamera} from '../../../src/components/AR/cameras/AR-image-tracking-camera.js';
+import {ARSLAMCamera} from '../../../src/components/AR/cameras/AR-SLAM-camera.js';
 
 class XR8CameraSwitch extends Component {
     public static TypeName = 'xr8-camera-switch-example';

@@ -1,3 +1,8 @@
+/**
+ * ButtonEndARSession
+ * Shows a simple HTML buttton when ARSession has started.
+ * When clicked - kill any running AR session.
+ */
 import {Component} from '@wonderlandengine/api';
 import {ARSession} from '../../';
 

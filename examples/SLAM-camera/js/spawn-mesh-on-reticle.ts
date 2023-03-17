@@ -1,6 +1,11 @@
+/**
+ * Spawns a mesh at the position of this.object.
+ * NOTE: in case of webXR device api tracking (WebXRProvider), click event is raised by the XRSession.onselect event.
+ * In case of xr8 tracking - click event is raised by window.onclick
+ */
 import {Component, Material, Mesh, Type} from '@wonderlandengine/api';
 import {ARSession, ARProvider, WebXRProvider} from '../../..';
-class SpawnMeshOnReticle extends Component {
+export class SpawnMeshOnReticle extends Component {
     public static TypeName = 'spawn-mesh-on-reticle';
     public static Properties = {
         /* The mesh to spawn */
@@ -61,4 +66,5 @@ class SpawnMeshOnReticle extends Component {
         mesh.active = true;
     };
 }
-WL.registerComponent(SpawnMeshOnReticle);
+
+

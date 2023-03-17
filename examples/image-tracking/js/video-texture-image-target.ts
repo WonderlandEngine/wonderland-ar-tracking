@@ -1,12 +1,14 @@
 /**
  * class VideoTextureImageTarget
- *
- *
+ * 
+ * Handles playing and stopping the video of the VideoTexture component attached to the same object.
+ * Video is played when the imageTarget it detected in the PhysicalSizeImageTarget component of the same object.
+ * And stopped when the image is lost.
  */
 import {Component} from '@wonderlandengine/api';
-import {ARSession} from '../../..';
-import {ARImageTrackingCamera} from '../../../src/components/AR/cameras/AR-image-tracking-camera';
-import {PhysicalSizeImageTarget} from './physical-size-image-target';
+import {ARSession} from '../../../';
+import {ARImageTrackingCamera} from '../../../src/components/AR/cameras/AR-image-tracking-camera.js';
+import {PhysicalSizeImageTarget} from './physical-size-image-target.js';
 
 class VideoTextureImageTarget extends Component {
     public static TypeName = 'video-texture-image-target-example';
@@ -14,6 +16,7 @@ class VideoTextureImageTarget extends Component {
     public static Properties = {};
 
     private _physicalSizeImageTarget!: PhysicalSizeImageTarget;
+    
     // cache videoTexture component
     private _videoTextureComp!: Component & {video: HTMLVideoElement};
 

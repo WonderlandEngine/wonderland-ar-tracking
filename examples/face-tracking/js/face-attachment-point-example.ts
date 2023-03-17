@@ -1,6 +1,10 @@
+/**
+ * FaceAttachmentPointExample
+ * A basic example demonstrating how to attach object to a face feature
+ */
+
 import {Component, Object as WLEObject, Type} from '@wonderlandengine/api';
-import {ARFaceTrackingCamera} from '../../../src/components/AR/cameras/AR-face-tracking-camera';
-//import { ARFaceTrackingCamera } from '../../..';
+import {ARFaceTrackingCamera} from '../../../src/components/AR/cameras/AR-face-tracking-camera.js';
 
 const ATTACHMENT_POINTS = [
     'forehead',

@@ -1,4 +1,4 @@
-import {ARProvider} from './AR-provider';
+import {ARProvider} from './AR-provider.js';
 
 /**
  * ARSession - master control for the AR session.

@@ -1,7 +1,7 @@
 import {ViewComponent} from '@wonderlandengine/api';
-import {TrackingMode} from '../trackingMode';
+import {TrackingMode} from '../trackingMode.js';
 
-import {xr8Provider, XR8ExtraPermissions} from './xr8-provider';
+import {xr8Provider, XR8ExtraPermissions} from './xr8-provider.js';
 // Just some helper types to determine if an object has some props
 type CanDisableSLAM = {
     EnableSLAM: boolean;

@@ -1,13 +1,13 @@
 /**
- * class ImageTrackingExample
+ * class SlamTrackingExample
  *
- * A very basic image tracking example.
- * Moves the object of the component to tracked image position.
+ * A very basic SLAM tracking example.
+ * Shows and hides the object when the tracking starts or stops
  *
  */
 import {Component, Object as WLEObject, Type} from '@wonderlandengine/api';
-import {ARSession} from '../../..';
-import {ARSLAMCamera} from '../../../src/components/AR/cameras/AR-SLAM-camera';
+import {ARSession} from '../../../';
+import {ARSLAMCamera} from '../../../src/components/AR/cameras/AR-SLAM-camera.js';
 
 class SlamTrackingExample extends Component {
     public static TypeName = 'slam-tracking-example';

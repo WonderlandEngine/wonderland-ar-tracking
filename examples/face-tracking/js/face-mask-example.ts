@@ -1,3 +1,11 @@
+/**
+ * FaceMaskExample
+ * Demonstrates how to create a dynamic mesh of the face.
+ * Indices and uvs are provides by 8th Wall right away by 8th wall. Even if no face is tracked yet.
+ * Indices ans uvs don't change throughout the experience.
+ * 
+ * Vertices and normals are updated on every 8th Wall frame.
+ */
 import {
     Component,
     Material,
@@ -8,8 +16,8 @@ import {
     Object as WLEObject,
     Type,
 } from '@wonderlandengine/api';
-// import { ARFaceTrackingCamera } from '../../..';
-import {ARFaceTrackingCamera} from '../../../src/components/AR/cameras/AR-face-tracking-camera';
+
+import {ARFaceTrackingCamera} from '../../../src/components/AR/cameras/AR-face-tracking-camera.js';
 
 class FaceMaskExample extends Component {
     public static TypeName = 'face-mask-example';

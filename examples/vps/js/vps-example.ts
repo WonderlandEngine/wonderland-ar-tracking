@@ -1,9 +1,15 @@
+/**
+ * VPSExample
+ * Demonstrates how to put an object on the detected waypoint.
+ * 
+ * This example creates <div id="_debugText" /> to output some logs when waypoints are found or lost
+ */
+
 import {Component, Object as WLEObject, Type} from '@wonderlandengine/api';
 import {ARSession} from '../../../';
-import {ARVPSCamera} from '../../../src/components/AR/cameras/AR-VPS-camera';
-// import meshData from './mesh-data.js';
+import {ARVPSCamera} from '../../../src/components/AR/cameras/AR-VPS-camera.js';
 
-class VPSExample extends Component {
+export class VPSExample extends Component {
     public static TypeName = 'vps-example';
     public static Properties = {
         VPSCamera: {type: Type.Object},
@@ -88,5 +94,3 @@ class VPSExample extends Component {
         this.object.setTranslationWorld(cachedPosition);
     };
 }
-
-WL.registerComponent(VPSExample);

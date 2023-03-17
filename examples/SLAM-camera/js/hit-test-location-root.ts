@@ -1,5 +1,3 @@
-import {Component, Object as WLEObject, Type} from '@wonderlandengine/api';
-import {ARSession, WebXRProvider, ARProvider} from '../../..';
 /**
  * Sets up a [WebXR Device API "Hit Test"](https://immersive-web.github.io/hit-test/)
  * and places the object to the hit location.
@@ -9,6 +7,9 @@ import {ARSession, WebXRProvider, ARProvider} from '../../..';
  * **Requirements:**
  *  - Specify `'hit-test'` in the required or optional features on the AR button in your html file.
  */
+
+import {Component, Object as WLEObject, Type} from '@wonderlandengine/api';
+import {ARSession, WebXRProvider, ARProvider} from '../../..';
 
 class HitTestLocationRoot extends Component {
     public static TypeName = 'hit-test-location-root';
