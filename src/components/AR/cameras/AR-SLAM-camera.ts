@@ -8,34 +8,20 @@ import {webXRProvider} from '../frameworks/webAR/webXR-provider.js';
 import {xr8Provider} from '../frameworks/xr8/xr8-provider.js';
 import {ARCamera} from './AR-Camera.js';
 
-
-// running on a browser?
-if (window.document) {
-    // WL.arSupported might not exist at this point. so we wait until WLE resolves it
-    (function checkARSupport() {
-        if (WL.arSupported === undefined) {
-            setTimeout(checkARSupport, 1);
-        } else {
-            if (WL.arSupported) {
-                ARSession.registerTrackingProvider(webXRProvider);
-            } else {
-                ARSession.registerTrackingProvider(xr8Provider);
-            }
-        }
-    })();
-}
-
 class ARSLAMCamera extends ARCamera {
     public static TypeName = 'AR-SLAM-camera';
     public static Properties = {};
 
     private _trackingImpl!: ITrackingMode;
 
-    public init() {
+    public override init = () => {
+
         if (this.engine.arSupported) {
             //if (false) { // force xr8
+            ARSession.registerTrackingProvider(this.engine, webXRProvider);
             this._trackingImpl = new WorldTracking_webAR(this);
         } else {
+            ARSession.registerTrackingProvider(this.engine, xr8Provider);
             this._trackingImpl = new WorldTracking_XR8(this);
         }
     }

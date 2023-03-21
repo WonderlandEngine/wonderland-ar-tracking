@@ -17,9 +17,9 @@ import {
     Type,
 } from '@wonderlandengine/api';
 
-import {ARFaceTrackingCamera} from '../../../src/components/AR/cameras/AR-face-tracking-camera.js';
+import {ARFaceTrackingCamera} from '@wonderlandengine/8thwall-tracking';
 
-class FaceMaskExample extends Component {
+export class FaceMaskExample extends Component {
     public static TypeName = 'face-mask-example';
     public static Properties = {
         ARFaceTrackingCamera: {type: Type.Object},
@@ -143,4 +143,4 @@ class FaceMaskExample extends Component {
     };
 }
 
-WL.registerComponent(FaceMaskExample);
+// WL.registerComponent(FaceMaskExample);

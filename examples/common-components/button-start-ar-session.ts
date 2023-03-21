@@ -4,10 +4,10 @@
  * AR button, when clicked, searches for the first component which is `instanceOf ARCamera`
  * and starts that components AR session
  */
-import {Component} from '@wonderlandengine/api';
+import {Component } from '@wonderlandengine/api';
 import {ARSession, ARCamera} from '../../';
 
-class ButtonStartARSession extends Component {
+export class ButtonStartARSession extends Component {
     public static TypeName = 'button-start-ar-session';
     public static Properties = {};
 
@@ -46,5 +46,3 @@ class ButtonStartARSession extends Component {
         });
     }
 }
-
-WL.registerComponent(ButtonStartARSession);

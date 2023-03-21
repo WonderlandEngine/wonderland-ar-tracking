@@ -6,7 +6,7 @@ import {xr8Provider} from '../frameworks/xr8/xr8-provider.js';
 import {WorldTracking_XR8} from '../frameworks/xr8/world-tracking-mode-xr8.js';
 import {ARCamera} from './AR-Camera.js';
 
-ARSession.registerTrackingProvider(xr8Provider);
+
 
 class ARImageTrackingCamera extends ARCamera {
     public static TypeName = 'AR-image-tracking-camera';
@@ -30,6 +30,10 @@ class ARImageTrackingCamera extends ARCamera {
 
     public get onImageLost() {
         return this._trackingImpl.onImageLost;
+    }
+
+    init() {
+        ARSession.registerTrackingProvider(this.engine, xr8Provider);
     }
 
     public start() {

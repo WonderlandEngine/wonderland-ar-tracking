@@ -12,7 +12,7 @@ import {xr8Provider} from '../frameworks/xr8/xr8-provider.js';
 import {WorldTracking_XR8} from '../frameworks/xr8/world-tracking-mode-xr8.js';
 import {ARCamera} from './AR-Camera.js';
 
-ARSession.registerTrackingProvider(xr8Provider);
+
 
 class ARVPSCamera extends ARCamera {
     public static TypeName = 'AR-VPS-camera';
@@ -37,6 +37,10 @@ class ARVPSCamera extends ARCamera {
 
     public get onMeshFound() {
         return this._trackingImpl.onMeshFound;
+    }
+
+    init() {
+        ARSession.registerTrackingProvider(this.engine, xr8Provider);
     }
 
     public start() {

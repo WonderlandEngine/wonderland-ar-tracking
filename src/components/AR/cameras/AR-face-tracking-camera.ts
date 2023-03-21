@@ -7,7 +7,7 @@ import {xr8Provider} from '../frameworks/xr8/xr8-provider.js';
 import {ARCamera} from './AR-Camera.js';
 
 
-ARSession.registerTrackingProvider(xr8Provider);
+
 class ARFaceTrackingCamera extends ARCamera {
     public static TypeName = 'AR-face-tracking-camera';
     public static Properties = {
@@ -19,6 +19,7 @@ class ARFaceTrackingCamera extends ARCamera {
     };
 
     private _trackingImpl = new FaceTracking_XR8(this);
+
 
     // will be set by WLE
     public cameraDirection: number = 0;
@@ -37,6 +38,10 @@ class ARFaceTrackingCamera extends ARCamera {
 
     public get onFaceLost() {
         return this._trackingImpl.onFaceLost;
+    }
+
+    public init() {
+        ARSession.registerTrackingProvider(this.engine, xr8Provider);
     }
 
     public start() {

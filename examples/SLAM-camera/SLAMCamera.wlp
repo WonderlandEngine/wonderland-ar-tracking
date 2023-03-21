@@ -523,14 +523,15 @@
         },
         "scripting": {
             "sourcePaths": [
-                "js/"
+                "js/",
+                "../common-components"
             ],
             "bundlingType": "esbuild",
             "libraryPaths": [
                 "/js/lib/"
             ],
-            "entryPoint": "js/index.ts",
-            "autoManageEntryPoint": false
+            "entryPoint": "js/index.js",
+            "autoManageEntryPoint": true
         },
         "ar": {
             "framework": "webxr"

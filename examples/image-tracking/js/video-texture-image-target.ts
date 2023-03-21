@@ -10,7 +10,7 @@ import {ARSession} from '../../../';
 import {ARImageTrackingCamera} from '../../../src/components/AR/cameras/AR-image-tracking-camera.js';
 import {PhysicalSizeImageTarget} from './physical-size-image-target.js';
 
-class VideoTextureImageTarget extends Component {
+export class VideoTextureImageTarget extends Component {
     public static TypeName = 'video-texture-image-target-example';
 
     public static Properties = {};
@@ -40,7 +40,7 @@ class VideoTextureImageTarget extends Component {
                 ARImageTrackingCamera
             )!;
 
-        this._videoTextureComp = this.object.getComponent('video-texture-fixed') as any; // video-texture component is not updated to match @wonderlandengine/api 0.9.8 ("@wonderlandengine/components": "^0.9.2"),
+        this._videoTextureComp = this.object.getComponent('video-texture') as any; // video-texture component is not updated to match @wonderlandengine/api 0.9.8 ("@wonderlandengine/components": "^0.9.2"),
 
         camera.onImageFound.push(this.onImageFound);
 
@@ -65,4 +65,3 @@ class VideoTextureImageTarget extends Component {
         }
     };
 }
-WL.registerComponent(VideoTextureImageTarget);

@@ -1,4 +1,5 @@
-import {ARProvider} from './AR-provider.js';
+import { WonderlandEngine } from '@wonderlandengine/api';
+import { ARProvider } from './AR-provider.js';
 
 /**
  * ARSession - master control for the AR session.
@@ -32,22 +33,21 @@ abstract class ARSession {
         return this._arSessionIsReady;
     }
 
-    static {
-        if (window.document) {
-            WL.onSceneLoaded.push(() => {
-                this.onWLSceneLoaded();
-            });
-        }
-    }
     /**
      * Registers tracking provider. Makes sure it is loaded
      * and hooks into providers onSessionStarted, onSessionLoaded events.
      */
-    public static async registerTrackingProvider(provider: ARProvider) {
+    public static async registerTrackingProvider(engine: WonderlandEngine, provider: ARProvider) {
+        if(!engine.onSceneLoaded.includes(this.onWLSceneLoaded)) {
+            engine.onSceneLoaded.push(this.onWLSceneLoaded);
+        }
+
         if (this._trackingProviders.includes(provider)) {
             return;
         }
+        
         this._trackingProviders.push(provider);
+        provider.engine = engine;
 
         provider.onSessionStarted.push(this.onProviderSessionStarted);
         provider.onSessionEnded.push(this.onProviderSessionEnded);
@@ -96,4 +96,4 @@ abstract class ARSession {
 }
 
 // (window as any).ARSession = ARSession;
-export {ARSession};
+export { ARSession };

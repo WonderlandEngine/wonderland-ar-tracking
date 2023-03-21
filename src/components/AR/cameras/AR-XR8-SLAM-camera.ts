@@ -7,9 +7,6 @@ import {WorldTracking_XR8} from '../frameworks/xr8/world-tracking-mode-xr8.js';
 import {xr8Provider} from '../frameworks/xr8/xr8-provider.js';
 import {ARCamera} from './AR-Camera.js';
 
-
-ARSession.registerTrackingProvider(xr8Provider);
-
 class ARXR8SLAMCamera extends ARCamera {
     public static TypeName = 'AR-XR8-SLAM-camera';
     public static Properties = {
@@ -22,7 +19,8 @@ class ARXR8SLAMCamera extends ARCamera {
         return this._trackingImpl!.onTrackingStatus;
     }
 
-    public init() {
+    init() {
+        ARSession.registerTrackingProvider(this.engine, xr8Provider);
         this._trackingImpl = new WorldTracking_XR8(this);
     }
 

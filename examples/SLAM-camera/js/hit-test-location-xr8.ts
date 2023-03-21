@@ -11,7 +11,7 @@ import {Component, Object as WLEObject, Type} from '@wonderlandengine/api';
 import {vec3} from 'gl-matrix';
 import {ARSession, XR8Provider, ARProvider} from '../../../';
 
-class HitTestLocationXR8 extends Component {
+export class HitTestLocationXR8 extends Component {
     public static TypeName = 'hit-test-location-xr8';
     public static Properties = {
         camera: {type: Type.Object},
@@ -58,5 +58,3 @@ class HitTestLocationXR8 extends Component {
         }
     };
 }
-
-WL.registerComponent(HitTestLocationXR8);

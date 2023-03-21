@@ -175,14 +175,6 @@
             "name": "CylindricalImageTargetWithVideoTexture",
             "components": [
                 {
-                    "type": "video-texture-fixed",
-                    "video-texture-fixed": {
-                        "url": "video.mp4",
-                        "material": "71",
-                        "autoplay": false
-                    }
-                },
-                {
                     "type": "physical-size-image-target-example",
                     "physical-size-image-target-example": {
                         "ARImageTrackingCamera": "17",
@@ -192,6 +184,14 @@
                 },
                 {
                     "type": "video-texture-image-target-example"
+                },
+                {
+                    "type": "video-texture",
+                    "video-texture": {
+                        "autoplay": false,
+                        "material": "71",
+                        "url": "video.mp4"
+                    }
                 }
             ],
             "parent": null
@@ -581,13 +581,14 @@
         },
         "scripting": {
             "sourcePaths": [
-                "js/"
+                "js/",
+                "../common-components"
             ],
             "bundlingType": "esbuild",
             "libraryPaths": [
                 "/js/lib/"
             ],
-            "autoManageEntryPoint": false,
+            "autoManageEntryPoint": true,
             "entryPoint": "js/index.js"
         },
         "ar": {

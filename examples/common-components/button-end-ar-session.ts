@@ -6,7 +6,7 @@
 import {Component} from '@wonderlandengine/api';
 import {ARSession} from '../../';
 
-class ButtonEndARSession extends Component {
+export class ButtonEndARSession extends Component {
     public static TypeName = 'button-end-ar-session';
     public static Properties = {};
 
@@ -36,5 +36,3 @@ class ButtonEndARSession extends Component {
         });
     }
 }
-
-WL.registerComponent(ButtonEndARSession);

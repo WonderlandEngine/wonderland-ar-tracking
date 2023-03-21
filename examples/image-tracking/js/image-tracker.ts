@@ -9,7 +9,7 @@ import {Component, Object as WLEObject, Type} from '@wonderlandengine/api';
 import {ARSession} from '../../../';
 import {ARImageTrackingCamera} from '../../../src/components/AR/cameras/AR-image-tracking-camera.js';
 
-class ImageTrackingExample extends Component {
+export class ImageTrackingExample extends Component {
     public static TypeName = 'image-tracking-example';
     public static Properties = {
         ARImageTrackingCamera: {type: Type.Object},
@@ -90,4 +90,4 @@ class ImageTrackingExample extends Component {
         this.object.scalingWorld = this._cachedScale;
     };
 }
-WL.registerComponent(ImageTrackingExample);
+
