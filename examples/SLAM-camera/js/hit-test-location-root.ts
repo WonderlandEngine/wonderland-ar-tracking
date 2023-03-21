@@ -62,7 +62,6 @@ export class HitTestLocationRoot extends Component {
                         this._visible = false;
                     }
 
-
                     // TODO: how do I get the world ROTATION
                 } else {
                     this._visible = false;

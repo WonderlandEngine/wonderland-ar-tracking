@@ -524,7 +524,8 @@
         "scripting": {
             "sourcePaths": [
                 "js/",
-                "../common-components"
+                "../common-components/button-end-ar-session.ts",
+                "../common-components/button-start-ar-session.ts"
             ],
             "bundlingType": "esbuild",
             "libraryPaths": [

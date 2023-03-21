@@ -21,7 +21,6 @@ import {HitTestLocationXR8} from './hit-test-location-xr8.ts';
 import {SpawnMeshOnReticle} from './spawn-mesh-on-reticle.ts';
 import {ButtonEndARSession} from './../../common-components/button-end-ar-session.ts';
 import {ButtonStartARSession} from './../../common-components/button-start-ar-session.ts';
-import {ButtonEndARSession as ButtonEndARSession1, ButtonStartARSession as ButtonStartARSession1} from './../../common-components/index.ts';
 /* wle:auto-imports:end */
 
 /* wle:auto-constants:start */
@@ -59,7 +58,6 @@ engine.registerComponent(HitTestLocationXR8);
 engine.registerComponent(SpawnMeshOnReticle);
 engine.registerComponent(ButtonEndARSession);
 engine.registerComponent(ButtonStartARSession);
-engine.registerComponent(ButtonEndARSession1, ButtonStartARSession1);
 /* wle:auto-register:end */
 
 engine.scene.load(`${ProjectName}.bin`);
