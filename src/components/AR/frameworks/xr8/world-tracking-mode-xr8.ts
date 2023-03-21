@@ -1,7 +1,7 @@
 import {ViewComponent} from '@wonderlandengine/api';
-import {TrackingMode} from '../trackingMode';
+import {TrackingMode} from '../trackingMode.js';
 
-import {xr8Provider, XR8ExtraPermissions} from './xr8-provider';
+import {xr8Provider, XR8ExtraPermissions} from './xr8-provider.js';
 // Just some helper types to determine if an object has some props
 type CanDisableSLAM = {
     EnableSLAM: boolean;
@@ -192,7 +192,7 @@ class WorldTracking_XR8 extends TrackingMode {
         XR8.addCameraPipelineModules([XR8.XrController.pipelineModule(), this]);
 
         const options = {
-            canvas: WL.canvas as HTMLCanvasElement,
+            canvas: this.component.engine.canvas as HTMLCanvasElement,
             allowedDevices: XR8.XrConfig.device().MOBILE,
             ownRunLoop: false,
             cameraConfig: {
@@ -223,8 +223,8 @@ class WorldTracking_XR8 extends TrackingMode {
                 w: this._cachedRotation[3],
             },
             cam: {
-                pixelRectWidth: WL.canvas.width,
-                pixelRectHeight: WL.canvas.height,
+                pixelRectWidth: this.component.engine.canvas!.width,
+                pixelRectHeight: this.component.engine.canvas!.height,
                 nearClipPlane: 0.01,
                 farClipPlane: 100,
             },

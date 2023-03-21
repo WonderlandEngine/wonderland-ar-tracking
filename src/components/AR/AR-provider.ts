@@ -1,3 +1,5 @@
+import { WonderlandEngine } from "@wonderlandengine/api";
+
 /**
  * ARProvider defines the core behavior how an AR provider should look like.
  * AR provider should handle the loading, configuring and starting/stopping some tracking implementation.
@@ -5,6 +7,10 @@
  */
 abstract class ARProvider {
 
+    protected _engine!: WonderlandEngine;
+    public set engine(engine: WonderlandEngine) {
+        this._engine = engine;
+    }
     /**
      * onSessionStarted - array of callbacks to be called when the tracking implementation has started tracking.
      * It is NOT necessary called immediately after startSession is called

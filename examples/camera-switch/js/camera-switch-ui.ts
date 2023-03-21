@@ -1,10 +1,12 @@
-import {Component} from '@wonderlandengine/api';
-import {ARSession} from '../../../';
-import {ARFaceTrackingCamera} from '../../../src/components/AR/cameras/AR-face-tracking-camera';
-import {ARImageTrackingCamera} from '../../../src/components/AR/cameras/AR-image-tracking-camera';
-import {ARSLAMCamera} from '../../../src/components/AR/cameras/AR-SLAM-camera';
+/**
+ * XR8CameraSwitch
+ * Creates several HTML buttons, which, when clicked, activates a corresponding AR tracking camera. 
+ */
 
-class XR8CameraSwitch extends Component {
+import {Component} from '@wonderlandengine/api';
+import {ARSession, ARFaceTrackingCamera, ARImageTrackingCamera, ARSLAMCamera} from '@wonderlandengine/8thwall-tracking';
+
+export class XR8CameraSwitch extends Component {
     public static TypeName = 'xr8-camera-switch-example';
     public static Properties = {};
 
@@ -110,5 +112,3 @@ class XR8CameraSwitch extends Component {
         }
     };
 }
-
-WL.registerComponent(XR8CameraSwitch);

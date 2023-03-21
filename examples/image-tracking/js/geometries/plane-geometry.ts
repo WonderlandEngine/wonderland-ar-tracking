@@ -1,3 +1,8 @@
+/**
+ * Generates data for a plane geometry.
+ * Port from https://github.com/mrdoob/three.js/blob/dev/src/geometries/Plane.js
+ */
+
 const generatePlaneGeomtry = (
     width = 1,
     height = 1,
@@ -47,11 +52,6 @@ const generatePlaneGeomtry = (
             indices.push(b, c, d);
         }
     }
-
-    /*this.setIndex( indices );
-  this.setAttribute( 'position', new Float32BufferAttribute( vertices, 3 ) );
-  this.setAttribute( 'normal', new Float32BufferAttribute( normals, 3 ) );
-  this.setAttribute( 'uv', new Float32BufferAttribute( uvs, 2 ) );*/
 
     return {indices, vertices, normals, uvs};
 };

@@ -1,7 +1,7 @@
 import {ViewComponent} from '@wonderlandengine/api';
-import {TrackingMode} from '../trackingMode';
-import {xr8Provider} from './xr8-provider';
-import {ARFaceTrackingCamera} from '../../cameras/AR-face-tracking-camera';
+import {TrackingMode} from '../trackingMode.js';
+import {xr8Provider} from './xr8-provider.js';
+import {ARFaceTrackingCamera} from '../../cameras/AR-face-tracking-camera.js';
 
 class FaceTracking_XR8 extends TrackingMode {
     public readonly name = 'face-tracking-XR8';
@@ -86,7 +86,7 @@ class FaceTracking_XR8 extends TrackingMode {
         XR8.addCameraPipelineModules([XR8.FaceController.pipelineModule(), this]);
 
         const options = {
-            canvas: WL.canvas as HTMLCanvasElement,
+            canvas: this.component.engine.canvas as HTMLCanvasElement,
             allowedDevices: XR8.XrConfig.device().ANY,
             ownRunLoop: false,
             cameraConfig: {

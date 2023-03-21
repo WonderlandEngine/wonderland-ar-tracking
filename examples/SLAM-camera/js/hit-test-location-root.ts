@@ -1,5 +1,3 @@
-import {Component, Object as WLEObject, Type} from '@wonderlandengine/api';
-import {ARSession, WebXRProvider, ARProvider} from '../../..';
 /**
  * Sets up a [WebXR Device API "Hit Test"](https://immersive-web.github.io/hit-test/)
  * and places the object to the hit location.
@@ -10,10 +8,13 @@ import {ARSession, WebXRProvider, ARProvider} from '../../..';
  *  - Specify `'hit-test'` in the required or optional features on the AR button in your html file.
  */
 
-class HitTestLocationRoot extends Component {
+import { Component, Object as WLEObject, Type } from '@wonderlandengine/api';
+import { ARSession, WebXRProvider, ARProvider } from '@wonderlandengine/8thwall-tracking';
+
+export class HitTestLocationRoot extends Component {
     public static TypeName = 'hit-test-location-root';
     public static Properties = {
-        camera: {type: Type.Object},
+        camera: { type: Type.Object },
     };
 
     // injected by WLE
@@ -22,7 +23,7 @@ class HitTestLocationRoot extends Component {
     private _tempScaling = new Float32Array(3);
     private _visible = false;
 
-    private _xrViewerSpace?: XRReferenceSpace;
+    private _xrViewerSpace: XRReferenceSpace | null = null;
     private _xrHitTestSource: XRHitTestSource | null = null;
 
     private _tracking = false;
@@ -35,27 +36,31 @@ class HitTestLocationRoot extends Component {
     }
 
     update() {
-        if (this._tracking) {
+        if (this._tracking && this._xrViewerSpace) {
             const wasVisible = this._visible;
             if (this._xrHitTestSource) {
-                const frame = WL.xrFrame;
+                const frame = this.engine.xrFrame;
                 if (!frame) return;
 
                 let hitTestResults = frame.getHitTestResults(this._xrHitTestSource);
+
                 if (hitTestResults.length > 0) {
                     let pose = hitTestResults[0].getPose(this._xrViewerSpace);
                     this._visible = true;
-
-                    // this is good;
-                    const tw = this.camera.transformPointWorld(
-                        new Array(3),
-                        new Array(
-                            pose.transform.position.x,
-                            pose.transform.position.y,
-                            pose.transform.position.z
-                        )
-                    );
-                    this.object.setTranslationWorld(tw);
+                    if (pose) {
+                        // this is good;
+                        const tw = this.camera.transformPointWorld(
+                            new Array(3),
+                            new Array(
+                                pose.transform.position.x,
+                                pose.transform.position.y,
+                                pose.transform.position.z
+                            )
+                        );
+                        this.object.setTranslationWorld(tw);
+                    } else {
+                        this._visible = false;
+                    }
 
                     // TODO: how do I get the world ROTATION
                 } else {
@@ -102,8 +107,7 @@ class HitTestLocationRoot extends Component {
 
             this._xrHitTestSource.cancel();
             this._xrHitTestSource = null;
+            this._xrViewerSpace = null;
         }
     };
 }
-
-WL.registerComponent(HitTestLocationRoot);

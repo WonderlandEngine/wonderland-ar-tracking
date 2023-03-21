@@ -523,14 +523,16 @@
         },
         "scripting": {
             "sourcePaths": [
-                "js/"
+                "js/",
+                "../common-components/button-end-ar-session.ts",
+                "../common-components/button-start-ar-session.ts"
             ],
             "bundlingType": "esbuild",
             "libraryPaths": [
                 "/js/lib/"
             ],
-            "entryPoint": "js/index.ts",
-            "autoManageEntryPoint": false
+            "entryPoint": "js/index.js",
+            "autoManageEntryPoint": true
         },
         "ar": {
             "framework": "webxr"

@@ -1,19 +1,21 @@
 /**
  * class VideoTextureImageTarget
- *
- *
+ * 
+ * Handles playing and stopping the video of the VideoTexture component attached to the same object.
+ * Video is played when the imageTarget it detected in the PhysicalSizeImageTarget component of the same object.
+ * And stopped when the image is lost.
  */
 import {Component} from '@wonderlandengine/api';
-import {ARSession} from '../../..';
-import {ARImageTrackingCamera} from '../../../src/components/AR/cameras/AR-image-tracking-camera';
-import {PhysicalSizeImageTarget} from './physical-size-image-target';
+import {ARImageTrackingCamera, ARSession} from '@wonderlandengine/8thwall-tracking';
+import {PhysicalSizeImageTarget} from './physical-size-image-target.js';
 
-class VideoTextureImageTarget extends Component {
+export class VideoTextureImageTarget extends Component {
     public static TypeName = 'video-texture-image-target-example';
 
     public static Properties = {};
 
     private _physicalSizeImageTarget!: PhysicalSizeImageTarget;
+    
     // cache videoTexture component
     private _videoTextureComp!: Component & {video: HTMLVideoElement};
 
@@ -37,7 +39,7 @@ class VideoTextureImageTarget extends Component {
                 ARImageTrackingCamera
             )!;
 
-        this._videoTextureComp = this.object.getComponent('video-texture-fixed') as any; // video-texture component is not updated to match @wonderlandengine/api 0.9.8 ("@wonderlandengine/components": "^0.9.2"),
+        this._videoTextureComp = this.object.getComponent('video-texture') as any; // video-texture component is not updated to match @wonderlandengine/api 0.9.8 ("@wonderlandengine/components": "^0.9.2"),
 
         camera.onImageFound.push(this.onImageFound);
 
@@ -62,4 +64,3 @@ class VideoTextureImageTarget extends Component {
         }
     };
 }
-WL.registerComponent(VideoTextureImageTarget);

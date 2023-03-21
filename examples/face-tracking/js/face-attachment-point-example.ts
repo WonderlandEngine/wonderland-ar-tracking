@@ -1,6 +1,10 @@
+/**
+ * FaceAttachmentPointExample
+ * A basic example demonstrating how to attach object to a face feature
+ */
+
 import {Component, Object as WLEObject, Type} from '@wonderlandengine/api';
-import {ARFaceTrackingCamera} from '../../../src/components/AR/cameras/AR-face-tracking-camera';
-//import { ARFaceTrackingCamera } from '../../..';
+import {ARFaceTrackingCamera} from '@wonderlandengine/8thwall-tracking';
 
 const ATTACHMENT_POINTS = [
     'forehead',
@@ -28,7 +32,7 @@ const ATTACHMENT_POINTS = [
     'chin',
 ];
 
-class FaceAttachmentPointExample extends Component {
+export class FaceAttachmentPointExample extends Component {
     public static TypeName = 'face-attachment-point-example';
     public static Properties = {
         ARFaceTrackingCamera: {type: Type.Object},
@@ -109,5 +113,3 @@ class FaceAttachmentPointExample extends Component {
         });
     }
 }
-
-WL.registerComponent(FaceAttachmentPointExample);

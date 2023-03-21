@@ -1,9 +1,20 @@
+/**
+ * AbsoluteScaleWatcher
+ * Demonstrates the use of absolute scale feature of the 8th Wall SLAM camera.
+ * Absolute scale is the 8th Wall feature where the SLAM tracking provides the pose of the smartphone
+ * in real dimensional units (aka meters) relative to the physical surface the camera is pointing at.
+ * NOTE: it takes a while for the 8th Wall to resolve the this 'absolute' pose
+ * 
+ * Basically when camera.onTrackingStatus is NORMAL - tracking in absolute scale
+ * If camera.onTrackingStatus is anything else - tracking in relative (aka non physically correct dimensions)
+ */
 import {Component, Type, Object as WLEObject, Mesh, Material} from '@wonderlandengine/api';
-import {ARSession} from '../../..';
-import {ARXR8SLAMCamera} from '../../../src/components/AR/cameras/AR-XR8-SLAM-camera';
-
 import {vec3} from 'gl-matrix';
-class AbsoluteScaleWatcher extends Component {
+
+import {ARSession} from '@wonderlandengine/8thwall-tracking';
+import {ARXR8SLAMCamera} from '@wonderlandengine/8thwall-tracking';
+
+export class AbsoluteScaleWatcher extends Component {
     public static TypeName = 'absolute-scale-watcher';
     public static Properties = {
         ARXR8SLAMCamera: {type: Type.Object},
@@ -22,7 +33,6 @@ class AbsoluteScaleWatcher extends Component {
     material!: Material;
 
     private _tracking = false;
-
 
     private _camForward = vec3.create();
     private _intersectionVec3 = vec3.create();
@@ -98,7 +108,7 @@ class AbsoluteScaleWatcher extends Component {
         }
 
         /* Create a new object in the scene */
-        const o = WL.scene!.addObject(null);
+        const o = this.engine.scene.addObject(null);
         /* Place new object at current cursor location */
         o.transformLocal = this.object.transformWorld;
         o.scale([0.25, 0.25, 0.25]);
@@ -108,10 +118,13 @@ class AbsoluteScaleWatcher extends Component {
 
         /* Add a mesh to render the object */
         const mesh = o.addComponent('mesh', {});
+        if(!mesh) {
+            console.warn("Failed to add a mesh");
+            return;
+        }
+
         mesh.material = this.material;
         mesh.mesh = this.mesh;
         mesh.active = true;
     };
 }
-
-WL.registerComponent(AbsoluteScaleWatcher);

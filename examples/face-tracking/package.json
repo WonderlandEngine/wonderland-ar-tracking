@@ -6,7 +6,7 @@
   "type": "module",
   "module": "js/index.js",
   "scripts": {
-    "build": "esbuild ./js/index.js --bundle --outfile=\"deploy/face-tracking.wlp-bundle.js\""
+    "build": "esbuild ./js/index.js --bundle --format=esm --outfile=\"deploy/face-tracking.wlp-bundle.js\""
   },
   "keywords": [
     "wonderland-engine"
@@ -15,6 +15,7 @@
     "esbuild": "^0.15.18"
   },
   "dependencies": {
+    "@wonderlandengine/8thwall-tracking": "file:../..",
     "@wonderlandengine/api": "^0.9.8",
     "gl-matrix": "^3.4.3",
     "typescript": "^4.9.5"

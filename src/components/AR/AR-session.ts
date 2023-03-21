@@ -1,4 +1,5 @@
-import {ARProvider} from './AR-provider';
+import { WonderlandEngine } from '@wonderlandengine/api';
+import { ARProvider } from './AR-provider.js';
 
 /**
  * ARSession - master control for the AR session.
@@ -6,10 +7,6 @@ import {ARProvider} from './AR-provider';
  * - handles global callbacks when AR session is started, ended
  * - can end any running AR session.
  * - renders AR button when the scene is loaded
- *
- * TODO - refactor checkSceneLoadProgress whenever we can control when the WL.onSceneLoaded is fired.
- * Currently we listen to WL.onSceneLoaded AND to each registered provide's loading to decide when to show the AR button.
- * Instead, we want to show the engines native 'loading' screen until all the providers are loaded
  */
 abstract class ARSession {
     // tracking provider is basically a lib which has some tracking capabilities, so device native webXR, 8th Wall, mind-ar-js, etc
@@ -32,22 +29,21 @@ abstract class ARSession {
         return this._arSessionIsReady;
     }
 
-    static {
-        if (window.document) {
-            WL.onSceneLoaded.push(() => {
-                this.onWLSceneLoaded();
-            });
-        }
-    }
     /**
      * Registers tracking provider. Makes sure it is loaded
      * and hooks into providers onSessionStarted, onSessionLoaded events.
      */
-    public static async registerTrackingProvider(provider: ARProvider) {
+    public static async registerTrackingProvider(engine: WonderlandEngine, provider: ARProvider) {
+        if(!engine.onSceneLoaded.includes(this.onWLSceneLoaded)) {
+            engine.onSceneLoaded.push(this.onWLSceneLoaded);
+        }
+
         if (this._trackingProviders.includes(provider)) {
             return;
         }
+        
         this._trackingProviders.push(provider);
+        provider.engine = engine;
 
         provider.onSessionStarted.push(this.onProviderSessionStarted);
         provider.onSessionEnded.push(this.onProviderSessionEnded);
@@ -96,4 +92,4 @@ abstract class ARSession {
 }
 
 // (window as any).ARSession = ARSession;
-export {ARSession};
+export { ARSession };

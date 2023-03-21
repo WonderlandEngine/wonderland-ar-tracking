@@ -1,14 +1,11 @@
 import {Type} from '@wonderlandengine/api';
 
-import {ARSession} from '../AR-session';
+import {ARSession} from '../AR-session.js';
 
-import {WorldTracking_XR8} from '../frameworks/xr8/world-tracking-mode-xr8';
+import {WorldTracking_XR8} from '../frameworks/xr8/world-tracking-mode-xr8.js';
 
-import {xr8Provider} from '../frameworks/xr8/xr8-provider';
-import {ARCamera} from './AR-Camera';
-
-
-ARSession.registerTrackingProvider(xr8Provider);
+import {xr8Provider} from '../frameworks/xr8/xr8-provider.js';
+import {ARCamera} from './AR-Camera.js';
 
 class ARXR8SLAMCamera extends ARCamera {
     public static TypeName = 'AR-XR8-SLAM-camera';
@@ -22,7 +19,8 @@ class ARXR8SLAMCamera extends ARCamera {
         return this._trackingImpl!.onTrackingStatus;
     }
 
-    public init() {
+    init() {
+        ARSession.registerTrackingProvider(this.engine, xr8Provider);
         this._trackingImpl = new WorldTracking_XR8(this);
     }
 

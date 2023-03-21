@@ -16,13 +16,16 @@ import * as API from '@wonderlandengine/api'; // Deprecated: Backward compatibil
 
 /* wle:auto-imports:start */
 import {ARFaceTrackingCamera, ARImageTrackingCamera, ARSLAMCamera, ARVPSCamera, ARXR8SLAMCamera} from '@wonderlandengine/8thwall-tracking';
-import {AbsoluteScaleWatcher} from './absolute-scale-watcher.ts';
+import {XR8CameraSwitch} from './camera-switch-ui.ts';
+import {FaceAttachmentPointExample} from './face-attachment-point-example.ts';
+import {ImageTrackingExample} from './image-tracker.ts';
+import {SlamTrackingExample} from './slam-tracking-example.ts';
 import {ButtonEndARSession} from './../../common-components/button-end-ar-session.ts';
 import {ButtonStartARSession} from './../../common-components/button-start-ar-session.ts';
 /* wle:auto-imports:end */
 
 /* wle:auto-constants:start */
-const ProjectName = 'AbsoluteScale';
+const ProjectName = 'CameraSwitch';
 const RuntimeBaseName = 'WonderlandRuntime';
 const WithPhysX = false;
 const WithLoader = false;
@@ -51,7 +54,10 @@ if (vrButton) {
 
 /* wle:auto-register:start */
 engine.registerComponent(ARFaceTrackingCamera, ARImageTrackingCamera, ARSLAMCamera, ARVPSCamera, ARXR8SLAMCamera);
-engine.registerComponent(AbsoluteScaleWatcher);
+engine.registerComponent(XR8CameraSwitch);
+engine.registerComponent(FaceAttachmentPointExample);
+engine.registerComponent(ImageTrackingExample);
+engine.registerComponent(SlamTrackingExample);
 engine.registerComponent(ButtonEndARSession);
 engine.registerComponent(ButtonStartARSession);
 /* wle:auto-register:end */

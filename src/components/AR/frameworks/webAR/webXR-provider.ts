@@ -1,9 +1,23 @@
-import {ARProvider} from '../../AR-provider';
+import { WonderlandEngine } from '@wonderlandengine/api';
+import {ARProvider} from '../../AR-provider.js';
 
 class WebXRProvider extends ARProvider {
     private _xrSession: XRSession | null = null;
     public get xrSession() {
         return this._xrSession;
+    }
+
+    public override set engine(engine: WonderlandEngine) {
+        super.engine = engine;
+
+        engine.onXRSessionStart.push((session: XRSession) => {
+            this._xrSession = session;
+            this.onSessionStarted.forEach((cb) => cb(this));
+        });
+
+        engine.onXRSessionEnd.push(() => {
+            this.onSessionEnded.forEach((cb) => cb(this));
+        });
     }
 
     // Enforce the singleton pattern
@@ -22,22 +36,14 @@ class WebXRProvider extends ARProvider {
         }
 
         this._instance = this;
-
-        WL.onXRSessionStart.push((session: XRSession) => {
-            this._xrSession = session;
-            this.onSessionStarted.forEach((cb) => cb(this));
-        });
-
-        WL.onXRSessionEnd.push(() => {
-            this.onSessionEnded.forEach((cb) => cb(this));
-        });
+      
     }
 
     public async startSession(
         webxrRequiredFeatures: string[] = ['local'],
         webxrOptionalFeatures: string[] = ['local', 'hit-test']
     ) {
-        WL.requestXRSession('immersive-ar', webxrRequiredFeatures, webxrOptionalFeatures);
+        this._engine.requestXRSession('immersive-ar', webxrRequiredFeatures, webxrOptionalFeatures);
     }
 
     public async endSession() {

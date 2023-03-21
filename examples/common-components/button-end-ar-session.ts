@@ -1,7 +1,12 @@
+/**
+ * ButtonEndARSession
+ * Shows a simple HTML buttton when ARSession has started.
+ * When clicked - kill any running AR session.
+ */
 import {Component} from '@wonderlandengine/api';
 import {ARSession} from '../../';
 
-class ButtonEndARSession extends Component {
+export class ButtonEndARSession extends Component {
     public static TypeName = 'button-end-ar-session';
     public static Properties = {};
 
@@ -31,5 +36,3 @@ class ButtonEndARSession extends Component {
         });
     }
 }
-
-WL.registerComponent(ButtonEndARSession);

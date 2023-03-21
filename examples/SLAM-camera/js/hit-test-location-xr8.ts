@@ -1,11 +1,17 @@
+/**
+ * HitTestLocationXR8
+ * Hit test location for XR8 implementation.
+ * When 8th Wall SLAM tracking is active, checks where the ray going from camera 
+ * intersects with the imaginary XY plane.
+ * 
+ * In case of intersection, positions the this.object at the intersection point
+ */
+
 import {Component, Object as WLEObject, Type} from '@wonderlandengine/api';
 import {vec3} from 'gl-matrix';
-import {ARSession, XR8Provider, ARProvider} from '../../..';
+import {ARSession, XR8Provider, ARProvider} from '@wonderlandengine/8thwall-tracking';
 
-/**
- * Hit test location for XR8 implementation
- */
-class HitTestLocationXR8 extends Component {
+export class HitTestLocationXR8 extends Component {
     public static TypeName = 'hit-test-location-xr8';
     public static Properties = {
         camera: {type: Type.Object},
@@ -28,7 +34,6 @@ class HitTestLocationXR8 extends Component {
     update() {
         if (this._tracking) {
             this.camera.getForward(this._camForward);
-          
             /* Intersect with origin XY plane. We always intersect if camera facing downwards */
             if(this._camForward[1] < 0) { 
                 this.camera.getTranslationWorld(this._tmpWorldPosition);
@@ -53,5 +58,3 @@ class HitTestLocationXR8 extends Component {
         }
     };
 }
-
-WL.registerComponent(HitTestLocationXR8);

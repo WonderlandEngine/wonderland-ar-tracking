@@ -14,20 +14,21 @@
 import { loadRuntime } from '@wonderlandengine/api';
 import * as API from '@wonderlandengine/api'; // Deprecated: Backward compatibility.
 
+
 /* wle:auto-imports:start */
 import {ARFaceTrackingCamera, ARImageTrackingCamera, ARSLAMCamera, ARVPSCamera, ARXR8SLAMCamera} from '@wonderlandengine/8thwall-tracking';
-import {AbsoluteScaleWatcher} from './absolute-scale-watcher.ts';
-import {ButtonEndARSession} from './../../common-components/button-end-ar-session.ts';
-import {ButtonStartARSession} from './../../common-components/button-start-ar-session.ts';
+import {ARCamera8thwall, Cursor, CursorTarget, DebugObject, DeviceOrientationLook, FingerCursor, FixedFoveation, HandTracking, HitTestLocation, HowlerAudioListener, HowlerAudioSource, ImageTexture, MouseLookComponent, PlayerHeight, TargetFramerate, TeleportComponent, Trail, TwoJointIkSolver, VideoTexture, VrModeActiveSwitch, Vrm, WasdControlsComponent} from '@wonderlandengine/components';
+import {FaceAttachmentPointExample} from './face-attachment-point-example.ts';
+import {FaceMaskExample} from './face-mask-example.ts';
+import {ButtonEndARSession, ButtonStartARSession} from './../../common-components/index.ts';
 /* wle:auto-imports:end */
 
 /* wle:auto-constants:start */
-const ProjectName = 'AbsoluteScale';
+const ProjectName = 'FaceTracking';
 const RuntimeBaseName = 'WonderlandRuntime';
 const WithPhysX = false;
 const WithLoader = false;
 /* wle:auto-constants:end */
-
 const engine = await loadRuntime(RuntimeBaseName, {
     physx: WithPhysX,
     loader: WithLoader
@@ -51,10 +52,13 @@ if (vrButton) {
 
 /* wle:auto-register:start */
 engine.registerComponent(ARFaceTrackingCamera, ARImageTrackingCamera, ARSLAMCamera, ARVPSCamera, ARXR8SLAMCamera);
-engine.registerComponent(AbsoluteScaleWatcher);
-engine.registerComponent(ButtonEndARSession);
-engine.registerComponent(ButtonStartARSession);
+engine.registerComponent(ARCamera8thwall, Cursor, CursorTarget, DebugObject, DeviceOrientationLook, FingerCursor, FixedFoveation, HandTracking, HitTestLocation, HowlerAudioListener, HowlerAudioSource, ImageTexture, MouseLookComponent, PlayerHeight, TargetFramerate, TeleportComponent, Trail, TwoJointIkSolver, VideoTexture, VrModeActiveSwitch, Vrm, WasdControlsComponent);
+engine.registerComponent(FaceAttachmentPointExample);
+engine.registerComponent(FaceMaskExample);
+engine.registerComponent(ButtonEndARSession, ButtonStartARSession);
 /* wle:auto-register:end */
+
+
 
 engine.scene.load(`${ProjectName}.bin`);
 

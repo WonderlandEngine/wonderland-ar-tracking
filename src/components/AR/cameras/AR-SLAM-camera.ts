@@ -1,29 +1,12 @@
-import {ARSession} from '../AR-session';
+import {ARSession} from '../AR-session.js';
 
-import {WorldTracking_XR8} from '../frameworks/xr8/world-tracking-mode-xr8';
-import {WorldTracking_webAR} from '../frameworks/webAR/world-tracking-mode-webAR';
+import {WorldTracking_XR8} from '../frameworks/xr8/world-tracking-mode-xr8.js';
+import {WorldTracking_webAR} from '../frameworks/webAR/world-tracking-mode-webAR.js';
 
-import {ITrackingMode} from '../frameworks/trackingMode';
-import {webXRProvider} from '../frameworks/webAR/webXR-provider';
-import {xr8Provider} from '../frameworks/xr8/xr8-provider';
-import {ARCamera} from './AR-Camera';
-
-
-// running on a browser?
-if (window.document) {
-    // WL.arSupported might not exist at this point. so we wait until WLE resolves it
-    (function checkARSupport() {
-        if (WL.arSupported === undefined) {
-            setTimeout(checkARSupport, 1);
-        } else {
-            if (WL.arSupported) {
-                ARSession.registerTrackingProvider(webXRProvider);
-            } else {
-                ARSession.registerTrackingProvider(xr8Provider);
-            }
-        }
-    })();
-}
+import {ITrackingMode} from '../frameworks/trackingMode.js';
+import {webXRProvider} from '../frameworks/webAR/webXR-provider.js';
+import {xr8Provider} from '../frameworks/xr8/xr8-provider.js';
+import {ARCamera} from './AR-Camera.js';
 
 class ARSLAMCamera extends ARCamera {
     public static TypeName = 'AR-SLAM-camera';
@@ -31,11 +14,14 @@ class ARSLAMCamera extends ARCamera {
 
     private _trackingImpl!: ITrackingMode;
 
-    public init() {
+    public override init = () => {
+
         if (this.engine.arSupported) {
             //if (false) { // force xr8
+            ARSession.registerTrackingProvider(this.engine, webXRProvider);
             this._trackingImpl = new WorldTracking_webAR(this);
         } else {
+            ARSession.registerTrackingProvider(this.engine, xr8Provider);
             this._trackingImpl = new WorldTracking_XR8(this);
         }
     }
@@ -45,7 +31,7 @@ class ARSLAMCamera extends ARCamera {
             throw new Error('AR-camera requires a view component');
         }
 
-        if (!WL.arSupported) {
+        if (!this.engine.arSupported) {
             (this._trackingImpl as WorldTracking_XR8).init();
         }
     }
