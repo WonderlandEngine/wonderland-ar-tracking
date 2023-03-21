@@ -142,5 +142,3 @@ export class FaceMaskExample extends Component {
         this._mesh!.update();
     };
 }
-
-// WL.registerComponent(FaceMaskExample);

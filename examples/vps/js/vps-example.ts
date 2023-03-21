@@ -6,8 +6,7 @@
  */
 
 import {Component, Object as WLEObject, Type} from '@wonderlandengine/api';
-import {ARSession} from '../../../';
-import {ARVPSCamera} from '../../../src/components/AR/cameras/AR-VPS-camera.js';
+import {ARSession, ARVPSCamera} from '@wonderlandengine/8thwall-tracking';
 
 export class VPSExample extends Component {
     public static TypeName = 'vps-example';

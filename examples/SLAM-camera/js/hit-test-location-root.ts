@@ -9,7 +9,7 @@
  */
 
 import { Component, Object as WLEObject, Type } from '@wonderlandengine/api';
-import { ARSession, WebXRProvider, ARProvider } from '../../..';
+import { ARSession, WebXRProvider, ARProvider } from '@wonderlandengine/8thwall-tracking';
 
 export class HitTestLocationRoot extends Component {
     public static TypeName = 'hit-test-location-root';

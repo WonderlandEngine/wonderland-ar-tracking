@@ -113,5 +113,3 @@ export class FaceAttachmentPointExample extends Component {
         });
     }
 }
-
-//WL.registerComponent(FaceAttachmentPointExample);

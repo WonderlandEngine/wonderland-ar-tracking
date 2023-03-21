@@ -31,7 +31,7 @@ class ARSLAMCamera extends ARCamera {
             throw new Error('AR-camera requires a view component');
         }
 
-        if (!WL.arSupported) {
+        if (!this.engine.arSupported) {
             (this._trackingImpl as WorldTracking_XR8).init();
         }
     }

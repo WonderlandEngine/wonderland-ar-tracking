@@ -9,7 +9,7 @@
 
 import {Component, Object as WLEObject, Type} from '@wonderlandengine/api';
 import {vec3} from 'gl-matrix';
-import {ARSession, XR8Provider, ARProvider} from '../../../';
+import {ARSession, XR8Provider, ARProvider} from '@wonderlandengine/8thwall-tracking';
 
 export class HitTestLocationXR8 extends Component {
     public static TypeName = 'hit-test-location-xr8';

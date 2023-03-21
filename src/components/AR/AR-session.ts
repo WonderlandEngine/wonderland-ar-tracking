@@ -7,10 +7,6 @@ import { ARProvider } from './AR-provider.js';
  * - handles global callbacks when AR session is started, ended
  * - can end any running AR session.
  * - renders AR button when the scene is loaded
- *
- * TODO - refactor checkSceneLoadProgress whenever we can control when the WL.onSceneLoaded is fired.
- * Currently we listen to WL.onSceneLoaded AND to each registered provide's loading to decide when to show the AR button.
- * Instead, we want to show the engines native 'loading' screen until all the providers are loaded
  */
 abstract class ARSession {
     // tracking provider is basically a lib which has some tracking capabilities, so device native webXR, 8th Wall, mind-ar-js, etc

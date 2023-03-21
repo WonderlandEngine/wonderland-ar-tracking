@@ -124,30 +124,30 @@ class XR8Provider extends ARProvider {
 
     public enableCameraFeed() {
         // TODO: should we store the previous state of colorClearEnabled.
-        WL.scene.colorClearEnabled = false;
+        this._engine.scene.colorClearEnabled = false;
 
         if (!this.cachedWebGLContext) {
-            this.cachedWebGLContext = WL.canvas.getContext('webgl2');
+            this.cachedWebGLContext = this._engine.canvas!.getContext('webgl2');
         }
 
-        if (!WL.scene.onPreRender.includes(this.onWLPreRender)) {
-            WL.scene.onPreRender.push(this.onWLPreRender);
+        if (!this._engine.scene.onPreRender.includes(this.onWLPreRender)) {
+            this._engine.scene.onPreRender.push(this.onWLPreRender);
         }
 
-        if (!WL.scene.onPostRender.includes(this.onWLPostRender)) {
-            WL.scene.onPostRender.push(this.onWLPostRender);
+        if (!this._engine.scene.onPostRender.includes(this.onWLPostRender)) {
+            this._engine.scene.onPostRender.push(this.onWLPostRender);
         }
     }
 
     public disableCameraFeed() {
-        const indexPrerender = WL.scene.onPreRender.indexOf(this.onWLPreRender);
+        const indexPrerender = this._engine.scene.onPreRender.indexOf(this.onWLPreRender);
         if (indexPrerender !== -1) {
-            WL.scene.onPreRender.splice(indexPrerender);
+            this._engine.scene.onPreRender.splice(indexPrerender);
         }
 
-        const indexPostRender = WL.scene.onPostRender.indexOf(this.onWLPostRender);
+        const indexPostRender = this._engine.scene.onPostRender.indexOf(this.onWLPostRender);
         if (indexPostRender !== -1) {
-            WL.scene.onPostRender.splice(indexPostRender);
+            this._engine.scene.onPostRender.splice(indexPostRender);
         }
     }
 

@@ -4,7 +4,7 @@
  * In case of xr8 tracking - click event is raised by window.onclick
  */
 import {Component, Material, Mesh, Type} from '@wonderlandengine/api';
-import {ARSession, ARProvider, WebXRProvider} from '../../..';
+import {ARSession, ARProvider, WebXRProvider} from '@wonderlandengine/8thwall-tracking';
 export class SpawnMeshOnReticle extends Component {
     public static TypeName = 'spawn-mesh-on-reticle';
     public static Properties = {
@@ -51,7 +51,11 @@ export class SpawnMeshOnReticle extends Component {
 
     spawnMesh = () => {
         /* Create a new object in the scene */
-        const o = WL.scene!.addObject(null);
+        const o = this.engine.scene!.addObject(null);
+        if(!o) {
+            console.warn("Failed to add mesh to the scene");
+            return;
+        }
         /* Place new object at current cursor location */
         o.transformLocal = this.object.transformWorld;
         o.scale([0.25, 0.25, 0.25]);
@@ -61,6 +65,10 @@ export class SpawnMeshOnReticle extends Component {
 
         /* Add a mesh to render the object */
         const mesh = o.addComponent('mesh', {});
+        if(!mesh) {
+            console.warn("Failed to add mesh to the object");
+            return;
+        }
         mesh.material = this.material;
         mesh.mesh = this.mesh;
         mesh.active = true;

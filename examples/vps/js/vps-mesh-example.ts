@@ -14,8 +14,7 @@ import {
     MeshIndexType,
     MeshAttribute,
 } from '@wonderlandengine/api';
-import {ARSession} from '../../../';
-import {ARVPSCamera} from '../../../src/components/AR/cameras/AR-VPS-camera.js';
+import {ARSession, ARVPSCamera} from '@wonderlandengine/8thwall-tracking';
 
 export class VPSMeshExample extends Component {
     public static TypeName = 'vps-mesh-example';
@@ -105,7 +104,7 @@ export class VPSMeshExample extends Component {
         });
 
         const positions = this._mesh.attribute(MeshAttribute.Position)!;
-        // const normals = mesh.attribute(WL.MeshAttribute.Normal);
+        // const normals = mesh.attribute(MeshAttribute.Normal);
         const colors = this._mesh.attribute(MeshAttribute.Color)!;
 
         let ci = 0;

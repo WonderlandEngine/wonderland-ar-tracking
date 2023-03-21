@@ -86,7 +86,7 @@ class FaceTracking_XR8 extends TrackingMode {
         XR8.addCameraPipelineModules([XR8.FaceController.pipelineModule(), this]);
 
         const options = {
-            canvas: WL.canvas as HTMLCanvasElement,
+            canvas: this.component.engine.canvas as HTMLCanvasElement,
             allowedDevices: XR8.XrConfig.device().ANY,
             ownRunLoop: false,
             cameraConfig: {

@@ -6,8 +6,8 @@
  *
  */
 import {Component, Object as WLEObject, Type} from '@wonderlandengine/api';
-import {ARSession} from '../../../';
-import {ARImageTrackingCamera} from '../../../src/components/AR/cameras/AR-image-tracking-camera.js';
+import {ARSession, ARImageTrackingCamera} from '@wonderlandengine/8thwall-tracking';
+
 
 export class ImageTrackingExample extends Component {
     public static TypeName = 'image-tracking-example';
