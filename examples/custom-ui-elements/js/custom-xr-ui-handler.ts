@@ -7,13 +7,9 @@
 import {Component} from '@wonderlandengine/api';
 import QrCodeWithLogo from 'qrcode-with-logos';
 
-import {ARSession, xr8Provider, XR8UIHandler} from '../../../../';
-import {ARVPSCamera} from '../../../../src/components/AR/cameras/AR-VPS-camera.js';
+import {ARSession, xr8Provider, XR8UIHandler, ARVPSCamera} from '@wonderlandengine/8thwall-tracking';
 
-
-WL.registerComponent(ARVPSCamera);
-
-class CustomUIHandler extends Component implements XR8UIHandler {
+export class CustomUIHandler extends Component implements XR8UIHandler {
     public static TypeName = 'custom-xr8-ui-handler';
     public static Properties = {};
 
@@ -102,5 +98,3 @@ class CustomUIHandler extends Component implements XR8UIHandler {
         return overlay;
     };
 }
-
-WL.registerComponent(CustomUIHandler);
