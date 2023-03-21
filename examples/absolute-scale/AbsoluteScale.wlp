@@ -443,13 +443,14 @@
         },
         "scripting": {
             "sourcePaths": [
-                "js/"
+                "js/",
+                "../common-components"
             ],
             "bundlingType": "esbuild",
             "libraryPaths": [
                 "/js/lib/"
             ],
-            "autoManageEntryPoint": false
+            "autoManageEntryPoint": true
         },
         "ar": {
             "framework": "webxr"

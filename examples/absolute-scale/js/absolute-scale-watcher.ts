@@ -11,10 +11,10 @@
 import {Component, Type, Object as WLEObject, Mesh, Material} from '@wonderlandengine/api';
 import {vec3} from 'gl-matrix';
 
-import {ARSession} from '../../../';
-import {ARXR8SLAMCamera} from '../../../src/components/AR/cameras/AR-XR8-SLAM-camera.js';
+import {ARSession} from '@wonderlandengine/8thwall-tracking';
+import {ARXR8SLAMCamera} from '@wonderlandengine/8thwall-tracking';
 
-class AbsoluteScaleWatcher extends Component {
+export class AbsoluteScaleWatcher extends Component {
     public static TypeName = 'absolute-scale-watcher';
     public static Properties = {
         ARXR8SLAMCamera: {type: Type.Object},
@@ -108,7 +108,7 @@ class AbsoluteScaleWatcher extends Component {
         }
 
         /* Create a new object in the scene */
-        const o = WL.scene!.addObject(null);
+        const o = this.engine.scene.addObject(null);
         /* Place new object at current cursor location */
         o.transformLocal = this.object.transformWorld;
         o.scale([0.25, 0.25, 0.25]);
@@ -118,10 +118,13 @@ class AbsoluteScaleWatcher extends Component {
 
         /* Add a mesh to render the object */
         const mesh = o.addComponent('mesh', {});
+        if(!mesh) {
+            console.warn("Failed to add a mesh");
+            return;
+        }
+
         mesh.material = this.material;
         mesh.mesh = this.mesh;
         mesh.active = true;
     };
 }
-
-WL.registerComponent(AbsoluteScaleWatcher);
