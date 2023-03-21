@@ -1,16 +1,14 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <link rel="preload" href="{{ settings.project.name }}-bundle.js?t={{timestamp}}" as="script">
     <script>
       const API_TOKEN_XR8 = "sU7eX52Oe2ZL8qUKBWD5naUlu1ZrnuRrtM1pQ7ukMz8rkOEG8mb63YlYTuiOrsQZTiXKRe";
-    </script>
-    
-    <script>
       const WEBXR_REQUIRED_FEATURES = [{{ webxrRequiredFeatures }}];
       const WEBXR_OPTIONAL_FEATURES = [{{ webxrOptionalFeatures }}];
     </script>
 
-    <link rel="preload" href="{{ settings.project.name }}-bundle.js?t={{timestamp}}" as="script">
+   
     <title>{{ settings.project.name }}</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -110,41 +108,9 @@
         }
     </script>
     {{ end }}
-    <script src="wonderland.min.js?t={{timestamp}}"></script>
-    <script type="module">
-        function loadScript(scriptURL) {
-            return new Promise((res, rej) => {
-                const s = document.createElement('script');
-                s.onload = () => res(s);
-                s.onerror = rej;
-                s.src = scriptURL;
-                document.body.appendChild(s);
-            });
-        }
 
-        async function init() {
-            try {
-                const engine = await WL.loadRuntime('{{ runtimeBaseName }}', {
-                  physx: {{ withPhysX }},
-                  loader: {{ withLoader }}
-                });
-            
-                engine.onSceneLoaded.push(() => {
-                    const el = document.getElementById('version');
-                    if(el) setTimeout(() => el.remove(), 2000);
-                })
-
-                const bundle = await loadScript("{{ settings.project.name }}-bundle.js?t={{timestamp}}");
-                bundle.id = 'bundle';
+    <script type="module" src="{{ settings.project.name }}-bundle.js?t={{timestamp}}"></script>
   
-                engine.scene.load('{{ settings.project.name }}.bin');
-            } catch(e) {
-              console.error(e);
-            }
-        }
-        init();
-        {{ extraJS }}
-    </script>
     {{ if settings.runtime.googleAnalytics != '' }}
     <script async src="https://www.googletagmanager.com/gtag/js?id={{ settings.runtime.googleAnalytics }}"></script>
     <script>

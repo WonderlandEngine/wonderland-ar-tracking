@@ -6,10 +6,9 @@
  *
  */
 import {Component, Object as WLEObject, Type} from '@wonderlandengine/api';
-import {ARSession} from '../../../';
-import {ARSLAMCamera} from '../../../src/components/AR/cameras/AR-SLAM-camera.js';
+import {ARSession, ARSLAMCamera} from '@wonderlandengine/8thwall-tracking';
 
-class SlamTrackingExample extends Component {
+export class SlamTrackingExample extends Component {
     public static TypeName = 'slam-tracking-example';
     public static Properties = {
         ARSlamCamera: {type: Type.Object},
@@ -46,4 +45,4 @@ class SlamTrackingExample extends Component {
         this.object.scalingWorld = [0, 0, 0];
     }
 }
-WL.registerComponent(SlamTrackingExample);
+
