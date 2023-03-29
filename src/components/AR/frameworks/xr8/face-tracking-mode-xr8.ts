@@ -4,6 +4,9 @@ import {xr8Provider} from './xr8-provider.js';
 import {ARFaceTrackingCamera} from '../../cameras/AR-face-tracking-camera.js';
 
 class FaceTracking_XR8 extends TrackingMode {
+    /**
+     * Required by the `XR8.addCameraPipelineModules`
+     */
     public readonly name = 'face-tracking-XR8';
 
     private _view?: ViewComponent; // cache camera
