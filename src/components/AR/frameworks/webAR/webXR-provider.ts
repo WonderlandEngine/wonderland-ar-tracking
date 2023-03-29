@@ -1,12 +1,20 @@
 import {WonderlandEngine} from '@wonderlandengine/api';
 import {ARProvider} from '../../AR-provider.js';
 
+/**
+ * ARProvider implementation for device native webXR API
+ */
 class WebXRProvider extends ARProvider {
     private _xrSession: XRSession | null = null;
     public get xrSession() {
         return this._xrSession;
     }
 
+    /**
+     * We override the parent ARProvider engine setter
+     * since we want to listen to native WLE engine.onXRSessionStart
+     * and engine.onXRSessionEnd callbacks.
+     */
     public override set engine(engine: WonderlandEngine) {
         super.engine = engine;
 
@@ -20,7 +28,11 @@ class WebXRProvider extends ARProvider {
         });
     }
 
-    // Enforce the singleton pattern
+     /**
+     * We don't want the user to manually instantiate the WebXRProvider.
+     * The instance WebXRProvider is created at the bottom of this file once
+     * and if we detect that someone is trying to create a second instance of WebXRProvider - we throw an error
+     */
     private _instance: WebXRProvider | null = null;
 
     constructor() {

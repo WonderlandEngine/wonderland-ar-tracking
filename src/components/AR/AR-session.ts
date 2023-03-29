@@ -6,13 +6,17 @@ import {ARProvider} from './AR-provider.js';
  * - loads dependencies (aka providers)
  * - handles global callbacks when AR session is started, ended
  * - can end any running AR session.
- * - renders AR button when the scene is loaded
  */
 abstract class ARSession {
-    // tracking provider is basically a lib which has some tracking capabilities, so device native webXR, 8th Wall, mind-ar-js, etc
+    /**
+     * tracking provider is basically a lib which has some tracking capabilities, so device native webXR, 8th Wall, mind-ar-js, etc
+     */
+    
     private static _trackingProviders: Array<ARProvider> = [];
 
-    // current running provider
+    /**
+     * Current running provider when AR session is running
+     */
     private static _currentTrackingProvider: ARProvider | null = null;
 
     public static readonly onARSessionReady: Array<() => void> = [];
@@ -55,6 +59,11 @@ abstract class ARSession {
         this.checkProviderLoadProgress();
     }
 
+    /**
+     * Loops through all providers to check if they are loaded.
+     * If that's the case and the WL scene itself is loaded -
+     * notify all the subscribers about the `onARSessionReady`
+     */
     private static checkProviderLoadProgress = () => {
         // prevent from calling onARSessionReady twice
         if (this._arSessionIsReady === true) {
@@ -75,7 +84,9 @@ abstract class ARSession {
         this.checkProviderLoadProgress();
     };
 
-    // stops a running AR session (if any)
+    /**
+     * stops a running AR session (if any)
+     */
     public static stopARSession() {
         if (this._currentTrackingProvider === null) {
             console.warn('No tracking session is active, nothing will happen');
@@ -85,13 +96,19 @@ abstract class ARSession {
         this._currentTrackingProvider = null;
     }
 
-    // some provider started AR session
+   /**
+    * Some AR provider started AR session
+    * @param provider to be passed into onSessionStarted callback function
+    */
     private static onProviderSessionStarted = (provider: ARProvider) => {
         this._currentTrackingProvider = provider;
         this.onSessionStarted.forEach((cb) => cb(provider));
     };
 
-    // some provider ended AR session
+    /**
+    * Some AR ended AR session
+    * @param provider to be passed into onSessionEnded callback function
+    */
     private static onProviderSessionEnded = (provider: ARProvider) => {
         this.onSessionEnded.forEach((cb) => cb(provider));
     };

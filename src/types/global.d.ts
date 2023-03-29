@@ -2,6 +2,23 @@ declare var API_TOKEN_XR8: string;
 declare var WEBXR_REQUIRED_FEATURES: string[];
 declare var WEBXR_OPTIONAL_FEATURES: string[];
 
+declare type XR8CameraPipelineModuleUpdateArgs = {
+    processCpuResult: {
+        reality: {
+            rotation: { x: number, y: number, z: number, w: number },
+            position: { x: number, y: number, z: number, w: number },
+            intrinsics: number[],
+        },
+
+        facecontroller: {
+            rotation: { x: number, y: number, z: number, w: number },
+            position: { x: number, y: number, z: number, w: number },
+            intrinsics: number[],
+        }
+    }
+
+}
+
 declare type XR8CameraPipelineModule = {
     name: string;
     onAttach?: (details: {
@@ -19,13 +36,16 @@ declare type XR8CameraPipelineModule = {
         stream: MediaStream;
         video: HTMLVideoElement;
         version?: string;
-        imageTargets?: [{imagePath: string; metadata: unknown; name: string}];
+        imageTargets?: [{ imagePath: string; metadata: unknown; name: string }];
         config: unknown;
     }) => void;
     onDetach?: (...args: any) => void;
-    onStart?: () => void;
+    onStart?: (event: XR8CameraPipelineModuleUpdateArgs) => void;
+    onUpdate?: (e: XR8CameraPipelineModuleUpdateArgs) => void;
     onException?: (error: string) => void;
 };
+
+
 
 declare type XR8DeviceType = {
     MOBILE: 'mobile';
@@ -147,8 +167,8 @@ declare type XR8ImageTrackedEvent = {
     name: string;
     detail: {
         name: string; // image name
-        position: {x: number; y: number; z: number}; // position of the tracked image
-        rotation: {x: number; y: number; z: number; w: number}; // rotation of the tracked image
+        position: { x: number; y: number; z: number }; // position of the tracked image
+        rotation: { x: number; y: number; z: number; w: number }; // rotation of the tracked image
         scale: number; // A scale factor that should be applied to object attached to this image.
         scaleWidth: number; // The width of the image in the scene, when multiplied by scale.
         scaledHeight: number; // 	The height of the image in the scene, when multiplied by scale.
@@ -166,8 +186,8 @@ declare type XR8VPSMeshFoundEvent = {
     name: string;
     detail: {
         id: string;
-        position: {x: number; y: number; z: number};
-        rotation: {x: number; y: number; z: number; w: number};
+        position: { x: number; y: number; z: number };
+        rotation: { x: number; y: number; z: number; w: number };
         geometry: {
             index: {
                 array: Uint32Array;
@@ -193,8 +213,8 @@ declare type XR8VPSMeshUpdatedEvent = {
     name: string;
     detail: {
         id: string;
-        position: {x: number; y: number; z: number};
-        rotation: {x: number; y: number; z: number; w: number};
+        position: { x: number; y: number; z: number };
+        rotation: { x: number; y: number; z: number; w: number };
     };
 };
 
@@ -209,8 +229,8 @@ declare type XR8VPSWayPointEvent = {
     name: string;
     detail: {
         name: string;
-        position: {x: number; y: number; z: number};
-        rotation: {x: number; y: number; z: number; w: number};
+        position: { x: number; y: number; z: number };
+        rotation: { x: number; y: number; z: number; w: number };
     };
 };
 
@@ -219,8 +239,8 @@ declare type XR8FaceLoadingEvent = {
     detail: {
         maxDetections: number;
         pointsPerDetection: number;
-        indices: [{a: number; b: number; c: number}];
-        uvs: [{u: number; v: number}];
+        indices: [{ a: number; b: number; c: number }];
+        uvs: [{ u: number; v: number }];
     };
 };
 
@@ -228,18 +248,18 @@ declare type XR8FaceFoundEvent = {
     name: string;
     detail: {
         id: number;
-        vertices: [{x: number; y: number; z: number}];
-        normals: [{x: number; y: number; z: number}];
+        vertices: [{ x: number; y: number; z: number }];
+        normals: [{ x: number; y: number; z: number }];
 
         attachmentPoints: {
             [key in XR8FaceAttachmentPoints]: {
-                position: {x: number; y: number; z: number};
+                position: { x: number; y: number; z: number };
             };
         };
 
         transform: {
-            position: {x: number; y: number; z: number};
-            rotation: {x: number; y: number; z: number; w: number};
+            position: { x: number; y: number; z: number };
+            rotation: { x: number; y: number; z: number; w: number };
             scale: number; // A scale factor that should be applied to objects attached to this face.
             scaledWidth: number; // Approximate width of the head in the scene when multiplied by scale.
             scaledHeight: number; // Approximate height of the head in the scene when multiplied by scale.
@@ -272,14 +292,14 @@ declare var XR8: {
             includedTypes: XR8HitTestType[keyof XR8HitTestType][]
         ) => {
             type: XR8HitTestType;
-            position: {x: number; y: number; z: number};
-            rotation: {x: number; y: number; z: number};
+            position: { x: number; y: number; z: number };
+            rotation: { x: number; y: number; z: number };
             distance: number;
         }[];
 
         updateCameraProjectionMatrix: (options: {
-            origin: {x: number; y: number; z: number};
-            facing: {x: number; y: number; z: number; w: number};
+            origin: { x: number; y: number; z: number };
+            facing: { x: number; y: number; z: number; w: number };
             cam?: {
                 pixelRectWidth?: number;
                 pixelRectHeight?: number;
@@ -307,7 +327,7 @@ declare var XR8: {
 
         configure: (options: {
             meshGeometry: XR8FaceMeshFeatures[keyof XR8FaceMeshFeatures][];
-            coordinates: {mirroredDisplay: boolean};
+            coordinates: { mirroredDisplay: boolean };
         }) => void;
     };
 

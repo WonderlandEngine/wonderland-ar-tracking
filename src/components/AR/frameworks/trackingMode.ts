@@ -1,5 +1,8 @@
 import {Component} from '@wonderlandengine/api';
 
+/**
+ * AR cameras will carry a tracking mode (SLAM, Face tracking, image tracking, etc)
+ */
 export interface ITrackingMode {
     readonly component: Component;
     update?: (delta: number) => void;

@@ -6,6 +6,13 @@ import {xr8Provider} from '../frameworks/xr8/xr8-provider.js';
 
 import {ARCamera} from './AR-Camera.js';
 
+/**
+ * AR face tracking Camera component.
+ * 
+ * Should be attached the object which has a ViewComponent.
+ * 
+ * Currently only works with 8th Wall tracking `FaceTracking_XR8`
+ */
 class ARFaceTrackingCamera extends ARCamera {
     public static TypeName = 'AR-face-tracking-camera';
     public static Properties = {

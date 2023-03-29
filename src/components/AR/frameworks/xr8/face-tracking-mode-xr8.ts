@@ -1,17 +1,37 @@
-import {ViewComponent} from '@wonderlandengine/api';
-import {TrackingMode} from '../trackingMode.js';
-import {xr8Provider} from './xr8-provider.js';
-import {ARFaceTrackingCamera} from '../../cameras/AR-face-tracking-camera.js';
+import { ViewComponent } from '@wonderlandengine/api';
+import { TrackingMode } from '../trackingMode.js';
+import { xr8Provider } from './xr8-provider.js';
+import { ARFaceTrackingCamera } from '../../cameras/AR-face-tracking-camera.js';
 
+/**
+ * 8th Wall tracking implementation that encapsulates
+ * - Face tracking
+ * 
+ * Main task - to update the WL ViewComponent (aka Camera) pose and projection matrix by the values provided 
+ * by 8th Wall on every frame and forward tracking related events to any subscribers.
+ * 
+ * It acts as a 8th Wall camera pipeline, so some methods will be called by 8th Wall internally.
+ */
 class FaceTracking_XR8 extends TrackingMode {
     /**
      * Required by the `XR8.addCameraPipelineModules`
      */
     public readonly name = 'face-tracking-XR8';
 
-    private _view?: ViewComponent; // cache camera
-    private _cachedPosition = [0, 0, 0]; // cache 8th Wall cam position
-    private _cachedRotation = [0, 0, 0, -1]; // cache 8th Wall cam rotation
+    /**
+     * Cache view component
+     */
+    private _view?: ViewComponent;
+
+    /**
+     * Cache 8th Wall cam position
+     */
+    private _cachedPosition = [0, 0, 0];
+
+    /**
+     * Cache 8th Wall cam rotation
+     */
+    private _cachedRotation = [0, 0, 0, -1];
 
     public readonly onFaceScanning: Array<(event: XR8FaceLoadingEvent) => void> = [];
     public readonly onFaceLoading: Array<(event: XR8FaceLoadingEvent) => void> = [];
@@ -19,10 +39,14 @@ class FaceTracking_XR8 extends TrackingMode {
     public readonly onFaceUpdate: Array<(event: XR8FaceFoundEvent) => void> = [];
     public readonly onFaceLost: Array<(event: xr8FaceLostEvent) => void> = [];
 
-    // consumed by 8th Wall
+    /**
+    * Consumed by 8th Wall.
+    */
     public readonly listeners = [
         {
-            // Fires when loading begins for additional face AR resources.
+            /**
+             * Fires when loading begins for additional face AR resources.
+             */
             event: 'facecontroller.faceloading',
             process: (event: XR8FaceLoadingEvent) => {
                 this.onFaceLoading.forEach((callback) => callback(event));
@@ -30,7 +54,9 @@ class FaceTracking_XR8 extends TrackingMode {
         },
 
         {
-            // Fires when all face AR resources have been loaded and scanning has begun.
+            /**
+             * Fires when all face AR resources have been loaded and scanning has begun.
+             */
             event: 'facecontroller.facescanning',
             process: (event: XR8FaceLoadingEvent) => {
                 this.onFaceLoading.forEach((callback) => callback(event));
@@ -57,6 +83,10 @@ class FaceTracking_XR8 extends TrackingMode {
         },
     ];
 
+    /**
+    * Called by any consuming AR camera.
+    * Set's up the cached vars.
+    */
     public init() {
         const input = this.component.object.getComponent('input');
         if (input) {
@@ -70,6 +100,11 @@ class FaceTracking_XR8 extends TrackingMode {
         });
     }
 
+    /**
+     * Configures XR8.XrController for the session, 
+     * sets itself as an XR8 camera pipeline module 
+     * and tells xr8Provider to start the session
+     */
     public async startSession() {
         const permissions = await xr8Provider.checkPermissions();
 
@@ -83,7 +118,7 @@ class FaceTracking_XR8 extends TrackingMode {
                 XR8.FaceController.MeshGeometry.EYES,
                 XR8.FaceController.MeshGeometry.MOUTH,
             ],
-            coordinates: {mirroredDisplay: false},
+            coordinates: { mirroredDisplay: false },
         });
 
         XR8.addCameraPipelineModules([XR8.FaceController.pipelineModule(), this]);
@@ -95,7 +130,7 @@ class FaceTracking_XR8 extends TrackingMode {
             cameraConfig: {
                 direction:
                     ARFaceTrackingCamera.Properties.cameraDirection.values[
-                        (this.component as ARFaceTrackingCamera).cameraDirection
+                    (this.component as ARFaceTrackingCamera).cameraDirection
                     ],
             },
         };
@@ -107,17 +142,18 @@ class FaceTracking_XR8 extends TrackingMode {
         xr8Provider.endSession();
     }
 
-    /**
-     * @param {*} e
-     *
-     * called by 8th Wall
+     /**
+     * Called by 8th Wall internally.
+     * Updates WL cameras projectionMatrix and pose
+     * 
+     * @param e Camera projection matrix and pose provided by 8th Wall
      */
-    public onUpdate = (e: any) => {
+    public onUpdate = (e: XR8CameraPipelineModuleUpdateArgs) => {
         const source = e.processCpuResult.facecontroller;
 
         if (!source) return;
 
-        const {rotation, position, intrinsics} = source;
+        const { rotation, position, intrinsics } = source;
 
         this._cachedRotation[0] = rotation.x;
         this._cachedRotation[1] = rotation.y;
@@ -145,4 +181,4 @@ class FaceTracking_XR8 extends TrackingMode {
     };
 }
 
-export {FaceTracking_XR8};
+export { FaceTracking_XR8 };
