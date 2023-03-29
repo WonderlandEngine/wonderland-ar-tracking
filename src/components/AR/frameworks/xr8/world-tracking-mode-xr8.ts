@@ -28,10 +28,10 @@ type UsesVPS = {
  * - SLAM tracking
  * - Image tracking
  * - VPS tracking
- * 
- * Main task - to update the WL ViewComponent pose and projection matrix by the values provided 
+ *
+ * Main task - to update the WL ViewComponent pose and projection matrix by the values provided
  * by 8th Wall on every frame and forward tracking related events to any subscribers.
- * 
+ *
  * It acts as a 8th Wall camera pipeline, so some methods will be called by 8th Wall internally.
  */
 class WorldTracking_XR8 extends TrackingMode {
@@ -59,7 +59,6 @@ class WorldTracking_XR8 extends TrackingMode {
      * ARCamera using this tracking mode might want to request some extra permissions
      */
     private _extraPermissions: XR8ExtraPermissions = [];
-
 
     public readonly onTrackingStatus: Array<(event: XR8TrackingStatusEvent) => void> = [];
 
@@ -176,8 +175,8 @@ class WorldTracking_XR8 extends TrackingMode {
     /**
      * Called by any consuming AR camera.
      * Set's up the cached vars.
-     * 
-     * @param extraPermissions 
+     *
+     * @param extraPermissions
      */
     public init(extraPermissions: XR8ExtraPermissions = []) {
         this._extraPermissions = extraPermissions;
@@ -207,8 +206,8 @@ class WorldTracking_XR8 extends TrackingMode {
     }
 
     /**
-     * Configures XR8.XrController for the session, 
-     * sets itself as an XR8 camera pipeline module 
+     * Configures XR8.XrController for the session,
+     * sets itself as an XR8 camera pipeline module
      * and tells xr8Provider to start the session
      */
     public async startSession() {
@@ -282,7 +281,7 @@ class WorldTracking_XR8 extends TrackingMode {
     /**
      * Called by 8th Wall internally.
      * Updates WL cameras projectionMatrix and pose
-     * 
+     *
      * @param e Camera projection matrix and pose provided by 8th Wall
      */
     public onUpdate = (e: XR8CameraPipelineModuleUpdateArgs) => {

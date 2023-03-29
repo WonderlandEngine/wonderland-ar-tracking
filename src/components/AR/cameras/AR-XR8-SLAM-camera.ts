@@ -9,9 +9,9 @@ import {ARCamera} from './AR-Camera.js';
 
 /**
  * AR SLAM Camera component.
- * 
+ *
  * Should be attached the object which has a ViewComponent.
- * 
+ *
  * This camera will force the use of 8th Wall SLAM implementation (`xr8Provider`)
  */
 class ARXR8SLAMCamera extends ARCamera {

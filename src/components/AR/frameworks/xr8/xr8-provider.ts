@@ -1,5 +1,5 @@
 import * as QRCode from 'qrcode-svg';
-import { ARProvider } from '../../AR-provider.js';
+import {ARProvider} from '../../AR-provider.js';
 
 /**
  * Array of extra permissions which some tracking mode might need.
@@ -14,7 +14,7 @@ type XR8ExtraPermissions = Array<'location'>;
 interface XR8UIHandler {
     /**
      * For webcam/device motion/location permissions to be requested, the user must interact with the device (touch the screen for example).
-     * 
+     *
      * `requestUserInteraction` should render some CTA (most likely button) to request a user to interact with the device.
      * Default WLE implementation renders an AR button, so this function is useful only of you're implementing a custom `XR8UIHandler`
      * @returns a promise when the user has interacted with the device
@@ -25,27 +25,27 @@ interface XR8UIHandler {
      * Inform the user that some permission could not be granted
      * Default WLE implementation renders a `div' overlay with a generic error message
      * and a button to refresh the page.
-     * 
-     * Different browsers has different ways to reset permissions. 
+     *
+     * Different browsers has different ways to reset permissions.
      * This overlay is a good place to guide a user how to do that.
-     * 
+     *
      * @param error error containing an error message with a type of permission ("Location", "Camera", etc)
      */
     handlePermissionFail: (error: Error) => void;
 
     /**
-     * Inform the user that some error happened. 
+     * Inform the user that some error happened.
      * Default WLE implementation renders a `div' overlay with an error message
      * and a button to refresh the page.
-     * 
+     *
      * There is no way to recover from XR8 error, so refreshing the page is the best option.
-     * 
+     *
      * @param error error containing an error message
      */
     handleError: (error: Event) => void;
 
-     /**
-     * If a device location is required, it can take a while for the device to resolve it. 
+    /**
+     * If a device location is required, it can take a while for the device to resolve it.
      * Default WLE implementation renders a 'div' overlay with a'waiting for location' text and a spinning cube animation.
      */
     showWaitingForDeviceLocation: () => void;
@@ -64,7 +64,6 @@ interface XR8UIHandler {
      */
     handleIncompatibleDevice: () => void;
 }
-
 
 /**
  * ARProvider implementation for loading and setting up the 8th Wall lib
@@ -115,13 +114,13 @@ class XR8Provider extends ARProvider {
 
     /**
      * Loads an external 8th Wall library.
-     * 
+     *
      * Shows an 8th Wall logo at the bottom of the page and removes it when loading is done.
-     * 
+     *
      * Configures a custom XR8 pipeline module which enables/disables camera feed when the AR session starts/ends.
-     * 
+     *
      * Handles XR8 errors.
-     * 
+     *
      * @returns promise when the 8th Wall has loaded.
      */
     public async load() {
@@ -183,7 +182,7 @@ class XR8Provider extends ARProvider {
 
                         onException: (message) => {
                             this.uiHandler.handleError(
-                                new CustomEvent('8thwall-error', { detail: { message } })
+                                new CustomEvent('8thwall-error', {detail: {message}})
                             );
                         },
                     },
@@ -213,7 +212,7 @@ class XR8Provider extends ARProvider {
 
     /**
      * Ends XR8 session,
-     * Can be called from anywhere. 
+     * Can be called from anywhere.
      */
     public async endSession() {
         if (this._running) {
@@ -243,8 +242,8 @@ class XR8Provider extends ARProvider {
         }
     }
 
-     /**
-     * Cleans up scene.onPreRender and scene.onPostRender callback 
+    /**
+     * Cleans up scene.onPreRender and scene.onPostRender callback
      * which in turn removes the drawing of the camera feed.
      */
     public disableCameraFeed() {
@@ -305,7 +304,7 @@ class XR8Provider extends ARProvider {
 
     /**
      * Notifies the uiHandler it needs user interaction to acquire device motion event.
-     * This is a specific iOS case. There is no native browser prompt for this permission, 
+     * This is a specific iOS case. There is no native browser prompt for this permission,
      * it just need a user interaction to be accessible.
      * @returns motionEvent.
      */
@@ -324,7 +323,7 @@ class XR8Provider extends ARProvider {
      * Handles permission error events.
      * @param extraPermissions array of strings for extra permissions required by the tracking implementation.
      * Currently only 'location' is supported.
-     * 
+     *
      * @returns promise when all permissions were granted
      */
     private async getPermissions(extraPermissions: XR8ExtraPermissions = []) {
@@ -388,11 +387,11 @@ class XR8Provider extends ARProvider {
 
     /**
      * @public
-     * Checks if device browser is supported at all 
+     * Checks if device browser is supported at all
      * and check any required permissions.
      * @param extraPermissions array of strings for extra permissions required by the tracking implementation.
      * Currently only 'location' is supported.
-     * 
+     *
      * @returns promise when all permissions were granted
      */
 
@@ -656,7 +655,6 @@ const deviceIncompatibleOverlay = () => {
     return html;
 };
 
-
 /**
  * Inline 8th Wall svg logo.
  */
@@ -695,4 +693,4 @@ const xr8logo = `
 `;
 
 const xr8Provider = new XR8Provider();
-export { XR8Provider, xr8Provider, XR8UIHandler, XR8ExtraPermissions };
+export {XR8Provider, xr8Provider, XR8UIHandler, XR8ExtraPermissions};

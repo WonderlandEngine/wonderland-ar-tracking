@@ -6,7 +6,8 @@
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "prettier": "prettier  --config ./.prettierrc.json --write ./src ./examples/**/js ./examples/common-components"
   },
   "keywords": [
     "wonderland-engine"

@@ -10,9 +10,9 @@ import {ARCamera} from './AR-Camera.js';
 
 /**
  * AR SLAM Camera component.
- * 
+ *
  * Should be attached the object which has a ViewComponent.
- * 
+ *
  * Depending on the device it will choose to use either device native webXR (`webXRProvider`)
  * or 8th Wall SLAM implementation (`xr8Provider`)
  */

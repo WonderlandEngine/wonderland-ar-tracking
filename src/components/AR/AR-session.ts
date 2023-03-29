@@ -11,7 +11,7 @@ abstract class ARSession {
     /**
      * tracking provider is basically a lib which has some tracking capabilities, so device native webXR, 8th Wall, mind-ar-js, etc
      */
-    
+
     private static _trackingProviders: Array<ARProvider> = [];
 
     /**
@@ -96,19 +96,19 @@ abstract class ARSession {
         this._currentTrackingProvider = null;
     }
 
-   /**
-    * Some AR provider started AR session
-    * @param provider to be passed into onSessionStarted callback function
-    */
+    /**
+     * Some AR provider started AR session
+     * @param provider to be passed into onSessionStarted callback function
+     */
     private static onProviderSessionStarted = (provider: ARProvider) => {
         this._currentTrackingProvider = provider;
         this.onSessionStarted.forEach((cb) => cb(provider));
     };
 
     /**
-    * Some AR ended AR session
-    * @param provider to be passed into onSessionEnded callback function
-    */
+     * Some AR ended AR session
+     * @param provider to be passed into onSessionEnded callback function
+     */
     private static onProviderSessionEnded = (provider: ARProvider) => {
         this.onSessionEnded.forEach((cb) => cb(provider));
     };

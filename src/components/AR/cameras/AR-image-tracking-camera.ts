@@ -8,9 +8,9 @@ import {ARCamera} from './AR-Camera.js';
 
 /**
  * AR image tracking Camera component.
- * 
+ *
  * Should be attached the object which has a ViewComponent.
- * 
+ *
  * Currently only works with 8th Wall tracking `WorldTracking_XR8`
  */
 class ARImageTrackingCamera extends ARCamera {

@@ -28,7 +28,7 @@ class WebXRProvider extends ARProvider {
         });
     }
 
-     /**
+    /**
      * We don't want the user to manually instantiate the WebXRProvider.
      * The instance WebXRProvider is created at the bottom of this file once
      * and if we detect that someone is trying to create a second instance of WebXRProvider - we throw an error
