@@ -1,4 +1,4 @@
-import { WonderlandEngine } from "@wonderlandengine/api";
+import {WonderlandEngine} from '@wonderlandengine/api';
 
 /**
  * ARProvider defines the core behavior how an AR provider should look like.
@@ -6,7 +6,6 @@ import { WonderlandEngine } from "@wonderlandengine/api";
  * For example src/components/AR/frameworks/xr8/xr8-provider.ts loads, configures and checks the required permissions for the 8th Wall library.
  */
 abstract class ARProvider {
-
     protected _engine!: WonderlandEngine;
     public set engine(engine: WonderlandEngine) {
         this._engine = engine;

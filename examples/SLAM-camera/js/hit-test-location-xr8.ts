@@ -1,9 +1,9 @@
 /**
  * HitTestLocationXR8
  * Hit test location for XR8 implementation.
- * When 8th Wall SLAM tracking is active, checks where the ray going from camera 
+ * When 8th Wall SLAM tracking is active, checks where the ray going from camera
  * intersects with the imaginary XY plane.
- * 
+ *
  * In case of intersection, positions the this.object at the intersection point
  */
 
@@ -35,10 +35,14 @@ export class HitTestLocationXR8 extends Component {
         if (this._tracking) {
             this.camera.getForward(this._camForward);
             /* Intersect with origin XY plane. We always intersect if camera facing downwards */
-            if(this._camForward[1] < 0) { 
+            if (this._camForward[1] < 0) {
                 this.camera.getTranslationWorld(this._tmpWorldPosition);
                 const t = -this._tmpWorldPosition[1] / this._camForward[1];
-                vec3.add(this._intersectionVec3, this._tmpWorldPosition, vec3.scale(this._intersectionVec3, this._camForward, t));
+                vec3.add(
+                    this._intersectionVec3,
+                    this._tmpWorldPosition,
+                    vec3.scale(this._intersectionVec3, this._camForward, t)
+                );
                 this.object.setTranslationWorld(this._intersectionVec3);
             }
         }

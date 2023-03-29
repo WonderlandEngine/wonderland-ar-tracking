@@ -12,15 +12,14 @@ import {xr8Provider} from '../frameworks/xr8/xr8-provider.js';
 import {WorldTracking_XR8} from '../frameworks/xr8/world-tracking-mode-xr8.js';
 import {ARCamera} from './AR-Camera.js';
 
-
-
 class ARVPSCamera extends ARCamera {
     public static TypeName = 'AR-VPS-camera';
     public static Properties = {};
 
-    
     // make sure noone can overwrite this
-    public get usesVPS() { return true; }
+    public get usesVPS() {
+        return true;
+    }
 
     private _trackingImpl = new WorldTracking_XR8(this);
 

@@ -1,7 +1,7 @@
 /**
  * VPSExample
  * Demonstrates how to put an object on the detected waypoint.
- * 
+ *
  * This example creates <div id="_debugText" /> to output some logs when waypoints are found or lost
  */
 

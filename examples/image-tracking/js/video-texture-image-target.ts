@@ -1,6 +1,6 @@
 /**
  * class VideoTextureImageTarget
- * 
+ *
  * Handles playing and stopping the video of the VideoTexture component attached to the same object.
  * Video is played when the imageTarget it detected in the PhysicalSizeImageTarget component of the same object.
  * And stopped when the image is lost.
@@ -15,7 +15,7 @@ export class VideoTextureImageTarget extends Component {
     public static Properties = {};
 
     private _physicalSizeImageTarget!: PhysicalSizeImageTarget;
-    
+
     // cache videoTexture component
     private _videoTextureComp!: Component & {video: HTMLVideoElement};
 

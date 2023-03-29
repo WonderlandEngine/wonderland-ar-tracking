@@ -52,8 +52,8 @@ export class SpawnMeshOnReticle extends Component {
     spawnMesh = () => {
         /* Create a new object in the scene */
         const o = this.engine.scene!.addObject(null);
-        if(!o) {
-            console.warn("Failed to add mesh to the scene");
+        if (!o) {
+            console.warn('Failed to add mesh to the scene');
             return;
         }
         /* Place new object at current cursor location */
@@ -65,8 +65,8 @@ export class SpawnMeshOnReticle extends Component {
 
         /* Add a mesh to render the object */
         const mesh = o.addComponent('mesh', {});
-        if(!mesh) {
-            console.warn("Failed to add mesh to the object");
+        if (!mesh) {
+            console.warn('Failed to add mesh to the object');
             return;
         }
         mesh.material = this.material;
@@ -74,5 +74,3 @@ export class SpawnMeshOnReticle extends Component {
         mesh.active = true;
     };
 }
-
-

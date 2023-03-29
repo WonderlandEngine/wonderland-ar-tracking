@@ -15,7 +15,7 @@ import {
 } from '@wonderlandengine/api';
 import {quat, vec3} from 'gl-matrix';
 
-import {ARSession, ARImageTrackingCamera,} from '@wonderlandengine/8thwall-tracking';
+import {ARSession, ARImageTrackingCamera} from '@wonderlandengine/8thwall-tracking';
 import {generateCylinderGeometry} from './geometries/cylinder-geomtery.js';
 import {generatePlaneGeomtry} from './geometries/plane-geometry.js';
 
@@ -229,4 +229,3 @@ export class PhysicalSizeImageTarget extends Component {
         this.object.setTranslationWorld(this._cachedPosition);
     }
 }
-

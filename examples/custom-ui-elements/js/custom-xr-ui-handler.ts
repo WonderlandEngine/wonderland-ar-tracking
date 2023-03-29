@@ -7,7 +7,12 @@
 import {Component} from '@wonderlandengine/api';
 import QrCodeWithLogo from 'qrcode-with-logos';
 
-import {ARSession, xr8Provider, XR8UIHandler, ARVPSCamera} from '@wonderlandengine/8thwall-tracking';
+import {
+    ARSession,
+    xr8Provider,
+    XR8UIHandler,
+    ARVPSCamera,
+} from '@wonderlandengine/8thwall-tracking';
 
 export class CustomUIHandler extends Component implements XR8UIHandler {
     public static TypeName = 'custom-xr8-ui-handler';

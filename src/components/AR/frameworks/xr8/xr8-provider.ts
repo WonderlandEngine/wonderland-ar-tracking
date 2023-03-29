@@ -1,11 +1,10 @@
 import * as QRCode from 'qrcode-svg';
-import { ARProvider } from '../../AR-provider.js';
+import {ARProvider} from '../../AR-provider.js';
 
 /**
  * Array of extra permissions which some tracking mode might need. By default XR8 will need camera/microphone permissions and deviceMotion permission (iOS only). VPS for example must pass an extra 'location' permission
  */
 export type XR8ExtraPermissions = Array<'location'>;
-
 
 interface XR8UIHandler {
     requestUserInteraction: () => Promise<void>;
@@ -17,10 +16,9 @@ interface XR8UIHandler {
 }
 
 class XR8Provider extends ARProvider {
-
     public uiHandler: XR8UIHandler = new DefaultUIHandler();
 
-    public cachedWebGLContext: WebGL2RenderingContext | null = null;
+    private cachedWebGLContext: WebGL2RenderingContext | null = null;
 
     // Loading of 8th Wall might be initiated by several components, make sure we load it only once
     private _loading = false;
@@ -94,7 +92,7 @@ class XR8Provider extends ARProvider {
 
                         onException: (message) => {
                             this.uiHandler.handleError(
-                                new CustomEvent('8thwall-error', { detail: { message } })
+                                new CustomEvent('8thwall-error', {detail: {message}})
                             );
                         },
                     },
@@ -145,7 +143,9 @@ class XR8Provider extends ARProvider {
             this._engine.scene.onPreRender.splice(indexPrerender);
         }
 
-        const indexPostRender = this._engine.scene.onPostRender.indexOf(this.onWLPostRender);
+        const indexPostRender = this._engine.scene.onPostRender.indexOf(
+            this.onWLPostRender
+        );
         if (indexPostRender !== -1) {
             this._engine.scene.onPostRender.splice(indexPostRender);
         }
@@ -540,4 +540,4 @@ const xr8logo = `
 `;
 
 const xr8Provider = new XR8Provider();
-export { XR8Provider, xr8Provider, XR8UIHandler};
+export {XR8Provider, xr8Provider, XR8UIHandler};

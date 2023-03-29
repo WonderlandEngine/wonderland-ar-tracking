@@ -1,5 +1,5 @@
 /**
- * VPSMeshExample 
+ * VPSMeshExample
  * Demonstrates how to render a Mesh from the data provided by the 8th Wall.
  * 8th Wall provides the vertices, index and color data for the simplified mesh of the waypoint.
  * So make sure your material supports vertex colors.

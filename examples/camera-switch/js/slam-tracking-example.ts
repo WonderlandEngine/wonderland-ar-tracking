@@ -45,4 +45,3 @@ export class SlamTrackingExample extends Component {
         this.object.scalingWorld = [0, 0, 0];
     }
 }
-

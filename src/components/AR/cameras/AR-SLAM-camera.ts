@@ -15,7 +15,6 @@ class ARSLAMCamera extends ARCamera {
     private _trackingImpl!: ITrackingMode;
 
     public override init = () => {
-
         if (this.engine.arSupported) {
             //if (false) { // force xr8
             ARSession.registerTrackingProvider(this.engine, webXRProvider);
@@ -24,7 +23,7 @@ class ARSLAMCamera extends ARCamera {
             ARSession.registerTrackingProvider(this.engine, xr8Provider);
             this._trackingImpl = new WorldTracking_XR8(this);
         }
-    }
+    };
 
     public start() {
         if (!this.object.getComponent('view')) {

@@ -8,13 +8,13 @@
  *  - Specify `'hit-test'` in the required or optional features on the AR button in your html file.
  */
 
-import { Component, Object as WLEObject, Type } from '@wonderlandengine/api';
-import { ARSession, WebXRProvider, ARProvider } from '@wonderlandengine/8thwall-tracking';
+import {Component, Object as WLEObject, Type} from '@wonderlandengine/api';
+import {ARSession, WebXRProvider, ARProvider} from '@wonderlandengine/8thwall-tracking';
 
 export class HitTestLocationRoot extends Component {
     public static TypeName = 'hit-test-location-root';
     public static Properties = {
-        camera: { type: Type.Object },
+        camera: {type: Type.Object},
     };
 
     // injected by WLE

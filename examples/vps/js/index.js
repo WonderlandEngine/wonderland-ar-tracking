@@ -11,11 +11,17 @@
  *     - `wle:auto-benchmark:start` and `wle:auto-benchmark:end`: Append the benchmarking code
  */
 
-import { loadRuntime } from '@wonderlandengine/api';
+import {loadRuntime} from '@wonderlandengine/api';
 import * as API from '@wonderlandengine/api'; // Deprecated: Backward compatibility.
 
 /* wle:auto-imports:start */
-import {ARFaceTrackingCamera, ARImageTrackingCamera, ARSLAMCamera, ARVPSCamera, ARXR8SLAMCamera} from '@wonderlandengine/8thwall-tracking';
+import {
+    ARFaceTrackingCamera,
+    ARImageTrackingCamera,
+    ARSLAMCamera,
+    ARVPSCamera,
+    ARXR8SLAMCamera,
+} from '@wonderlandengine/8thwall-tracking';
 import {VPSExample} from './vps-example.ts';
 import {VPSMeshExample} from './vps-mesh-example.ts';
 import {ButtonEndARSession} from './../../common-components/button-end-ar-session.ts';
@@ -31,7 +37,7 @@ const WithLoader = false;
 
 const engine = await loadRuntime(RuntimeBaseName, {
     physx: WithPhysX,
-    loader: WithLoader
+    loader: WithLoader,
 });
 Object.assign(engine, API); // Deprecated: Backward compatibility.
 window.WL = engine; // Deprecated: Backward compatibility.
@@ -51,7 +57,13 @@ if (vrButton) {
 }
 
 /* wle:auto-register:start */
-engine.registerComponent(ARFaceTrackingCamera, ARImageTrackingCamera, ARSLAMCamera, ARVPSCamera, ARXR8SLAMCamera);
+engine.registerComponent(
+    ARFaceTrackingCamera,
+    ARImageTrackingCamera,
+    ARSLAMCamera,
+    ARVPSCamera,
+    ARXR8SLAMCamera
+);
 engine.registerComponent(VPSExample);
 engine.registerComponent(VPSMeshExample);
 engine.registerComponent(ButtonEndARSession);
@@ -62,4 +74,3 @@ engine.scene.load(`${ProjectName}.bin`);
 
 /* wle:auto-benchmark:start */
 /* wle:auto-benchmark:end */
-

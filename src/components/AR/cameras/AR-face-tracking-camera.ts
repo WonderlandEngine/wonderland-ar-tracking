@@ -6,8 +6,6 @@ import {xr8Provider} from '../frameworks/xr8/xr8-provider.js';
 
 import {ARCamera} from './AR-Camera.js';
 
-
-
 class ARFaceTrackingCamera extends ARCamera {
     public static TypeName = 'AR-face-tracking-camera';
     public static Properties = {
@@ -19,7 +17,6 @@ class ARFaceTrackingCamera extends ARCamera {
     };
 
     private _trackingImpl = new FaceTracking_XR8(this);
-
 
     // will be set by WLE
     public cameraDirection: number = 0;

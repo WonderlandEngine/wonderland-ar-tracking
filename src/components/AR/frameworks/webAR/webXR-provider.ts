@@ -1,4 +1,4 @@
-import { WonderlandEngine } from '@wonderlandengine/api';
+import {WonderlandEngine} from '@wonderlandengine/api';
 import {ARProvider} from '../../AR-provider.js';
 
 class WebXRProvider extends ARProvider {
@@ -36,14 +36,17 @@ class WebXRProvider extends ARProvider {
         }
 
         this._instance = this;
-      
     }
 
     public async startSession(
         webxrRequiredFeatures: string[] = ['local'],
         webxrOptionalFeatures: string[] = ['local', 'hit-test']
     ) {
-        this._engine.requestXRSession('immersive-ar', webxrRequiredFeatures, webxrOptionalFeatures);
+        this._engine.requestXRSession(
+            'immersive-ar',
+            webxrRequiredFeatures,
+            webxrOptionalFeatures
+        );
     }
 
     public async endSession() {
@@ -53,7 +56,7 @@ class WebXRProvider extends ARProvider {
             } catch {
                 // Session was ended for some
             }
-            
+
             this._xrSession = null;
         }
     }
