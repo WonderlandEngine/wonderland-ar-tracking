@@ -66,7 +66,7 @@ export class FaceMaskExample extends Component {
             this._meshComp.material = this.faceMaskMaterial;
         }
 
-        camera.onFaceLoading.push((event) => {
+        camera.onFaceLoading.add((event) => {
             // XR8 provides us with initial vertices, indices and uvs of the face mesh.
             // We'll be updating the positions and normals of the face mesh in the onFaceUpdate loop
             const {indices, uvs, pointsPerDetection} = event.detail;
@@ -95,9 +95,9 @@ export class FaceMaskExample extends Component {
             this._meshComp!.mesh = this._mesh;
         });
 
-        camera.onFaceFound.push(this.updateFaceMesh);
+        camera.onFaceFound.add(this.updateFaceMesh);
 
-        camera.onFaceUpdate.push((event) => {
+        camera.onFaceUpdate.add((event) => {
             this.updateFaceMesh(event);
 
             const {transform} = event.detail;
@@ -122,7 +122,7 @@ export class FaceMaskExample extends Component {
             this.object.scalingWorld.set(cachedScale);
         });
 
-        camera.onFaceLost.push((_event) => {
+        camera.onFaceLost.add((_event) => {
             this.object.scalingWorld = [0, 0, 0];
             cachedScale[0] = cachedScale[1] = cachedScale[2] = 0;
         });

@@ -70,13 +70,13 @@ export class PhysicalSizeImageTarget extends Component {
             );
         }
 
-        camera.onImageScanning.push(this.onImageScanned);
+        camera.onImageScanning.add(this.onImageScanned);
 
-        camera.onImageFound.push(this.onImageFound);
+        camera.onImageFound.add(this.onImageFound);
 
-        camera.onImageUpdate.push(this.onImageUpdated);
+        camera.onImageUpdate.add(this.onImageUpdated);
 
-        camera.onImageLost.push((event: XR8ImageTrackedEvent) => {
+        camera.onImageLost.add((event: XR8ImageTrackedEvent) => {
             if (event.detail.name === this.imageId) {
                 this._imageLostTimeout = setTimeout(() => {
                     this._meshComp!.active = false;

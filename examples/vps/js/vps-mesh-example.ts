@@ -76,7 +76,7 @@ export class VPSMeshExample extends Component {
             }
         });
 
-        camera.onMeshFound.push(this.createMesh);
+        camera.onMeshFound.add(this.createMesh);
     }
 
     /**

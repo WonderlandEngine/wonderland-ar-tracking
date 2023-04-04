@@ -18,12 +18,12 @@ class WebXRProvider extends ARProvider {
     public override set engine(engine: WonderlandEngine) {
         super.engine = engine;
 
-        engine.onXRSessionStart.push((session: XRSession) => {
+        engine.onXRSessionStart.add((session: XRSession) => {
             this._xrSession = session;
             this.onSessionStarted.notify(this);
         });
 
-        engine.onXRSessionEnd.push(() => {
+        engine.onXRSessionEnd.add(() => {
             this.onSessionEnded.notify(this);
         });
     }

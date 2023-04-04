@@ -73,7 +73,7 @@ export class FaceAttachmentPointExample extends Component {
 
         this.object.scalingWorld = [0, 0, 0];
 
-        camera.onFaceUpdate.push((event) => {
+        camera.onFaceUpdate.add((event) => {
             // event.detail.attachmentPoints are filled with positions of all available positions of the face features
             const {transform, attachmentPoints} = event.detail;
 
@@ -107,7 +107,7 @@ export class FaceAttachmentPointExample extends Component {
             ]);
         });
 
-        camera.onFaceLost.push((_event) => {
+        camera.onFaceLost.add((_event) => {
             this.object.scalingWorld = [0, 0, 0];
             cachedScale[0] = cachedScale[1] = cachedScale[2] = 0;
         });

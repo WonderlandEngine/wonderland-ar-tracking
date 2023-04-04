@@ -1,4 +1,4 @@
-import {ViewComponent} from '@wonderlandengine/api';
+import {Emitter, ViewComponent} from '@wonderlandengine/api';
 import {TrackingMode} from '../trackingMode.js';
 import {xr8Provider, XR8ExtraPermissions} from './xr8-provider.js';
 
@@ -60,17 +60,20 @@ class WorldTracking_XR8 extends TrackingMode {
      */
     private _extraPermissions: XR8ExtraPermissions = [];
 
-    public readonly onTrackingStatus: Array<(event: XR8TrackingStatusEvent) => void> = [];
+    public readonly onTrackingStatus: Emitter<[event: XR8TrackingStatusEvent]> =
+        new Emitter();
 
-    public readonly onImageScanning: Array<(event: XR8ImageScanningEvent) => void> = [];
-    public readonly onImageFound: Array<(event: XR8ImageTrackedEvent) => void> = [];
-    public readonly onImageUpdate: Array<(event: XR8ImageTrackedEvent) => void> = [];
-    public readonly onImageLost: Array<(event: XR8ImageTrackedEvent) => void> = [];
+    public readonly onImageScanning: Emitter<[event: XR8ImageScanningEvent]> =
+        new Emitter();
+    public readonly onImageFound: Emitter<[event: XR8ImageTrackedEvent]> = new Emitter();
+    public readonly onImageUpdate: Emitter<[event: XR8ImageTrackedEvent]> = new Emitter();
+    public readonly onImageLost: Emitter<[event: XR8ImageTrackedEvent]> = new Emitter();
 
-    public readonly onMeshFound: Array<(event: XR8VPSMeshFoundEvent) => void> = [];
-    public readonly onWaySpotFound: Array<(event: XR8VPSWayPointEvent) => void> = [];
-    public readonly onWaySpotUpdated: Array<(event: XR8VPSWayPointEvent) => void> = [];
-    public readonly onWaySpotLost: Array<(event: XR8VPSWayPointEvent) => void> = [];
+    public readonly onMeshFound: Emitter<[event: XR8VPSMeshFoundEvent]> = new Emitter();
+
+    public readonly onWaySpotFound: Emitter<[event: XR8VPSWayPointEvent]> = new Emitter();
+    public readonly onWaySpotUpdated: Emitter<[event: XR8VPSWayPointEvent]> = new Emitter();
+    public readonly onWaySpotLost: Emitter<[event: XR8VPSWayPointEvent]> = new Emitter();
 
     /**
      * Consumed by 8th Wall.
@@ -79,7 +82,7 @@ class WorldTracking_XR8 extends TrackingMode {
         {
             event: 'reality.trackingstatus',
             process: (event: XR8TrackingStatusEvent) => {
-                this.onTrackingStatus.forEach((callback) => callback(event));
+                this.onTrackingStatus.notify(event);
             },
         },
 
@@ -89,26 +92,26 @@ class WorldTracking_XR8 extends TrackingMode {
         {
             event: 'reality.imagescanning',
             process: (event: XR8ImageScanningEvent) => {
-                this.onImageScanning.forEach((callback) => callback(event));
+                this.onImageScanning.notify(event);
             },
         },
 
         {
             event: 'reality.imagefound',
             process: (event: XR8ImageTrackedEvent) => {
-                this.onImageFound.forEach((callback) => callback(event));
+                this.onImageFound.notify(event);
             },
         },
         {
             event: 'reality.imageupdated',
             process: (event: XR8ImageTrackedEvent) => {
-                this.onImageUpdate.forEach((callback) => callback(event));
+                this.onImageUpdate.notify(event);
             },
         },
         {
             event: 'reality.imagelost',
             process: (event: XR8ImageTrackedEvent) => {
-                this.onImageLost.forEach((callback) => callback(event));
+                this.onImageLost.notify(event);
             },
         },
 
@@ -118,7 +121,7 @@ class WorldTracking_XR8 extends TrackingMode {
         {
             event: 'reality.meshfound',
             process: (event: XR8VPSMeshFoundEvent) => {
-                this.onMeshFound.forEach((callback) => callback(event));
+                this.onMeshFound.notify(event);
             },
         },
 
@@ -153,21 +156,21 @@ class WorldTracking_XR8 extends TrackingMode {
         {
             event: 'reality.projectwayspotfound',
             process: (event: XR8VPSWayPointEvent) => {
-                this.onWaySpotFound.forEach((callback) => callback(event));
+                this.onWaySpotFound.notify(event);
             },
         },
 
         {
             event: 'reality.projectwayspotupdated',
             process: (event: XR8VPSWayPointEvent) => {
-                this.onWaySpotUpdated.forEach((callback) => callback(event));
+                this.onWaySpotUpdated.notify(event);
             },
         },
 
         {
             event: 'reality.projectwayspotlost',
             process: (event: XR8VPSWayPointEvent) => {
-                this.onWaySpotLost.forEach((callback) => callback(event));
+                this.onWaySpotLost.notify(event);
             },
         },
     ];

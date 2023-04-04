@@ -58,9 +58,9 @@ export class VPSExample extends Component {
             VPSExample._debugText.remove();
         });
 
-        camera.onWaySpotFound.push(this.wayspotFound);
-        camera.onWaySpotUpdated.push(this.updateModelPose);
-        camera.onWaySpotLost.push(() => {
+        camera.onWaySpotFound.add(this.wayspotFound);
+        camera.onWaySpotUpdated.add(this.updateModelPose);
+        camera.onWaySpotLost.add(() => {
             VPSExample._debugText.innerHTML += '<br />Way spot lost';
         });
     }

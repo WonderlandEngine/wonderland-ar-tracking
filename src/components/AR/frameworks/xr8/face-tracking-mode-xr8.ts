@@ -1,4 +1,4 @@
-import {ViewComponent} from '@wonderlandengine/api';
+import {Emitter, ViewComponent} from '@wonderlandengine/api';
 import {TrackingMode} from '../trackingMode.js';
 import {xr8Provider} from './xr8-provider.js';
 import {ARFaceTrackingCamera} from '../../cameras/AR-face-tracking-camera.js';
@@ -33,11 +33,11 @@ class FaceTracking_XR8 extends TrackingMode {
      */
     private _cachedRotation = [0, 0, 0, -1];
 
-    public readonly onFaceScanning: Array<(event: XR8FaceLoadingEvent) => void> = [];
-    public readonly onFaceLoading: Array<(event: XR8FaceLoadingEvent) => void> = [];
-    public readonly onFaceFound: Array<(event: XR8FaceFoundEvent) => void> = [];
-    public readonly onFaceUpdate: Array<(event: XR8FaceFoundEvent) => void> = [];
-    public readonly onFaceLost: Array<(event: xr8FaceLostEvent) => void> = [];
+    public readonly onFaceScanning: Emitter<[event: XR8FaceLoadingEvent]> = new Emitter();
+    public readonly onFaceLoading: Emitter<[event: XR8FaceLoadingEvent]> = new Emitter();
+    public readonly onFaceFound: Emitter<[event: XR8FaceFoundEvent]> = new Emitter();
+    public readonly onFaceUpdate: Emitter<[event: XR8FaceFoundEvent]> = new Emitter();
+    public readonly onFaceLost: Emitter<[event: xr8FaceLostEvent]> = new Emitter();
 
     /**
      * Consumed by 8th Wall.
@@ -49,7 +49,7 @@ class FaceTracking_XR8 extends TrackingMode {
              */
             event: 'facecontroller.faceloading',
             process: (event: XR8FaceLoadingEvent) => {
-                this.onFaceLoading.forEach((callback) => callback(event));
+                this.onFaceLoading.notify(event);
             },
         },
 
@@ -59,26 +59,26 @@ class FaceTracking_XR8 extends TrackingMode {
              */
             event: 'facecontroller.facescanning',
             process: (event: XR8FaceLoadingEvent) => {
-                this.onFaceLoading.forEach((callback) => callback(event));
+                this.onFaceLoading.notify(event);
             },
         },
 
         {
             event: 'facecontroller.facefound',
             process: (event: XR8FaceFoundEvent) => {
-                this.onFaceFound.forEach((callback) => callback(event));
+                this.onFaceFound.notify(event);
             },
         },
         {
             event: 'facecontroller.faceupdated',
             process: (event: XR8FaceFoundEvent) => {
-                this.onFaceUpdate.forEach((callback) => callback(event));
+                this.onFaceUpdate.notify(event);
             },
         },
         {
             event: 'facecontroller.facelost',
             process: (event: xr8FaceLostEvent) => {
-                this.onFaceLost.forEach((callback) => callback(event));
+                this.onFaceLost.notify(event);
             },
         },
     ];

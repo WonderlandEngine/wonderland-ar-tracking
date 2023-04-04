@@ -75,7 +75,7 @@ export class AbsoluteScaleWatcher extends Component {
             this._tracking = false;
         });
 
-        camera.onTrackingStatus.push((event) => {
+        camera.onTrackingStatus.add((event) => {
             if (event.detail.status === 'NORMAL') {
                 div.style.display = 'none';
                 this._tracking = true;

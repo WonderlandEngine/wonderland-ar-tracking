@@ -40,11 +40,11 @@ export class ImageTrackingExample extends Component {
             );
         }
 
-        camera.onImageFound.push(this.onImageFound);
+        camera.onImageFound.add(this.onImageFound);
 
-        camera.onImageUpdate.push(this.onImageUpdated);
+        camera.onImageUpdate.add(this.onImageUpdated);
 
-        camera.onImageLost.push((event: XR8ImageTrackedEvent) => {
+        camera.onImageLost.add((event: XR8ImageTrackedEvent) => {
             if (event.detail.name === this.imageId) {
                 this.object.scalingWorld = [0, 0, 0];
             }

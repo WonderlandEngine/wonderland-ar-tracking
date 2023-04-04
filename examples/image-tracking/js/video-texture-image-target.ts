@@ -41,9 +41,9 @@ export class VideoTextureImageTarget extends Component {
 
         this._videoTextureComp = this.object.getComponent('video-texture') as any; // video-texture component is not updated to match @wonderlandengine/api 0.9.8 ("@wonderlandengine/components": "^0.9.2"),
 
-        camera.onImageFound.push(this.onImageFound);
+        camera.onImageFound.add(this.onImageFound);
 
-        camera.onImageLost.push((event: XR8ImageTrackedEvent) => {
+        camera.onImageLost.add((event: XR8ImageTrackedEvent) => {
             if (event.detail.name === this._physicalSizeImageTarget.imageId) {
                 this._imageLostTimeout = setTimeout(() => {
                     this._videoTextureComp.video.pause();
