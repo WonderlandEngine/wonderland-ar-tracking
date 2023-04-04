@@ -15,18 +15,12 @@ import {loadRuntime} from '@wonderlandengine/api';
 import * as API from '@wonderlandengine/api'; // Deprecated: Backward compatibility.
 
 /* wle:auto-imports:start */
-import {
-    ARFaceTrackingCamera,
-    ARImageTrackingCamera,
-    ARSLAMCamera,
-    ARVPSCamera,
-    ARXR8SLAMCamera,
-} from '@wonderlandengine/8thwall-tracking';
+import {ARSLAMCamera} from '@wonderlandengine/8thwall-tracking';
+import {ButtonEndARSession} from './../../common-components/button-end-ar-session.ts';
+import {ButtonStartARSession} from './../../common-components/button-start-ar-session.ts';
 import {HitTestLocationRoot} from './hit-test-location-root.ts';
 import {HitTestLocationXR8} from './hit-test-location-xr8.ts';
 import {SpawnMeshOnReticle} from './spawn-mesh-on-reticle.ts';
-import {ButtonEndARSession} from './../../common-components/button-end-ar-session.ts';
-import {ButtonStartARSession} from './../../common-components/button-start-ar-session.ts';
 /* wle:auto-imports:end */
 
 /* wle:auto-constants:start */
@@ -58,18 +52,12 @@ if (vrButton) {
 }
 
 /* wle:auto-register:start */
-engine.registerComponent(
-    ARFaceTrackingCamera,
-    ARImageTrackingCamera,
-    ARSLAMCamera,
-    ARVPSCamera,
-    ARXR8SLAMCamera
-);
+engine.registerComponent(ARSLAMCamera);
+engine.registerComponent(ButtonEndARSession);
+engine.registerComponent(ButtonStartARSession);
 engine.registerComponent(HitTestLocationRoot);
 engine.registerComponent(HitTestLocationXR8);
 engine.registerComponent(SpawnMeshOnReticle);
-engine.registerComponent(ButtonEndARSession);
-engine.registerComponent(ButtonStartARSession);
 /* wle:auto-register:end */
 
 engine.scene.load(`${ProjectName}.bin`);

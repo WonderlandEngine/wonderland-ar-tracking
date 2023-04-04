@@ -15,15 +15,7 @@ import {loadRuntime} from '@wonderlandengine/api';
 import * as API from '@wonderlandengine/api'; // Deprecated: Backward compatibility.
 
 /* wle:auto-imports:start */
-import {
-    ARFaceTrackingCamera,
-    ARImageTrackingCamera,
-    ARSLAMCamera,
-    ARVPSCamera,
-    ARXR8SLAMCamera,
-} from '@wonderlandengine/8thwall-tracking';
-import {ButtonEndARSession} from './../../common-components/button-end-ar-session.ts';
-import {ButtonStartARSession} from './../../common-components/button-start-ar-session.ts';
+import {ARVPSCamera} from '@wonderlandengine/8thwall-tracking';
 import {CustomUIHandler} from './custom-xr-ui-handler.ts';
 /* wle:auto-imports:end */
 
@@ -56,15 +48,7 @@ if (vrButton) {
 }
 
 /* wle:auto-register:start */
-engine.registerComponent(
-    ARFaceTrackingCamera,
-    ARImageTrackingCamera,
-    ARSLAMCamera,
-    ARVPSCamera,
-    ARXR8SLAMCamera
-);
-engine.registerComponent(ButtonEndARSession);
-engine.registerComponent(ButtonStartARSession);
+engine.registerComponent(ARVPSCamera);
 engine.registerComponent(CustomUIHandler);
 /* wle:auto-register:end */
 

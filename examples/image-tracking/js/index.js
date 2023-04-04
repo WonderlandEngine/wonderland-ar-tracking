@@ -15,42 +15,13 @@ import {loadRuntime} from '@wonderlandengine/api';
 import * as API from '@wonderlandengine/api'; // Deprecated: Backward compatibility.
 
 /* wle:auto-imports:start */
-import {
-    ARFaceTrackingCamera,
-    ARImageTrackingCamera,
-    ARSLAMCamera,
-    ARVPSCamera,
-    ARXR8SLAMCamera,
-} from '@wonderlandengine/8thwall-tracking';
-import {
-    ARCamera8thwall,
-    Cursor,
-    CursorTarget,
-    DebugObject,
-    DeviceOrientationLook,
-    FingerCursor,
-    FixedFoveation,
-    HandTracking,
-    HitTestLocation,
-    HowlerAudioListener,
-    HowlerAudioSource,
-    ImageTexture,
-    MouseLookComponent,
-    PlayerHeight,
-    TargetFramerate,
-    TeleportComponent,
-    Trail,
-    TwoJointIkSolver,
-    VideoTexture,
-    VrModeActiveSwitch,
-    Vrm,
-    WasdControlsComponent,
-} from '@wonderlandengine/components';
-import {ImageTrackingExample} from './image-tracker.ts';
-import {PhysicalSizeImageTarget} from './physical-size-image-target.ts';
-import {VideoTextureImageTarget} from './video-texture-image-target.ts';
+import {ARImageTrackingCamera} from '@wonderlandengine/8thwall-tracking';
 import {ButtonEndARSession} from './../../common-components/button-end-ar-session.ts';
 import {ButtonStartARSession} from './../../common-components/button-start-ar-session.ts';
+import {ImageTrackingExample} from './image-tracker.ts';
+import {PhysicalSizeImageTarget} from './physical-size-image-target.ts';
+import {VideoTexture} from '@wonderlandengine/components';
+import {VideoTextureImageTarget} from './video-texture-image-target.ts';
 /* wle:auto-imports:end */
 
 /* wle:auto-constants:start */
@@ -82,42 +53,13 @@ if (vrButton) {
 }
 
 /* wle:auto-register:start */
-engine.registerComponent(
-    ARFaceTrackingCamera,
-    ARImageTrackingCamera,
-    ARSLAMCamera,
-    ARVPSCamera,
-    ARXR8SLAMCamera
-);
-engine.registerComponent(
-    ARCamera8thwall,
-    Cursor,
-    CursorTarget,
-    DebugObject,
-    DeviceOrientationLook,
-    FingerCursor,
-    FixedFoveation,
-    HandTracking,
-    HitTestLocation,
-    HowlerAudioListener,
-    HowlerAudioSource,
-    ImageTexture,
-    MouseLookComponent,
-    PlayerHeight,
-    TargetFramerate,
-    TeleportComponent,
-    Trail,
-    TwoJointIkSolver,
-    VideoTexture,
-    VrModeActiveSwitch,
-    Vrm,
-    WasdControlsComponent
-);
+engine.registerComponent(ARImageTrackingCamera);
+engine.registerComponent(ButtonEndARSession);
+engine.registerComponent(ButtonStartARSession);
 engine.registerComponent(ImageTrackingExample);
 engine.registerComponent(PhysicalSizeImageTarget);
+engine.registerComponent(VideoTexture);
 engine.registerComponent(VideoTextureImageTarget);
-engine.registerComponent(ButtonEndARSession1);
-engine.registerComponent(ButtonStartARSession1);
 /* wle:auto-register:end */
 
 engine.scene.load(`${ProjectName}.bin`);
