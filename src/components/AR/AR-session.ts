@@ -1,4 +1,4 @@
-import {WonderlandEngine} from '@wonderlandengine/api';
+import {Emitter, WonderlandEngine} from '@wonderlandengine/api';
 import {ARProvider} from './AR-provider.js';
 
 /**
@@ -19,12 +19,13 @@ abstract class ARSession {
      */
     private static _currentTrackingProvider: ARProvider | null = null;
 
-    public static readonly onARSessionReady: Array<() => void> = [];
+    public static readonly onARSessionReady: Emitter = new Emitter();
 
-    public static readonly onSessionStarted: Array<(trackingProvider: ARProvider) => void> =
-        [];
-    public static readonly onSessionEnded: Array<(trackingProvider: ARProvider) => void> =
-        [];
+    public static readonly onSessionStarted: Emitter<[trackingProvider: ARProvider]> =
+        new Emitter();
+
+    public static readonly onSessionEnded: Emitter<[trackingProvider: ARProvider]> =
+        new Emitter();
 
     private static _sceneHasLoaded = false;
     private static _arSessionIsReady = false;
@@ -41,8 +42,8 @@ abstract class ARSession {
         engine: WonderlandEngine,
         provider: ARProvider
     ) {
-        if (!engine.onSceneLoaded.includes(this.onWLSceneLoaded)) {
-            engine.onSceneLoaded.push(this.onWLSceneLoaded);
+        if (!engine.onSceneLoaded.has(this.onWLSceneLoaded)) {
+            engine.onSceneLoaded.add(this.onWLSceneLoaded);
         }
 
         if (this._trackingProviders.includes(provider)) {
@@ -52,8 +53,8 @@ abstract class ARSession {
         this._trackingProviders.push(provider);
         provider.engine = engine;
 
-        provider.onSessionStarted.push(this.onProviderSessionStarted);
-        provider.onSessionEnded.push(this.onProviderSessionEnded);
+        provider.onSessionStarted.add(this.onProviderSessionStarted);
+        provider.onSessionEnded.add(this.onProviderSessionEnded);
 
         await provider.load();
         this.checkProviderLoadProgress();
@@ -75,7 +76,7 @@ abstract class ARSession {
             this._sceneHasLoaded
         ) {
             this._arSessionIsReady = true;
-            this.onARSessionReady.forEach((cb) => cb());
+            this.onARSessionReady.notify();
         }
     };
 
@@ -102,7 +103,7 @@ abstract class ARSession {
      */
     private static onProviderSessionStarted = (provider: ARProvider) => {
         this._currentTrackingProvider = provider;
-        this.onSessionStarted.forEach((cb) => cb(provider));
+        this.onSessionStarted.notify(provider);
     };
 
     /**
@@ -110,7 +111,7 @@ abstract class ARSession {
      * @param provider to be passed into onSessionEnded callback function
      */
     private static onProviderSessionEnded = (provider: ARProvider) => {
-        this.onSessionEnded.forEach((cb) => cb(provider));
+        this.onSessionEnded.notify(provider);
     };
 }
 

@@ -28,8 +28,8 @@ export class HitTestLocationRoot extends Component {
 
     private _tracking = false;
     init() {
-        ARSession.onSessionStarted.push(this.onSessionStarted);
-        ARSession.onSessionEnded.push(this.onSessionEnded);
+        ARSession.onSessionStarted.add(this.onSessionStarted);
+        ARSession.onSessionEnded.add(this.onSessionEnded);
         this._tempScaling.set(this.object.scalingLocal);
         this._visible = false;
         this.object.scale([0, 0, 0]);

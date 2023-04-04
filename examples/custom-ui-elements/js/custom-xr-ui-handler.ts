@@ -23,7 +23,7 @@ export class CustomUIHandler extends Component implements XR8UIHandler {
         xr8Provider.uiHandler = this;
 
         // Start AR session as soon as it's available
-        ARSession.onARSessionReady.push(() => {
+        ARSession.onARSessionReady.add(() => {
             this.object.getComponent(ARVPSCamera)?.startSession();
         });
     }

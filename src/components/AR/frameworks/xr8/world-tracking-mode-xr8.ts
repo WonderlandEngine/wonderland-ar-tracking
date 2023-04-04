@@ -200,7 +200,7 @@ class WorldTracking_XR8 extends TrackingMode {
         this._cachedRotation[2] = rot[2];
         this._cachedRotation[3] = rot[3];
 
-        xr8Provider.onSessionEnded.push(() => {
+        xr8Provider.onSessionEnded.add(() => {
             XR8.removeCameraPipelineModules([XR8.XrController.pipelineModule(), this]);
         });
     }

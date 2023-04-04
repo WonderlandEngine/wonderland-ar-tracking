@@ -15,17 +15,11 @@ import {loadRuntime} from '@wonderlandengine/api';
 import * as API from '@wonderlandengine/api'; // Deprecated: Backward compatibility.
 
 /* wle:auto-imports:start */
-import {
-    ARFaceTrackingCamera,
-    ARImageTrackingCamera,
-    ARSLAMCamera,
-    ARVPSCamera,
-    ARXR8SLAMCamera,
-} from '@wonderlandengine/8thwall-tracking';
-import {FaceAttachmentPointExample} from './face-attachment-point-example.ts';
-import {FaceMaskExample} from './face-mask-example.ts';
+import {ARFaceTrackingCamera} from '@wonderlandengine/8thwall-tracking';
 import {ButtonEndARSession} from './../../common-components/button-end-ar-session.ts';
 import {ButtonStartARSession} from './../../common-components/button-start-ar-session.ts';
+import {FaceAttachmentPointExample} from './face-attachment-point-example.ts';
+import {FaceMaskExample} from './face-mask-example.ts';
 /* wle:auto-imports:end */
 
 /* wle:auto-constants:start */
@@ -41,7 +35,7 @@ const engine = await loadRuntime(RuntimeBaseName, {
 Object.assign(engine, API); // Deprecated: Backward compatibility.
 window.WL = engine; // Deprecated: Backward compatibility.
 
-engine.onSceneLoaded.push(() => {
+engine.onSceneLoaded.add(() => {
     const el = document.getElementById('version');
     if (el) setTimeout(() => el.remove(), 2000);
 });
@@ -56,17 +50,11 @@ if (vrButton) {
 }
 
 /* wle:auto-register:start */
-engine.registerComponent(
-    ARFaceTrackingCamera,
-    ARImageTrackingCamera,
-    ARSLAMCamera,
-    ARVPSCamera,
-    ARXR8SLAMCamera
-);
-engine.registerComponent(FaceAttachmentPointExample);
-engine.registerComponent(FaceMaskExample);
+engine.registerComponent(ARFaceTrackingCamera);
 engine.registerComponent(ButtonEndARSession);
 engine.registerComponent(ButtonStartARSession);
+engine.registerComponent(FaceAttachmentPointExample);
+engine.registerComponent(FaceMaskExample);
 /* wle:auto-register:end */
 
 engine.scene.load(`${ProjectName}.bin`);

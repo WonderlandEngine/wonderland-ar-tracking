@@ -49,7 +49,7 @@ export class XR8CameraSwitch extends Component {
             ARSession.stopARSession();
         });
 
-        ARSession.onSessionEnded.push(() => {
+        ARSession.onSessionEnded.add(() => {
             this._faceTrackingCamera!.active = false;
             this._imageTrackingCamera!.active = false;
             this._worldTrackingCamera!.active = false;

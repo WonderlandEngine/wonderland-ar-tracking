@@ -51,7 +51,7 @@ export class ImageTrackingExample extends Component {
             }
         });
 
-        ARSession.onSessionEnded.push(() => {
+        ARSession.onSessionEnded.add(() => {
             this.object.scalingWorld = [0, 0, 0];
         });
 

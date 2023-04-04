@@ -15,16 +15,16 @@ export class ButtonStartARSession extends Component {
         if (ARSession.arSessionReady) {
             this.onARSessionReady();
         } else {
-            ARSession.onARSessionReady.push(() => this.onARSessionReady());
+            ARSession.onARSessionReady.add(this.onARSessionReady);
         }
 
-        ARSession.onSessionEnded.push(() => {
+        ARSession.onSessionEnded.add(() => {
             let xrButton = document.querySelector<HTMLElement>('#ar-button');
             xrButton!.style.display = 'block';
         });
     }
 
-    onARSessionReady() {
+    onARSessionReady = () => {
         let xrButton = document.querySelector<HTMLElement>('#ar-button');
 
         if (xrButton === null) {
@@ -44,5 +44,5 @@ export class ButtonStartARSession extends Component {
                 }
             }
         });
-    }
+    };
 }

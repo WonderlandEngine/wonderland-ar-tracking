@@ -27,11 +27,11 @@ export class ButtonEndARSession extends Component {
             ARSession.stopARSession();
         });
 
-        ARSession.onSessionStarted.push(() => {
+        ARSession.onSessionStarted.add(() => {
             this.xrEndButton.style.display = 'block';
         });
 
-        ARSession.onSessionEnded.push(() => {
+        ARSession.onSessionEnded.add(() => {
             this.xrEndButton.style.display = 'none';
         });
     }

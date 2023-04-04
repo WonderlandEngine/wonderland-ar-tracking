@@ -207,7 +207,7 @@ class XR8Provider extends ARProvider {
      */
     public async startSession(options: Parameters<typeof XR8.run>[0]) {
         XR8.run(options);
-        this.onSessionStarted.forEach((cb) => cb(this));
+        this.onSessionStarted.notify(this);
     }
 
     /**
@@ -217,7 +217,7 @@ class XR8Provider extends ARProvider {
     public async endSession() {
         if (this._running) {
             XR8.stop();
-            this.onSessionEnded.forEach((cb) => cb(this));
+            this.onSessionEnded.notify(this);
         }
     }
 
@@ -233,12 +233,12 @@ class XR8Provider extends ARProvider {
             this.cachedWebGLContext = this._engine.canvas!.getContext('webgl2');
         }
 
-        if (!this._engine.scene.onPreRender.includes(this.onWLPreRender)) {
-            this._engine.scene.onPreRender.push(this.onWLPreRender);
+        if (!this._engine.scene.onPreRender.has(this.onWLPreRender)) {
+            this._engine.scene.onPreRender.add(this.onWLPreRender);
         }
 
-        if (!this._engine.scene.onPostRender.includes(this.onWLPostRender)) {
-            this._engine.scene.onPostRender.push(this.onWLPostRender);
+        if (!this._engine.scene.onPostRender.has(this.onWLPostRender)) {
+            this._engine.scene.onPostRender.add(this.onWLPostRender);
         }
     }
 
@@ -247,16 +247,12 @@ class XR8Provider extends ARProvider {
      * which in turn removes the drawing of the camera feed.
      */
     public disableCameraFeed() {
-        const indexPrerender = this._engine.scene.onPreRender.indexOf(this.onWLPreRender);
-        if (indexPrerender !== -1) {
-            this._engine.scene.onPreRender.splice(indexPrerender);
+        if (this._engine.scene.onPreRender.has(this.onWLPreRender)) {
+            this._engine.scene.onPreRender.remove(this.onWLPreRender);
         }
 
-        const indexPostRender = this._engine.scene.onPostRender.indexOf(
-            this.onWLPostRender
-        );
-        if (indexPostRender !== -1) {
-            this._engine.scene.onPostRender.splice(indexPostRender);
+        if (this._engine.scene.onPostRender.has(this.onWLPostRender)) {
+            this._engine.scene.onPostRender.remove(this.onWLPostRender);
         }
     }
 
@@ -270,6 +266,7 @@ class XR8Provider extends ARProvider {
             this.cachedWebGLContext!.DRAW_FRAMEBUFFER,
             null
         );
+
         XR8.runPreRender(Date.now());
         XR8.runRender(); // <--- tell 8th Wall to do it's thing (alternatively call this.GlTextureRenderer.onRender() if you only care about camera feed )
     };

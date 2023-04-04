@@ -95,7 +95,7 @@ class FaceTracking_XR8 extends TrackingMode {
 
         this._view = this.component.object.getComponent('view')!;
 
-        xr8Provider.onSessionEnded.push(() => {
+        xr8Provider.onSessionEnded.add(() => {
             XR8.removeCameraPipelineModules([XR8.FaceController.pipelineModule(), this]);
         });
     }

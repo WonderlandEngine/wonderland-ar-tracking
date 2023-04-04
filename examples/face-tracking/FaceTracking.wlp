@@ -684,7 +684,10 @@
             "entryPoint": "js/index.js"
         },
         "ar": {
-            "framework": "webxr"
+            "framework": "webxr",
+            "8thwall": {
+                "apiToken": "sadfasdfas"
+            }
         },
         "rendering": {
             "clearColor": [
