@@ -1,4 +1,4 @@
-import {Type} from '@wonderlandengine/api';
+import {property} from '@wonderlandengine/api/decorators.js';
 
 import {ARSession} from '../AR-session.js';
 import {FaceTracking_XR8} from '../frameworks/xr8/face-tracking-mode-xr8.js';
@@ -15,18 +15,11 @@ import {ARCamera} from './AR-Camera.js';
  */
 class ARFaceTrackingCamera extends ARCamera {
     public static TypeName = 'AR-face-tracking-camera';
-    public static Properties = {
-        cameraDirection: {
-            type: Type.Enum,
-            values: ['front', 'back'] as XR8CameraDirection[keyof XR8CameraDirection][],
-            default: 'front',
-        },
-    };
 
+    @property.enum(['front', 'back'] as XR8CameraDirection[keyof XR8CameraDirection][], "front")
+    cameraDirection!: number;
+    
     private _trackingImpl = new FaceTracking_XR8(this);
-
-    // will be set by WLE
-    public cameraDirection: number = 0;
 
     public get onFaceLoading() {
         return this._trackingImpl.onFaceLoading;

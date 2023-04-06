@@ -18,11 +18,14 @@ import {ARCamera} from './AR-Camera.js';
  */
 class ARSLAMCamera extends ARCamera {
     public static TypeName = 'AR-SLAM-camera';
-    public static Properties = {};
 
     private _trackingImpl!: ITrackingMode;
 
     public override init = () => {
+        /**
+         * check if the device supports webXR
+         * if it does - use webXRProvider
+         */
         if (this.engine.arSupported) {
             //if (false) { // force xr8
             ARSession.registerTrackingProvider(this.engine, webXRProvider);

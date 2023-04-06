@@ -19,9 +19,10 @@ import {ARCamera} from './AR-Camera.js';
  */
 class ARVPSCamera extends ARCamera {
     public static TypeName = 'AR-VPS-camera';
-    public static Properties = {};
 
-    // make sure noone can overwrite this
+    /**
+     * make sure noone can overwrite this
+     */
     public get usesVPS() {
         return true;
     }

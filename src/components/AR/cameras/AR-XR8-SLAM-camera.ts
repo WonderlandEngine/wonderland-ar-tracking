@@ -1,4 +1,4 @@
-import {Type} from '@wonderlandengine/api';
+import {property} from '@wonderlandengine/api/decorators.js';
 
 import {ARSession} from '../AR-session.js';
 
@@ -16,9 +16,9 @@ import {ARCamera} from './AR-Camera.js';
  */
 class ARXR8SLAMCamera extends ARCamera {
     public static TypeName = 'AR-XR8-SLAM-camera';
-    public static Properties = {
-        UseAbsoluteScale: {type: Type.Bool, default: false},
-    };
+
+    @property.bool(false)
+    useAbsoluteScale!: boolean;
 
     private _trackingImpl!: WorldTracking_XR8;
 

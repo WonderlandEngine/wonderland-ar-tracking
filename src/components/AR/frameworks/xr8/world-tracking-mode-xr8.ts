@@ -6,14 +6,14 @@ import {xr8Provider, XR8ExtraPermissions} from './xr8-provider.js';
  * A helper type to determine if a camera wants to enable SLAM tracking
  */
 type CanDisableSLAM = {
-    EnableSLAM: boolean;
+    enableSLAM: boolean;
 };
 
 /**
  * A helper type to determine if a camera wants to use an absolute scale
  */
 type CanUseAbsoluteScale = {
-    UseAbsoluteScale: boolean;
+    useAbsoluteScale: boolean;
 };
 
 /**
@@ -219,9 +219,9 @@ class WorldTracking_XR8 extends TrackingMode {
             return;
         }
 
-        const componentEnablesSLAM = (this.component as Partial<CanDisableSLAM>).EnableSLAM;
+        const componentEnablesSLAM = (this.component as Partial<CanDisableSLAM>).enableSLAM;
         const componentUsesAbsoluteScale = (this.component as Partial<CanUseAbsoluteScale>)
-            .UseAbsoluteScale;
+            .useAbsoluteScale;
         const componentUsesVPS = !!(this.component as Partial<UsesVPS>).usesVPS;
 
         XR8.XrController.configure({

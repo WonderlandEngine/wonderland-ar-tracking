@@ -1,4 +1,4 @@
-import {Type} from '@wonderlandengine/api';
+import {property} from '@wonderlandengine/api/decorators.js';
 
 import {ARSession} from '../AR-session.js';
 
@@ -15,10 +15,10 @@ import {ARCamera} from './AR-Camera.js';
  */
 class ARImageTrackingCamera extends ARCamera {
     public static TypeName = 'AR-image-tracking-camera';
-    public static Properties = {
-        EnableSLAM: {type: Type.Bool, default: false}, // Imrpoves tracking, reduces performance
-    };
 
+    @property.bool(false) // Improves tracking, reduces performance
+    enableSLAM!: number;
+   
     private _trackingImpl = new WorldTracking_XR8(this);
 
     public get onImageScanning() {

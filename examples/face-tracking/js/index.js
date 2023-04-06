@@ -16,10 +16,10 @@ import * as API from '@wonderlandengine/api'; // Deprecated: Backward compatibil
 
 /* wle:auto-imports:start */
 import {ARFaceTrackingCamera} from '@wonderlandengine/8thwall-tracking';
-import {ButtonEndARSession} from './../../common-components/button-end-ar-session.ts';
-import {ButtonStartARSession} from './../../common-components/button-start-ar-session.ts';
-import {FaceAttachmentPointExample} from './face-attachment-point-example.ts';
-import {FaceMaskExample} from './face-mask-example.ts';
+import {ButtonEndARSession} from './../../common-components/button-end-ar-session.js';
+import {ButtonStartARSession} from './../../common-components/button-start-ar-session.js';
+import {FaceAttachmentPointExample} from './face-attachment-point-example.js';
+import {FaceMaskExample} from './face-mask-example.js';
 /* wle:auto-imports:end */
 
 /* wle:auto-constants:start */

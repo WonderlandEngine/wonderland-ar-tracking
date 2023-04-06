@@ -9,6 +9,7 @@
  * If camera.onTrackingStatus is anything else - tracking in relative (aka non physically correct dimensions)
  */
 import {Component, Type, Object as WLEObject, Mesh, Material} from '@wonderlandengine/api';
+
 import {vec3} from 'gl-matrix';
 
 import {ARSession} from '@wonderlandengine/8thwall-tracking';
@@ -16,6 +17,7 @@ import {ARXR8SLAMCamera} from '@wonderlandengine/8thwall-tracking';
 
 export class AbsoluteScaleWatcher extends Component {
     public static TypeName = 'absolute-scale-watcher';
+
     public static Properties = {
         ARXR8SLAMCamera: {type: Type.Object},
 
