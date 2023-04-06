@@ -9,7 +9,6 @@ import {ARSession, ARCamera} from '../../';
 
 export class ButtonStartARSession extends Component {
     public static TypeName = 'button-start-ar-session';
-    public static Properties = {};
 
     init() {
         if (ARSession.arSessionReady) {

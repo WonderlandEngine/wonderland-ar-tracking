@@ -18,10 +18,10 @@ import * as API from '@wonderlandengine/api'; // Deprecated: Backward compatibil
 import {ARSLAMCamera} from '@wonderlandengine/8thwall-tracking';
 import {ARFaceTrackingCamera} from '@wonderlandengine/8thwall-tracking';
 import {ARImageTrackingCamera} from '@wonderlandengine/8thwall-tracking';
-import {FaceAttachmentPointExample} from './face-attachment-point-example.ts';
-import {ImageTrackingExample} from './image-tracker.ts';
-import {SlamTrackingExample} from './slam-tracking-example.ts';
-import {XR8CameraSwitch} from './camera-switch-ui.ts';
+import {FaceAttachmentPointExample} from './face-attachment-point-example.js';
+import {ImageTrackingExample} from './image-tracker.js';
+import {SlamTrackingExample} from './slam-tracking-example.js';
+import {XR8CameraSwitch} from './camera-switch-ui.js';
 /* wle:auto-imports:end */
 
 /* wle:auto-constants:start */

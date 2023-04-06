@@ -29,7 +29,8 @@
                 {
                     "type": "AR-XR8-SLAM-camera",
                     "AR-XR8-SLAM-camera": {
-                        "UseAbsoluteScale": true
+                        "UseAbsoluteScale": true,
+                        "useAbsoluteScale": true
                     }
                 },
                 {

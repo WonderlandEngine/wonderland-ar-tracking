@@ -13,7 +13,6 @@ import {
 
 export class XR8CameraSwitch extends Component {
     public static TypeName = 'xr8-camera-switch-example';
-    public static Properties = {};
 
     private _faceTrackingCamera?: ARFaceTrackingCamera;
     private _imageTrackingCamera?: ARImageTrackingCamera;

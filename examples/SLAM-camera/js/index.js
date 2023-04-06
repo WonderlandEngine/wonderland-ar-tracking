@@ -16,11 +16,11 @@ import * as API from '@wonderlandengine/api'; // Deprecated: Backward compatibil
 
 /* wle:auto-imports:start */
 import {ARSLAMCamera} from '@wonderlandengine/8thwall-tracking';
-import {ButtonEndARSession} from './../../common-components/button-end-ar-session.ts';
-import {ButtonStartARSession} from './../../common-components/button-start-ar-session.ts';
-import {HitTestLocationRoot} from './hit-test-location-root.ts';
-import {HitTestLocationXR8} from './hit-test-location-xr8.ts';
-import {SpawnMeshOnReticle} from './spawn-mesh-on-reticle.ts';
+import {ButtonEndARSession} from './../../common-components/button-end-ar-session.js';
+import {ButtonStartARSession} from './../../common-components/button-start-ar-session.js';
+import {HitTestLocationRoot} from './hit-test-location-root.js';
+import {HitTestLocationXR8} from './hit-test-location-xr8.js';
+import {SpawnMeshOnReticle} from './spawn-mesh-on-reticle.js';
 /* wle:auto-imports:end */
 
 /* wle:auto-constants:start */

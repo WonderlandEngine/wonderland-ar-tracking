@@ -7,17 +7,19 @@
  * In case of intersection, positions the this.object at the intersection point
  */
 
-import {Component, Object as WLEObject, Type} from '@wonderlandengine/api';
+import {Component, Object as WLEObject} from '@wonderlandengine/api';
+import {property} from '@wonderlandengine/api/decorators.js';
+
 import {vec3} from 'gl-matrix';
 import {ARSession, XR8Provider, ARProvider} from '@wonderlandengine/8thwall-tracking';
 
 export class HitTestLocationXR8 extends Component {
     public static TypeName = 'hit-test-location-xr8';
-    public static Properties = {
-        camera: {type: Type.Object},
-    };
 
-    // injected by WLE
+    /**
+     * The ARSLAMCamera somewhere in the scene
+     */
+    @property.object()
     camera!: WLEObject;
 
     private _tracking = false;

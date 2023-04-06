@@ -14,30 +14,35 @@ import {
     MeshComponent,
     MeshIndexType,
     Object as WLEObject,
-    Type,
 } from '@wonderlandengine/api';
+
+import {property} from '@wonderlandengine/api/decorators.js';
 
 import {ARFaceTrackingCamera} from '@wonderlandengine/8thwall-tracking';
 
 export class FaceMaskExample extends Component {
     public static TypeName = 'face-mask-example';
-    public static Properties = {
-        ARFaceTrackingCamera: {type: Type.Object},
 
-        // Material to use for the generated mesh
-        faceMaskMaterial: {type: Type.Material},
-    };
+    /**
+     * The ARFaceTrackingCamera somewhere in the scene
+     */
+    @property.object()
+    ARFaceTrackingCamera!: WLEObject;
 
-    // injected by WL..
-    private ARFaceTrackingCamera!: WLEObject;
+    /**
+     * Material to use for the generated mesh
+     */
+    @property.material()
+    faceMaskMaterial!: Material;
 
-    // injected by WL..
-    private faceMaskMaterial!: Material;
-
-    // We'll fill this with the mesh data provided by xr8
+    /**
+     * We'll fill this with the mesh data provided by xr8
+     */
     private _mesh: Mesh | null = null;
 
-    // component to hold the mesh
+    /**
+     * component to hold the mesh
+     */
     private _meshComp: MeshComponent | null = null;
 
     start() {

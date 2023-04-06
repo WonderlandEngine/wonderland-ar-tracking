@@ -18,7 +18,7 @@ class ARImageTrackingCamera extends ARCamera {
 
     @property.bool(false) // Improves tracking, reduces performance
     enableSLAM!: number;
-   
+
     private _trackingImpl = new WorldTracking_XR8(this);
 
     public get onImageScanning() {

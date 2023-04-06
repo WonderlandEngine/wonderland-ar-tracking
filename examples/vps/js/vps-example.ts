@@ -5,21 +5,25 @@
  * This example creates <div id="_debugText" /> to output some logs when waypoints are found or lost
  */
 
-import {Component, Object as WLEObject, Type} from '@wonderlandengine/api';
+import {Component, Object as WLEObject} from '@wonderlandengine/api';
+import {property} from '@wonderlandengine/api/decorators.js';
+
 import {ARSession, ARVPSCamera} from '@wonderlandengine/8thwall-tracking';
 
 export class VPSExample extends Component {
     public static TypeName = 'vps-example';
-    public static Properties = {
-        VPSCamera: {type: Type.Object},
-        waypointName: {type: Type.String}, // Material to use for the generated mesh
-    };
 
-    // injected by WL..
-    private VPSCamera!: WLEObject;
+    /**
+     * VPSCamera somewhere in the scene
+     */
+    @property.object()
+    VPSCamera!: WLEObject;
 
-    // injected by WL..
-    private waypointName!: string;
+    /**
+     * WAypoint name to track, copied from the 8th Wall platform
+     */
+    @property.string()
+    waypointName!: string;
 
     // private static toggleMeshButton: HTMLButtonElement;
     private static _debugText: HTMLDivElement;

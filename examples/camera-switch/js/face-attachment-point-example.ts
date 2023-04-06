@@ -2,9 +2,14 @@
  * FaceAttachmentPointExample
  * A quick example demonstrating tracking of a face feature
  */
-import {Component, Object as WLEObject, Type} from '@wonderlandengine/api';
+import {Component, Object as WLEObject} from '@wonderlandengine/api';
+import {property} from '@wonderlandengine/api/decorators.js';
+
 import {ARSession, ARFaceTrackingCamera} from '@wonderlandengine/8thwall-tracking';
 
+/**
+ * Possible attachment points
+ */
 const ATTACHMENT_POINTS = [
     'forehead',
     'rightEyebrowInner',
@@ -33,22 +38,23 @@ const ATTACHMENT_POINTS = [
 
 export class FaceAttachmentPointExample extends Component {
     public static TypeName = 'face-attachment-point-example';
-    public static Properties = {
-        ARFaceTrackingCamera: {type: Type.Object},
 
-        // To which ´attachmentPoint´ are we going to attach our `attachedObject`
-        attachmentPoint: {type: Type.Enum, values: ATTACHMENT_POINTS},
-
-        attachedObject: {type: Type.Object},
-    };
-
-    // injected by WL..
+    /**
+     * The ARFaceTrackingCamera somewhere in the scene
+     */
+    @property.object()
     ARFaceTrackingCamera!: WLEObject;
 
-    // injected by WL..
+    /**
+     * To which feature of the face should the object be attached
+     */
+    @property.enum(ATTACHMENT_POINTS)
     attachmentPoint: number = 0;
 
-    // injected by WL..
+    /**
+     * Object which should be attached to the face feature
+     */
+    @property.object()
     attachedObject!: WLEObject;
 
     start() {

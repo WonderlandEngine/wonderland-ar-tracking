@@ -16,9 +16,12 @@ import {ARCamera} from './AR-Camera.js';
 class ARFaceTrackingCamera extends ARCamera {
     public static TypeName = 'AR-face-tracking-camera';
 
-    @property.enum(['front', 'back'] as XR8CameraDirection[keyof XR8CameraDirection][], "front")
+    @property.enum(
+        ['front', 'back'] as XR8CameraDirection[keyof XR8CameraDirection][],
+        'front'
+    )
     cameraDirection!: number;
-    
+
     private _trackingImpl = new FaceTracking_XR8(this);
 
     public get onFaceLoading() {

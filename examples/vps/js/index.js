@@ -15,17 +15,11 @@ import {loadRuntime} from '@wonderlandengine/api';
 import * as API from '@wonderlandengine/api'; // Deprecated: Backward compatibility.
 
 /* wle:auto-imports:start */
-import {
-    ARFaceTrackingCamera,
-    ARImageTrackingCamera,
-    ARSLAMCamera,
-    ARVPSCamera,
-    ARXR8SLAMCamera,
-} from '@wonderlandengine/8thwall-tracking';
-import {VPSExample} from './vps-example.ts';
-import {VPSMeshExample} from './vps-mesh-example.ts';
-import {ButtonEndARSession} from './../../common-components/button-end-ar-session.ts';
-import {ButtonStartARSession} from './../../common-components/button-start-ar-session.ts';
+import {ARVPSCamera} from '@wonderlandengine/8thwall-tracking';
+import {ButtonEndARSession} from './../../common-components/button-end-ar-session.js';
+import {ButtonStartARSession} from './../../common-components/button-start-ar-session.js';
+import {VPSExample} from './vps-example.js';
+import {VPSMeshExample} from './vps-mesh-example.js';
 /* wle:auto-imports:end */
 
 /* wle:auto-constants:start */
@@ -57,17 +51,11 @@ if (vrButton) {
 }
 
 /* wle:auto-register:start */
-engine.registerComponent(
-    ARFaceTrackingCamera,
-    ARImageTrackingCamera,
-    ARSLAMCamera,
-    ARVPSCamera,
-    ARXR8SLAMCamera
-);
-engine.registerComponent(VPSExample);
-engine.registerComponent(VPSMeshExample);
+engine.registerComponent(ARVPSCamera);
 engine.registerComponent(ButtonEndARSession);
 engine.registerComponent(ButtonStartARSession);
+engine.registerComponent(VPSExample);
+engine.registerComponent(VPSMeshExample);
 /* wle:auto-register:end */
 
 engine.scene.load(`${ProjectName}.bin`);

@@ -12,8 +12,6 @@ import {PhysicalSizeImageTarget} from './physical-size-image-target.js';
 export class VideoTextureImageTarget extends Component {
     public static TypeName = 'video-texture-image-target-example';
 
-    public static Properties = {};
-
     private _physicalSizeImageTarget!: PhysicalSizeImageTarget;
 
     // cache videoTexture component

@@ -128,10 +128,9 @@ class FaceTracking_XR8 extends TrackingMode {
             allowedDevices: XR8.XrConfig.device().ANY,
             ownRunLoop: false,
             cameraConfig: {
-                direction:
-                    ARFaceTrackingCamera.Properties.cameraDirection.values![
-                        (this.component as ARFaceTrackingCamera).cameraDirection
-                    ] as XR8CameraDirection[keyof XR8CameraDirection]
+                direction: ARFaceTrackingCamera.Properties.cameraDirection.values![
+                    (this.component as ARFaceTrackingCamera).cameraDirection
+                ] as XR8CameraDirection[keyof XR8CameraDirection],
             },
         };
 

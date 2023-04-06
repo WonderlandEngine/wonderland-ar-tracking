@@ -6,13 +6,14 @@
 import {
     Component,
     Object as WLEObject,
-    Type,
     MeshComponent,
     Mesh,
     MeshIndexType,
     MeshAttribute,
     Material,
 } from '@wonderlandengine/api';
+import {property} from '@wonderlandengine/api/decorators.js';
+
 import {quat, vec3} from 'gl-matrix';
 
 import {ARSession, ARImageTrackingCamera} from '@wonderlandengine/8thwall-tracking';
@@ -21,20 +22,24 @@ import {generatePlaneGeomtry} from './geometries/plane-geometry.js';
 
 export class PhysicalSizeImageTarget extends Component {
     public static TypeName = 'physical-size-image-target-example';
-    public static Properties = {
-        ARImageTrackingCamera: {type: Type.Object},
-        imageId: {type: Type.String}, // tracked image ID
-        meshMaterial: {type: Type.Material}, // which material to assign to the generated mesh
-    };
 
-    // injected by WL..
-    public ARImageTrackingCamera!: WLEObject; // Marked this public, as video-taxture-image-target will need to access it
+    /**
+     * The ARImageTrackingCamera somewhere in the scene
+     */
+    @property.object()
+    ARImageTrackingCamera!: WLEObject;
 
-    // injected by WL..
-    private meshMaterial!: Material;
+    /**
+     * Image id from the 8th Wall platform
+     */
+    @property.string()
+    imageId!: string;
 
-    // injected by WL..
-    public imageId!: string; // Marked this public, as video-taxture-image-target will need to access it
+    /**
+     * Object which should be attached to the face feature
+     */
+    @property.material()
+    meshMaterial!: Material;
 
     // allocate some arrays
     private _cachedPosition = new Float32Array(4);

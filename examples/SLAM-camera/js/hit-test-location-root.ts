@@ -8,16 +8,18 @@
  *  - Specify `'hit-test'` in the required or optional features on the AR button in your html file.
  */
 
-import {Component, Object as WLEObject, Type} from '@wonderlandengine/api';
+import {Component, Object as WLEObject} from '@wonderlandengine/api';
+import {property} from '@wonderlandengine/api/decorators.js';
+
 import {ARSession, WebXRProvider, ARProvider} from '@wonderlandengine/8thwall-tracking';
 
 export class HitTestLocationRoot extends Component {
     public static TypeName = 'hit-test-location-root';
-    public static Properties = {
-        camera: {type: Type.Object},
-    };
 
-    // injected by WLE
+    /**
+     * The ARSLAMCamera somewhere in the scene
+     */
+    @property.object()
     camera!: WLEObject;
 
     private _tempScaling = new Float32Array(3);

@@ -3,18 +3,23 @@
  * NOTE: in case of webXR device api tracking (WebXRProvider), click event is raised by the XRSession.onselect event.
  * In case of xr8 tracking - click event is raised by window.onclick
  */
-import {Component, Material, Mesh, Type} from '@wonderlandengine/api';
+import {Component, Material, Mesh} from '@wonderlandengine/api';
+import {property} from '@wonderlandengine/api/decorators.js';
+
 import {ARSession, ARProvider, WebXRProvider} from '@wonderlandengine/8thwall-tracking';
 export class SpawnMeshOnReticle extends Component {
     public static TypeName = 'spawn-mesh-on-reticle';
-    public static Properties = {
-        /* The mesh to spawn */
-        mesh: {type: Type.Mesh},
-        /* The material to spawn the mesh with */
-        material: {type: Type.Material},
-    };
 
+    /**
+     * The mesh to spawn
+     */
+    @property.mesh()
     mesh!: Mesh;
+
+    /**
+     * The material to spawn the mesh with
+     */
+    @property.material()
     material!: Material;
 
     start() {

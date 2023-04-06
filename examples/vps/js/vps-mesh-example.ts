@@ -10,24 +10,27 @@ import {
     MeshComponent,
     Material,
     Object as WLEObject,
-    Type,
     MeshIndexType,
     MeshAttribute,
 } from '@wonderlandengine/api';
+import {property} from '@wonderlandengine/api/decorators.js';
+
 import {ARSession, ARVPSCamera} from '@wonderlandengine/8thwall-tracking';
 
 export class VPSMeshExample extends Component {
     public static TypeName = 'vps-mesh-example';
-    public static Properties = {
-        VPSCamera: {type: Type.Object},
-        generatedMeshMaterial: {type: Type.Material}, // MAterial to use for the generated mesh
-    };
 
-    // injected by WL..
-    private VPSCamera!: WLEObject;
+    /**
+     * VPSCamera somewhere in the scene
+     */
+    @property.object()
+    VPSCamera!: WLEObject;
 
-    // injected by WL..
-    private generatedMeshMaterial!: Material;
+    /**
+     * WAypoint name to track, copied from the 8th Wall platform
+     */
+    @property.material()
+    generatedMeshMaterial!: Material;
 
     private _mesh: Mesh | null = null;
     private _meshComp: MeshComponent | null = null;

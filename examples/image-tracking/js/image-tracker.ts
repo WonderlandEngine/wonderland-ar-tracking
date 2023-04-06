@@ -5,20 +5,25 @@
  * Moves the object of the component to tracked image position.
  *
  */
-import {Component, Object as WLEObject, Type} from '@wonderlandengine/api';
+import {Component, Object as WLEObject} from '@wonderlandengine/api';
+import {property} from '@wonderlandengine/api/decorators.js';
+
 import {ARSession, ARImageTrackingCamera} from '@wonderlandengine/8thwall-tracking';
 
 export class ImageTrackingExample extends Component {
     public static TypeName = 'image-tracking-example';
-    public static Properties = {
-        ARImageTrackingCamera: {type: Type.Object},
-        imageId: {type: Type.String},
-    };
-    // injected by WL..
-    private ARImageTrackingCamera!: WLEObject;
 
-    // injected by WL..
-    private imageId!: string;
+    /**
+     * The ARImageTrackingCamera somewhere in the scene
+     */
+    @property.object()
+    ARImageTrackingCamera!: WLEObject;
+
+    /**
+     * Image id from the 8th Wall platform
+     */
+    @property.string()
+    imageId!: string;
 
     // allocate some arrays
     private _cachedPosition = new Array<number>(3);

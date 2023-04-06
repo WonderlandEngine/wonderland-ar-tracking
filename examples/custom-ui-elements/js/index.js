@@ -16,7 +16,7 @@ import * as API from '@wonderlandengine/api'; // Deprecated: Backward compatibil
 
 /* wle:auto-imports:start */
 import {ARVPSCamera} from '@wonderlandengine/8thwall-tracking';
-import {CustomUIHandler} from './custom-xr-ui-handler.ts';
+import {CustomUIHandler} from './custom-xr-ui-handler.js';
 /* wle:auto-imports:end */
 
 /* wle:auto-constants:start */

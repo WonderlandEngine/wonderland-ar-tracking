@@ -8,7 +8,6 @@ import {ARSession} from '../../';
 
 export class ButtonEndARSession extends Component {
     public static TypeName = 'button-end-ar-session';
-    public static Properties = {};
 
     xrEndButton!: HTMLButtonElement;
 
