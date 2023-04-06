@@ -17,8 +17,8 @@
   },
   "dependencies": {
     "@wonderlandengine/8thwall-tracking": "file:../..",
-    "@wonderlandengine/api": "github:wonderlandengine/api",
-    "@wonderlandengine/components": "github:wonderlandengine/components",
+    "@wonderlandengine/api": "^1.0.0-rc.3",
+    "@wonderlandengine/components": "^1.0.0-rc.3",
     "gl-matrix": "^3.4.3"
   }
 }

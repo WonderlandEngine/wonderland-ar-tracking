@@ -13,7 +13,7 @@
   ],
   "dependencies": {
     "@wonderlandengine/8thwall-tracking": "file:../..",
-    "@wonderlandengine/api": "github:wonderlandengine/api",
+    "@wonderlandengine/api": "^1.0.0-rc.3",
     "gl-matrix": "^3.4.3",
     "qrcode-with-logos": "^1.0.3"
   },
