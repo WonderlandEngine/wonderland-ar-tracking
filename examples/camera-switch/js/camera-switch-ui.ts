@@ -1,14 +1,18 @@
 /**
  * XR8CameraSwitch
- * Creates several HTML buttons, which, when clicked, activates a corresponding AR tracking camera. 
+ * Creates several HTML buttons, which, when clicked, activates a corresponding AR tracking camera.
  */
 
 import {Component} from '@wonderlandengine/api';
-import {ARSession, ARFaceTrackingCamera, ARImageTrackingCamera, ARSLAMCamera} from '@wonderlandengine/8thwall-tracking';
+import {
+    ARSession,
+    ARFaceTrackingCamera,
+    ARImageTrackingCamera,
+    ARSLAMCamera,
+} from '@wonderlandengine/8thwall-tracking';
 
 export class XR8CameraSwitch extends Component {
     public static TypeName = 'xr8-camera-switch-example';
-    public static Properties = {};
 
     private _faceTrackingCamera?: ARFaceTrackingCamera;
     private _imageTrackingCamera?: ARImageTrackingCamera;
@@ -44,7 +48,7 @@ export class XR8CameraSwitch extends Component {
             ARSession.stopARSession();
         });
 
-        ARSession.onSessionEnded.push(() => {
+        ARSession.onSessionEnded.add(() => {
             this._faceTrackingCamera!.active = false;
             this._imageTrackingCamera!.active = false;
             this._worldTrackingCamera!.active = false;

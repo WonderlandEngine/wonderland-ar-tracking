@@ -2,6 +2,22 @@ declare var API_TOKEN_XR8: string;
 declare var WEBXR_REQUIRED_FEATURES: string[];
 declare var WEBXR_OPTIONAL_FEATURES: string[];
 
+declare type XR8CameraPipelineModuleUpdateArgs = {
+    processCpuResult: {
+        reality: {
+            rotation: {x: number; y: number; z: number; w: number};
+            position: {x: number; y: number; z: number; w: number};
+            intrinsics: number[];
+        };
+
+        facecontroller: {
+            rotation: {x: number; y: number; z: number; w: number};
+            position: {x: number; y: number; z: number; w: number};
+            intrinsics: number[];
+        };
+    };
+};
+
 declare type XR8CameraPipelineModule = {
     name: string;
     onAttach?: (details: {
@@ -23,7 +39,8 @@ declare type XR8CameraPipelineModule = {
         config: unknown;
     }) => void;
     onDetach?: (...args: any) => void;
-    onStart?: () => void;
+    onStart?: (event: XR8CameraPipelineModuleUpdateArgs) => void;
+    onUpdate?: (e: XR8CameraPipelineModuleUpdateArgs) => void;
     onException?: (error: string) => void;
 };
 

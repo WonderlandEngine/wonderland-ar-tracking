@@ -1,34 +1,100 @@
 import * as QRCode from 'qrcode-svg';
-import { ARProvider } from '../../AR-provider.js';
+import {ARProvider} from '../../AR-provider.js';
 
 /**
- * Array of extra permissions which some tracking mode might need. By default XR8 will need camera/microphone permissions and deviceMotion permission (iOS only). VPS for example must pass an extra 'location' permission
+ * Array of extra permissions which some tracking mode might need.
+ * By default XR8 will need camera/microphone permissions and deviceMotion permission (iOS only).
+ * VPS for example must pass an extra 'location' permission.
  */
-export type XR8ExtraPermissions = Array<'location'>;
+type XR8ExtraPermissions = Array<'location'>;
 
-
+/**
+ * An interface a Component should implement if it want's to handle 8th Wall UI events
+ */
 interface XR8UIHandler {
+    /**
+     * For webcam/device motion/location permissions to be requested, the user must interact with the device (touch the screen for example).
+     *
+     * `requestUserInteraction` should render some CTA (most likely button) to request a user to interact with the device.
+     * Default WLE implementation renders an AR button, so this function is useful only of you're implementing a custom `XR8UIHandler`
+     * @returns a promise when the user has interacted with the device
+     */
     requestUserInteraction: () => Promise<void>;
+
+    /**
+     * Inform the user that some permission could not be granted
+     * Default WLE implementation renders a `div' overlay with a generic error message
+     * and a button to refresh the page.
+     *
+     * Different browsers has different ways to reset permissions.
+     * This overlay is a good place to guide a user how to do that.
+     *
+     * @param error error containing an error message with a type of permission ("Location", "Camera", etc)
+     */
     handlePermissionFail: (error: Error) => void;
+
+    /**
+     * Inform the user that some error happened.
+     * Default WLE implementation renders a `div' overlay with an error message
+     * and a button to refresh the page.
+     *
+     * There is no way to recover from XR8 error, so refreshing the page is the best option.
+     *
+     * @param error error containing an error message
+     */
     handleError: (error: Event) => void;
+
+    /**
+     * If a device location is required, it can take a while for the device to resolve it.
+     * Default WLE implementation renders a 'div' overlay with a'waiting for location' text and a spinning cube animation.
+     */
     showWaitingForDeviceLocation: () => void;
+
+    /**
+     * `hideWaitingForDeviceLocation` is called after device location has been acquired.
+     * It should cleanup anything that was created by the `showWaitingForDeviceLocation` call.
+     * Default WLE implementation removes the overlay created by the `showWaitingForDeviceLocation`
+     */
     hideWaitingForDeviceLocation: () => void;
+
+    /**
+     * Inform the user that the used device is not compatible with the 8th Wall library.
+     * Default WLE implementation creates an overlay with the text that this device is not compatible
+     * and renders QR code pointing the the current URL.
+     */
     handleIncompatibleDevice: () => void;
 }
 
+/**
+ * ARProvider implementation for loading and setting up the 8th Wall lib
+ */
 class XR8Provider extends ARProvider {
-
+    /**
+     * Default XR8UIHandler to handle 8th wall UI related events
+     */
     public uiHandler: XR8UIHandler = new DefaultUIHandler();
 
-    public cachedWebGLContext: WebGL2RenderingContext | null = null;
+    /**
+     * We need to set the DRAW_FRAMEBUFFER to null on every frame,
+     * So let's cache the WLE canvas WebGL2RenderingContext.
+     */
+    private cachedWebGLContext: WebGL2RenderingContext | null = null;
 
-    // Loading of 8th Wall might be initiated by several components, make sure we load it only once
+    /**
+     * Loading of 8th Wall might be initiated by several components, make sure we load it only once
+     */
     private _loading = false;
 
-    // XR8 currently provides no way to check if the session is running, only if the session is paused (and we never pause, we just XR8.end()). so we track this manually
+    /**
+     * XR8 currently provides no way to check if the session is running, only if the session is paused (and we never pause, we just XR8.end()). so we track this manually
+     */
     private _running = false;
 
-    // Enforce the singleton pattern
+    /**
+     * We don't want the user to manually instantiate the XR8Provider.
+     * The instance XR8Provider is created at the bottom of this file once
+     * and if we detect that someone is trying to create a second instance of XR8Provider - we throw an error
+     */
     private _instance: XR8Provider | null = null;
 
     constructor() {
@@ -46,6 +112,17 @@ class XR8Provider extends ARProvider {
         this._instance = this;
     }
 
+    /**
+     * Loads an external 8th Wall library.
+     *
+     * Shows an 8th Wall logo at the bottom of the page and removes it when loading is done.
+     *
+     * Configures a custom XR8 pipeline module which enables/disables camera feed when the AR session starts/ends.
+     *
+     * Handles XR8 errors.
+     *
+     * @returns promise when the 8th Wall has loaded.
+     */
     public async load() {
         // Make sure we're no in the editor
         if (!window.document) {
@@ -65,6 +142,10 @@ class XR8Provider extends ARProvider {
                 return;
             }
 
+            /**
+             * API_TOKEN_XR8 should be defined in the index.html
+             * TODO: fix this when it's moved to the auto-constants
+             */
             if (!API_TOKEN_XR8) {
                 throw new Error('8th Wall api is not defined');
             }
@@ -73,11 +154,18 @@ class XR8Provider extends ARProvider {
             s.crossOrigin = 'anonymous';
             s.src = 'https://apps.8thwall.com/xrweb?appKey=' + API_TOKEN_XR8;
 
+            // xr8 has loaded
             window.addEventListener('xrloaded', () => {
                 this.loaded = true;
 
                 document.querySelector('#WL-loading-8thwall-logo')?.remove();
 
+                /**
+                 * Add a custom camera pipeline module to handle common tasks:
+                 * - start rendering camera feed when XR8 session starts
+                 * - stop rendering camera feed when XR8 session stops
+                 * - handle any error rised by the XR8 engine.
+                 */
                 XR8.addCameraPipelineModules([
                     XR8.GlTextureRenderer.pipelineModule(),
                     {
@@ -94,7 +182,7 @@ class XR8Provider extends ARProvider {
 
                         onException: (message) => {
                             this.uiHandler.handleError(
-                                new CustomEvent('8thwall-error', { detail: { message } })
+                                new CustomEvent('8thwall-error', {detail: {message}})
                             );
                         },
                     },
@@ -102,26 +190,41 @@ class XR8Provider extends ARProvider {
                 resolve();
             });
 
+            // append <script src="www.8thwall..." to the dom
             document.body.appendChild(s);
+
             // Wait until index.html has been fully parsed and append the 8th Wall logo
             document.readyState === 'complete'
                 ? this.add8thwallLogo()
                 : document.addEventListener('DOMContentLoaded', () => this.add8thwallLogo);
         });
     }
-
+    /**
+     * Starts XR8 session.
+     * Notifies all subscribers about this event.
+     * Usually will be called by some XR8 tracking implementation with specific options (Face-tracking, image-tracking, etc)
+     * @typeParam check XR8.run options parameter
+     */
     public async startSession(options: Parameters<typeof XR8.run>[0]) {
         XR8.run(options);
-        this.onSessionStarted.forEach((cb) => cb(this));
+        this.onSessionStarted.notify(this);
     }
 
+    /**
+     * Ends XR8 session,
+     * Can be called from anywhere.
+     */
     public async endSession() {
         if (this._running) {
             XR8.stop();
-            this.onSessionEnded.forEach((cb) => cb(this));
+            this.onSessionEnded.notify(this);
         }
     }
 
+    /**
+     * Sets up scene.onPreRender and scene.onPostRender callback
+     * which will handle the drawing of the camera feed.
+     */
     public enableCameraFeed() {
         // TODO: should we store the previous state of colorClearEnabled.
         this._engine.scene.colorClearEnabled = false;
@@ -130,40 +233,55 @@ class XR8Provider extends ARProvider {
             this.cachedWebGLContext = this._engine.canvas!.getContext('webgl2');
         }
 
-        if (!this._engine.scene.onPreRender.includes(this.onWLPreRender)) {
-            this._engine.scene.onPreRender.push(this.onWLPreRender);
+        if (!this._engine.scene.onPreRender.has(this.onWLPreRender)) {
+            this._engine.scene.onPreRender.add(this.onWLPreRender);
         }
 
-        if (!this._engine.scene.onPostRender.includes(this.onWLPostRender)) {
-            this._engine.scene.onPostRender.push(this.onWLPostRender);
+        if (!this._engine.scene.onPostRender.has(this.onWLPostRender)) {
+            this._engine.scene.onPostRender.add(this.onWLPostRender);
         }
     }
 
+    /**
+     * Cleans up scene.onPreRender and scene.onPostRender callback
+     * which in turn removes the drawing of the camera feed.
+     */
     public disableCameraFeed() {
-        const indexPrerender = this._engine.scene.onPreRender.indexOf(this.onWLPreRender);
-        if (indexPrerender !== -1) {
-            this._engine.scene.onPreRender.splice(indexPrerender);
+        if (this._engine.scene.onPreRender.has(this.onWLPreRender)) {
+            this._engine.scene.onPreRender.remove(this.onWLPreRender);
         }
 
-        const indexPostRender = this._engine.scene.onPostRender.indexOf(this.onWLPostRender);
-        if (indexPostRender !== -1) {
-            this._engine.scene.onPostRender.splice(indexPostRender);
+        if (this._engine.scene.onPostRender.has(this.onWLPostRender)) {
+            this._engine.scene.onPostRender.remove(this.onWLPostRender);
         }
     }
 
+    /**
+     * Called before WLE render call.
+     * Tells XR8 to run any necessary work before the WLE does it's rendering.
+     * This includes rendering a the camera frame.
+     */
     public onWLPreRender = () => {
         this.cachedWebGLContext!.bindFramebuffer(
             this.cachedWebGLContext!.DRAW_FRAMEBUFFER,
             null
         );
+
         XR8.runPreRender(Date.now());
         XR8.runRender(); // <--- tell 8th Wall to do it's thing (alternatively call this.GlTextureRenderer.onRender() if you only care about camera feed )
     };
 
+    /**
+     * Called after WLE render call.
+     * Tells XR8 it can do any necessary cleanup
+     */
     public onWLPostRender() {
         XR8.runPostRender(Date.now());
     }
 
+    /**
+     * Renders an 8th Wall logo at the bottom sof the screen
+     */
     private add8thwallLogo() {
         const a = document.createElement('a');
         a.href = 'https://www.8thwall.com/';
@@ -181,6 +299,12 @@ class XR8Provider extends ARProvider {
         document.body.appendChild(a);
     }
 
+    /**
+     * Notifies the uiHandler it needs user interaction to acquire device motion event.
+     * This is a specific iOS case. There is no native browser prompt for this permission,
+     * it just need a user interaction to be accessible.
+     * @returns motionEvent.
+     */
     private async promptForDeviceMotion() {
         // wait until user interaction happens
         await this.uiHandler.requestUserInteraction();
@@ -190,6 +314,15 @@ class XR8Provider extends ARProvider {
         return motionEvent;
     }
 
+    /**
+     * @private
+     * Tries to get all known and required permissions.
+     * Handles permission error events.
+     * @param extraPermissions array of strings for extra permissions required by the tracking implementation.
+     * Currently only 'location' is supported.
+     *
+     * @returns promise when all permissions were granted
+     */
     private async getPermissions(extraPermissions: XR8ExtraPermissions = []) {
         // iOS "feature". If we want to request the DeviceMotion permission, user has to interact with the page at first (touch it).
         // If there was no interaction done so far, we will render a HTML overlay with would get the user to interact with the screen
@@ -249,6 +382,16 @@ class XR8Provider extends ARProvider {
         return true;
     }
 
+    /**
+     * @public
+     * Checks if device browser is supported at all
+     * and check any required permissions.
+     * @param extraPermissions array of strings for extra permissions required by the tracking implementation.
+     * Currently only 'location' is supported.
+     *
+     * @returns promise when all permissions were granted
+     */
+
     public async checkPermissions(extraPermissions: XR8ExtraPermissions = []) {
         if (!XR8.XrDevice.isDeviceBrowserCompatible()) {
             this.uiHandler.handleIncompatibleDevice();
@@ -266,6 +409,10 @@ class XR8Provider extends ARProvider {
     }
 }
 
+/**
+ * Default WLE implementation of XR8UIHandler
+ * Check `XR8UIHandler` for details
+ */
 class DefaultUIHandler implements XR8UIHandler {
     requestUserInteraction = () => {
         const overlay = this.showOverlay(requestPermissionOverlay);
@@ -505,6 +652,9 @@ const deviceIncompatibleOverlay = () => {
     return html;
 };
 
+/**
+ * Inline 8th Wall svg logo.
+ */
 const xr8logo = `
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" width="252px" height="48px" viewBox="0 0 252 48" style="enable-background:new 0 0 252 48;" xml:space="preserve"><script xmlns=""/>
       <style type="text/css">
@@ -540,4 +690,4 @@ const xr8logo = `
 `;
 
 const xr8Provider = new XR8Provider();
-export { XR8Provider, xr8Provider, XR8UIHandler};
+export {XR8Provider, xr8Provider, XR8UIHandler, XR8ExtraPermissions};

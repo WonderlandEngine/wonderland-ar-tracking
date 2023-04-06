@@ -7,18 +7,22 @@
 import {Component} from '@wonderlandengine/api';
 import QrCodeWithLogo from 'qrcode-with-logos';
 
-import {ARSession, xr8Provider, XR8UIHandler, ARVPSCamera} from '@wonderlandengine/8thwall-tracking';
+import {
+    ARSession,
+    xr8Provider,
+    XR8UIHandler,
+    ARVPSCamera,
+} from '@wonderlandengine/8thwall-tracking';
 
 export class CustomUIHandler extends Component implements XR8UIHandler {
     public static TypeName = 'custom-xr8-ui-handler';
-    public static Properties = {};
 
     init() {
         // tell xr8Provider we will be the UI handler
         xr8Provider.uiHandler = this;
 
         // Start AR session as soon as it's available
-        ARSession.onARSessionReady.push(() => {
+        ARSession.onARSessionReady.add(() => {
             this.object.getComponent(ARVPSCamera)?.startSession();
         });
     }
@@ -72,11 +76,10 @@ export class CustomUIHandler extends Component implements XR8UIHandler {
         const html = await (await fetch('xr8-ui/incompatibleDeviceOverlay.html')).text();
         const overlay = this.showOverlay(html);
 
-        const f = new QrCodeWithLogo({
-            //canvas: document.getElementById("canvas"),
+        // @ts-expect-error ts(2351) "moduleResolution": "nodenext" does not understand commonjs? Claims that QrCodeWithLogo is not callable (although it surely is)
+        new QrCodeWithLogo({
             content: document.location.href,
             width: 350,
-            //download: true,
             image: overlay.querySelector('#xr8-overlay-qr-code') as HTMLImageElement,
             logo: {
                 src: 'ball.png',

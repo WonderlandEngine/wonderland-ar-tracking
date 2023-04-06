@@ -1,25 +1,29 @@
 /**
  * VPSExample
  * Demonstrates how to put an object on the detected waypoint.
- * 
+ *
  * This example creates <div id="_debugText" /> to output some logs when waypoints are found or lost
  */
 
-import {Component, Object as WLEObject, Type} from '@wonderlandengine/api';
+import {Component, Object as WLEObject} from '@wonderlandengine/api';
+import {property} from '@wonderlandengine/api/decorators.js';
+
 import {ARSession, ARVPSCamera} from '@wonderlandengine/8thwall-tracking';
 
 export class VPSExample extends Component {
     public static TypeName = 'vps-example';
-    public static Properties = {
-        VPSCamera: {type: Type.Object},
-        waypointName: {type: Type.String}, // Material to use for the generated mesh
-    };
 
-    // injected by WL..
-    private VPSCamera!: WLEObject;
+    /**
+     * VPSCamera somewhere in the scene
+     */
+    @property.object()
+    VPSCamera!: WLEObject;
 
-    // injected by WL..
-    private waypointName!: string;
+    /**
+     * WAypoint name to track, copied from the 8th Wall platform
+     */
+    @property.string()
+    waypointName!: string;
 
     // private static toggleMeshButton: HTMLButtonElement;
     private static _debugText: HTMLDivElement;
@@ -49,18 +53,18 @@ export class VPSExample extends Component {
             VPSExample._debugText.style.textShadow = '2px 2px 4px #FFFF00';
         }
 
-        ARSession.onSessionStarted.push(() => {
+        ARSession.onSessionStarted.add(() => {
             document.body.appendChild(VPSExample._debugText);
             VPSExample._debugText.innerHTML = 'Looking for a waypoint';
         });
 
-        ARSession.onSessionEnded.push(() => {
+        ARSession.onSessionEnded.add(() => {
             VPSExample._debugText.remove();
         });
 
-        camera.onWaySpotFound.push(this.wayspotFound);
-        camera.onWaySpotUpdated.push(this.updateModelPose);
-        camera.onWaySpotLost.push(() => {
+        camera.onWaySpotFound.add(this.wayspotFound);
+        camera.onWaySpotUpdated.add(this.updateModelPose);
+        camera.onWaySpotLost.add(() => {
             VPSExample._debugText.innerHTML += '<br />Way spot lost';
         });
     }

@@ -1,4 +1,4 @@
-import { WonderlandEngine } from "@wonderlandengine/api";
+import {Emitter, WonderlandEngine} from '@wonderlandengine/api';
 
 /**
  * ARProvider defines the core behavior how an AR provider should look like.
@@ -6,7 +6,6 @@ import { WonderlandEngine } from "@wonderlandengine/api";
  * For example src/components/AR/frameworks/xr8/xr8-provider.ts loads, configures and checks the required permissions for the 8th Wall library.
  */
 abstract class ARProvider {
-
     protected _engine!: WonderlandEngine;
     public set engine(engine: WonderlandEngine) {
         this._engine = engine;
@@ -15,13 +14,13 @@ abstract class ARProvider {
      * onSessionStarted - array of callbacks to be called when the tracking implementation has started tracking.
      * It is NOT necessary called immediately after startSession is called
      */
-    public readonly onSessionStarted: Array<(event: any) => void> = [];
+    public readonly onSessionStarted: Emitter<any> = new Emitter();
 
     /**
      * onSessionEnded - array of callbacks to be called when the tracking implementation has stoped tracking.
      * It is NOT necessary called immediately after endSession is called
      */
-    public readonly onSessionEnded: Array<(event: any) => void> = [];
+    public readonly onSessionEnded: Emitter<any> = new Emitter();
 
     // Tracking implementation has beed loaded
     public loaded = false;

@@ -3,14 +3,13 @@
     "target": "ES2022",
     "module": "ES2022",
     "moduleResolution": "nodenext",
-    "outDir": "dist",
+    "outDir": ".",
     "declaration": true,
     "newLine": "LF",
     "allowJs": false,
-    "strict": true,
-    "experimentalDecorators": true,
+    "strict": true
   },
 
-  "include": [ "./src/**/*.ts", "./js/**/*.ts", "index.ts" ],
+  "include": [ "./js/**/*.ts" ],
   "exclude": [ "node_modules" ]
 }

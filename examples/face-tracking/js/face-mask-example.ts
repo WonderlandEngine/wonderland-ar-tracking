@@ -3,7 +3,7 @@
  * Demonstrates how to create a dynamic mesh of the face.
  * Indices and uvs are provides by 8th Wall right away by 8th wall. Even if no face is tracked yet.
  * Indices ans uvs don't change throughout the experience.
- * 
+ *
  * Vertices and normals are updated on every 8th Wall frame.
  */
 import {
@@ -14,30 +14,35 @@ import {
     MeshComponent,
     MeshIndexType,
     Object as WLEObject,
-    Type,
 } from '@wonderlandengine/api';
+
+import {property} from '@wonderlandengine/api/decorators.js';
 
 import {ARFaceTrackingCamera} from '@wonderlandengine/8thwall-tracking';
 
 export class FaceMaskExample extends Component {
     public static TypeName = 'face-mask-example';
-    public static Properties = {
-        ARFaceTrackingCamera: {type: Type.Object},
 
-        // Material to use for the generated mesh
-        faceMaskMaterial: {type: Type.Material},
-    };
+    /**
+     * The ARFaceTrackingCamera somewhere in the scene
+     */
+    @property.object()
+    ARFaceTrackingCamera!: WLEObject;
 
-    // injected by WL..
-    private ARFaceTrackingCamera!: WLEObject;
+    /**
+     * Material to use for the generated mesh
+     */
+    @property.material()
+    faceMaskMaterial!: Material;
 
-    // injected by WL..
-    private faceMaskMaterial!: Material;
-
-    // We'll fill this with the mesh data provided by xr8
+    /**
+     * We'll fill this with the mesh data provided by xr8
+     */
     private _mesh: Mesh | null = null;
 
-    // component to hold the mesh
+    /**
+     * component to hold the mesh
+     */
     private _meshComp: MeshComponent | null = null;
 
     start() {
@@ -66,7 +71,7 @@ export class FaceMaskExample extends Component {
             this._meshComp.material = this.faceMaskMaterial;
         }
 
-        camera.onFaceLoading.push((event) => {
+        camera.onFaceLoading.add((event) => {
             // XR8 provides us with initial vertices, indices and uvs of the face mesh.
             // We'll be updating the positions and normals of the face mesh in the onFaceUpdate loop
             const {indices, uvs, pointsPerDetection} = event.detail;
@@ -95,9 +100,9 @@ export class FaceMaskExample extends Component {
             this._meshComp!.mesh = this._mesh;
         });
 
-        camera.onFaceFound.push(this.updateFaceMesh);
+        camera.onFaceFound.add(this.updateFaceMesh);
 
-        camera.onFaceUpdate.push((event) => {
+        camera.onFaceUpdate.add((event) => {
             this.updateFaceMesh(event);
 
             const {transform} = event.detail;
@@ -122,7 +127,7 @@ export class FaceMaskExample extends Component {
             this.object.scalingWorld.set(cachedScale);
         });
 
-        camera.onFaceLost.push((_event) => {
+        camera.onFaceLost.add((_event) => {
             this.object.scalingWorld = [0, 0, 0];
             cachedScale[0] = cachedScale[1] = cachedScale[2] = 0;
         });

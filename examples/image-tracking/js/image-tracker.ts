@@ -5,21 +5,25 @@
  * Moves the object of the component to tracked image position.
  *
  */
-import {Component, Object as WLEObject, Type} from '@wonderlandengine/api';
-import {ARSession, ARImageTrackingCamera} from '@wonderlandengine/8thwall-tracking';
+import {Component, Object as WLEObject} from '@wonderlandengine/api';
+import {property} from '@wonderlandengine/api/decorators.js';
 
+import {ARSession, ARImageTrackingCamera} from '@wonderlandengine/8thwall-tracking';
 
 export class ImageTrackingExample extends Component {
     public static TypeName = 'image-tracking-example';
-    public static Properties = {
-        ARImageTrackingCamera: {type: Type.Object},
-        imageId: {type: Type.String},
-    };
-    // injected by WL..
-    private ARImageTrackingCamera!: WLEObject;
 
-    // injected by WL..
-    private imageId!: string;
+    /**
+     * The ARImageTrackingCamera somewhere in the scene
+     */
+    @property.object()
+    ARImageTrackingCamera!: WLEObject;
+
+    /**
+     * Image id from the 8th Wall platform
+     */
+    @property.string()
+    imageId!: string;
 
     // allocate some arrays
     private _cachedPosition = new Array<number>(3);
@@ -42,17 +46,17 @@ export class ImageTrackingExample extends Component {
             );
         }
 
-        camera.onImageFound.push(this.onImageFound);
+        camera.onImageFound.add(this.onImageFound);
 
-        camera.onImageUpdate.push(this.onImageUpdated);
+        camera.onImageUpdate.add(this.onImageUpdated);
 
-        camera.onImageLost.push((event: XR8ImageTrackedEvent) => {
+        camera.onImageLost.add((event: XR8ImageTrackedEvent) => {
             if (event.detail.name === this.imageId) {
                 this.object.scalingWorld = [0, 0, 0];
             }
         });
 
-        ARSession.onSessionEnded.push(() => {
+        ARSession.onSessionEnded.add(() => {
             this.object.scalingWorld = [0, 0, 0];
         });
 
@@ -90,4 +94,3 @@ export class ImageTrackingExample extends Component {
         this.object.scalingWorld = this._cachedScale;
     };
 }
-

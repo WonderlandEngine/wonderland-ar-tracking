@@ -4,27 +4,26 @@
  * AR button, when clicked, searches for the first component which is `instanceOf ARCamera`
  * and starts that components AR session
  */
-import {Component } from '@wonderlandengine/api';
+import {Component} from '@wonderlandengine/api';
 import {ARSession, ARCamera} from '../../';
 
 export class ButtonStartARSession extends Component {
     public static TypeName = 'button-start-ar-session';
-    public static Properties = {};
 
     init() {
         if (ARSession.arSessionReady) {
             this.onARSessionReady();
         } else {
-            ARSession.onARSessionReady.push(() => this.onARSessionReady());
+            ARSession.onARSessionReady.add(this.onARSessionReady);
         }
 
-        ARSession.onSessionEnded.push(() => {
+        ARSession.onSessionEnded.add(() => {
             let xrButton = document.querySelector<HTMLElement>('#ar-button');
             xrButton!.style.display = 'block';
         });
     }
 
-    onARSessionReady() {
+    onARSessionReady = () => {
         let xrButton = document.querySelector<HTMLElement>('#ar-button');
 
         if (xrButton === null) {
@@ -44,5 +43,5 @@ export class ButtonStartARSession extends Component {
                 }
             }
         });
-    }
+    };
 }

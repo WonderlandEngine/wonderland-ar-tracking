@@ -1,5 +1,5 @@
 /**
- * VPSMeshExample 
+ * VPSMeshExample
  * Demonstrates how to render a Mesh from the data provided by the 8th Wall.
  * 8th Wall provides the vertices, index and color data for the simplified mesh of the waypoint.
  * So make sure your material supports vertex colors.
@@ -10,24 +10,27 @@ import {
     MeshComponent,
     Material,
     Object as WLEObject,
-    Type,
     MeshIndexType,
     MeshAttribute,
 } from '@wonderlandengine/api';
+import {property} from '@wonderlandengine/api/decorators.js';
+
 import {ARSession, ARVPSCamera} from '@wonderlandengine/8thwall-tracking';
 
 export class VPSMeshExample extends Component {
     public static TypeName = 'vps-mesh-example';
-    public static Properties = {
-        VPSCamera: {type: Type.Object},
-        generatedMeshMaterial: {type: Type.Material}, // MAterial to use for the generated mesh
-    };
 
-    // injected by WL..
-    private VPSCamera!: WLEObject;
+    /**
+     * VPSCamera somewhere in the scene
+     */
+    @property.object()
+    VPSCamera!: WLEObject;
 
-    // injected by WL..
-    private generatedMeshMaterial!: Material;
+    /**
+     * WAypoint name to track, copied from the 8th Wall platform
+     */
+    @property.material()
+    generatedMeshMaterial!: Material;
 
     private _mesh: Mesh | null = null;
     private _meshComp: MeshComponent | null = null;
@@ -60,11 +63,11 @@ export class VPSMeshExample extends Component {
             }
         });
 
-        ARSession.onSessionStarted.push(() => {
+        ARSession.onSessionStarted.add(() => {
             document.body.appendChild(this._toggleMeshButton);
         });
 
-        ARSession.onSessionEnded.push(() => {
+        ARSession.onSessionEnded.add(() => {
             this._toggleMeshButton.remove();
 
             if (this._meshComp) {
@@ -76,7 +79,7 @@ export class VPSMeshExample extends Component {
             }
         });
 
-        camera.onMeshFound.push(this.createMesh);
+        camera.onMeshFound.add(this.createMesh);
     }
 
     /**

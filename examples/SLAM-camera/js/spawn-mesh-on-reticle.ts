@@ -3,23 +3,28 @@
  * NOTE: in case of webXR device api tracking (WebXRProvider), click event is raised by the XRSession.onselect event.
  * In case of xr8 tracking - click event is raised by window.onclick
  */
-import {Component, Material, Mesh, Type} from '@wonderlandengine/api';
+import {Component, Material, Mesh} from '@wonderlandengine/api';
+import {property} from '@wonderlandengine/api/decorators.js';
+
 import {ARSession, ARProvider, WebXRProvider} from '@wonderlandengine/8thwall-tracking';
 export class SpawnMeshOnReticle extends Component {
     public static TypeName = 'spawn-mesh-on-reticle';
-    public static Properties = {
-        /* The mesh to spawn */
-        mesh: {type: Type.Mesh},
-        /* The material to spawn the mesh with */
-        material: {type: Type.Material},
-    };
 
+    /**
+     * The mesh to spawn
+     */
+    @property.mesh()
     mesh!: Mesh;
+
+    /**
+     * The material to spawn the mesh with
+     */
+    @property.material()
     material!: Material;
 
     start() {
-        ARSession.onSessionStarted.push(this.onSessionStarted);
-        ARSession.onSessionEnded.push(this.onSessionEnded);
+        ARSession.onSessionStarted.add(this.onSessionStarted);
+        ARSession.onSessionEnded.add(this.onSessionEnded);
     }
 
     onSessionStarted = (provider: ARProvider) => {
@@ -52,8 +57,8 @@ export class SpawnMeshOnReticle extends Component {
     spawnMesh = () => {
         /* Create a new object in the scene */
         const o = this.engine.scene!.addObject(null);
-        if(!o) {
-            console.warn("Failed to add mesh to the scene");
+        if (!o) {
+            console.warn('Failed to add mesh to the scene');
             return;
         }
         /* Place new object at current cursor location */
@@ -65,8 +70,8 @@ export class SpawnMeshOnReticle extends Component {
 
         /* Add a mesh to render the object */
         const mesh = o.addComponent('mesh', {});
-        if(!mesh) {
-            console.warn("Failed to add mesh to the object");
+        if (!mesh) {
+            console.warn('Failed to add mesh to the object');
             return;
         }
         mesh.material = this.material;
@@ -74,5 +79,3 @@ export class SpawnMeshOnReticle extends Component {
         mesh.active = true;
     };
 }
-
-

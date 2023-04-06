@@ -1,78 +1,117 @@
-import {ViewComponent} from '@wonderlandengine/api';
+import {Emitter, ViewComponent} from '@wonderlandengine/api';
 import {TrackingMode} from '../trackingMode.js';
-
 import {xr8Provider, XR8ExtraPermissions} from './xr8-provider.js';
-// Just some helper types to determine if an object has some props
+
+/**
+ * A helper type to determine if a camera wants to enable SLAM tracking
+ */
 type CanDisableSLAM = {
-    EnableSLAM: boolean;
+    enableSLAM: boolean;
 };
 
+/**
+ * A helper type to determine if a camera wants to use an absolute scale
+ */
 type CanUseAbsoluteScale = {
-    UseAbsoluteScale: boolean;
+    useAbsoluteScale: boolean;
 };
 
+/**
+ * A helper type to determine if a camera wants to enable VPS tracking
+ */
 type UsesVPS = {
     usesVPS: boolean;
 };
 
+/**
+ * 8th Wall tracking implementation that encapsulates
+ * - SLAM tracking
+ * - Image tracking
+ * - VPS tracking
+ *
+ * Main task - to update the WL ViewComponent pose and projection matrix by the values provided
+ * by 8th Wall on every frame and forward tracking related events to any subscribers.
+ *
+ * It acts as a 8th Wall camera pipeline, so some methods will be called by 8th Wall internally.
+ */
 class WorldTracking_XR8 extends TrackingMode {
-    // consumed by 8th Wall
+    /**
+     * Required by the `XR8.addCameraPipelineModules`
+     */
     public readonly name = 'world-tracking-XR8';
 
-    private _view?: ViewComponent; // cache camera
-    private _cachedPosition = [0, 0, 0]; // cache 8th Wall cam position
-    private _cachedRotation = [0, 0, 0, -1]; // cache 8th Wall cam rotation
+    /**
+     * Cache view component
+     */
+    private _view?: ViewComponent;
 
+    /**
+     * Cache 8th Wall cam position
+     */
+    private _cachedPosition = [0, 0, 0];
+
+    /**
+     * Cache 8th Wall cam rotation
+     */
+    private _cachedRotation = [0, 0, 0, -1];
+
+    /**
+     * ARCamera using this tracking mode might want to request some extra permissions
+     */
     private _extraPermissions: XR8ExtraPermissions = [];
 
-    public readonly onTrackingStatus: Array<(event: XR8TrackingStatusEvent) => void> = [];
+    public readonly onTrackingStatus: Emitter<[event: XR8TrackingStatusEvent]> =
+        new Emitter();
 
-    public readonly onImageScanning: Array<(event: XR8ImageScanningEvent) => void> = [];
-    public readonly onImageFound: Array<(event: XR8ImageTrackedEvent) => void> = [];
-    public readonly onImageUpdate: Array<(event: XR8ImageTrackedEvent) => void> = [];
-    public readonly onImageLost: Array<(event: XR8ImageTrackedEvent) => void> = [];
+    public readonly onImageScanning: Emitter<[event: XR8ImageScanningEvent]> =
+        new Emitter();
+    public readonly onImageFound: Emitter<[event: XR8ImageTrackedEvent]> = new Emitter();
+    public readonly onImageUpdate: Emitter<[event: XR8ImageTrackedEvent]> = new Emitter();
+    public readonly onImageLost: Emitter<[event: XR8ImageTrackedEvent]> = new Emitter();
 
-    public readonly onMeshFound: Array<(event: XR8VPSMeshFoundEvent) => void> = [];
-    public readonly onWaySpotFound: Array<(event: XR8VPSWayPointEvent) => void> = [];
-    public readonly onWaySpotUpdated: Array<(event: XR8VPSWayPointEvent) => void> = [];
-    public readonly onWaySpotLost: Array<(event: XR8VPSWayPointEvent) => void> = [];
+    public readonly onMeshFound: Emitter<[event: XR8VPSMeshFoundEvent]> = new Emitter();
 
-    // consumed by 8th Wall
+    public readonly onWaySpotFound: Emitter<[event: XR8VPSWayPointEvent]> = new Emitter();
+    public readonly onWaySpotUpdated: Emitter<[event: XR8VPSWayPointEvent]> = new Emitter();
+    public readonly onWaySpotLost: Emitter<[event: XR8VPSWayPointEvent]> = new Emitter();
+
+    /**
+     * Consumed by 8th Wall.
+     */
     public readonly listeners = [
         {
             event: 'reality.trackingstatus',
             process: (event: XR8TrackingStatusEvent) => {
-                this.onTrackingStatus.forEach((callback) => callback(event));
+                this.onTrackingStatus.notify(event);
             },
         },
 
         //////////////////////////
         //// VPS Image Events ///
         ////////////////////////
-
         {
             event: 'reality.imagescanning',
             process: (event: XR8ImageScanningEvent) => {
-                this.onImageScanning.forEach((callback) => callback(event));
+                this.onImageScanning.notify(event);
             },
         },
 
         {
             event: 'reality.imagefound',
             process: (event: XR8ImageTrackedEvent) => {
-                this.onImageFound.forEach((callback) => callback(event));
+                this.onImageFound.notify(event);
             },
         },
         {
             event: 'reality.imageupdated',
             process: (event: XR8ImageTrackedEvent) => {
-                this.onImageUpdate.forEach((callback) => callback(event));
+                this.onImageUpdate.notify(event);
             },
         },
         {
             event: 'reality.imagelost',
             process: (event: XR8ImageTrackedEvent) => {
-                this.onImageLost.forEach((callback) => callback(event));
+                this.onImageLost.notify(event);
             },
         },
 
@@ -82,7 +121,7 @@ class WorldTracking_XR8 extends TrackingMode {
         {
             event: 'reality.meshfound',
             process: (event: XR8VPSMeshFoundEvent) => {
-                this.onMeshFound.forEach((callback) => callback(event));
+                this.onMeshFound.notify(event);
             },
         },
 
@@ -95,23 +134,21 @@ class WorldTracking_XR8 extends TrackingMode {
         },
 
         /*
-    // Seems like not implemented by xr8 yet
-    {
-      event: 'reality.meshlost', process: (event: XR8VPSMeshLostEvent) => {
-        
-      }
-    },
-    */
+            // Seems like not implemented by xr8 yet
+            {
+                event: 'reality.meshlost', process: (event: XR8VPSMeshLostEvent) => { }
+            },
+        */
 
         /*
-    // TODO - this indicated that xr8 started looking for the feature points
-    // However, I feel this is not really informative event since your app logic
-    // will naturally expect that the scanning has started.
-    {
-      event: 'reality.projectwayspotscanning', process: (event: unknown) => {
-        
-      }
-    },*/
+
+        // TODO - this indicated that xr8 started looking for the feature points
+        // However, I feel this is not really informative event since your app logic
+        // will naturally expect that the scanning has started.
+        {
+            event: 'reality.projectwayspotscanning', process: (event: unknown) => {}
+        },
+        */
 
         //////////////////////////
         // VPS Waypoint Events //
@@ -119,25 +156,31 @@ class WorldTracking_XR8 extends TrackingMode {
         {
             event: 'reality.projectwayspotfound',
             process: (event: XR8VPSWayPointEvent) => {
-                this.onWaySpotFound.forEach((callback) => callback(event));
+                this.onWaySpotFound.notify(event);
             },
         },
 
         {
             event: 'reality.projectwayspotupdated',
             process: (event: XR8VPSWayPointEvent) => {
-                this.onWaySpotUpdated.forEach((callback) => callback(event));
+                this.onWaySpotUpdated.notify(event);
             },
         },
 
         {
             event: 'reality.projectwayspotlost',
             process: (event: XR8VPSWayPointEvent) => {
-                this.onWaySpotLost.forEach((callback) => callback(event));
+                this.onWaySpotLost.notify(event);
             },
         },
     ];
 
+    /**
+     * Called by any consuming AR camera.
+     * Set's up the cached vars.
+     *
+     * @param extraPermissions
+     */
     public init(extraPermissions: XR8ExtraPermissions = []) {
         this._extraPermissions = extraPermissions;
 
@@ -160,20 +203,25 @@ class WorldTracking_XR8 extends TrackingMode {
         this._cachedRotation[2] = rot[2];
         this._cachedRotation[3] = rot[3];
 
-        xr8Provider.onSessionEnded.push(() => {
+        xr8Provider.onSessionEnded.add(() => {
             XR8.removeCameraPipelineModules([XR8.XrController.pipelineModule(), this]);
         });
     }
 
+    /**
+     * Configures XR8.XrController for the session,
+     * sets itself as an XR8 camera pipeline module
+     * and tells xr8Provider to start the session
+     */
     public async startSession() {
         const permissions = await xr8Provider.checkPermissions(this._extraPermissions);
         if (!permissions) {
             return;
         }
 
-        const componentEnablesSLAM = (this.component as Partial<CanDisableSLAM>).EnableSLAM;
+        const componentEnablesSLAM = (this.component as Partial<CanDisableSLAM>).enableSLAM;
         const componentUsesAbsoluteScale = (this.component as Partial<CanUseAbsoluteScale>)
-            .UseAbsoluteScale;
+            .useAbsoluteScale;
         const componentUsesVPS = !!(this.component as Partial<UsesVPS>).usesVPS;
 
         XR8.XrController.configure({
@@ -207,7 +255,9 @@ class WorldTracking_XR8 extends TrackingMode {
     }
 
     /**
-     * called by 8th Wall
+     * Called by 8th Wall internally when the tracking is about to start.
+     * `XR8.XrController.updateCameraProjectionMatrix` is a method to
+     * tell 8th Wall what is our initial camera position.
      */
     public onAttach = (_params: unknown) => {
         XR8.XrController.updateCameraProjectionMatrix({
@@ -232,9 +282,12 @@ class WorldTracking_XR8 extends TrackingMode {
     };
 
     /**
-     * called by 8th Wall
+     * Called by 8th Wall internally.
+     * Updates WL cameras projectionMatrix and pose
+     *
+     * @param e Camera projection matrix and pose provided by 8th Wall
      */
-    public onUpdate = (e: any) => {
+    public onUpdate = (e: XR8CameraPipelineModuleUpdateArgs) => {
         const source = e.processCpuResult.reality;
         if (!source) return;
 

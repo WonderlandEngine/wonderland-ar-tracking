@@ -11,16 +11,15 @@
  *     - `wle:auto-benchmark:start` and `wle:auto-benchmark:end`: Append the benchmarking code
  */
 
-import { loadRuntime } from '@wonderlandengine/api';
+import {loadRuntime} from '@wonderlandengine/api';
 import * as API from '@wonderlandengine/api'; // Deprecated: Backward compatibility.
 
-
 /* wle:auto-imports:start */
-import {ARFaceTrackingCamera, ARImageTrackingCamera, ARSLAMCamera, ARVPSCamera, ARXR8SLAMCamera} from '@wonderlandengine/8thwall-tracking';
-import {ARCamera8thwall, Cursor, CursorTarget, DebugObject, DeviceOrientationLook, FingerCursor, FixedFoveation, HandTracking, HitTestLocation, HowlerAudioListener, HowlerAudioSource, ImageTexture, MouseLookComponent, PlayerHeight, TargetFramerate, TeleportComponent, Trail, TwoJointIkSolver, VideoTexture, VrModeActiveSwitch, Vrm, WasdControlsComponent} from '@wonderlandengine/components';
-import {FaceAttachmentPointExample} from './face-attachment-point-example.ts';
-import {FaceMaskExample} from './face-mask-example.ts';
-import {ButtonEndARSession, ButtonStartARSession} from './../../common-components/index.ts';
+import {ARFaceTrackingCamera} from '@wonderlandengine/8thwall-tracking';
+import {ButtonEndARSession} from './../../common-components/button-end-ar-session.js';
+import {ButtonStartARSession} from './../../common-components/button-start-ar-session.js';
+import {FaceAttachmentPointExample} from './face-attachment-point-example.js';
+import {FaceMaskExample} from './face-mask-example.js';
 /* wle:auto-imports:end */
 
 /* wle:auto-constants:start */
@@ -31,12 +30,12 @@ const WithLoader = false;
 /* wle:auto-constants:end */
 const engine = await loadRuntime(RuntimeBaseName, {
     physx: WithPhysX,
-    loader: WithLoader
+    loader: WithLoader,
 });
 Object.assign(engine, API); // Deprecated: Backward compatibility.
 window.WL = engine; // Deprecated: Backward compatibility.
 
-engine.onSceneLoaded.push(() => {
+engine.onSceneLoaded.add(() => {
     const el = document.getElementById('version');
     if (el) setTimeout(() => el.remove(), 2000);
 });
@@ -51,17 +50,14 @@ if (vrButton) {
 }
 
 /* wle:auto-register:start */
-engine.registerComponent(ARFaceTrackingCamera, ARImageTrackingCamera, ARSLAMCamera, ARVPSCamera, ARXR8SLAMCamera);
-engine.registerComponent(ARCamera8thwall, Cursor, CursorTarget, DebugObject, DeviceOrientationLook, FingerCursor, FixedFoveation, HandTracking, HitTestLocation, HowlerAudioListener, HowlerAudioSource, ImageTexture, MouseLookComponent, PlayerHeight, TargetFramerate, TeleportComponent, Trail, TwoJointIkSolver, VideoTexture, VrModeActiveSwitch, Vrm, WasdControlsComponent);
+engine.registerComponent(ARFaceTrackingCamera);
+engine.registerComponent(ButtonEndARSession);
+engine.registerComponent(ButtonStartARSession);
 engine.registerComponent(FaceAttachmentPointExample);
 engine.registerComponent(FaceMaskExample);
-engine.registerComponent(ButtonEndARSession, ButtonStartARSession);
 /* wle:auto-register:end */
-
-
 
 engine.scene.load(`${ProjectName}.bin`);
 
 /* wle:auto-benchmark:start */
 /* wle:auto-benchmark:end */
-

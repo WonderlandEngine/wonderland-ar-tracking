@@ -2,9 +2,14 @@
  * FaceAttachmentPointExample
  * A quick example demonstrating tracking of a face feature
  */
-import {Component, Object as WLEObject, Type} from '@wonderlandengine/api';
+import {Component, Object as WLEObject} from '@wonderlandengine/api';
+import {property} from '@wonderlandengine/api/decorators.js';
+
 import {ARSession, ARFaceTrackingCamera} from '@wonderlandengine/8thwall-tracking';
 
+/**
+ * Possible attachment points
+ */
 const ATTACHMENT_POINTS = [
     'forehead',
     'rightEyebrowInner',
@@ -33,22 +38,23 @@ const ATTACHMENT_POINTS = [
 
 export class FaceAttachmentPointExample extends Component {
     public static TypeName = 'face-attachment-point-example';
-    public static Properties = {
-        ARFaceTrackingCamera: {type: Type.Object},
 
-        // To which ´attachmentPoint´ are we going to attach our `attachedObject`
-        attachmentPoint: {type: Type.Enum, values: ATTACHMENT_POINTS},
-
-        attachedObject: {type: Type.Object},
-    };
-
-    // injected by WL..
+    /**
+     * The ARFaceTrackingCamera somewhere in the scene
+     */
+    @property.object()
     ARFaceTrackingCamera!: WLEObject;
 
-    // injected by WL..
+    /**
+     * To which feature of the face should the object be attached
+     */
+    @property.enum(ATTACHMENT_POINTS)
     attachmentPoint: number = 0;
 
-    // injected by WL..
+    /**
+     * Object which should be attached to the face feature
+     */
+    @property.object()
     attachedObject!: WLEObject;
 
     start() {
@@ -70,14 +76,14 @@ export class FaceAttachmentPointExample extends Component {
         const cachedRotation = new Array<number>(4);
         const cachedScale = [0, 0, 0];
 
-        ARSession.onSessionEnded.push(() => {
+        ARSession.onSessionEnded.add(() => {
             this.object.scalingWorld = [0, 0, 0];
             cachedScale[0] = cachedScale[1] = cachedScale[2] = 0;
         });
 
         this.object.scalingWorld = [0, 0, 0];
 
-        camera.onFaceUpdate.push((event) => {
+        camera.onFaceUpdate.add((event) => {
             // event.detail.attachmentPoints are filled with positions of all available positions of the face features
             const {transform, attachmentPoints} = event.detail;
 
@@ -111,7 +117,7 @@ export class FaceAttachmentPointExample extends Component {
             ]);
         });
 
-        camera.onFaceLost.push((_event) => {
+        camera.onFaceLost.add((_event) => {
             this.object.scalingWorld = [0, 0, 0];
             cachedScale[0] = cachedScale[1] = cachedScale[2] = 0;
         });

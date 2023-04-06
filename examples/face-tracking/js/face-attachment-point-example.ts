@@ -2,8 +2,9 @@
  * FaceAttachmentPointExample
  * A basic example demonstrating how to attach object to a face feature
  */
+import {Component, Object as WLEObject} from '@wonderlandengine/api';
+import {property} from '@wonderlandengine/api/decorators.js';
 
-import {Component, Object as WLEObject, Type} from '@wonderlandengine/api';
 import {ARFaceTrackingCamera} from '@wonderlandengine/8thwall-tracking';
 
 const ATTACHMENT_POINTS = [
@@ -34,23 +35,24 @@ const ATTACHMENT_POINTS = [
 
 export class FaceAttachmentPointExample extends Component {
     public static TypeName = 'face-attachment-point-example';
-    public static Properties = {
-        ARFaceTrackingCamera: {type: Type.Object},
 
-        // To which ´attachmentPoint´ are we going to attach our `attachedObject`
-        attachmentPoint: {type: Type.Enum, values: ATTACHMENT_POINTS},
+    /**
+     * The ARFaceTrackingCamera somewhere in the scene
+     */
+    @property.object()
+    ARFaceTrackingCamera!: WLEObject;
 
-        attachedObject: {type: Type.Object},
-    };
+    /**
+     * To which feature of the face should the object be attached
+     */
+    @property.enum(ATTACHMENT_POINTS)
+    attachmentPoint: number = 0;
 
-    // injected by WL..
-    private ARFaceTrackingCamera!: WLEObject;
-
-    // injected by WL..
-    private attachmentPoint: number = 0;
-
-    // injected by WL..
-    private attachedObject!: WLEObject;
+    /**
+     * Object which should be attached to the face feature
+     */
+    @property.object()
+    attachedObject!: WLEObject;
 
     start() {
         if (!this.ARFaceTrackingCamera) {
@@ -73,7 +75,7 @@ export class FaceAttachmentPointExample extends Component {
 
         this.object.scalingWorld = [0, 0, 0];
 
-        camera.onFaceUpdate.push((event) => {
+        camera.onFaceUpdate.add((event) => {
             // event.detail.attachmentPoints are filled with positions of all available positions of the face features
             const {transform, attachmentPoints} = event.detail;
 
@@ -107,7 +109,7 @@ export class FaceAttachmentPointExample extends Component {
             ]);
         });
 
-        camera.onFaceLost.push((_event) => {
+        camera.onFaceLost.add((_event) => {
             this.object.scalingWorld = [0, 0, 0];
             cachedScale[0] = cachedScale[1] = cachedScale[2] = 0;
         });

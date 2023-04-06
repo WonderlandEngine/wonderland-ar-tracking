@@ -8,7 +8,6 @@ import {ARSession} from '../../';
 
 export class ButtonEndARSession extends Component {
     public static TypeName = 'button-end-ar-session';
-    public static Properties = {};
 
     xrEndButton!: HTMLButtonElement;
 
@@ -27,11 +26,11 @@ export class ButtonEndARSession extends Component {
             ARSession.stopARSession();
         });
 
-        ARSession.onSessionStarted.push(() => {
+        ARSession.onSessionStarted.add(() => {
             this.xrEndButton.style.display = 'block';
         });
 
-        ARSession.onSessionEnded.push(() => {
+        ARSession.onSessionEnded.add(() => {
             this.xrEndButton.style.display = 'none';
         });
     }

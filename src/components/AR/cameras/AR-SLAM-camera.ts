@@ -8,14 +8,24 @@ import {webXRProvider} from '../frameworks/webAR/webXR-provider.js';
 import {xr8Provider} from '../frameworks/xr8/xr8-provider.js';
 import {ARCamera} from './AR-Camera.js';
 
+/**
+ * AR SLAM Camera component.
+ *
+ * Should be attached the object which has a ViewComponent.
+ *
+ * Depending on the device it will choose to use either device native webXR (`webXRProvider`)
+ * or 8th Wall SLAM implementation (`xr8Provider`)
+ */
 class ARSLAMCamera extends ARCamera {
     public static TypeName = 'AR-SLAM-camera';
-    public static Properties = {};
 
     private _trackingImpl!: ITrackingMode;
 
     public override init = () => {
-
+        /**
+         * check if the device supports webXR
+         * if it does - use webXRProvider
+         */
         if (this.engine.arSupported) {
             //if (false) { // force xr8
             ARSession.registerTrackingProvider(this.engine, webXRProvider);
@@ -24,7 +34,7 @@ class ARSLAMCamera extends ARCamera {
             ARSession.registerTrackingProvider(this.engine, xr8Provider);
             this._trackingImpl = new WorldTracking_XR8(this);
         }
-    }
+    };
 
     public start() {
         if (!this.object.getComponent('view')) {
