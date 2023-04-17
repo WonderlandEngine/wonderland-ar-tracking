@@ -26,12 +26,7 @@ ___
 
 <br/>
 
-To run:
-- make sure `API_TOKEN_XR8` is defined in the index.html file
-```
-<script>
-  const API_TOKEN_XR8 = "your 8th Wall project API token";
-</script>
-```
-
+To successfully run in 
+- Select 8thwall as a framework in the editor `Project Settings -> VR & AR -> framework`.
+- Paste in your 8th Wall API key.
 - Make sure the app is running on HTTPS.

@@ -2,11 +2,6 @@
 Setting the scale to “absolute” will dynamically set the virtual camera height to the actual height of the device camera. To estimate scale, the 8th Wall Engine needs data to determine the height of the camera, this requires users to move their device to generate data for determining scale. Device camera position is defined in meters.
 
 To successfully run in 
-- make sure `API_TOKEN_XR8` is defined in the index.html file
-```
-<script>
-  const API_TOKEN_XR8 = "your 8th Wall project API token";
-</script>
-```
-
+- Select 8thwall as a framework in the editor `Project Settings -> VR & AR -> framework`.
+- Paste in your 8th Wall API key.
 - Make sure the app is running on HTTPS.

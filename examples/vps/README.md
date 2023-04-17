@@ -3,13 +3,10 @@
 ![Preview](previews/dynamic-mesh.webp?raw=true "Dynamically generated mesh")
 
 To successfully run in 
-- make sure `API_TOKEN_XR8` is defined in the index.html file
-```
-<script>
-  const API_TOKEN_XR8 = "your 8th Wall project API token";
-</script>
-```
-- clear the Project Settings/Editor/serverCOEP value
+- Select 8thwall as a framework in the editor `Project Settings -> VR & AR -> framework`.
+- Paste in your 8th Wall API key.
+- Make sure the app is running on HTTPS.
+- clear the editor `Project Settings -> Editor -> serverCOEP` value
 
 - Assign waypoints to the project on the 8th Wall platform projects geospatial-browser.
 
@@ -29,5 +26,5 @@ To successfully run in
 - More details at the [official 8th Wall docs ](https://www.8thwall.com/docs/web/#lightship-vps)
 
 # Some notes
-If you need better quality scaned models, you can download the scans as .glb files from the geospatial-browser. You can show/hide those models depending on the detected waypoints.
+If you need better quality scanned models, you can download the scans as .glb files from the geospatial-browser. You can show/hide those models depending on the detected waypoints.
 Alternatively, the scanned mesh can be generated dynamically from the data received from the 8th Wall. However, this mesh is lower quality and currently 8th Wall can send any mesh from the detected waypoints and there is no way knowing to which waypoint the mesh belongs..
