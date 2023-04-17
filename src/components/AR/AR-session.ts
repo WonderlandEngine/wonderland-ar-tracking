@@ -3,7 +3,7 @@ import {ARProvider} from './AR-provider.js';
 
 /**
  * ARSession - master control for the AR session.
- * - loads dependencies (aka providers)
+ * - registers dependencies (aka providers)
  * - handles global callbacks when AR session is started, ended
  * - can end any running AR session.
  */

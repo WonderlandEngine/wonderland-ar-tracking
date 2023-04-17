@@ -50,6 +50,10 @@ class ARSLAMCamera extends ARCamera {
         if (this.active) {
             this._trackingImpl!.startSession();
         }
+
+        ARSession.onARSessionReady.add(() => {
+
+        });
     };
 
     endSession = async () => {
