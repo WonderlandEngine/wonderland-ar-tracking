@@ -217,7 +217,12 @@
                 "file": "js\\models\\ar-target.glb"
             },
             "components": [
-                null,
+                {
+                    "mesh": {
+                        "mesh": "66",
+                        "material": "20"
+                    }
+                },
                 {
                     "type": "hit-test-location-xr8",
                     "hit-test-location-xr8": {
@@ -237,6 +242,22 @@
                         "material": "22"
                     }
                 }
+            ],
+            "translation": [
+                -0.6402189,
+                0.427439,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "scaling": [
+                1.0,
+                1.0,
+                1.0
             ]
         }
     },
@@ -535,7 +556,10 @@
             "autoManageEntryPoint": true
         },
         "ar": {
-            "framework": "webxr"
+            "framework": "webxr",
+            "8thwall": {
+                "apiToken": "sU7eX52Oe2ZL8qUKBWD5naUlu1ZrnuRrtM1pQ7ukMz8rkOEG8mb63YlYTuiOrsQZTiXKRe"
+            }
         },
         "rendering": {
             "clearColor": [

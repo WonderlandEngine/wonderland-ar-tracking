@@ -22,94 +22,91 @@ export class HitTestLocationRoot extends Component {
     @property.object()
     camera!: WLEObject;
 
-    private _tempScaling = new Float32Array(3);
-    private _visible = false;
+    tempScaling = new Float32Array(3);
+    private visible = false;
 
-    private _xrViewerSpace: XRReferenceSpace | null = null;
-    private _xrHitTestSource: XRHitTestSource | null = null;
+    private xrHitTestSource: XRHitTestSource | null = null;
 
-    private _tracking = false;
+    private tracking = false;
     init() {
         ARSession.onSessionStarted.add(this.onSessionStarted);
         ARSession.onSessionEnded.add(this.onSessionEnded);
-        this._tempScaling.set(this.object.scalingLocal);
-        this._visible = false;
-        this.object.scale([0, 0, 0]);
+        this.tempScaling.set(this.object.getScalingLocal());
+        this.object.setScalingLocal([0, 0, 0]);
     }
 
     update() {
-        if (this._tracking && this._xrViewerSpace) {
-            const wasVisible = this._visible;
-            if (this._xrHitTestSource) {
-                const frame = this.engine.xrFrame;
-                if (!frame) return;
-
-                let hitTestResults = frame.getHitTestResults(this._xrHitTestSource);
-
-                if (hitTestResults.length > 0) {
-                    let pose = hitTestResults[0].getPose(this._xrViewerSpace);
-                    this._visible = true;
-                    if (pose) {
-                        // this is good;
-                        const tw = this.camera.transformPointWorld(
-                            new Array(3),
-                            new Array(
-                                pose.transform.position.x,
-                                pose.transform.position.y,
-                                pose.transform.position.z
-                            )
-                        );
-                        this.object.setTranslationWorld(tw);
-                    } else {
-                        this._visible = false;
-                    }
-
-                    // TODO: how do I get the world ROTATION
-                } else {
-                    this._visible = false;
+        const wasVisible = this.visible;
+        if (this.tracking && this.xrHitTestSource) {
+            const frame = this.engine.xr?.frame;
+            if (!frame) return;
+            let hitTestResults = frame.getHitTestResults(this.xrHitTestSource);
+            if (hitTestResults.length > 0) {
+                let pose = hitTestResults[0].getPose(
+                    this.engine.xr!.referenceSpaceForType('viewer')!
+                );
+                this.visible = !!pose;
+                if (pose) {
+                    const tw = this.camera.transformPointWorld(
+                        new Array(3),
+                        new Array(
+                            pose.transform.position.x,
+                            pose.transform.position.y,
+                            pose.transform.position.z
+                        )
+                    );
+                    this.object.setTranslationWorld(tw);
                 }
+            } else {
+                this.visible = false;
             }
+        }
 
-            if (this._visible != wasVisible) {
-                if (!this._visible) {
-                    this._tempScaling.set(this.object.scalingLocal);
-                    this.object.scale([0, 0, 0]);
-                } else {
-                    this.object.scalingLocal.set(this._tempScaling);
-                    this.object.setDirty();
-                }
+        if (this.visible != wasVisible) {
+            if (!this.visible) {
+                this.tempScaling.set(this.object.getScalingLocal());
+                this.object.setScalingLocal([0, 0, 0]);
+            } else {
+                this.object.setScalingLocal(this.tempScaling);
+                this.object.setDirty();
             }
         }
     }
 
     onSessionStarted = (provider: ARProvider) => {
         if (provider instanceof WebXRProvider) {
-            this._tracking = true;
-            (provider as WebXRProvider)
-                .xrSession!.requestReferenceSpace('viewer')
-                .then((refSpace: XRReferenceSpace) => {
-                    this._xrViewerSpace = refSpace;
-                    (provider as WebXRProvider).xrSession!.requestHitTestSource!({
-                        space: this._xrViewerSpace!,
-                    })!.then((hitTestSource: XRHitTestSource) => {
-                        this._xrHitTestSource = hitTestSource;
-                    });
-                });
+            this.tracking = true;
+            const session = (provider as WebXRProvider).xrSession!;
+
+            if (session.requestHitTestSource === undefined) {
+                console.error(
+                    'hit-test-location: hit test feature not available. Deactivating component.'
+                );
+                this.active = false;
+                return;
+            }
+    
+            const viewerSpace = this.engine.xr!.referenceSpaceForType('viewer')!;
+            session!
+                .requestHitTestSource({space: viewerSpace})!
+                .then((hitTestSource) => {
+                    this.xrHitTestSource = hitTestSource;
+                })
+                .catch(console.error);
         }
     };
 
     onSessionEnded = (provider: ARProvider) => {
         if (provider instanceof WebXRProvider) {
-            this._tracking = false;
+            this.tracking = false;
 
-            this.object.scale([0, 0, 0]);
-            this._visible = false;
+            this.object.setScalingLocal([0, 0, 0]);
+            this.visible = false;
 
-            if (!this._xrHitTestSource) return;
+            if (!this.xrHitTestSource) return;
 
-            this._xrHitTestSource.cancel();
-            this._xrHitTestSource = null;
-            this._xrViewerSpace = null;
+            this.xrHitTestSource.cancel();
+            this.xrHitTestSource = null;
         }
     };
 }

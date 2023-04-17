@@ -11,25 +11,33 @@
  *     - `wle:auto-benchmark:start` and `wle:auto-benchmark:end`: Append the benchmarking code
  */
 
-import {loadRuntime} from '@wonderlandengine/api';
-import * as API from '@wonderlandengine/api'; // Deprecated: Backward compatibility.
-
 /* wle:auto-imports:start */
-import {ARSLAMCamera} from '@wonderlandengine/8thwall-tracking';
 import {ARFaceTrackingCamera} from '@wonderlandengine/8thwall-tracking';
 import {ARImageTrackingCamera} from '@wonderlandengine/8thwall-tracking';
+import {ARSLAMCamera} from '@wonderlandengine/8thwall-tracking';
+import {XR8CameraSwitch} from './camera-switch-ui.js';
 import {FaceAttachmentPointExample} from './face-attachment-point-example.js';
 import {ImageTrackingExample} from './image-tracker.js';
 import {SlamTrackingExample} from './slam-tracking-example.js';
-import {XR8CameraSwitch} from './camera-switch-ui.js';
 /* wle:auto-imports:end */
+
+import {loadRuntime} from '@wonderlandengine/api';
+import * as API from '@wonderlandengine/api'; // Deprecated: Backward compatibility.
 
 /* wle:auto-constants:start */
 const ProjectName = 'CameraSwitch';
 const RuntimeBaseName = 'WonderlandRuntime';
 const WithPhysX = false;
 const WithLoader = false;
+const WebXRFramebufferScaleFactor = 1;
+const WebXRRequiredFeatures = ['local',];
+const WebXROptionalFeatures = ['local','hand-tracking','hit-test',];
+const ApiToken8THWall = 'sU7eX52Oe2ZL8qUKBWD5naUlu1ZrnuRrtM1pQ7ukMz8rkOEG8mb63YlYTuiOrsQZTiXKRe';
 /* wle:auto-constants:end */
+
+window.API_TOKEN_XR8 = ApiToken8THWall;
+window.WEBXR_REQUIRED_FEATURES = WebXRRequiredFeatures;
+window.WEBXR_OPTIONAL_FEATURES = WebXROptionalFeatures;
 
 const engine = await loadRuntime(RuntimeBaseName, {
     physx: WithPhysX,
@@ -38,28 +46,48 @@ const engine = await loadRuntime(RuntimeBaseName, {
 Object.assign(engine, API); // Deprecated: Backward compatibility.
 window.WL = engine; // Deprecated: Backward compatibility.
 
-engine.onSceneLoaded.push(() => {
+engine.xrFramebufferScaleFactor = WebXRFramebufferScaleFactor;
+engine.onSceneLoaded.once(() => {
     const el = document.getElementById('version');
     if (el) setTimeout(() => el.remove(), 2000);
 });
 
-const arButton = document.getElementById('ar-button');
-if (arButton) {
-    arButton.dataset.supported = engine.arSupported;
+/* WebXR setup. */
+
+function requestSession(mode) {
+    engine
+        .requestXRSession(mode, WebXRRequiredFeatures, WebXROptionalFeatures)
+        .catch((e) => console.error(e));
 }
-const vrButton = document.getElementById('vr-button');
-if (vrButton) {
-    vrButton.dataset.supported = engine.vrSupported;
+
+function setupButtonsXR() {
+    /* Setup AR / VR buttons */
+    const arButton = document.getElementById('ar-button');
+    if (arButton) {
+        arButton.dataset.supported = engine.arSupported;
+        //arButton.addEventListener('click', () => requestSession('immersive-ar'));
+    }
+    const vrButton = document.getElementById('vr-button');
+    if (vrButton) {
+        vrButton.dataset.supported = engine.vrSupported;
+        vrButton.addEventListener('click', () => requestSession('immersive-vr'));
+    }
+}
+
+if (document.readyState === 'loading') {
+    window.addEventListener('load', setupButtonsXR);
+} else {
+    setupButtonsXR();
 }
 
 /* wle:auto-register:start */
-engine.registerComponent(ARSLAMCamera);
 engine.registerComponent(ARFaceTrackingCamera);
 engine.registerComponent(ARImageTrackingCamera);
+engine.registerComponent(ARSLAMCamera);
+engine.registerComponent(XR8CameraSwitch);
 engine.registerComponent(FaceAttachmentPointExample);
 engine.registerComponent(ImageTrackingExample);
 engine.registerComponent(SlamTrackingExample);
-engine.registerComponent(XR8CameraSwitch);
 /* wle:auto-register:end */
 
 engine.scene.load(`${ProjectName}.bin`);
