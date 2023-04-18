@@ -45,7 +45,7 @@ class ARVPSCamera extends ARCamera {
     }
 
     init() {
-        ARSession.registerTrackingProvider(this.engine, xr8Provider);
+        ARSession.getEngineSession(this.engine).registerTrackingProvider(xr8Provider);
     }
 
     public start() {

@@ -28,10 +28,10 @@ class ARSLAMCamera extends ARCamera {
          */
         if (this.engine.arSupported) {
             //if (false) { // force xr8
-            ARSession.registerTrackingProvider(this.engine, webXRProvider);
+            ARSession.getEngineSession(this.engine).registerTrackingProvider(webXRProvider);
             this._trackingImpl = new WorldTracking_webAR(this);
         } else {
-            ARSession.registerTrackingProvider(this.engine, xr8Provider);
+            ARSession.getEngineSession(this.engine).registerTrackingProvider(xr8Provider);
             this._trackingImpl = new WorldTracking_XR8(this);
         }
     };
@@ -50,10 +50,6 @@ class ARSLAMCamera extends ARCamera {
         if (this.active) {
             this._trackingImpl!.startSession();
         }
-
-        ARSession.onARSessionReady.add(() => {
-
-        });
     };
 
     endSession = async () => {

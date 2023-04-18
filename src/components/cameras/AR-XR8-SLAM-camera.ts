@@ -27,7 +27,7 @@ class ARXR8SLAMCamera extends ARCamera {
     }
 
     init() {
-        ARSession.registerTrackingProvider(this.engine, xr8Provider);
+        ARSession.getEngineSession(this.engine).registerTrackingProvider(xr8Provider);
         this._trackingImpl = new WorldTracking_XR8(this);
     }
 

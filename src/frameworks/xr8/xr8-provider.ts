@@ -130,7 +130,51 @@ class XR8Provider extends ARProvider {
         }
 
         if (this._loading) {
-            return;
+            return new Promise<void>((resolve, _reject) => {
+                // Just some safety flag, if 8th Wall was loaded before by something, like a index.html file
+                if (window['XR8']) {
+                    resolve();
+                    return;
+                }
+               
+                // xr8 has loaded
+                window.addEventListener('xrloaded', () => {
+                    this.loaded = true;
+    
+                    document.querySelector('#WL-loading-8thwall-logo')?.remove();
+    
+                    /**
+                     * Add a custom camera pipeline module to handle common tasks:
+                     * - start rendering camera feed when XR8 session starts
+                     * - stop rendering camera feed when XR8 session stops
+                     * - handle any error rised by the XR8 engine.
+                     */
+                    XR8.addCameraPipelineModules([
+                        XR8.GlTextureRenderer.pipelineModule(),
+                        {
+                            name: 'WLE-XR8-setup',
+                            onStart: () => {
+                                this._running = true;
+                                this.enableCameraFeed();
+                            },
+    
+                            onDetach: () => {
+                                this._running = false;
+                                this.disableCameraFeed();
+                            },
+    
+                            onException: (message) => {
+                                this.uiHandler.handleError(
+                                    new CustomEvent('8thwall-error', {detail: {message}})
+                                );
+                            },
+                        },
+                    ]);
+                    resolve();
+                });
+    
+                
+            });
         }
 
         this._loading = true;
