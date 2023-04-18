@@ -1,11 +1,11 @@
-import {ARSession} from '../AR-session.js';
+import {ARSession} from '../../AR-session.js';
 
-import {WorldTracking_XR8} from '../frameworks/xr8/world-tracking-mode-xr8.js';
-import {WorldTracking_webAR} from '../frameworks/webAR/world-tracking-mode-webAR.js';
+import {WorldTracking_XR8} from '../../frameworks/xr8/world-tracking-mode-xr8.js';
+import {WorldTracking_webAR} from '../../frameworks/webAR/world-tracking-mode-webAR.js';
 
-import {ITrackingMode} from '../frameworks/trackingMode.js';
-import {webXRProvider} from '../frameworks/webAR/webXR-provider.js';
-import {xr8Provider} from '../frameworks/xr8/xr8-provider.js';
+import {ITrackingMode} from '../../frameworks/trackingMode.js';
+import {webXRProvider} from '../../frameworks/webAR/webXR-provider.js';
+import {xr8Provider} from '../../frameworks/xr8/xr8-provider.js';
 import {ARCamera} from './AR-Camera.js';
 
 /**

@@ -1,7 +1,7 @@
 import {Emitter, ViewComponent} from '@wonderlandengine/api';
 import {TrackingMode} from '../trackingMode.js';
 import {xr8Provider} from './xr8-provider.js';
-import {ARFaceTrackingCamera} from '../../cameras/AR-face-tracking-camera.js';
+import {ARFaceTrackingCamera} from '../../components/cameras/AR-face-tracking-camera.js';
 
 /**
  * 8th Wall tracking implementation that encapsulates

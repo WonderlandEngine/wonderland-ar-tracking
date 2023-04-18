@@ -1,7 +1,7 @@
-import {ARSession} from '../AR-session.js';
+import {ARSession} from '../../AR-session.js';
 
-import {xr8Provider} from '../frameworks/xr8/xr8-provider.js';
-import {WorldTracking_XR8} from '../frameworks/xr8/world-tracking-mode-xr8.js';
+import {xr8Provider} from '../../frameworks/xr8/xr8-provider.js';
+import {WorldTracking_XR8} from '../../frameworks/xr8/world-tracking-mode-xr8.js';
 import {ARCamera} from './AR-Camera.js';
 
 /**

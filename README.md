@@ -18,7 +18,7 @@ window.WEBXR_OPTIONAL_FEATURES = WebXROptionalFeatures;
 - Make sure you are running on HTTPS (event on localhost)
 ## Structure
 
-### **`src/components/AR-session.ts`**
+### **`src/AR-session.ts`**
 
 -   master control for the AR session.
 -   registers dependencies (aka providers)
@@ -79,7 +79,7 @@ class ARSLAMCamera extends ARCamera {
 }
 ```
 
-### **`src/components/AR-provider`**
+### **`src/AR-provider`**
 
 AR provider should handle the loading, configuring and starting/stopping some tracking implementation.
 For example src/components/AR/frameworks/xr8/xr8-provider.ts loads, configures and checks the required permissions for the 8th Wall library.
@@ -107,13 +107,13 @@ class CustomProvider extends ARProvider {
 }
 ```
 
-### **`src/components/frameworks/trackingMode.ts`**
+### **`src/frameworks/trackingMode.ts`**
 
 Tracking modes holds the configuration and logic how to handle the data coming from the AR-provider.
 For example 8th Wall AR-provider can provide only camera pose if the tracking mode is `world-tracking` and extra pose for a tracked if tracking mode is `face-tracking`.
 Tracking modes are set by `AR-camera` and are modifying camera's pose when ever a new pose is resolved by the AR-provider.
 
-### **`src/components/AR/cameras/AR-Camera`**
+### **`src/components/cameras/AR-Camera`**
 
 Base class for all AR-cameras.
 
