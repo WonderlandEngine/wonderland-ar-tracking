@@ -20,17 +20,20 @@ export class ButtonEndARSession extends Component {
         this.xrEndButton.style.zIndex = '999';
         this.xrEndButton.style.display = 'none';
         this.xrEndButton.innerHTML = 'END AR SESSION';
-        document.body.appendChild(this.xrEndButton);
+        this.engine.canvas.parentElement!.appendChild(this.xrEndButton);
+        console.log("this.xrEndButton", this.xrEndButton);
+        
 
         this.xrEndButton.addEventListener('click', () => {
-            ARSession.stopARSession();
+            ARSession.getEngineSession(this.engine).stopARSession();
         });
 
-        ARSession.onSessionStarted.add(() => {
+        ARSession.getEngineSession(this.engine).onSessionStarted.add(() => {
+            console.log("Session has started");
             this.xrEndButton.style.display = 'block';
         });
 
-        ARSession.onSessionEnded.add(() => {
+        ARSession.getEngineSession(this.engine).onSessionEnded.add(() => {
             this.xrEndButton.style.display = 'none';
         });
     }

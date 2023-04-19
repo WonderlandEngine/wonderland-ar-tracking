@@ -10,6 +10,7 @@ abstract class ARProvider {
     public set engine(engine: WonderlandEngine) {
         this._engine = engine;
     }
+
     /**
      * onSessionStarted - array of callbacks to be called when the tracking implementation has started tracking.
      * It is NOT necessary called immediately after startSession is called

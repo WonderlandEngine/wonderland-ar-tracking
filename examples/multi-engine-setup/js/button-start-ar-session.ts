@@ -12,7 +12,6 @@ export class ButtonStartARSession extends Component {
 
     init() {
         if (ARSession.getEngineSession(this.engine).arSessionReady) {
-            console.log("session was ready ", this.engine.canvas.id);
             this.onARSessionReady();
         } else {
             ARSession.getEngineSession(this.engine).onARSessionReady.add(this.onARSessionReady);

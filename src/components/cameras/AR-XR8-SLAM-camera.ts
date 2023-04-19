@@ -4,7 +4,7 @@ import {ARSession} from '../../AR-session.js';
 
 import {WorldTracking_XR8} from '../../frameworks/xr8/world-tracking-mode-xr8.js';
 
-import {xr8Provider} from '../../frameworks/xr8/xr8-provider.js';
+import {XR8Provider,  /*xr8Provider*/} from '../../frameworks/xr8/xr8-provider.js';
 import {ARCamera} from './AR-Camera.js';
 
 /**
@@ -27,8 +27,8 @@ class ARXR8SLAMCamera extends ARCamera {
     }
 
     init() {
-        ARSession.getEngineSession(this.engine).registerTrackingProvider(xr8Provider);
-        this._trackingImpl = new WorldTracking_XR8(this);
+        const provider = XR8Provider.registerTrackingProviderWithARSession(this.engine);
+        this._trackingImpl = new WorldTracking_XR8(provider, this);
     }
 
     public start() {

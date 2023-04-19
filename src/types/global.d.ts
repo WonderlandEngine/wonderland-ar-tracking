@@ -332,7 +332,7 @@ declare var XR8: {
         device: () => XR8DeviceType;
         camera: () => XR8CameraDirection;
     };
-
+    clearCameraPipelineModules: () => void;
     addCameraPipelineModules: (modules: XR8CameraPipelineModule[]) => void;
     removeCameraPipelineModules: (modules: XR8CameraPipelineModule[]) => void;
 

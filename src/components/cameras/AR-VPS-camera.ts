@@ -1,6 +1,6 @@
 import {ARSession} from '../../AR-session.js';
 
-import {xr8Provider} from '../../frameworks/xr8/xr8-provider.js';
+import {XR8Provider /*xr8Provider */} from '../../frameworks/xr8/xr8-provider.js';
 import {WorldTracking_XR8} from '../../frameworks/xr8/world-tracking-mode-xr8.js';
 import {ARCamera} from './AR-Camera.js';
 
@@ -27,7 +27,7 @@ class ARVPSCamera extends ARCamera {
         return true;
     }
 
-    private _trackingImpl = new WorldTracking_XR8(this);
+    private _trackingImpl!: WorldTracking_XR8;
 
     public get onWaySpotFound() {
         return this._trackingImpl.onWaySpotFound;
@@ -45,7 +45,8 @@ class ARVPSCamera extends ARCamera {
     }
 
     init() {
-        ARSession.getEngineSession(this.engine).registerTrackingProvider(xr8Provider);
+        const provider = XR8Provider.registerTrackingProviderWithARSession(this.engine);
+        this._trackingImpl = new WorldTracking_XR8(provider, this);
     }
 
     public start() {

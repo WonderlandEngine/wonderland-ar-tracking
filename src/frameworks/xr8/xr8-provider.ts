@@ -1,5 +1,7 @@
 import * as QRCode from 'qrcode-svg';
 import {ARProvider} from '../../AR-provider.js';
+import {WonderlandEngine} from '@wonderlandengine/api';
+import {ARSession} from '../../AR-session.js';
 
 /**
  * Array of extra permissions which some tracking mode might need.
@@ -97,19 +99,63 @@ class XR8Provider extends ARProvider {
      */
     private _instance: XR8Provider | null = null;
 
-    constructor() {
+    public static registerTrackingProviderWithARSession(engine: WonderlandEngine) {
+        const provider = new XR8Provider(engine);
+        provider.engine = engine;
+        ARSession.getEngineSession(engine).registerTrackingProvider(provider);
+        return provider;
+    }
+
+    private constructor(engine: WonderlandEngine) {
         super();
+        this._engine = engine;
 
         // Safeguard that we are not running inside the editor
         if (typeof document === 'undefined') {
             return;
         }
 
-        if (this._instance !== null) {
+        /*if (this._instance !== null) {
             throw 'WebXRProvider cannot be instantiated';
         }
 
-        this._instance = this;
+        this._instance = this;*/
+    }
+
+    private static loadingPromise: Promise<void> | null = null;
+
+    private static loadXR8ExternalLib() {
+
+        if(XR8Provider.loadingPromise) {
+            return XR8Provider.loadingPromise;
+        }
+
+        XR8Provider.loadingPromise = new Promise<void>((resolve, _reject) => {
+            // Just some safety flag, if 8th Wall was loaded before by something, like a index.html file
+            if (window['XR8']) {
+                resolve();
+                return;
+            }
+
+            /**
+             * API_TOKEN_XR8 should be defined in the index.html
+             * TODO: fix this when it's moved to the auto-constants
+             */
+            if (!API_TOKEN_XR8) {
+                throw new Error('8th Wall api is not defined');
+            }
+
+            const s = document.createElement('script');
+            s.crossOrigin = 'anonymous';
+            s.src = 'https://apps.8thwall.com/xrweb?appKey=' + API_TOKEN_XR8;
+            document.body.appendChild(s);
+            // xr8 has loaded
+            window.addEventListener('xrloaded', () => {
+                resolve();
+            });
+        });
+
+        return XR8Provider.loadingPromise;
     }
 
     /**
@@ -128,120 +174,96 @@ class XR8Provider extends ARProvider {
         if (!window.document) {
             return;
         }
+        this.loaded = false;
+        console.log("!!! Begin loading");
+        await XR8Provider.loadXR8ExternalLib();
+        console.log("!!! End loading");
+        this.loaded = true;
 
-        if (this._loading) {
-            return new Promise<void>((resolve, _reject) => {
-                // Just some safety flag, if 8th Wall was loaded before by something, like a index.html file
-                if (window['XR8']) {
-                    resolve();
-                    return;
-                }
-               
-                // xr8 has loaded
-                window.addEventListener('xrloaded', () => {
-                    this.loaded = true;
-    
-                    document.querySelector('#WL-loading-8thwall-logo')?.remove();
-    
-                    /**
-                     * Add a custom camera pipeline module to handle common tasks:
-                     * - start rendering camera feed when XR8 session starts
-                     * - stop rendering camera feed when XR8 session stops
-                     * - handle any error rised by the XR8 engine.
-                     */
-                    XR8.addCameraPipelineModules([
-                        XR8.GlTextureRenderer.pipelineModule(),
-                        {
-                            name: 'WLE-XR8-setup',
-                            onStart: () => {
-                                this._running = true;
-                                this.enableCameraFeed();
-                            },
-    
-                            onDetach: () => {
-                                this._running = false;
-                                this.disableCameraFeed();
-                            },
-    
-                            onException: (message) => {
-                                this.uiHandler.handleError(
-                                    new CustomEvent('8thwall-error', {detail: {message}})
-                                );
-                            },
-                        },
-                    ]);
-                    resolve();
-                });
-    
-                
-            });
-        }
+        // if (this._loading) {
+        //     return new Promise<void>((resolve, _reject) => {
+        //         // Just some safety flag, if 8th Wall was loaded before by something, like a index.html file
+        //         if (window['XR8']) {
+        //             resolve();
+        //             return;
+        //         }
 
-        this._loading = true;
+        //         // xr8 has loaded
+        //         window.addEventListener('xrloaded', () => {
+        //             this.loaded = true;
 
-        return new Promise<void>((resolve, _reject) => {
-            // Just some safety flag, if 8th Wall was loaded before by something, like a index.html file
-            if (window['XR8']) {
-                resolve();
-                return;
-            }
+        //             document.querySelector('#WL-loading-8thwall-logo')?.remove();
 
-            /**
-             * API_TOKEN_XR8 should be defined in the index.html
-             * TODO: fix this when it's moved to the auto-constants
-             */
-            if (!API_TOKEN_XR8) {
-                throw new Error('8th Wall api is not defined');
-            }
+        //             /**
+        //              * Add a custom camera pipeline module to handle common tasks:
+        //              * - start rendering camera feed when XR8 session starts
+        //              * - stop rendering camera feed when XR8 session stops
+        //              * - handle any error rised by the XR8 engine.
+        //              */
+        //             XR8.addCameraPipelineModules([
+        //                 XR8.GlTextureRenderer.pipelineModule(),
+        //                 {
+        //                     name: 'WLE-XR8-setup',
+        //                     onStart: () => {
+        //                         this._running = true;
+        //                         this.enableCameraFeed();
+        //                     },
 
-            const s = document.createElement('script');
-            s.crossOrigin = 'anonymous';
-            s.src = 'https://apps.8thwall.com/xrweb?appKey=' + API_TOKEN_XR8;
+        //                     onDetach: () => {
+        //                         this._running = false;
+        //                         this.disableCameraFeed();
+        //                     },
 
-            // xr8 has loaded
-            window.addEventListener('xrloaded', () => {
-                this.loaded = true;
+        //                     onException: (message) => {
+        //                         this.uiHandler.handleError(
+        //                             new CustomEvent('8thwall-error', {detail: {message}})
+        //                         );
+        //                     },
+        //                 },
+        //             ]);
+        //             resolve();
+        //         });
+        //     });
+        // }
 
-                document.querySelector('#WL-loading-8thwall-logo')?.remove();
+        // this._loading = true;
 
-                /**
-                 * Add a custom camera pipeline module to handle common tasks:
-                 * - start rendering camera feed when XR8 session starts
-                 * - stop rendering camera feed when XR8 session stops
-                 * - handle any error rised by the XR8 engine.
-                 */
-                XR8.addCameraPipelineModules([
-                    XR8.GlTextureRenderer.pipelineModule(),
-                    {
-                        name: 'WLE-XR8-setup',
-                        onStart: () => {
-                            this._running = true;
-                            this.enableCameraFeed();
-                        },
+        // return new Promise<void>((resolve, _reject) => {
+        //     // Just some safety flag, if 8th Wall was loaded before by something, like a index.html file
+        //     if (window['XR8']) {
+        //         resolve();
+        //         return;
+        //     }
 
-                        onDetach: () => {
-                            this._running = false;
-                            this.disableCameraFeed();
-                        },
+        //     /**
+        //      * API_TOKEN_XR8 should be defined in the index.html
+        //      * TODO: fix this when it's moved to the auto-constants
+        //      */
+        //     if (!API_TOKEN_XR8) {
+        //         throw new Error('8th Wall api is not defined');
+        //     }
 
-                        onException: (message) => {
-                            this.uiHandler.handleError(
-                                new CustomEvent('8thwall-error', {detail: {message}})
-                            );
-                        },
-                    },
-                ]);
-                resolve();
-            });
+        //     const s = document.createElement('script');
+        //     s.crossOrigin = 'anonymous';
+        //     s.src = 'https://apps.8thwall.com/xrweb?appKey=' + API_TOKEN_XR8;
 
-            // append <script src="www.8thwall..." to the dom
-            document.body.appendChild(s);
+        //     // xr8 has loaded
+        //     window.addEventListener('xrloaded', () => {
+        //         this.loaded = true;
 
-            // Wait until index.html has been fully parsed and append the 8th Wall logo
-            document.readyState === 'complete'
-                ? this.add8thwallLogo()
-                : document.addEventListener('DOMContentLoaded', () => this.add8thwallLogo);
-        });
+        //         document.querySelector('#WL-loading-8thwall-logo')?.remove();
+
+        //         resolve();
+        //     });
+
+        //     // append <script src="www.8thwall..." to the dom
+        //     document.body.appendChild(s);
+
+        //     // Wait until index.html has been fully parsed and append the 8th Wall logo
+        //     document.readyState === 'complete'
+        //         ? this.add8thwallLogo()
+        //         : document.addEventListener('DOMContentLoaded', () => this.add8thwallLogo);
+        // });
     }
     /**
      * Starts XR8 session.
@@ -249,7 +271,44 @@ class XR8Provider extends ARProvider {
      * Usually will be called by some XR8 tracking implementation with specific options (Face-tracking, image-tracking, etc)
      * @typeParam check XR8.run options parameter
      */
-    public async startSession(options: Parameters<typeof XR8.run>[0]) {
+    public async startSession(
+        options: Parameters<typeof XR8.run>[0],
+        cameraModules: Array<XR8CameraPipelineModule>,
+        engine: WonderlandEngine
+    ) {
+        this._engine = engine;
+        this.endSession();
+        XR8.clearCameraPipelineModules();
+
+        /**
+         * Add a custom camera pipeline module to handle common tasks:
+         * - start rendering camera feed when XR8 session starts
+         * - stop rendering camera feed when XR8 session stops
+         * - handle any error rised by the XR8 engine.
+         */
+        XR8.addCameraPipelineModules([
+            XR8.GlTextureRenderer.pipelineModule(),
+            {
+                name: 'WLE-XR8-setup',
+                onStart: () => {
+                    this._running = true;
+                    this.enableCameraFeed();
+                },
+
+                onDetach: () => {
+                    this._running = false;
+                    this.disableCameraFeed();
+                },
+
+                onException: (message) => {
+                    this.uiHandler.handleError(
+                        new CustomEvent('8thwall-error', {detail: {message}})
+                    );
+                },
+            },
+            ...cameraModules,
+        ]);
+
         XR8.run(options);
         this.onSessionStarted.notify(this);
     }
@@ -259,6 +318,7 @@ class XR8Provider extends ARProvider {
      * Can be called from anywhere.
      */
     public async endSession() {
+        console.log('Ending session');
         if (this._running) {
             XR8.stop();
             this.onSessionEnded.notify(this);
@@ -733,5 +793,5 @@ const xr8logo = `
       </svg>
 `;
 
-const xr8Provider = new XR8Provider();
-export {XR8Provider, xr8Provider, XR8UIHandler, XR8ExtraPermissions};
+// const xr8Provider = new XR8Provider();
+export {XR8Provider, /*xr8Provider, */ XR8UIHandler, XR8ExtraPermissions};

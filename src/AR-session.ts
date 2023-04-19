@@ -1,4 +1,4 @@
-import {Emitter, WonderlandEngine} from '@wonderlandengine/api';
+import {Emitter, Mesh, Object, WonderlandEngine} from '@wonderlandengine/api';
 import {ARProvider} from './AR-provider.js';
 
 /**
@@ -11,17 +11,6 @@ import {ARProvider} from './AR-provider.js';
 class ARSession {
     private static engines: WeakMap<WonderlandEngine, ARSession> = new WeakMap();
     private engine: WonderlandEngine;
-
-    public static getEngineSession(engine: WonderlandEngine) {
-        if (!this.engines.has(engine)) {
-            this.engines.set(engine, new ARSession(engine));
-        }
-        return this.engines.get(engine)!;
-    }
-
-    private constructor(engine: WonderlandEngine) {
-        this.engine = engine;
-    }
 
     /**
      * tracking provider is basically a lib which has some tracking capabilities, so device native webXR, 8th Wall, mind-ar-js, etc
@@ -47,6 +36,17 @@ class ARSession {
         return this._arSessionIsReady;
     }
 
+    public static getEngineSession(engine: WonderlandEngine) {
+        if (!this.engines.has(engine)) {
+            this.engines.set(engine, new ARSession(engine));
+        }
+        return this.engines.get(engine)!;
+    }
+
+    private constructor(engine: WonderlandEngine) {
+        this.engine = engine;
+    }
+
     /**
      * Registers tracking provider. Makes sure it is loaded
      * and hooks into providers onSessionStarted, onSessionLoaded events.
@@ -62,7 +62,6 @@ class ARSession {
         }
 
         this._trackingProviders.push(provider);
-        provider.engine = this.engine;
 
         provider.onSessionStarted.add(this.onProviderSessionStarted);
         provider.onSessionEnded.add(this.onProviderSessionEnded);
@@ -87,14 +86,14 @@ class ARSession {
             this._trackingProviders.every((p) => p.loaded === true) &&
             this._sceneHasLoaded
         ) {
-            console.log("WL snotifying session loaded", this.engine.canvas.id);
+            console.log('WL snotifying session loaded', this.engine.canvas.id);
             this._arSessionIsReady = true;
             this.onARSessionReady.notify();
         }
     };
 
     private onWLSceneLoaded = () => {
-        console.log("WL scene loaded", this.engine.canvas.id);
+        console.log('WL scene loaded', this.engine.canvas.id);
         this._sceneHasLoaded = true;
         this.checkProviderLoadProgress();
     };
@@ -117,6 +116,7 @@ class ARSession {
      */
     private onProviderSessionStarted = (provider: ARProvider) => {
         this._currentTrackingProvider = provider;
+
         this.onSessionStarted.notify(provider);
     };
 

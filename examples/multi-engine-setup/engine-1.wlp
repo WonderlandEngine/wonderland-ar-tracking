@@ -43,6 +43,9 @@
                 },
                 {
                     "type": "button-start-ar-session"
+                },
+                {
+                    "type": "button-end-ar-session"
                 }
             ]
         },
@@ -535,7 +538,8 @@
             "bundlingType": "esbuild",
             "libraryPaths": [
                 "/js/lib/"
-            ]
+            ],
+            "entryPoint": "js/index.js"
         },
         "ar": {
             "framework": "8thwall",

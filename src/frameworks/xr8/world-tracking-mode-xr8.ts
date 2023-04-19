@@ -1,6 +1,7 @@
 import {Emitter, ViewComponent} from '@wonderlandengine/api';
 import {TrackingMode} from '../trackingMode.js';
-import {xr8Provider, XR8ExtraPermissions} from './xr8-provider.js';
+import {/*xr8Provider,*/ XR8ExtraPermissions, XR8Provider} from './xr8-provider.js';
+import { ARSession } from '../../AR-session.js';
 
 /**
  * A helper type to determine if a camera wants to enable SLAM tracking
@@ -203,7 +204,8 @@ class WorldTracking_XR8 extends TrackingMode {
         this._cachedRotation[2] = rot[2];
         this._cachedRotation[3] = rot[3];
 
-        xr8Provider.onSessionEnded.add(() => {
+        
+        ARSession.getEngineSession(this.component.engine).onSessionEnded.add(() => {
             XR8.removeCameraPipelineModules([XR8.XrController.pipelineModule(), this]);
         });
     }
@@ -214,7 +216,7 @@ class WorldTracking_XR8 extends TrackingMode {
      * and tells xr8Provider to start the session
      */
     public async startSession() {
-        const permissions = await xr8Provider.checkPermissions(this._extraPermissions);
+        const permissions = await (this.provider as XR8Provider).checkPermissions(this._extraPermissions);
         if (!permissions) {
             return;
         }
@@ -237,7 +239,7 @@ class WorldTracking_XR8 extends TrackingMode {
             enableVps: componentUsesVPS,
         });
 
-        XR8.addCameraPipelineModules([XR8.XrController.pipelineModule(), this]);
+       // XR8.addCameraPipelineModules([XR8.XrController.pipelineModule(), this]);
 
         const options = {
             canvas: this.component.engine.canvas as HTMLCanvasElement,
@@ -247,11 +249,11 @@ class WorldTracking_XR8 extends TrackingMode {
                 direction: XR8.XrConfig.camera().BACK,
             },
         };
-        xr8Provider.startSession(options);
+        this.provider.startSession(options, [XR8.XrController.pipelineModule(), this], this.component.engine);
     }
 
     public endSession() {
-        xr8Provider.endSession();
+        this.provider.endSession();
     }
 
     /**
