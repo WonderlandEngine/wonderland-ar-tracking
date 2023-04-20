@@ -75,7 +75,7 @@ export class AbsoluteScaleWatcher extends Component {
 
         window.addEventListener('click', this.spawnMesh);
 
-        ARSession.onSessionEnded.add(() => {
+        ARSession.getEngineSession(this.engine).onSessionEnded.add(() => {
             div.style.display = 'none';
             this._tracking = false;
         });

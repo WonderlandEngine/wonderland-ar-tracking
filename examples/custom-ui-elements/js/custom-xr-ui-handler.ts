@@ -1,7 +1,7 @@
 /**
  * Demonstrates handling xr8 events for custom UI overlays/dialogs.
  * In this example we don't display the AR button to start the AR session, but rather start it
- * as soon as AR is available (ARSession.onARSessionReady).
+ * as soon as AR is available (ARSession.getEngineSession(this.engine)).
  * This way we can expect to all UI's to be requested (check iOS for full experience, since Android does not require so many user interactions to start)
  */
 import {Component} from '@wonderlandengine/api';

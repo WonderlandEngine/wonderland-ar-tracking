@@ -89,7 +89,7 @@ export class PhysicalSizeImageTarget extends Component {
             }
         });
 
-        ARSession.onSessionEnded.add(() => {
+        ARSession.getEngineSession(this.engine).onSessionEnded.add(() => {
             clearTimeout(this._imageLostTimeout);
             if (this._meshComp) {
                 this._meshComp.destroy();
