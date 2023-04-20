@@ -44,14 +44,14 @@ window.WEBXR_OPTIONAL_FEATURES = WebXROptionalFeatures;
 const engine = await loadRuntime(RuntimeBaseName, {
     physx: WithPhysX,
     loader: WithLoader,
-    canvas: 'canvas'
+    canvas: 'canvas-2'
 });
 Object.assign(engine, API); // Deprecated: Backward compatibility.
 window.WL = engine; // Deprecated: Backward compatibility.
 
 engine.xrFramebufferScaleFactor = WebXRFramebufferScaleFactor;
 engine.onSceneLoaded.once(() => {
-    const el = document.getElementById('version');
+    const el = document.getElementById('version-2');
     if (el) setTimeout(() => el.remove(), 2000);
 });
 
@@ -59,12 +59,12 @@ engine.onSceneLoaded.once(() => {
 const engine2 = await loadRuntime(RuntimeBaseName, {
     physx: WithPhysX,
     loader: WithLoader,
-    canvas: 'canvas-2'
+    canvas: 'canvas-3'
 });
 
 engine2.xrFramebufferScaleFactor = WebXRFramebufferScaleFactor;
 engine2.onSceneLoaded.once(() => {
-    const el = document.getElementById('version-2');
+    const el = document.getElementById('version-3');
     if (el) setTimeout(() => el.remove(), 2000);
 });
 
@@ -73,13 +73,13 @@ engine2.onSceneLoaded.once(() => {
 
 function setupButtonsXR() {
     /* Setup AR / VR buttons */
-    const arButton = document.getElementById('ar-button');
+    const arButton = document.getElementById('ar-button-2');
     if (arButton) {
         arButton.dataset.supported = engine.arSupported;
        // arButton.addEventListener('click', () => requestSession('immersive-ar'));
     }
 
-    const arButton2 = document.getElementById('ar-button-2');
+    const arButton2 = document.getElementById('ar-button-3');
     if (arButton2) {
         arButton2.dataset.supported = engine.arSupported;
        // arButton.addEventListener('click', () => requestSession('immersive-ar'));
@@ -103,7 +103,6 @@ engine.registerComponent(FaceAttachmentPointExample);
 engine.registerComponent(SpawnMeshOnSelect);
 /* wle:auto-register:end */
 
-engine.name = "engine-1";
 engine.scene.load(`${ProjectName}.bin`);
 
 engine2.registerComponent(ARFaceTrackingCamera);
@@ -115,7 +114,6 @@ engine2.registerComponent(ButtonStartARSession);
 engine2.registerComponent(FaceAttachmentPointExample);
 engine2.registerComponent(SpawnMeshOnSelect);
 
-engine2.name = "engine-2";
 engine2.scene.load(`${ProjectName}.bin`);
 
 /* wle:auto-benchmark:start */

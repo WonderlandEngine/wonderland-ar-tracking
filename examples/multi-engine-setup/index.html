@@ -9,56 +9,55 @@
     <meta name="theme-color" content="{{ settings.runtime.xrButtonColor }}">
 
 	<style>
-		body {
-			font-family: Arial, sans-serif;
-			margin: 0;
-			padding: 0;
-		}
-		.header {
-			background-color: #333;
-			color: #fff;
-			padding: 10px;
-			text-align: center;
-		}
-		.navbar {
-			background-color: #444;
-			color: #fff;
-			display: flex;
-			justify-content: space-between;
-			padding: 10px;
-		}
-		.navbar a {
-			color: #fff;
-			margin: 0 10px;
-			text-decoration: none;
-		}
-		.section {
-			display: flex;
-			flex-direction: column ;
-			margin: 20px;
-			padding: 20px;
-			border: 1px solid #ccc;
-			border-radius: 10px;
-		}
-		.article {
-			flex: 1;
-			margin: 10px;
-		}
-		.article h2 {
-			margin-top: 0;
-		}
-		.article p {
-			margin: 10px 0;
-		}
-		.footer {
-			background-color: #333;
-			color: #fff;
-			padding: 10px;
-			text-align: center;
-		}
+	body {
+		font-family: Arial, sans-serif;
+		margin: 0;
+		padding: 0;
+	}
+	.header {
+		background-color: #333;
+		color: #fff;
+		padding: 10px;
+		text-align: center;
+	}
+	.navbar {
+		background-color: #444;
+		color: #fff;
+		display: flex;
+		justify-content: space-between;
+		padding: 10px;
+	}
+	.navbar a {
+		color: #fff;
+		margin: 0 10px;
+		text-decoration: none;
+	}
+	.section {
+		display: flex;
+		flex-direction: column ;
+		margin: 20px;
+		padding: 20px;
+		border: 1px solid #ccc;
+		border-radius: 10px;
+	}
+	.article {
+		flex: 1;
+		margin: 10px;
+	}
+	.article h2 {
+		margin-top: 0;
+	}
+	.article p {
+		margin: 10px 0;
+	}
+	.footer {
+		background-color: #333;
+		color: #fff;
+		padding: 10px;
+		text-align: center;
+	}
 
-
-		.xr-button-container {
+	.xr-button-container {
 		display: block;
 		position: absolute;
 		width: 100%;
@@ -66,9 +65,9 @@
 		display: flex;
 		justify-content: center;
 		pointer-events: none;
-		}
-		#vr-button, #ar-button, #ar-button-2{
-		
+	}
+
+	#vr-button, .ar-button {
 		float: left;
 		width: 0px; /* Hidden until we know supported state */
 		padding-left: 10px;
@@ -76,7 +75,7 @@
 		display: none;
 		pointer-events: all;
 		cursor: pointer;
-		}
+	}
 
     .canvas-container {
       width: 100%;
@@ -151,6 +150,7 @@
 {{ end }}
 
 <script type="module" src="{{ settings.project.name }}-bundle.js?t={{timestamp}}"></script>
+<script type="module" src="ImageTracking-bundle.js?t={{timestamp}}"></script>
 
 {{ if settings.runtime.googleAnalytics != '' }}
 <script async src="https://www.googletagmanager.com/gtag/js?id={{ settings.runtime.googleAnalytics }}"></script>
@@ -216,12 +216,6 @@
 		</div>
 		<div class="article">
 			<h2>Sports: Something Happened in a Game</h2>
-			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at dolor euismod, convallis arcu vel, dignissim augue. Fusce tristique convallis mi, in sodales leo aliquam at. Duis gravida erat non nibh consectetur, vel dignissim nunc pretium. Aliquam vel turpis velit. Pellentesque consectetur lectus ac laoreet euismod. </p>
-			<p>Phasellus euismod euismod nisl id vestibulum. Nullam pharetra imperdiet mi, vitae facilisis justo placerat sed. Ut vitae metus malesuada, lacinia ipsum in, pretium eros. </p>
-		</div>
-		<div class="article">
-			<h2>Technology: Something Happened with a New Device</h2>
-			
 			<div class="canvas-container">
 				<canvas id="canvas-2" style="width: 100%; height: 100%; display: block;" tabindex="0"></canvas>
 				<div id="version-2" class="version">
@@ -232,6 +226,27 @@
 					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 109.41 65"><rect class="xr-button-frame" x="3.5" y="3.5" width="102.41" height="58" rx="16.68" style="fill:none;stroke-linejoin:round;stroke-width:7px"/><path class="xr-button-label" d="M36.24,48.84a2,2,0,0,1-1.78-1.15L23.39,17.46a1.84,1.84,0,0,1,1.78-1.84h5.45a1.8,1.8,0,0,1,1.66,1.21l7.29,20.42,7.28-20.42a1.8,1.8,0,0,1,1.67-1.21H54a1.84,1.84,0,0,1,1.78,1.84L44.67,47.69a2,2,0,0,1-1.78,1.15Z"/><path class="xr-button-label" d="M70.61,40H68v7a1.84,1.84,0,0,1-1.78,1.84H61.31A1.83,1.83,0,0,1,59.54,47V17.46a1.83,1.83,0,0,1,1.77-1.84H73s13,.12,13,12.22c0,6-3.21,9-6.42,10.5L86.38,47a1.76,1.76,0,0,1-1.77,1.84h-5.8a1.91,1.91,0,0,1-1.43-.69ZM68,32.09h5c2.24,0,4.08-1.15,4.08-4.25s-1.84-4.36-4.08-4.36H68Z"/></svg>
 				  </a>{{ end }}
 				  <a id="ar-button-2" class="ar-button">
+					<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 109.41 65"><path class="xr-button-label" d="M42.89,15.62a2,2,0,0,1,1.78,1.15L55.75,47A1.84,1.84,0,0,1,54,48.84H48.52a1.81,1.81,0,0,1-1.67-1.2l-1.49-4.19H33.77l-1.49,4.19a1.8,1.8,0,0,1-1.66,1.2H25.17A1.83,1.83,0,0,1,23.39,47L34.46,16.77a2,2,0,0,1,1.78-1.15Zm-6.31,20h6l-3-8.38Z"/><path class="xr-button-label" d="M70.61,40H68V47a1.84,1.84,0,0,1-1.78,1.83H61.31A1.83,1.83,0,0,1,59.54,47V17.46a1.83,1.83,0,0,1,1.77-1.84H73s13,.12,13,12.22c0,6-3.21,9-6.42,10.5L86.38,47a1.76,1.76,0,0,1-1.77,1.83h-5.8a1.91,1.91,0,0,1-1.43-.69ZM68,32.09h5c2.24,0,4.08-1.15,4.08-4.25s-1.84-4.36-4.08-4.36H68Z"/><rect class="xr-button-frame" x="3.5" y="3.5" width="102.41" height="58" rx="16.68" style="fill:none;stroke-linejoin:round;stroke-width:7px"/></svg>
+				  </a>
+				</div>
+			  </div>
+
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at dolor euismod, convallis arcu vel, dignissim augue. Fusce tristique convallis mi, in sodales leo aliquam at. Duis gravida erat non nibh consectetur, vel dignissim nunc pretium. Aliquam vel turpis velit. Pellentesque consectetur lectus ac laoreet euismod. </p>
+			<p>Phasellus euismod euismod nisl id vestibulum. Nullam pharetra imperdiet mi, vitae facilisis justo placerat sed. Ut vitae metus malesuada, lacinia ipsum in, pretium eros. </p>
+		</div>
+		<div class="article">
+			<h2>Technology: Something Happened with a New Device</h2>
+			
+			<div class="canvas-container">
+				<canvas id="canvas-3" style="width: 100%; height: 100%; display: block;" tabindex="0"></canvas>
+				<div id="version-3" class="version">
+					<a>Wonderland Engine {{ version }}</a>
+				</div>
+				<div class="xr-button-container">
+				  {{ if settings.vr.enable }}<a id="vr-button">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 109.41 65"><rect class="xr-button-frame" x="3.5" y="3.5" width="102.41" height="58" rx="16.68" style="fill:none;stroke-linejoin:round;stroke-width:7px"/><path class="xr-button-label" d="M36.24,48.84a2,2,0,0,1-1.78-1.15L23.39,17.46a1.84,1.84,0,0,1,1.78-1.84h5.45a1.8,1.8,0,0,1,1.66,1.21l7.29,20.42,7.28-20.42a1.8,1.8,0,0,1,1.67-1.21H54a1.84,1.84,0,0,1,1.78,1.84L44.67,47.69a2,2,0,0,1-1.78,1.15Z"/><path class="xr-button-label" d="M70.61,40H68v7a1.84,1.84,0,0,1-1.78,1.84H61.31A1.83,1.83,0,0,1,59.54,47V17.46a1.83,1.83,0,0,1,1.77-1.84H73s13,.12,13,12.22c0,6-3.21,9-6.42,10.5L86.38,47a1.76,1.76,0,0,1-1.77,1.84h-5.8a1.91,1.91,0,0,1-1.43-.69ZM68,32.09h5c2.24,0,4.08-1.15,4.08-4.25s-1.84-4.36-4.08-4.36H68Z"/></svg>
+				  </a>{{ end }}
+				  <a id="ar-button-3" class="ar-button">
 					<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 109.41 65"><path class="xr-button-label" d="M42.89,15.62a2,2,0,0,1,1.78,1.15L55.75,47A1.84,1.84,0,0,1,54,48.84H48.52a1.81,1.81,0,0,1-1.67-1.2l-1.49-4.19H33.77l-1.49,4.19a1.8,1.8,0,0,1-1.66,1.2H25.17A1.83,1.83,0,0,1,23.39,47L34.46,16.77a2,2,0,0,1,1.78-1.15Zm-6.31,20h6l-3-8.38Z"/><path class="xr-button-label" d="M70.61,40H68V47a1.84,1.84,0,0,1-1.78,1.83H61.31A1.83,1.83,0,0,1,59.54,47V17.46a1.83,1.83,0,0,1,1.77-1.84H73s13,.12,13,12.22c0,6-3.21,9-6.42,10.5L86.38,47a1.76,1.76,0,0,1-1.77,1.83h-5.8a1.91,1.91,0,0,1-1.43-.69ZM68,32.09h5c2.24,0,4.08-1.15,4.08-4.25s-1.84-4.36-4.08-4.36H68Z"/><rect class="xr-button-frame" x="3.5" y="3.5" width="102.41" height="58" rx="16.68" style="fill:none;stroke-linejoin:round;stroke-width:7px"/></svg>
 				  </a>
 				</div>

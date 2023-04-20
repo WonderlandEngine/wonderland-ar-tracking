@@ -6,7 +6,9 @@ import {Emitter, WonderlandEngine} from '@wonderlandengine/api';
  * For example src/components/AR/frameworks/xr8/xr8-provider.ts loads, configures and checks the required permissions for the 8th Wall library.
  */
 abstract class ARProvider {
+
     protected _engine!: WonderlandEngine;
+
     public get engine() {
         return this._engine;
     }

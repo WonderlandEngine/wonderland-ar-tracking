@@ -98,6 +98,10 @@ class XR8Provider extends ARProvider {
      */
     private static _running = false;
 
+    /**
+     * Multiple XR8Provider instances can be created for multiple engines, but we only want to load the 8th Wall library once.
+     * loadingPromise will be shared between all XR8Provider instances.
+     */
     private static loadingPromise: Promise<void> | null = null;
 
     public static registerTrackingProviderWithARSession(engine: WonderlandEngine) {
@@ -129,9 +133,21 @@ class XR8Provider extends ARProvider {
         }
 
         XR8Provider.loadingPromise = new Promise<void>((resolve, _reject) => {
-            // Just some safety flag, if 8th Wall was loaded before by something, like a index.html file
+            /**
+             * Just some safety flag, if 8th Wall was loaded before by something, like a index.html file
+             * */
             if (window['XR8']) {
                 resolve();
+                return;
+            }
+
+            /**
+             * Some other engine might have already loaded the 8th Wall library, so we don't want to load it again
+             * */
+            if(document.getElementById('__injected-WLE-xr8')) {
+                window.addEventListener('xrloaded', () => {
+                    resolve();
+                });
                 return;
             }
 
@@ -148,6 +164,7 @@ class XR8Provider extends ARProvider {
             });
 
             const s = document.createElement('script');
+            s.id="__injected-WLE-xr8"
             s.crossOrigin = 'anonymous';
             s.src = 'https://apps.8thwall.com/xrweb?appKey=' + API_TOKEN_XR8;
             document.body.appendChild(s);

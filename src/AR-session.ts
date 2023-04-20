@@ -17,6 +17,7 @@ class ARSession {
      */
     private _trackingProviders: Array<ARProvider> = [];
 
+
     /**
      * Current running provider when AR session is running
      */
@@ -59,12 +60,12 @@ class ARSession {
      * and hooks into providers onSessionStarted, onSessionLoaded events.
      */
     public async registerTrackingProvider(provider: ARProvider) {
-        if (!this.engine.onSceneLoaded.has(this.onWLSceneLoaded)) {
-            this.engine.onSceneLoaded.add(this.onWLSceneLoaded);
-        }
-
         if (this._trackingProviders.includes(provider)) {
             return;
+        }
+
+        if (!this.engine.onSceneLoaded.has(this.onWLSceneLoaded)) {
+            this.engine.onSceneLoaded.add(this.onWLSceneLoaded);
         }
 
         this._trackingProviders.push(provider);
