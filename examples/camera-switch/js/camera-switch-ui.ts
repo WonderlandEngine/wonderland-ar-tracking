@@ -45,10 +45,10 @@ export class XR8CameraSwitch extends Component {
             .querySelector('#XR8CameraSwitch-world')
             ?.addEventListener('click', this.onWorldCameraSelected);
         container.querySelector('#XR8CameraSwitch-kill')?.addEventListener('click', () => {
-            ARSession.stopARSession();
+            ARSession.getEngineSession(this.engine).stopARSession();
         });
 
-        ARSession.onSessionEnded.add(() => {
+        ARSession.getEngineSession(this.engine).onSessionEnded.add(() => {
             this._faceTrackingCamera!.active = false;
             this._imageTrackingCamera!.active = false;
             this._worldTrackingCamera!.active = false;

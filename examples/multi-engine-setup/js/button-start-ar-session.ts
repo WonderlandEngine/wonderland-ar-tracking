@@ -18,15 +18,12 @@ export class ButtonStartARSession extends Component {
         }
 
         ARSession.getEngineSession(this.engine).onSessionEnded.add((provider) => {
-            console.log("Session ended", provider.engine.canvas.id);
             let xrButton = this.engine.canvas.parentElement!.querySelector<HTMLElement>('.ar-button');
             xrButton!.style.display = 'block';
         });
     }
 
     onARSessionReady = () => {
-        console.log("session got ready ", this.engine.canvas.id);
-
         let xrButton = this.engine.canvas.parentElement!.querySelector<HTMLElement>('.ar-button');
 
         if (xrButton === null) {

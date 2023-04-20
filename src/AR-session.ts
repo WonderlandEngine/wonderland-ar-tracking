@@ -36,6 +36,13 @@ class ARSession {
         return this._arSessionIsReady;
     }
 
+    /**
+     * @returns a shallow copy of all registered providers
+     */
+    public get registeredProviders(): ReadonlyArray<ARProvider> {        
+        return [...this._trackingProviders];
+    }
+
     public static getEngineSession(engine: WonderlandEngine) {
         if (!this.engines.has(engine)) {
             this.engines.set(engine, new ARSession(engine));
@@ -52,7 +59,6 @@ class ARSession {
      * and hooks into providers onSessionStarted, onSessionLoaded events.
      */
     public async registerTrackingProvider(provider: ARProvider) {
-        console.log('Registering tracking provider: ', (this.engine as any).name);
         if (!this.engine.onSceneLoaded.has(this.onWLSceneLoaded)) {
             this.engine.onSceneLoaded.add(this.onWLSceneLoaded);
         }

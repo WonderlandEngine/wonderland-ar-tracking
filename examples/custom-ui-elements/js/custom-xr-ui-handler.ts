@@ -9,20 +9,26 @@ import QrCodeWithLogo from 'qrcode-with-logos';
 
 import {
     ARSession,
-    xr8Provider,
     XR8UIHandler,
     ARVPSCamera,
+    XR8Provider,
 } from '@wonderlandengine/8thwall-tracking';
 
 export class CustomUIHandler extends Component implements XR8UIHandler {
     public static TypeName = 'custom-xr8-ui-handler';
 
-    init() {
+    start() {
         // tell xr8Provider we will be the UI handler
-        xr8Provider.uiHandler = this;
+        ARSession.getEngineSession(this.engine).registeredProviders.forEach((provider) => {
+            if(provider instanceof XR8Provider) {
+                provider.uiHandler = this;
+            }
+        });
+
+        console.log(ARSession.getEngineSession(this.engine));
 
         // Start AR session as soon as it's available
-        ARSession.onARSessionReady.add(() => {
+        ARSession.getEngineSession(this.engine).onARSessionReady.add(() => {
             this.object.getComponent(ARVPSCamera)?.startSession();
         });
     }

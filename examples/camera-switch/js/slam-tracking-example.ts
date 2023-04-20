@@ -35,16 +35,16 @@ export class SlamTrackingExample extends Component {
             );
         }
 
-        ARSession.onSessionStarted.add(() => {
+        ARSession.getEngineSession(this.engine).onSessionStarted.add(() => {
             if (camera.active) {
                 this.object.scalingWorld = [1, 1, 1];
             }
         });
 
-        ARSession.onSessionEnded.add(() => {
+        ARSession.getEngineSession(this.engine).onSessionEnded.add(() => {
             this.object.scalingWorld = [0, 0, 0];
         });
 
-        this.object.scalingWorld = [0, 0, 0];
+        //this.object.scalingWorld = [0, 0, 0];
     }
 }

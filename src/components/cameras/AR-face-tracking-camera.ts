@@ -1,11 +1,9 @@
 import {property} from '@wonderlandengine/api/decorators.js';
 
-import {ARSession} from '../../AR-session.js';
 import {FaceTracking_XR8} from '../../frameworks/xr8/face-tracking-mode-xr8.js';
-import {XR8Provider, /*xr8Provider*/} from '../../frameworks/xr8/xr8-provider.js';
+import {XR8Provider} from '../../frameworks/xr8/xr8-provider.js';
 
 import {ARCamera} from './AR-Camera.js';
-import { TrackingMode } from '../../frameworks/trackingMode.js';
 
 /**
  * AR face tracking Camera component.
@@ -42,10 +40,8 @@ class ARFaceTrackingCamera extends ARCamera {
     }
 
     public init() {
-        //this._trackingImpl = 
         const provider = XR8Provider.registerTrackingProviderWithARSession(this.engine);
         this._trackingImpl = new FaceTracking_XR8(provider, this);
-        //ARSession.getEngineSession(this.engine).registerTrackingProvider(xr8Provider);
     }
 
     public start() {
