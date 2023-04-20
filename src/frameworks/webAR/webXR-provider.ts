@@ -45,8 +45,6 @@ class WebXRProvider extends ARProvider {
         webxrRequiredFeatures: string[] = ['local'],
         webxrOptionalFeatures: string[] = ['local', 'hit-test']
     ) {
-
-        console.log("REquestiung a featurem,", webxrRequiredFeatures, webxrOptionalFeatures)
         this._engine.requestXRSession(
             'immersive-ar',
             webxrRequiredFeatures,

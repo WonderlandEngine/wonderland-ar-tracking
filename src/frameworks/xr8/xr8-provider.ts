@@ -71,6 +71,17 @@ interface XR8UIHandler {
  * ARProvider implementation for loading and setting up the 8th Wall lib
  */
 class XR8Provider extends ARProvider {
+
+    /**
+     * Number of XR8Provider instances
+     */
+
+    private static _instances = 0
+
+    /**
+     * Unique id for this instance
+     */
+    private _id: number;    
     /**
      * Default XR8UIHandler to handle 8th wall UI related events
      */
@@ -83,21 +94,11 @@ class XR8Provider extends ARProvider {
     private cachedWebGLContext: WebGL2RenderingContext | null = null;
 
     /**
-     * Loading of 8th Wall might be initiated by several components, make sure we load it only once
-     */
-    private _loading = false;
-
-    /**
      * XR8 currently provides no way to check if the session is running, only if the session is paused (and we never pause, we just XR8.end()). so we track this manually
      */
     private static _running = false;
 
-    /**
-     * We don't want the user to manually instantiate the XR8Provider.
-     * The instance XR8Provider is created at the bottom of this file once
-     * and if we detect that someone is trying to create a second instance of XR8Provider - we throw an error
-     */
-    private _instance: XR8Provider | null = null;
+    private static loadingPromise: Promise<void> | null = null;
 
     public static registerTrackingProviderWithARSession(engine: WonderlandEngine) {
         const provider = new XR8Provider(engine);
@@ -108,23 +109,22 @@ class XR8Provider extends ARProvider {
     private constructor(engine: WonderlandEngine) {
         super(engine);
 
+        this._id = XR8Provider._instances++;
+
         // Safeguard that we are not running inside the editor
         if (typeof document === 'undefined') {
             return;
         }
-
-        /*if (this._instance !== null) {
-            throw 'WebXRProvider cannot be instantiated';
-        }
-
-        this._instance = this;*/
     }
 
-    private static loadingPromise: Promise<void> | null = null;
-
+    /**
+     * Loads the 8th Wall library from https://apps.8thwall.com by
+     * creating a <script src="https://apps.8thwall.com..."> tag.
+     *
+     * @returns a promise when the library is loaded.
+     */
     private static loadXR8ExternalLib() {
-
-        if(XR8Provider.loadingPromise) {
+        if (XR8Provider.loadingPromise) {
             return XR8Provider.loadingPromise;
         }
 
@@ -143,14 +143,14 @@ class XR8Provider extends ARProvider {
                 throw new Error('8th Wall api is not defined');
             }
 
+            window.addEventListener('xrloaded', () => {
+                resolve();
+            });
+
             const s = document.createElement('script');
             s.crossOrigin = 'anonymous';
             s.src = 'https://apps.8thwall.com/xrweb?appKey=' + API_TOKEN_XR8;
             document.body.appendChild(s);
-            // xr8 has loaded
-            window.addEventListener('xrloaded', () => {
-                resolve();
-            });
         });
 
         return XR8Provider.loadingPromise;
@@ -173,95 +173,14 @@ class XR8Provider extends ARProvider {
             return;
         }
         this.loaded = false;
-        console.log("!!! Begin loading");
+
+        const logo = document.readyState === 'complete'
+            ? this.add8thwallLogo()
+            : document.addEventListener('DOMContentLoaded', () => this.add8thwallLogo);
+
         await XR8Provider.loadXR8ExternalLib();
-        console.log("!!! End loading");
         this.loaded = true;
-
-        // if (this._loading) {
-        //     return new Promise<void>((resolve, _reject) => {
-        //         // Just some safety flag, if 8th Wall was loaded before by something, like a index.html file
-        //         if (window['XR8']) {
-        //             resolve();
-        //             return;
-        //         }
-
-        //         // xr8 has loaded
-        //         window.addEventListener('xrloaded', () => {
-        //             this.loaded = true;
-
-        //             document.querySelector('#WL-loading-8thwall-logo')?.remove();
-
-        //             /**
-        //              * Add a custom camera pipeline module to handle common tasks:
-        //              * - start rendering camera feed when XR8 session starts
-        //              * - stop rendering camera feed when XR8 session stops
-        //              * - handle any error rised by the XR8 engine.
-        //              */
-        //             XR8.addCameraPipelineModules([
-        //                 XR8.GlTextureRenderer.pipelineModule(),
-        //                 {
-        //                     name: 'WLE-XR8-setup',
-        //                     onStart: () => {
-        //                         this._running = true;
-        //                         this.enableCameraFeed();
-        //                     },
-
-        //                     onDetach: () => {
-        //                         this._running = false;
-        //                         this.disableCameraFeed();
-        //                     },
-
-        //                     onException: (message) => {
-        //                         this.uiHandler.handleError(
-        //                             new CustomEvent('8thwall-error', {detail: {message}})
-        //                         );
-        //                     },
-        //                 },
-        //             ]);
-        //             resolve();
-        //         });
-        //     });
-        // }
-
-        // this._loading = true;
-
-        // return new Promise<void>((resolve, _reject) => {
-        //     // Just some safety flag, if 8th Wall was loaded before by something, like a index.html file
-        //     if (window['XR8']) {
-        //         resolve();
-        //         return;
-        //     }
-
-        //     /**
-        //      * API_TOKEN_XR8 should be defined in the index.html
-        //      * TODO: fix this when it's moved to the auto-constants
-        //      */
-        //     if (!API_TOKEN_XR8) {
-        //         throw new Error('8th Wall api is not defined');
-        //     }
-
-        //     const s = document.createElement('script');
-        //     s.crossOrigin = 'anonymous';
-        //     s.src = 'https://apps.8thwall.com/xrweb?appKey=' + API_TOKEN_XR8;
-
-        //     // xr8 has loaded
-        //     window.addEventListener('xrloaded', () => {
-        //         this.loaded = true;
-
-        //         document.querySelector('#WL-loading-8thwall-logo')?.remove();
-
-        //         resolve();
-        //     });
-
-        //     // append <script src="www.8thwall..." to the dom
-        //     document.body.appendChild(s);
-
-        //     // Wait until index.html has been fully parsed and append the 8th Wall logo
-        //     document.readyState === 'complete'
-        //         ? this.add8thwallLogo()
-        //         : document.addEventListener('DOMContentLoaded', () => this.add8thwallLogo);
-        // });
+        document.querySelector('#WL-loading-8thwall-logo' + this._id)?.remove();
     }
     /**
      * Starts XR8 session.
@@ -273,8 +192,10 @@ class XR8Provider extends ARProvider {
         options: Parameters<typeof XR8.run>[0],
         cameraModules: Array<XR8CameraPipelineModule>
     ) {
-        if(XR8Provider._running) {
-            console.warn("There is an active XR8 session running. Stop it first before starting a new one.");
+        if (XR8Provider._running) {
+            console.warn(
+                'There is an active XR8 session running. Stop it first before starting a new one.'
+            );
             return;
         }
         XR8.clearCameraPipelineModules();
@@ -318,7 +239,7 @@ class XR8Provider extends ARProvider {
      */
     public async endSession() {
         if (XR8Provider._running) {
-            console.log("TRy to stop the session");
+            console.log('TRy to stop the session');
             XR8.stop();
             this.onSessionEnded.notify(this);
         }
@@ -383,23 +304,26 @@ class XR8Provider extends ARProvider {
     }
 
     /**
-     * Renders an 8th Wall logo at the bottom sof the screen
+     * Renders an 8th Wall logo at the bottom of the canvas element.
      */
     private add8thwallLogo() {
+        const rect = this._engine.canvas.getBoundingClientRect();
+
         const a = document.createElement('a');
         a.href = 'https://www.8thwall.com/';
         a.target = '_blank';
         a.style.position = 'absolute';
-        a.style.bottom = '20px';
+        a.style.top = (rect.bottom + window.scrollY - 80) + 'px';
         a.style.left = '0';
         a.style.right = '0';
         a.style.margin = '0 auto';
         a.style.width = '252px';
         a.style.zIndex = '999';
         // a.style.pointerEvents='none';
-        a.id = 'WL-loading-8thwall-logo';
+        a.id = 'WL-loading-8thwall-logo' + this._id
         a.innerHTML = xr8logo;
         document.body.appendChild(a);
+        return a;
     }
 
     /**

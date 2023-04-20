@@ -21,7 +21,7 @@ export class ButtonEndARSession extends Component {
         this.xrEndButton.style.display = 'none';
         this.xrEndButton.innerHTML = 'END AR SESSION';
         this.engine.canvas.parentElement!.appendChild(this.xrEndButton);
-        console.log("this.xrEndButton", this.xrEndButton);
+        console.log("this.xrEndButton", this);
         
 
         this.xrEndButton.addEventListener('click', () => {
