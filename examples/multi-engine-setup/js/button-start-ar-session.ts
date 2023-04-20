@@ -17,7 +17,8 @@ export class ButtonStartARSession extends Component {
             ARSession.getEngineSession(this.engine).onARSessionReady.add(this.onARSessionReady);
         }
 
-        ARSession.getEngineSession(this.engine).onSessionEnded.add(() => {
+        ARSession.getEngineSession(this.engine).onSessionEnded.add((provider) => {
+            console.log("Session ended", provider.engine.canvas.id);
             let xrButton = this.engine.canvas.parentElement!.querySelector<HTMLElement>('.ar-button');
             xrButton!.style.display = 'block';
         });
@@ -38,7 +39,6 @@ export class ButtonStartARSession extends Component {
         xrButton.addEventListener('click', () => {
             xrButton!.style.display = 'none';
             const components = this.object.getComponents();
-            console.log("COmponents", components)
             for (let i = 0; i < components.length; i++) {
                 if (components[i] instanceof ARCamera) {
                     (components[i] as ARCamera).startSession();

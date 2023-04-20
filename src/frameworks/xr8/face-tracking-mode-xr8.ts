@@ -135,7 +135,7 @@ class FaceTracking_XR8 extends TrackingMode {
         };
 
         //xr8Provider.startSession(options);
-        this.provider.startSession(options, [XR8.FaceController.pipelineModule(), this], this.component.engine);
+        return this.provider.startSession(options, [XR8.FaceController.pipelineModule(), this]);
     }
 
     public endSession() {

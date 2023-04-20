@@ -115,8 +115,8 @@ class ARSession {
      * @param provider to be passed into onSessionStarted callback function
      */
     private onProviderSessionStarted = (provider: ARProvider) => {
+        console.log("onProviderSessionStarted", provider.engine.canvas.id);
         this._currentTrackingProvider = provider;
-
         this.onSessionStarted.notify(provider);
     };
 
@@ -125,6 +125,7 @@ class ARSession {
      * @param provider to be passed into onSessionEnded callback function
      */
     private onProviderSessionEnded = (provider: ARProvider) => {
+        console.log("onProviderSessionEnded", provider.engine.canvas.id);
         this.onSessionEnded.notify(provider);
     };
 }

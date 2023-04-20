@@ -90,7 +90,7 @@ class XR8Provider extends ARProvider {
     /**
      * XR8 currently provides no way to check if the session is running, only if the session is paused (and we never pause, we just XR8.end()). so we track this manually
      */
-    private _running = false;
+    private static _running = false;
 
     /**
      * We don't want the user to manually instantiate the XR8Provider.
@@ -101,14 +101,12 @@ class XR8Provider extends ARProvider {
 
     public static registerTrackingProviderWithARSession(engine: WonderlandEngine) {
         const provider = new XR8Provider(engine);
-        provider.engine = engine;
         ARSession.getEngineSession(engine).registerTrackingProvider(provider);
         return provider;
     }
 
     private constructor(engine: WonderlandEngine) {
-        super();
-        this._engine = engine;
+        super(engine);
 
         // Safeguard that we are not running inside the editor
         if (typeof document === 'undefined') {
@@ -273,11 +271,12 @@ class XR8Provider extends ARProvider {
      */
     public async startSession(
         options: Parameters<typeof XR8.run>[0],
-        cameraModules: Array<XR8CameraPipelineModule>,
-        engine: WonderlandEngine
+        cameraModules: Array<XR8CameraPipelineModule>
     ) {
-        this._engine = engine;
-        this.endSession();
+        if(XR8Provider._running) {
+            console.warn("There is an active XR8 session running. Stop it first before starting a new one.");
+            return;
+        }
         XR8.clearCameraPipelineModules();
 
         /**
@@ -291,12 +290,12 @@ class XR8Provider extends ARProvider {
             {
                 name: 'WLE-XR8-setup',
                 onStart: () => {
-                    this._running = true;
+                    XR8Provider._running = true;
                     this.enableCameraFeed();
                 },
 
                 onDetach: () => {
-                    this._running = false;
+                    XR8Provider._running = false;
                     this.disableCameraFeed();
                 },
 
@@ -318,8 +317,8 @@ class XR8Provider extends ARProvider {
      * Can be called from anywhere.
      */
     public async endSession() {
-        console.log('Ending session');
-        if (this._running) {
+        if (XR8Provider._running) {
+            console.log("TRy to stop the session");
             XR8.stop();
             this.onSessionEnded.notify(this);
         }

@@ -249,7 +249,7 @@ class WorldTracking_XR8 extends TrackingMode {
                 direction: XR8.XrConfig.camera().BACK,
             },
         };
-        this.provider.startSession(options, [XR8.XrController.pipelineModule(), this], this.component.engine);
+        return this.provider.startSession(options, [XR8.XrController.pipelineModule(), this]);
     }
 
     public endSession() {

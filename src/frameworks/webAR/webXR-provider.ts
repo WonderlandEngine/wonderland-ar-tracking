@@ -11,32 +11,14 @@ class WebXRProvider extends ARProvider {
     }
 
     /**
-     * We override the parent ARProvider engine setter
-     * since we want to listen to native WLE engine.onXRSessionStart
-     * and engine.onXRSessionEnd callbacks.
-     */
-    public override set engine(engine: WonderlandEngine) {
-        super.engine = engine;
-
-        engine.onXRSessionStart.add((session: XRSession) => {
-            this._xrSession = session;
-            this.onSessionStarted.notify(this);
-        });
-
-        engine.onXRSessionEnd.add(() => {
-            this.onSessionEnded.notify(this);
-        });
-    }
-
-    /**
      * We don't want the user to manually instantiate the WebXRProvider.
      * The instance WebXRProvider is created at the bottom of this file once
      * and if we detect that someone is trying to create a second instance of WebXRProvider - we throw an error
      */
     private _instance: WebXRProvider | null = null;
 
-    constructor() {
-        super();
+    constructor(engine: WonderlandEngine) {
+        super(engine);
 
         // Safeguard that we are not running inside the editor
         if (typeof document === 'undefined') {
@@ -46,6 +28,15 @@ class WebXRProvider extends ARProvider {
         if (this._instance !== null) {
             throw 'WebXRProvider cannot be instantiated';
         }
+
+        /*engine.onXRSessionStart.add((session: XRSession) => {
+            this._xrSession = session;
+            this.onSessionStarted.notify(this);
+        });
+
+        engine.onXRSessionEnd.add(() => {
+            this.onSessionEnded.notify(this);
+        });*/
 
         this._instance = this;
     }
@@ -80,5 +71,5 @@ class WebXRProvider extends ARProvider {
         return Promise.resolve();
     }
 }
-const webXRProvider = new WebXRProvider();
+const webXRProvider = new WebXRProvider(null as any);
 export {WebXRProvider, webXRProvider};

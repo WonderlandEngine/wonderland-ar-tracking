@@ -7,7 +7,11 @@ import {Emitter, WonderlandEngine} from '@wonderlandengine/api';
  */
 abstract class ARProvider {
     protected _engine!: WonderlandEngine;
-    public set engine(engine: WonderlandEngine) {
+    public get engine() {
+        return this._engine;
+    }
+
+    protected constructor(engine: WonderlandEngine) {
         this._engine = engine;
     }
 

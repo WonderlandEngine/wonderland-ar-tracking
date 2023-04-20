@@ -28,12 +28,13 @@ export class ButtonEndARSession extends Component {
             ARSession.getEngineSession(this.engine).stopARSession();
         });
 
-        ARSession.getEngineSession(this.engine).onSessionStarted.add(() => {
-            console.log("Session has started");
+        ARSession.getEngineSession(this.engine).onSessionStarted.add((provider) => {
+            console.log("Session has started", provider.engine.canvas.id);
             this.xrEndButton.style.display = 'block';
         });
 
-        ARSession.getEngineSession(this.engine).onSessionEnded.add(() => {
+        ARSession.getEngineSession(this.engine).onSessionEnded.add((provider) => {
+            console.log("Session has ended", provider.engine.canvas.id);
             this.xrEndButton.style.display = 'none';
         });
     }
