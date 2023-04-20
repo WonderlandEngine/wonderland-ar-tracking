@@ -75,13 +75,13 @@ class XR8Provider extends ARProvider {
     /**
      * Number of XR8Provider instances
      */
-
     private static _instances = 0
 
     /**
      * Unique id for this instance
      */
     private _id: number;    
+
     /**
      * Default XR8UIHandler to handle 8th wall UI related events
      */
