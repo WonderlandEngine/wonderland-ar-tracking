@@ -12,11 +12,17 @@ export class ButtonEndARSession extends Component {
     xrEndButton!: HTMLButtonElement;
 
     init() {
+        const rect = this.engine.canvas.getBoundingClientRect();
         this.xrEndButton = document.createElement('button');
         this.xrEndButton.style.lineHeight = '40px';
         this.xrEndButton.style.position = 'absolute';
-        this.xrEndButton.style.left = '0';
-        this.xrEndButton.style.top = '0';
+
+        /**
+         * Put the END AR SESSION button in the top left corner of the canvas
+         */
+        this.xrEndButton.style.left = rect.left + 'px';
+        this.xrEndButton.style.top = (rect.top + window.scrollY) + 'px';
+        
         this.xrEndButton.style.zIndex = '999';
         this.xrEndButton.style.display = 'none';
         this.xrEndButton.innerHTML = 'END AR SESSION';

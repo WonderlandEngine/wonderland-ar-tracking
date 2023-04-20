@@ -93,14 +93,12 @@ class ARSession {
             this._trackingProviders.every((p) => p.loaded === true) &&
             this._sceneHasLoaded
         ) {
-            console.log('WL snotifying session loaded', this.engine.canvas.id);
             this._arSessionIsReady = true;
             this.onARSessionReady.notify();
         }
     };
 
     private onWLSceneLoaded = () => {
-        console.log('WL scene loaded', this.engine.canvas.id);
         this._sceneHasLoaded = true;
         this.checkProviderLoadProgress();
     };
@@ -122,7 +120,6 @@ class ARSession {
      * @param provider to be passed into onSessionStarted callback function
      */
     private onProviderSessionStarted = (provider: ARProvider) => {
-        console.log("onProviderSessionStarted", provider.engine.canvas.id);
         this._currentTrackingProvider = provider;
         this.onSessionStarted.notify(provider);
     };
@@ -132,7 +129,6 @@ class ARSession {
      * @param provider to be passed into onSessionEnded callback function
      */
     private onProviderSessionEnded = (provider: ARProvider) => {
-        console.log("onProviderSessionEnded", provider.engine.canvas.id);
         this.onSessionEnded.notify(provider);
     };
 }

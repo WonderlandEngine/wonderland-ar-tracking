@@ -47,7 +47,6 @@ class ARSLAMCamera extends ARCamera {
     }
 
     startSession = async () => {
-        console.log("Starting native session")
         if (this.active) {
             this._trackingImpl!.startSession();
         }

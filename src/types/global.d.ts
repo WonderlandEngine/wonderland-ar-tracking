@@ -273,6 +273,11 @@ declare type xr8FaceLostEvent = {
 };
 
 declare var XR8: {
+    /**
+     * Added by WLE, to track if any session is running across different WLE runtimes
+     */
+    WLE_sessionRunning: boolean;
+
     runPreRender: (time: number) => void;
     runRender: () => void;
     runPostRender: (time: number) => void;

@@ -23,6 +23,12 @@ import {FaceAttachmentPointExample} from './face-attachment-point-example.js';
 import {SpawnMeshOnSelect} from './spawn-mesh-on-select.js';
 /* wle:auto-imports:end */
 
+import {ARImageTrackingCamera} from '@wonderlandengine/8thwall-tracking';
+import {ImageTrackingExample} from '../../image-tracking/js/image-tracker.js';
+import {PhysicalSizeImageTarget} from '../../image-tracking/js/physical-size-image-target.js';
+import {VideoTextureImageTarget} from '../../image-tracking/js/video-texture-image-target.js';
+import {VideoTexture} from '@wonderlandengine/components';
+
 import {loadRuntime} from '@wonderlandengine/api';
 import * as API from '@wonderlandengine/api'; // Deprecated: Backward compatibility.
 
@@ -105,16 +111,15 @@ engine.registerComponent(SpawnMeshOnSelect);
 
 engine.scene.load(`${ProjectName}.bin`);
 
-engine2.registerComponent(ARFaceTrackingCamera);
-engine2.registerComponent(HitTestLocation);
-engine2.registerComponent(MouseLookComponent);
-engine2.registerComponent(WasdControlsComponent);
+engine2.registerComponent(ARImageTrackingCamera);
+engine2.registerComponent(VideoTexture);
 engine2.registerComponent(ButtonEndARSession);
 engine2.registerComponent(ButtonStartARSession);
-engine2.registerComponent(FaceAttachmentPointExample);
-engine2.registerComponent(SpawnMeshOnSelect);
+engine2.registerComponent(ImageTrackingExample);
+engine2.registerComponent(PhysicalSizeImageTarget);
+engine2.registerComponent(VideoTextureImageTarget);
 
-engine2.scene.load(`${ProjectName}.bin`);
+engine2.scene.load(`ImageTracking.bin`);
 
 /* wle:auto-benchmark:start */
 /* wle:auto-benchmark:end */

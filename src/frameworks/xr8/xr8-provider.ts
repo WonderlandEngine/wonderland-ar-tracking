@@ -96,7 +96,7 @@ class XR8Provider extends ARProvider {
     /**
      * XR8 currently provides no way to check if the session is running, only if the session is paused (and we never pause, we just XR8.end()). so we track this manually
      */
-    private static _running = false;
+    // private static _running = false;
 
     /**
      * Multiple XR8Provider instances can be created for multiple engines, but we only want to load the 8th Wall library once.
@@ -209,11 +209,11 @@ class XR8Provider extends ARProvider {
         options: Parameters<typeof XR8.run>[0],
         cameraModules: Array<XR8CameraPipelineModule>
     ) {
-        if (XR8Provider._running) {
+        if (XR8.WLE_sessionRunning) {
             console.warn(
                 'There is an active XR8 session running. Stop it first before starting a new one.'
             );
-            return;
+           return;
         }
         XR8.clearCameraPipelineModules();
 
@@ -228,12 +228,12 @@ class XR8Provider extends ARProvider {
             {
                 name: 'WLE-XR8-setup',
                 onStart: () => {
-                    XR8Provider._running = true;
+                    XR8.WLE_sessionRunning = true;
                     this.enableCameraFeed();
                 },
 
                 onDetach: () => {
-                    XR8Provider._running = false;
+                    XR8.WLE_sessionRunning = false;
                     this.disableCameraFeed();
                 },
 
@@ -255,8 +255,7 @@ class XR8Provider extends ARProvider {
      * Can be called from anywhere.
      */
     public async endSession() {
-        if (XR8Provider._running) {
-            console.log('TRy to stop the session');
+        if (XR8.WLE_sessionRunning) {
             XR8.stop();
             this.onSessionEnded.notify(this);
         }

@@ -25,8 +25,6 @@ export class CustomUIHandler extends Component implements XR8UIHandler {
             }
         });
 
-        console.log(ARSession.getEngineSession(this.engine));
-
         // Start AR session as soon as it's available
         ARSession.getEngineSession(this.engine).onARSessionReady.add(() => {
             this.object.getComponent(ARVPSCamera)?.startSession();
