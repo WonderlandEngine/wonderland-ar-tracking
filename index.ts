@@ -4,7 +4,6 @@ export {ARSession} from './src/AR-session.js';
 export {ARProvider} from './src/AR-provider.js';
 export {
     WebXRProvider,
-    webXRProvider,
 } from './src/frameworks/webAR/webXR-provider.js';
 export {XR8Provider, /*xr8Provider,*/ XR8UIHandler} from './src/frameworks/xr8/xr8-provider.js';
 

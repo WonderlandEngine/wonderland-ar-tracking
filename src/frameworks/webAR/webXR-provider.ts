@@ -1,5 +1,6 @@
 import {WonderlandEngine} from '@wonderlandengine/api';
 import {ARProvider} from '../../AR-provider.js';
+import {ARSession} from '../../AR-session.js';
 
 /**
  * ARProvider implementation for device native webXR API
@@ -10,14 +11,13 @@ class WebXRProvider extends ARProvider {
         return this._xrSession;
     }
 
-    /**
-     * We don't want the user to manually instantiate the WebXRProvider.
-     * The instance WebXRProvider is created at the bottom of this file once
-     * and if we detect that someone is trying to create a second instance of WebXRProvider - we throw an error
-     */
-    private _instance: WebXRProvider | null = null;
+    public static registerTrackingProviderWithARSession(engine: WonderlandEngine) {
+        const provider = new WebXRProvider(engine);
+        ARSession.getEngineSession(engine).registerTrackingProvider(provider);
+        return provider;
+    }
 
-    constructor(engine: WonderlandEngine) {
+    private constructor(engine: WonderlandEngine) {
         super(engine);
 
         // Safeguard that we are not running inside the editor
@@ -25,20 +25,14 @@ class WebXRProvider extends ARProvider {
             return;
         }
 
-        if (this._instance !== null) {
-            throw 'WebXRProvider cannot be instantiated';
-        }
-
-        /*engine.onXRSessionStart.add((session: XRSession) => {
+        engine.onXRSessionStart.add((session: XRSession) => {
             this._xrSession = session;
             this.onSessionStarted.notify(this);
         });
 
         engine.onXRSessionEnd.add(() => {
             this.onSessionEnded.notify(this);
-        });*/
-
-        this._instance = this;
+        });
     }
 
     public async startSession(
@@ -59,7 +53,6 @@ class WebXRProvider extends ARProvider {
             } catch {
                 // Session was ended for some
             }
-
             this._xrSession = null;
         }
     }
@@ -69,5 +62,5 @@ class WebXRProvider extends ARProvider {
         return Promise.resolve();
     }
 }
-const webXRProvider = new WebXRProvider(null as any);
-export {WebXRProvider, webXRProvider};
+
+export {WebXRProvider};

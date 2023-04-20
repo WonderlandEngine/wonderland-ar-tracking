@@ -176,7 +176,7 @@ class XR8Provider extends ARProvider {
 
         const logo = document.readyState === 'complete'
             ? this.add8thwallLogo()
-            : document.addEventListener('DOMContentLoaded', () => this.add8thwallLogo);
+            : document.addEventListener('DOMContentLoaded', () => this.add8thwallLogo());
 
         await XR8Provider.loadXR8ExternalLib();
         this.loaded = true;
@@ -313,7 +313,7 @@ class XR8Provider extends ARProvider {
         a.href = 'https://www.8thwall.com/';
         a.target = '_blank';
         a.style.position = 'absolute';
-        a.style.top = (rect.bottom + window.scrollY - 80) + 'px';
+        a.style.top = (rect.bottom + window.scrollY - 160) + 'px';
         a.style.left = '0';
         a.style.right = '0';
         a.style.margin = '0 auto';
