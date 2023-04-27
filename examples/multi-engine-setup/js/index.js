@@ -33,42 +33,33 @@ import {loadRuntime} from '@wonderlandengine/api';
 import * as API from '@wonderlandengine/api'; // Deprecated: Backward compatibility.
 
 /* wle:auto-constants:start */
-const ProjectName = 'engine-1';
-const RuntimeBaseName = 'WonderlandRuntime';
-const WithPhysX = false;
-const WithLoader = false;
-const WebXRFramebufferScaleFactor = 1;
-const WebXRRequiredFeatures = ['local',];
-const WebXROptionalFeatures = ['local','hand-tracking','hit-test',];
-const ApiToken8THWall = 'sU7eX52Oe2ZL8qUKBWD5naUlu1ZrnuRrtM1pQ7ukMz8rkOEG8mb63YlYTuiOrsQZTiXKRe';
+const RuntimeOptions = {
+    physx: false,
+    loader: false,
+    xrFramebufferScaleFactor: 1,
+    canvas: 'canvas',
+};
+const Constants = {
+    ProjectName: 'engine-1',
+    RuntimeBaseName: 'WonderlandRuntime',
+    WebXRRequiredFeatures: ['local',],
+    WebXROptionalFeatures: ['local','hand-tracking','hit-test',],
+};
 /* wle:auto-constants:end */
 
-window.API_TOKEN_XR8 = ApiToken8THWall;
-window.WEBXR_REQUIRED_FEATURES = WebXRRequiredFeatures;
-window.WEBXR_OPTIONAL_FEATURES = WebXROptionalFeatures;
+window.API_TOKEN_XR8 = "sU7eX52Oe2ZL8qUKBWD5naUlu1ZrnuRrtM1pQ7ukMz8rkOEG8mb63YlYTuiOrsQZTiXKRe";
+window.WEBXR_REQUIRED_FEATURES = Constants.WebXRRequiredFeatures;
+window.WEBXR_OPTIONAL_FEATURES = Constants.WebXROptionalFeatures;
 
-const engine = await loadRuntime(RuntimeBaseName, {
-    physx: WithPhysX,
-    loader: WithLoader,
-    canvas: 'canvas-2'
-});
-Object.assign(engine, API); // Deprecated: Backward compatibility.
-window.WL = engine; // Deprecated: Backward compatibility.
+const engine = await loadRuntime(Constants.RuntimeBaseName, {...RuntimeOptions, canvas: 'canvas-2'});
 
-engine.xrFramebufferScaleFactor = WebXRFramebufferScaleFactor;
 engine.onSceneLoaded.once(() => {
     const el = document.getElementById('version-2');
     if (el) setTimeout(() => el.remove(), 2000);
 });
 
+const engine2 = await loadRuntime(Constants.RuntimeBaseName, {...RuntimeOptions, canvas: 'canvas-3'});
 
-const engine2 = await loadRuntime(RuntimeBaseName, {
-    physx: WithPhysX,
-    loader: WithLoader,
-    canvas: 'canvas-3'
-});
-
-engine2.xrFramebufferScaleFactor = WebXRFramebufferScaleFactor;
 engine2.onSceneLoaded.once(() => {
     const el = document.getElementById('version-3');
     if (el) setTimeout(() => el.remove(), 2000);
@@ -82,13 +73,11 @@ function setupButtonsXR() {
     const arButton = document.getElementById('ar-button-2');
     if (arButton) {
         arButton.dataset.supported = engine.arSupported;
-       // arButton.addEventListener('click', () => requestSession('immersive-ar'));
     }
 
-    const arButton2 = document.getElementById('ar-button-3');
-    if (arButton2) {
-        arButton2.dataset.supported = engine.arSupported;
-       // arButton.addEventListener('click', () => requestSession('immersive-ar'));
+    const arButton3 = document.getElementById('ar-button-3');
+    if (arButton3) {
+        arButton3.dataset.supported = engine.arSupported;
     }
 }
 
@@ -109,7 +98,7 @@ engine.registerComponent(FaceAttachmentPointExample);
 engine.registerComponent(SpawnMeshOnSelect);
 /* wle:auto-register:end */
 
-engine.scene.load(`${ProjectName}.bin`);
+engine.scene.load(`${Constants.ProjectName}.bin`);
 
 engine2.registerComponent(ARImageTrackingCamera);
 engine2.registerComponent(VideoTexture);
