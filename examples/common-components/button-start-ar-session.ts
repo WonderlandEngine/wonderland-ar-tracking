@@ -11,13 +11,13 @@ export class ButtonStartARSession extends Component {
     public static TypeName = 'button-start-ar-session';
 
     init() {
-        if (ARSession.getEngineSession(this.engine).arSessionReady) {
+        if (ARSession.getSessionForEngine(this.engine).arSessionReady) {
             this.onARSessionReady();
         } else {
-            ARSession.getEngineSession(this.engine).onARSessionReady.add(this.onARSessionReady);
+            ARSession.getSessionForEngine(this.engine).onARSessionReady.add(this.onARSessionReady);
         }
 
-        ARSession.getEngineSession(this.engine).onSessionEnded.add(() => {
+        ARSession.getSessionForEngine(this.engine).onSessionEnded.add(() => {
             let xrButton = document.querySelector<HTMLElement>('#ar-button');
             xrButton!.style.display = 'block';
         });

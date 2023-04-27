@@ -29,8 +29,8 @@ export class HitTestLocationXR8 extends Component {
     private _tmpWorldPosition = vec3.create();
 
     init() {
-        ARSession.getEngineSession(this.engine).onSessionStarted.add(this.onSessionStarted);
-        ARSession.getEngineSession(this.engine).onSessionEnded.add(this.onSessionEnded);
+        ARSession.getSessionForEngine(this.engine).onSessionStarted.add(this.onSessionStarted);
+        ARSession.getSessionForEngine(this.engine).onSessionEnded.add(this.onSessionEnded);
     }
 
     update() {

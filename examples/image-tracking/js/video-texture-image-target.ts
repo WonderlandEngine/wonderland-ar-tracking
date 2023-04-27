@@ -50,7 +50,7 @@ export class VideoTextureImageTarget extends Component {
             }
         });
 
-        ARSession.getEngineSession(this.engine).onSessionEnded.add(() => {
+        ARSession.getSessionForEngine(this.engine).onSessionEnded.add(() => {
             clearTimeout(this._imageLostTimeout);
             this._videoTextureComp.video!.pause();
         });

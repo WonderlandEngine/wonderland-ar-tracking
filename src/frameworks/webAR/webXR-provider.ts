@@ -13,7 +13,7 @@ class WebXRProvider extends ARProvider {
 
     public static registerTrackingProviderWithARSession(engine: WonderlandEngine) {
         const provider = new WebXRProvider(engine);
-        ARSession.getEngineSession(engine).registerTrackingProvider(provider);
+        ARSession.getSessionForEngine(engine).registerTrackingProvider(provider);
         return provider;
     }
 

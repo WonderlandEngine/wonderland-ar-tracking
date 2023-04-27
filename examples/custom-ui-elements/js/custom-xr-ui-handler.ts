@@ -1,7 +1,7 @@
 /**
  * Demonstrates handling xr8 events for custom UI overlays/dialogs.
  * In this example we don't display the AR button to start the AR session, but rather start it
- * as soon as AR is available (ARSession.getEngineSession(this.engine)).
+ * as soon as AR is available (ARSession.getSessionForEngine(this.engine)).
  * This way we can expect to all UI's to be requested (check iOS for full experience, since Android does not require so many user interactions to start)
  */
 import {Component} from '@wonderlandengine/api';
@@ -19,14 +19,14 @@ export class CustomUIHandler extends Component implements XR8UIHandler {
 
     start() {
         // tell xr8Provider we will be the UI handler
-        ARSession.getEngineSession(this.engine).registeredProviders.forEach((provider) => {
+        ARSession.getSessionForEngine(this.engine).registeredProviders.forEach((provider) => {
             if(provider instanceof XR8Provider) {
                 provider.uiHandler = this;
             }
         });
 
         // Start AR session as soon as it's available
-        ARSession.getEngineSession(this.engine).onARSessionReady.add(() => {
+        ARSession.getSessionForEngine(this.engine).onARSessionReady.add(() => {
             this.object.getComponent(ARVPSCamera)?.startSession();
         });
     }

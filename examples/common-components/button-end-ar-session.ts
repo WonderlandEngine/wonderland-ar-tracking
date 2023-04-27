@@ -29,14 +29,14 @@ export class ButtonEndARSession extends Component {
         document.body.appendChild(this.xrEndButton);
 
         this.xrEndButton.addEventListener('click', () => {
-            ARSession.getEngineSession(this.engine).stopARSession();
+            ARSession.getSessionForEngine(this.engine).stopARSession();
         });
 
-        ARSession.getEngineSession(this.engine).onSessionStarted.add(() => {
+        ARSession.getSessionForEngine(this.engine).onSessionStarted.add(() => {
             this.xrEndButton.style.display = 'block';
         });
 
-        ARSession.getEngineSession(this.engine).onSessionEnded.add(() => {
+        ARSession.getSessionForEngine(this.engine).onSessionEnded.add(() => {
             this.xrEndButton.style.display = 'none';
         });
     }

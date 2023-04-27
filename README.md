@@ -46,17 +46,17 @@ class ARSLAMCamera extends ARCamera {
         /**
          * Listen to when all providers are loaded and ready to be used
          **/
-        ARSession.getEngineSession(this.engine).onARSessionReady.add(() => {});
+        ARSession.getSessionForEngine(this.engine).onARSessionReady.add(() => {});
 
         /**
          * Listen to when any tracking provider started a tracking session
          **/
-        ARSession.getEngineSession(this.engine).onSessionStarted.add((trackingProvider: ARProvider) => {});
+        ARSession.getSessionForEngine(this.engine).onSessionStarted.add((trackingProvider: ARProvider) => {});
 
         /**
          * Listen to when running tracking provider ended a tracking session
          **/
-        ARSession.getEngineSession(this.engine).onSessionEnded.add((trackingProvider: ARProvider) => {});
+        ARSession.getSessionForEngine(this.engine).onSessionEnded.add((trackingProvider: ARProvider) => {});
     };
 
     /**

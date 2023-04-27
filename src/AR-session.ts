@@ -44,7 +44,7 @@ class ARSession {
         return [...this._trackingProviders];
     }
 
-    public static getEngineSession(engine: WonderlandEngine) {
+    public static getSessionForEngine(engine: WonderlandEngine) {
         if (!this.engines.has(engine)) {
             this.engines.set(engine, new ARSession(engine));
         }

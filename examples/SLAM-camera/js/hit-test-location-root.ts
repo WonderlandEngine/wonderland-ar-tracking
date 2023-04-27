@@ -29,8 +29,8 @@ export class HitTestLocationRoot extends Component {
 
     private tracking = false;
     init() {
-        ARSession.getEngineSession(this.engine).onSessionStarted.add(this.onSessionStarted);
-        ARSession.getEngineSession(this.engine).onSessionEnded.add(this.onSessionEnded);
+        ARSession.getSessionForEngine(this.engine).onSessionStarted.add(this.onSessionStarted);
+        ARSession.getSessionForEngine(this.engine).onSessionEnded.add(this.onSessionEnded);
         this.tempScaling.set(this.object.getScalingLocal());
         this.object.setScalingLocal([0, 0, 0]);
     }

@@ -76,7 +76,7 @@ export class FaceAttachmentPointExample extends Component {
         const cachedRotation = new Array<number>(4);
         const cachedScale = [0, 0, 0];
 
-        ARSession.getEngineSession(this.engine).onSessionEnded.add(() => {
+        ARSession.getSessionForEngine(this.engine).onSessionEnded.add(() => {
             this.object.scalingWorld = [0, 0, 0];
             cachedScale[0] = cachedScale[1] = cachedScale[2] = 0;
         });
