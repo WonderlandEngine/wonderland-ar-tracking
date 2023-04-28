@@ -23,7 +23,8 @@ export class ARSession {
     public readonly onARSessionReady: RetainEmitter = new RetainEmitter();
 
     /** Emits and event when an AR session was started */
-    public readonly onSessionStart: Emitter<[trackingProvider: ARProvider]> = new Emitter();
+    public readonly onSessionStart: RetainEmitter<[trackingProvider: ARProvider]> =
+        new RetainEmitter();
 
     /** Emits and event when an AR session was ended */
     public readonly onSessionEnd: Emitter<[trackingProvider: ARProvider]> = new Emitter();
@@ -123,6 +124,7 @@ export class ARSession {
     /* Called by AR providers when they ended an AR session.
      * @param provider The provider to pass to onSessionEnd */
     private onProviderSessionEnd = (provider: ARProvider) => {
+        this.onSessionStart.reset();
         this.onSessionEnd.notify(provider);
     };
 }
