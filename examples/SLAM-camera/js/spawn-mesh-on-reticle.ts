@@ -1,6 +1,6 @@
 /**
  * Spawns a mesh at the position of this.object.
- * NOTE: in case of webXR device api tracking (WebXRProvider), click event is raised by the XRSession.onselect event.
+ * NOTE: in case of WebXR device api tracking (WebXRProvider), click event is raised by the XRSession.onselect event.
  * In case of xr8 tracking - click event is raised by window.onclick
  */
 import {Component, Material, Mesh} from '@wonderlandengine/api';

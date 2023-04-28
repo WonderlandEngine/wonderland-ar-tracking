@@ -3,7 +3,7 @@ import {ARProvider} from '../../AR-provider.js';
 import {ARSession} from '../../AR-session.js';
 
 /**
- * ARProvider implementation for device native webXR API
+ * ARProvider implementation for device native WebXR API
  */
 class WebXRProvider extends ARProvider {
     private _xrSession: XRSession | null = null;

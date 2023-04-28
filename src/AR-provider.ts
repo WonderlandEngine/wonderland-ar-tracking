@@ -44,7 +44,7 @@ abstract class ARProvider {
 
     /**
      * Load the tracking implementation.
-     * In case of webXR implementation, this will resolve immediately
+     * In case of WebXR implementation, this will resolve immediately
      */
     abstract load(): Promise<void>;
 }
