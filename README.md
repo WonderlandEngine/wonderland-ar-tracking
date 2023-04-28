@@ -37,7 +37,7 @@ class ARSLAMCamera extends ARCamera {
          */
         if (this.engine.arSupported) {
             ARSession.registerTrackingProvider(this.engine, webXRProvider);
-            this._trackingImpl = new WorldTracking_webAR(this);
+            this._trackingImpl = new WorldTracking_WebAR(this);
         } else {
             ARSession.registerTrackingProvider(this.engine, xr8Provider);
             this._trackingImpl = new WorldTracking_XR8(this);

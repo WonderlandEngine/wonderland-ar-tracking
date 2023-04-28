@@ -1,6 +1,6 @@
 import {Emitter, ViewComponent} from '@wonderlandengine/api';
 import {TrackingMode} from '../trackingMode.js';
-import {/*xr8Provider,*/ XR8ExtraPermissions, XR8Provider} from './xr8-provider.js';
+import {XR8ExtraPermissions, XR8Provider} from './xr8-provider.js';
 import { ARSession } from '../../AR-session.js';
 
 /**

@@ -8,7 +8,7 @@ import {TrackingMode} from '../trackingMode.js';
  *
  * TODO: change this when it's moved to auto constants.
  */
-class WorldTracking_webAR extends TrackingMode {
+class WorldTracking_WebAR extends TrackingMode {
     public startSession() {
         this.provider.startSession(window.WEBXR_REQUIRED_FEATURES, window.WEBXR_OPTIONAL_FEATURES);
     }
@@ -18,4 +18,4 @@ class WorldTracking_webAR extends TrackingMode {
     }
 }
 
-export {WorldTracking_webAR};
+export {WorldTracking_WebAR};
