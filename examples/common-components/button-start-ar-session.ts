@@ -10,7 +10,7 @@ import {ARSession, ARCamera} from '../../';
 export class ButtonStartARSession extends Component {
     public static TypeName = 'button-start-ar-session';
 
-    init() {
+    start() {
         ARSession.getSessionForEngine(this.engine).onARSessionReady.add(
             this.onARSessionReady.bind(this)
         );
@@ -33,10 +33,9 @@ export class ButtonStartARSession extends Component {
 
         xrButton.addEventListener('click', () => {
             xrButton!.style.display = 'none';
-            const components = this.object.getComponents();
-            for (let i = 0; i < components.length; i++) {
-                if (components[i] instanceof ARCamera) {
-                    (components[i] as ARCamera).startSession();
+            for (const c of this.object.getComponents()) {
+                if (c instanceof ARCamera) {
+                    (c as ARCamera).startSession();
                     break;
                 }
             }

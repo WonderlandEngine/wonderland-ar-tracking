@@ -28,9 +28,10 @@ export class HitTestLocationRoot extends Component {
     private xrHitTestSource: XRHitTestSource | null = null;
 
     private tracking = false;
-    init() {
-        ARSession.getSessionForEngine(this.engine).onSessionStart.add(this.onSessionStart);
-        ARSession.getSessionForEngine(this.engine).onSessionEnd.add(this.onSessionEnd);
+    start() {
+        const arSession = ARSession.getSessionForEngine(this.engine);
+        arSession.onSessionStart.add(this.onSessionStart);
+        arSession.onSessionEnd.add(this.onSessionEnd);
         this.tempScaling.set(this.object.getScalingLocal());
         this.object.setScalingLocal([0, 0, 0]);
     }
