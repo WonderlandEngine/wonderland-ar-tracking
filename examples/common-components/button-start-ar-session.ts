@@ -12,7 +12,7 @@ export class ButtonStartARSession extends Component {
 
     init() {
         ARSession.getSessionForEngine(this.engine).onARSessionReady.add(
-            this.onARSessionReady
+            this.onARSessionReady.bind(this)
         );
 
         ARSession.getSessionForEngine(this.engine).onSessionEnd.add(() => {
@@ -21,7 +21,7 @@ export class ButtonStartARSession extends Component {
         });
     }
 
-    onARSessionReady = () => {
+    onARSessionReady() {
         let xrButton = document.querySelector<HTMLElement>('#ar-button');
 
         if (xrButton === null) {
@@ -41,5 +41,5 @@ export class ButtonStartARSession extends Component {
                 }
             }
         });
-    };
+    }
 }
