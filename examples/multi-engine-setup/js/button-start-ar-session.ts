@@ -31,7 +31,7 @@ export class ButtonStartARSession extends Component {
             return;
         }
 
-        xrButton.style.display = 'block';
+        xrButton!.dataset.supported = "true";
 
         xrButton.addEventListener('click', () => {
             xrButton!.style.display = 'none';

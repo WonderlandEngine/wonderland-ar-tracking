@@ -30,7 +30,6 @@ import {VideoTextureImageTarget} from '../../image-tracking/js/video-texture-ima
 import {VideoTexture} from '@wonderlandengine/components';
 
 import {loadRuntime} from '@wonderlandengine/api';
-import * as API from '@wonderlandengine/api'; // Deprecated: Backward compatibility.
 
 /* wle:auto-constants:start */
 const RuntimeOptions = {
@@ -65,27 +64,6 @@ engine2.onSceneLoaded.once(() => {
     if (el) setTimeout(() => el.remove(), 2000);
 });
 
-
-/* WebXR setup. */
-
-function setupButtonsXR() {
-    /* Setup AR / VR buttons */
-    const arButton = document.getElementById('ar-button-2');
-    if (arButton) {
-        arButton.dataset.supported = engine.arSupported;
-    }
-
-    const arButton3 = document.getElementById('ar-button-3');
-    if (arButton3) {
-        arButton3.dataset.supported = engine.arSupported;
-    }
-}
-
-if (document.readyState === 'loading') {
-    window.addEventListener('load', setupButtonsXR);
-} else {
-    setupButtonsXR();
-}
 
 /* wle:auto-register:start */
 engine.registerComponent(ARFaceTrackingCamera);

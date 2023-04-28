@@ -57,12 +57,8 @@ function setupButtonsXR() {
     /* Setup AR / VR buttons */
     const arButton = document.getElementById('ar-button');
    
-    if (arButton) {
-        arButton.dataset.supported = engine.arSupported;
-        
-        // Let AR-Session handle the display of the arButton
-        arButton.style.display = 'none';
-    }
+    // #ar-button display handled by the ARSession
+
     const vrButton = document.getElementById('vr-button');
     if (vrButton) {
         vrButton.dataset.supported = engine.vrSupported;
