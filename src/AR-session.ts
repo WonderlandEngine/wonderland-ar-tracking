@@ -2,10 +2,10 @@ import {Emitter, RetainEmitter, WonderlandEngine} from '@wonderlandengine/api';
 import {ARProvider} from './AR-provider.js';
 
 /**
- * ARSession - master control for the AR session.
- * - registers dependencies (aka providers)
- * - handles global callbacks when AR session is started, ended
- * - can end any running AR session.
+ * ARSession
+ * - Manages all AR sessions.
+ * - Registers dependencies (i.e., providers)
+ * - Handles global callbacks when AR sessions are started or ended
  */
 
 class ARSession {
