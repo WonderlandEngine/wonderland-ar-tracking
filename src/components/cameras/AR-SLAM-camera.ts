@@ -20,12 +20,8 @@ class ARSLAMCamera extends ARCamera {
     private _trackingImpl!: ITrackingMode;
 
     public override init = () => {
-        /**
-         * check if the device supports WebXR
-         * if it does - use WebXRProvider
-         */
+        /* Check if the device supports WebXR. If it does, use WebXRProvider */
         if (this.engine.arSupported) {
-            //if (false) { // force xr8
             const provider = WebXRProvider.registerTrackingProviderWithARSession(
                 this.engine
             );
