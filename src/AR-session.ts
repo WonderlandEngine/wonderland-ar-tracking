@@ -17,7 +17,6 @@ class ARSession {
      */
     private _trackingProviders: Array<ARProvider> = [];
 
-
     /**
      * Current running provider when AR session is running
      */
@@ -25,10 +24,9 @@ class ARSession {
 
     public readonly onARSessionReady: RetainEmitter = new RetainEmitter();
 
-    public readonly onSessionStarted: Emitter<[trackingProvider: ARProvider]> =
-        new Emitter();
+    public readonly onSessionStart: Emitter<[trackingProvider: ARProvider]> = new Emitter();
 
-    public readonly onSessionEnded: Emitter<[trackingProvider: ARProvider]> = new Emitter();
+    public readonly onSessionEnd: Emitter<[trackingProvider: ARProvider]> = new Emitter();
 
     private _sceneHasLoaded = false;
     private _arSessionIsReady = false;
@@ -36,7 +34,7 @@ class ARSession {
     /**
      * @returns a shallow copy of all registered providers
      */
-    public get registeredProviders(): ReadonlyArray<ARProvider> {        
+    public get registeredProviders(): ReadonlyArray<ARProvider> {
         return [...this._trackingProviders];
     }
 
@@ -53,7 +51,7 @@ class ARSession {
 
     /**
      * Registers tracking provider. Makes sure it is loaded
-     * and hooks into providers onSessionStarted, onSessionLoaded events.
+     * and hooks into providers onSessionStart, onSessionLoaded events.
      */
     public async registerTrackingProvider(provider: ARProvider) {
         if (this._trackingProviders.includes(provider)) {
@@ -66,8 +64,8 @@ class ARSession {
 
         this._trackingProviders.push(provider);
 
-        provider.onSessionStarted.add(this.onProviderSessionStarted);
-        provider.onSessionEnded.add(this.onProviderSessionEnded);
+        provider.onSessionStart.add(this.onProviderSessionStart);
+        provider.onSessionEnd.add(this.onProviderSessionEnd);
 
         await provider.load();
         this.checkProviderLoadProgress();
@@ -113,19 +111,19 @@ class ARSession {
 
     /**
      * Some AR provider started AR session
-     * @param provider to be passed into onSessionStarted callback function
+     * @param provider to be passed into onSessionStart callback function
      */
-    private onProviderSessionStarted = (provider: ARProvider) => {
+    private onProviderSessionStart = (provider: ARProvider) => {
         this._currentTrackingProvider = provider;
-        this.onSessionStarted.notify(provider);
+        this.onSessionStart.notify(provider);
     };
 
     /**
      * Some AR ended AR session
-     * @param provider to be passed into onSessionEnded callback function
+     * @param provider to be passed into onSessionEnd callback function
      */
-    private onProviderSessionEnded = (provider: ARProvider) => {
-        this.onSessionEnded.notify(provider);
+    private onProviderSessionEnd = (provider: ARProvider) => {
+        this.onSessionEnd.notify(provider);
     };
 }
 

@@ -15,7 +15,7 @@ export class ButtonStartARSession extends Component {
             this.onARSessionReady
         );
 
-        ARSession.getSessionForEngine(this.engine).onSessionEnded.add((provider) => {
+        ARSession.getSessionForEngine(this.engine).onSessionEnd.add((provider) => {
             let xrButton =
                 this.engine.canvas.parentElement!.querySelector<HTMLElement>('.ar-button');
             xrButton!.style.display = 'block';

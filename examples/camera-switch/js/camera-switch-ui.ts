@@ -48,7 +48,7 @@ export class XR8CameraSwitch extends Component {
             ARSession.getSessionForEngine(this.engine).stopARSession();
         });
 
-        ARSession.getSessionForEngine(this.engine).onSessionEnded.add(() => {
+        ARSession.getSessionForEngine(this.engine).onSessionEnd.add(() => {
             this._faceTrackingCamera!.active = false;
             this._imageTrackingCamera!.active = false;
             this._worldTrackingCamera!.active = false;

@@ -27,11 +27,11 @@ class WebXRProvider extends ARProvider {
 
         engine.onXRSessionStart.add((session: XRSession) => {
             this._xrSession = session;
-            this.onSessionStarted.notify(this);
+            this.onSessionStart.notify(this);
         });
 
         engine.onXRSessionEnd.add(() => {
-            this.onSessionEnded.notify(this);
+            this.onSessionEnd.notify(this);
         });
     }
 

@@ -26,11 +26,11 @@ export class ButtonEndARSession extends Component {
             ARSession.getSessionForEngine(this.engine).stopARSession();
         });
 
-        ARSession.getSessionForEngine(this.engine).onSessionStarted.add((provider) => {
+        ARSession.getSessionForEngine(this.engine).onSessionStart.add((provider) => {
             this.xrEndButton.style.display = 'block';
         });
 
-        ARSession.getSessionForEngine(this.engine).onSessionEnded.add((provider) => {
+        ARSession.getSessionForEngine(this.engine).onSessionEnd.add((provider) => {
             this.xrEndButton.style.display = 'none';
         });
     }

@@ -53,12 +53,12 @@ export class VPSExample extends Component {
             VPSExample._debugText.style.textShadow = '2px 2px 4px #FFFF00';
         }
 
-        ARSession.getSessionForEngine(this.engine).onSessionStarted.add(() => {
+        ARSession.getSessionForEngine(this.engine).onSessionStart.add(() => {
             document.body.appendChild(VPSExample._debugText);
             VPSExample._debugText.innerHTML = 'Looking for a waypoint';
         });
 
-        ARSession.getSessionForEngine(this.engine).onSessionEnded.add(() => {
+        ARSession.getSessionForEngine(this.engine).onSessionEnd.add(() => {
             VPSExample._debugText.remove();
         });
 

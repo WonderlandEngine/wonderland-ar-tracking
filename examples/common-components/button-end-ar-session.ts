@@ -21,8 +21,8 @@ export class ButtonEndARSession extends Component {
          * Put the END AR SESSION button in the top left corner of the canvas
          */
         this.xrEndButton.style.left = rect.left + 'px';
-        this.xrEndButton.style.top = (rect.top + window.scrollY) + 'px';
-        
+        this.xrEndButton.style.top = rect.top + window.scrollY + 'px';
+
         this.xrEndButton.style.zIndex = '999';
         this.xrEndButton.style.display = 'none';
         this.xrEndButton.innerHTML = 'END AR SESSION';
@@ -32,11 +32,11 @@ export class ButtonEndARSession extends Component {
             ARSession.getSessionForEngine(this.engine).stopARSession();
         });
 
-        ARSession.getSessionForEngine(this.engine).onSessionStarted.add(() => {
+        ARSession.getSessionForEngine(this.engine).onSessionStart.add(() => {
             this.xrEndButton.style.display = 'block';
         });
 
-        ARSession.getSessionForEngine(this.engine).onSessionEnded.add(() => {
+        ARSession.getSessionForEngine(this.engine).onSessionEnd.add(() => {
             this.xrEndButton.style.display = 'none';
         });
     }

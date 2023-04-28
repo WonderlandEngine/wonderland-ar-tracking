@@ -29,8 +29,8 @@ export class HitTestLocationXR8 extends Component {
     private _tmpWorldPosition = vec3.create();
 
     init() {
-        ARSession.getSessionForEngine(this.engine).onSessionStarted.add(this.onSessionStarted);
-        ARSession.getSessionForEngine(this.engine).onSessionEnded.add(this.onSessionEnded);
+        ARSession.getSessionForEngine(this.engine).onSessionStart.add(this.onSessionStart);
+        ARSession.getSessionForEngine(this.engine).onSessionEnd.add(this.onSessionEnd);
     }
 
     update() {
@@ -50,14 +50,14 @@ export class HitTestLocationXR8 extends Component {
         }
     }
 
-    onSessionStarted = (provider: ARProvider) => {
+    onSessionStart = (provider: ARProvider) => {
         if (provider instanceof XR8Provider) {
             this.object.scalingWorld = [1, 1, 1];
             this._tracking = true;
         }
     };
 
-    onSessionEnded = (provider: ARProvider) => {
+    onSessionEnd = (provider: ARProvider) => {
         if (provider instanceof XR8Provider) {
             this._tracking = false;
             this.object.scalingWorld = [0, 0, 0];

@@ -23,11 +23,11 @@ export class SpawnMeshOnReticle extends Component {
     material!: Material;
 
     start() {
-        ARSession.getSessionForEngine(this.engine).onSessionStarted.add(this.onSessionStarted);
-        ARSession.getSessionForEngine(this.engine).onSessionEnded.add(this.onSessionEnded);
+        ARSession.getSessionForEngine(this.engine).onSessionStart.add(this.onSessionStart);
+        ARSession.getSessionForEngine(this.engine).onSessionEnd.add(this.onSessionEnd);
     }
 
-    onSessionStarted = (provider: ARProvider) => {
+    onSessionStart = (provider: ARProvider) => {
         /* We set this function up to get called when a session starts.
          * The 'select' event happens either on touch or when the trigger
          * button of a controller is pressed.
@@ -42,7 +42,7 @@ export class SpawnMeshOnReticle extends Component {
         }
     };
 
-    onSessionEnded = (provider: ARProvider) => {
+    onSessionEnd = (provider: ARProvider) => {
         if (provider instanceof WebXRProvider) {
             // Clean up - let the browser garbage collect the xrSession
             (provider as WebXRProvider).xrSession!.removeEventListener(

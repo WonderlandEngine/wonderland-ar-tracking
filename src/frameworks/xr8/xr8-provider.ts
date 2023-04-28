@@ -71,16 +71,15 @@ interface XR8UIHandler {
  * ARProvider implementation for loading and setting up the 8th Wall lib
  */
 class XR8Provider extends ARProvider {
-
     /**
      * Number of XR8Provider instances
      */
-    private static _instances = 0
+    private static _instances = 0;
 
     /**
      * Unique id for this instance
      */
-    private _id: number;    
+    private _id: number;
 
     /**
      * Default XR8UIHandler to handle 8th wall UI related events
@@ -144,7 +143,7 @@ class XR8Provider extends ARProvider {
             /**
              * Some other engine might have already loaded the 8th Wall library, so we don't want to load it again
              * */
-            if(document.getElementById('__injected-WLE-xr8')) {
+            if (document.getElementById('__injected-WLE-xr8')) {
                 window.addEventListener('xrloaded', () => {
                     resolve();
                 });
@@ -164,7 +163,7 @@ class XR8Provider extends ARProvider {
             });
 
             const s = document.createElement('script');
-            s.id="__injected-WLE-xr8"
+            s.id = '__injected-WLE-xr8';
             s.crossOrigin = 'anonymous';
             s.src = 'https://apps.8thwall.com/xrweb?appKey=' + API_TOKEN_XR8;
             document.body.appendChild(s);
@@ -191,9 +190,12 @@ class XR8Provider extends ARProvider {
         }
         this.loaded = false;
 
-        const logo = document.readyState === 'complete'
-            ? this.add8thwallLogo()
-            : document.addEventListener('DOMContentLoaded', () => this.add8thwallLogo());
+        const logo =
+            document.readyState === 'complete'
+                ? this.add8thwallLogo()
+                : document.addEventListener('DOMContentLoaded', () =>
+                      this.add8thwallLogo()
+                  );
 
         await XR8Provider.loadXR8ExternalLib();
         this.loaded = true;
@@ -213,7 +215,7 @@ class XR8Provider extends ARProvider {
             console.warn(
                 'There is an active XR8 session running. Stop it first before starting a new one.'
             );
-           return;
+            return;
         }
         XR8.clearCameraPipelineModules();
 
@@ -247,7 +249,7 @@ class XR8Provider extends ARProvider {
         ]);
 
         XR8.run(options);
-        this.onSessionStarted.notify(this);
+        this.onSessionStart.notify(this);
     }
 
     /**
@@ -257,7 +259,7 @@ class XR8Provider extends ARProvider {
     public async endSession() {
         if (XR8.WLE_sessionRunning) {
             XR8.stop();
-            this.onSessionEnded.notify(this);
+            this.onSessionEnd.notify(this);
         }
     }
 
@@ -329,14 +331,14 @@ class XR8Provider extends ARProvider {
         a.href = 'https://www.8thwall.com/';
         a.target = '_blank';
         a.style.position = 'absolute';
-        a.style.top = (rect.bottom + window.scrollY - 160) + 'px';
+        a.style.top = rect.bottom + window.scrollY - 160 + 'px';
         a.style.left = '0';
         a.style.right = '0';
         a.style.margin = '0 auto';
         a.style.width = '252px';
         a.style.zIndex = '999';
         // a.style.pointerEvents='none';
-        a.id = 'WL-loading-8thwall-logo' + this._id
+        a.id = 'WL-loading-8thwall-logo' + this._id;
         a.innerHTML = xr8logo;
         document.body.appendChild(a);
         return a;

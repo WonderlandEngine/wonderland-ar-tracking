@@ -29,8 +29,8 @@ export class HitTestLocationRoot extends Component {
 
     private tracking = false;
     init() {
-        ARSession.getSessionForEngine(this.engine).onSessionStarted.add(this.onSessionStarted);
-        ARSession.getSessionForEngine(this.engine).onSessionEnded.add(this.onSessionEnded);
+        ARSession.getSessionForEngine(this.engine).onSessionStart.add(this.onSessionStart);
+        ARSession.getSessionForEngine(this.engine).onSessionEnd.add(this.onSessionEnd);
         this.tempScaling.set(this.object.getScalingLocal());
         this.object.setScalingLocal([0, 0, 0]);
     }
@@ -73,7 +73,7 @@ export class HitTestLocationRoot extends Component {
         }
     }
 
-    onSessionStarted = (provider: ARProvider) => {
+    onSessionStart = (provider: ARProvider) => {
         if (provider instanceof WebXRProvider) {
             this.tracking = true;
             const session = (provider as WebXRProvider).xrSession!;
@@ -96,7 +96,7 @@ export class HitTestLocationRoot extends Component {
         }
     };
 
-    onSessionEnded = (provider: ARProvider) => {
+    onSessionEnd = (provider: ARProvider) => {
         if (provider instanceof WebXRProvider) {
             this.tracking = false;
 

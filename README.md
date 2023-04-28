@@ -4,7 +4,7 @@
 -   Currently supported 8th Wall features - SLAM tracking, image tracking, face tracking, VPS.
 
 ## Setting up
-- Create a WLP AR project and build it. 
+- Create a WLP AR project and build it.
 - Run `npm i @wonderlandengine/8thwall-tracking`.
 - Open the file configured in editor `Project Settings -> JavaScript -> entryPoint`
 - Copy those lines after the `/* wle:auto-constants:end */` line:
@@ -51,12 +51,12 @@ class ARSLAMCamera extends ARCamera {
         /**
          * Listen to when any tracking provider started a tracking session
          **/
-        ARSession.getSessionForEngine(this.engine).onSessionStarted.add((trackingProvider: ARProvider) => {});
+        ARSession.getSessionForEngine(this.engine).onSessionStart.add((trackingProvider: ARProvider) => {});
 
         /**
          * Listen to when running tracking provider ended a tracking session
          **/
-        ARSession.getSessionForEngine(this.engine).onSessionEnded.add((trackingProvider: ARProvider) => {});
+        ARSession.getSessionForEngine(this.engine).onSessionEnd.add((trackingProvider: ARProvider) => {});
     };
 
     /**

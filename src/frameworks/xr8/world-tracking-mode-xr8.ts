@@ -1,7 +1,7 @@
 import {Emitter, ViewComponent} from '@wonderlandengine/api';
 import {TrackingMode} from '../trackingMode.js';
 import {XR8ExtraPermissions, XR8Provider} from './xr8-provider.js';
-import { ARSession } from '../../AR-session.js';
+import {ARSession} from '../../AR-session.js';
 
 /**
  * A helper type to determine if a camera wants to enable SLAM tracking
@@ -204,8 +204,7 @@ class WorldTracking_XR8 extends TrackingMode {
         this._cachedRotation[2] = rot[2];
         this._cachedRotation[3] = rot[3];
 
-        
-        ARSession.getSessionForEngine(this.component.engine).onSessionEnded.add(() => {
+        ARSession.getSessionForEngine(this.component.engine).onSessionEnd.add(() => {
             XR8.removeCameraPipelineModules([XR8.XrController.pipelineModule(), this]);
         });
     }
@@ -216,7 +215,9 @@ class WorldTracking_XR8 extends TrackingMode {
      * and tells xr8Provider to start the session
      */
     public async startSession() {
-        const permissions = await (this.provider as XR8Provider).checkPermissions(this._extraPermissions);
+        const permissions = await (this.provider as XR8Provider).checkPermissions(
+            this._extraPermissions
+        );
         if (!permissions) {
             return;
         }
@@ -247,7 +248,10 @@ class WorldTracking_XR8 extends TrackingMode {
                 direction: XR8.XrConfig.camera().BACK,
             },
         };
-        return this.provider.startSession(options, [XR8.XrController.pipelineModule(), this]);
+        return this.provider.startSession(options, [
+            XR8.XrController.pipelineModule(),
+            this,
+        ]);
     }
 
     public endSession() {
