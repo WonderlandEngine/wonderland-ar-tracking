@@ -11,11 +11,7 @@ export class ButtonStartARSession extends Component {
     public static TypeName = 'button-start-ar-session';
 
     init() {
-        if (ARSession.getSessionForEngine(this.engine).arSessionReady) {
-            this.onARSessionReady();
-        } else {
-            ARSession.getSessionForEngine(this.engine).onARSessionReady.add(this.onARSessionReady);
-        }
+        ARSession.getSessionForEngine(this.engine).onARSessionReady.add(this.onARSessionReady);
 
         ARSession.getSessionForEngine(this.engine).onSessionEnded.add(() => {
             let xrButton = document.querySelector<HTMLElement>('#ar-button');

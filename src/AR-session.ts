@@ -1,4 +1,4 @@
-import {Emitter, Mesh, Object, WonderlandEngine} from '@wonderlandengine/api';
+import {Emitter, RetainEmitter, WonderlandEngine} from '@wonderlandengine/api';
 import {ARProvider} from './AR-provider.js';
 
 /**
@@ -23,7 +23,7 @@ class ARSession {
      */
     private _currentTrackingProvider: ARProvider | null = null;
 
-    public readonly onARSessionReady: Emitter = new Emitter();
+    public readonly onARSessionReady: RetainEmitter = new RetainEmitter();
 
     public readonly onSessionStarted: Emitter<[trackingProvider: ARProvider]> =
         new Emitter();
@@ -32,10 +32,6 @@ class ARSession {
 
     private _sceneHasLoaded = false;
     private _arSessionIsReady = false;
-
-    public get arSessionReady() {
-        return this._arSessionIsReady;
-    }
 
     /**
      * @returns a shallow copy of all registered providers

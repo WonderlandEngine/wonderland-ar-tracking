@@ -239,8 +239,6 @@ class WorldTracking_XR8 extends TrackingMode {
             enableVps: componentUsesVPS,
         });
 
-       // XR8.addCameraPipelineModules([XR8.XrController.pipelineModule(), this]);
-
         const options = {
             canvas: this.component.engine.canvas as HTMLCanvasElement,
             allowedDevices: XR8.XrConfig.device().MOBILE,
