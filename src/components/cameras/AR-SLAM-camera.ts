@@ -1,5 +1,5 @@
 import {WorldTracking_XR8} from '../../frameworks/xr8/world-tracking-mode-xr8.js';
-import {WorldTracking_WebAR} from '../../frameworks/WebXR/world-tracking-mode-webxr.js';
+import {WorldTracking_WebXR} from '../../frameworks/WebXR/world-tracking-mode-webxr.js';
 
 import {ITrackingMode} from '../../frameworks/trackingMode.js';
 import {WebXRProvider} from '../../frameworks/WebXR/webxr-provider.js';
@@ -29,7 +29,7 @@ class ARSLAMCamera extends ARCamera {
             const provider = WebXRProvider.registerTrackingProviderWithARSession(
                 this.engine
             );
-            this._trackingImpl = new WorldTracking_WebAR(provider, this);
+            this._trackingImpl = new WorldTracking_WebXR(provider, this);
         } else {
             const provider = XR8Provider.registerTrackingProviderWithARSession(this.engine);
             this._trackingImpl = new WorldTracking_XR8(provider, this);
