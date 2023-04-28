@@ -37,7 +37,7 @@ class ARSLAMCamera extends ARCamera {
          */
         if (this.engine.arSupported) {
             ARSession.registerTrackingProvider(this.engine, webXRProvider);
-            this._trackingImpl = new WorldTracking_webAR(this);
+            this._trackingImpl = new WorldTracking_WebAR(this);
         } else {
             ARSession.registerTrackingProvider(this.engine, xr8Provider);
             this._trackingImpl = new WorldTracking_XR8(this);
@@ -46,17 +46,17 @@ class ARSLAMCamera extends ARCamera {
         /**
          * Listen to when all providers are loaded and ready to be used
          **/
-        ARSession.onARSessionReady.add(() => {});
+        ARSession.getSessionForEngine(this.engine).onARSessionReady.add(() => {});
 
         /**
          * Listen to when any tracking provider started a tracking session
          **/
-        ARSession.onSessionStarted.add((trackingProvider: ARProvider) => {});
+        ARSession.getSessionForEngine(this.engine).onSessionStarted.add((trackingProvider: ARProvider) => {});
 
         /**
          * Listen to when running tracking provider ended a tracking session
          **/
-        ARSession.onSessionEnded.add((trackingProvider: ARProvider) => {});
+        ARSession.getSessionForEngine(this.engine).onSessionEnded.add((trackingProvider: ARProvider) => {});
     };
 
     /**

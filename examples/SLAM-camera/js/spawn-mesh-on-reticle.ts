@@ -23,8 +23,8 @@ export class SpawnMeshOnReticle extends Component {
     material!: Material;
 
     start() {
-        ARSession.onSessionStarted.add(this.onSessionStarted);
-        ARSession.onSessionEnded.add(this.onSessionEnded);
+        ARSession.getSessionForEngine(this.engine).onSessionStarted.add(this.onSessionStarted);
+        ARSession.getSessionForEngine(this.engine).onSessionEnded.add(this.onSessionEnded);
     }
 
     onSessionStarted = (provider: ARProvider) => {

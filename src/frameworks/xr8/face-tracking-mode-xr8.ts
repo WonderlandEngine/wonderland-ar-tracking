@@ -1,6 +1,6 @@
 import {Emitter, ViewComponent} from '@wonderlandengine/api';
 import {TrackingMode} from '../trackingMode.js';
-import {xr8Provider} from './xr8-provider.js';
+import {XR8Provider, /* xr8Provider*/ } from './xr8-provider.js';
 import {ARFaceTrackingCamera} from '../../components/cameras/AR-face-tracking-camera.js';
 
 /**
@@ -95,7 +95,7 @@ class FaceTracking_XR8 extends TrackingMode {
 
         this._view = this.component.object.getComponent('view')!;
 
-        xr8Provider.onSessionEnded.add(() => {
+        this.provider.onSessionEnded.add(() => {
             XR8.removeCameraPipelineModules([XR8.FaceController.pipelineModule(), this]);
         });
     }
@@ -106,7 +106,7 @@ class FaceTracking_XR8 extends TrackingMode {
      * and tells xr8Provider to start the session
      */
     public async startSession() {
-        const permissions = await xr8Provider.checkPermissions();
+        const permissions = await (this.provider as XR8Provider).checkPermissions();
 
         if (!permissions) {
             return;
@@ -121,7 +121,7 @@ class FaceTracking_XR8 extends TrackingMode {
             coordinates: {mirroredDisplay: false},
         });
 
-        XR8.addCameraPipelineModules([XR8.FaceController.pipelineModule(), this]);
+        // XR8.addCameraPipelineModules([XR8.FaceController.pipelineModule(), this]);
 
         const options = {
             canvas: this.component.engine.canvas as HTMLCanvasElement,
@@ -134,11 +134,12 @@ class FaceTracking_XR8 extends TrackingMode {
             },
         };
 
-        xr8Provider.startSession(options);
+        //xr8Provider.startSession(options);
+        return this.provider.startSession(options, [XR8.FaceController.pipelineModule(), this]);
     }
 
     public endSession() {
-        xr8Provider.endSession();
+        this.provider.endSession();
     }
 
     /**

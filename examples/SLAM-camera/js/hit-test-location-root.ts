@@ -29,8 +29,8 @@ export class HitTestLocationRoot extends Component {
 
     private tracking = false;
     init() {
-        ARSession.onSessionStarted.add(this.onSessionStarted);
-        ARSession.onSessionEnded.add(this.onSessionEnded);
+        ARSession.getSessionForEngine(this.engine).onSessionStarted.add(this.onSessionStarted);
+        ARSession.getSessionForEngine(this.engine).onSessionEnded.add(this.onSessionEnded);
         this.tempScaling.set(this.object.getScalingLocal());
         this.object.setScalingLocal([0, 0, 0]);
     }
@@ -85,7 +85,7 @@ export class HitTestLocationRoot extends Component {
                 this.active = false;
                 return;
             }
-    
+
             const viewerSpace = this.engine.xr!.referenceSpaceForType('viewer')!;
             session!
                 .requestHitTestSource({space: viewerSpace})!

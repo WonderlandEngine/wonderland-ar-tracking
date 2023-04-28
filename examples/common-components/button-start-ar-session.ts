@@ -11,13 +11,9 @@ export class ButtonStartARSession extends Component {
     public static TypeName = 'button-start-ar-session';
 
     init() {
-        if (ARSession.arSessionReady) {
-            this.onARSessionReady();
-        } else {
-            ARSession.onARSessionReady.add(this.onARSessionReady);
-        }
+        ARSession.getSessionForEngine(this.engine).onARSessionReady.add(this.onARSessionReady);
 
-        ARSession.onSessionEnded.add(() => {
+        ARSession.getSessionForEngine(this.engine).onSessionEnded.add(() => {
             let xrButton = document.querySelector<HTMLElement>('#ar-button');
             xrButton!.style.display = 'block';
         });
@@ -31,7 +27,7 @@ export class ButtonStartARSession extends Component {
             return;
         }
 
-        xrButton.style.display = 'block';
+        xrButton!.dataset.supported = "true";
 
         xrButton.addEventListener('click', () => {
             xrButton!.style.display = 'none';

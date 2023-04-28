@@ -1,5 +1,6 @@
 import {WonderlandEngine} from '@wonderlandengine/api';
 import {ARProvider} from '../../AR-provider.js';
+import {ARSession} from '../../AR-session.js';
 
 /**
  * ARProvider implementation for device native webXR API
@@ -10,13 +11,19 @@ class WebXRProvider extends ARProvider {
         return this._xrSession;
     }
 
-    /**
-     * We override the parent ARProvider engine setter
-     * since we want to listen to native WLE engine.onXRSessionStart
-     * and engine.onXRSessionEnd callbacks.
-     */
-    public override set engine(engine: WonderlandEngine) {
-        super.engine = engine;
+    public static registerTrackingProviderWithARSession(engine: WonderlandEngine) {
+        const provider = new WebXRProvider(engine);
+        ARSession.getSessionForEngine(engine).registerTrackingProvider(provider);
+        return provider;
+    }
+
+    private constructor(engine: WonderlandEngine) {
+        super(engine);
+
+        // Safeguard that we are not running inside the editor
+        if (typeof document === 'undefined') {
+            return;
+        }
 
         engine.onXRSessionStart.add((session: XRSession) => {
             this._xrSession = session;
@@ -28,34 +35,10 @@ class WebXRProvider extends ARProvider {
         });
     }
 
-    /**
-     * We don't want the user to manually instantiate the WebXRProvider.
-     * The instance WebXRProvider is created at the bottom of this file once
-     * and if we detect that someone is trying to create a second instance of WebXRProvider - we throw an error
-     */
-    private _instance: WebXRProvider | null = null;
-
-    constructor() {
-        super();
-
-        // Safeguard that we are not running inside the editor
-        if (typeof document === 'undefined') {
-            return;
-        }
-
-        if (this._instance !== null) {
-            throw 'WebXRProvider cannot be instantiated';
-        }
-
-        this._instance = this;
-    }
-
     public async startSession(
         webxrRequiredFeatures: string[] = ['local'],
         webxrOptionalFeatures: string[] = ['local', 'hit-test']
     ) {
-
-        console.log("REquestiung a featurem,", webxrRequiredFeatures, webxrOptionalFeatures)
         this._engine.requestXRSession(
             'immersive-ar',
             webxrRequiredFeatures,
@@ -70,7 +53,6 @@ class WebXRProvider extends ARProvider {
             } catch {
                 // Session was ended for some
             }
-
             this._xrSession = null;
         }
     }
@@ -80,5 +62,5 @@ class WebXRProvider extends ARProvider {
         return Promise.resolve();
     }
 }
-const webXRProvider = new WebXRProvider();
-export {WebXRProvider, webXRProvider};
+
+export {WebXRProvider};

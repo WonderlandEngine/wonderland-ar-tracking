@@ -4,9 +4,8 @@ export {ARSession} from './src/AR-session.js';
 export {ARProvider} from './src/AR-provider.js';
 export {
     WebXRProvider,
-    webXRProvider,
 } from './src/frameworks/webAR/webXR-provider.js';
-export {XR8Provider, xr8Provider, XR8UIHandler} from './src/frameworks/xr8/xr8-provider.js';
+export {XR8Provider, XR8UIHandler} from './src/frameworks/xr8/xr8-provider.js';
 
 export {ARCamera} from './src/components/cameras/AR-Camera.js';
 export {ARFaceTrackingCamera} from './src/components/cameras/AR-face-tracking-camera.js';

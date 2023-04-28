@@ -1,5 +1,4 @@
 import {TrackingMode} from '../trackingMode.js';
-import {webXRProvider} from './webXR-provider.js';
 
 /**
  * device native webXR API implementation that encapsulates
@@ -9,14 +8,14 @@ import {webXRProvider} from './webXR-provider.js';
  *
  * TODO: change this when it's moved to auto constants.
  */
-class WorldTracking_webAR extends TrackingMode {
+class WorldTracking_WebAR extends TrackingMode {
     public startSession() {
-        webXRProvider.startSession(window.WEBXR_REQUIRED_FEATURES, window.WEBXR_OPTIONAL_FEATURES);
+        this.provider.startSession(window.WEBXR_REQUIRED_FEATURES, window.WEBXR_OPTIONAL_FEATURES);
     }
 
     public endSession(): void {
-        webXRProvider.endSession();
+        this.provider.endSession();
     }
 }
 
-export {WorldTracking_webAR};
+export {WorldTracking_WebAR};

@@ -56,7 +56,7 @@ export class ImageTrackingExample extends Component {
             }
         });
 
-        ARSession.onSessionEnded.add(() => {
+        ARSession.getSessionForEngine(this.engine).onSessionEnded.add(() => {
             this.object.scalingWorld = [0, 0, 0];
         });
 

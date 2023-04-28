@@ -1,11 +1,9 @@
-import {ARSession} from '../../AR-session.js';
-
 import {WorldTracking_XR8} from '../../frameworks/xr8/world-tracking-mode-xr8.js';
-import {WorldTracking_webAR} from '../../frameworks/webAR/world-tracking-mode-webAR.js';
+import {WorldTracking_WebAR} from '../../frameworks/webAR/world-tracking-mode-webAR.js';
 
 import {ITrackingMode} from '../../frameworks/trackingMode.js';
-import {webXRProvider} from '../../frameworks/webAR/webXR-provider.js';
-import {xr8Provider} from '../../frameworks/xr8/xr8-provider.js';
+import {WebXRProvider} from '../../frameworks/webAR/webXR-provider.js';
+import {XR8Provider} from '../../frameworks/xr8/xr8-provider.js';
 import {ARCamera} from './AR-Camera.js';
 
 /**
@@ -28,11 +26,13 @@ class ARSLAMCamera extends ARCamera {
          */
         if (this.engine.arSupported) {
             //if (false) { // force xr8
-            ARSession.registerTrackingProvider(this.engine, webXRProvider);
-            this._trackingImpl = new WorldTracking_webAR(this);
+            const provider = WebXRProvider.registerTrackingProviderWithARSession(
+                this.engine
+            );
+            this._trackingImpl = new WorldTracking_WebAR(provider, this);
         } else {
-            ARSession.registerTrackingProvider(this.engine, xr8Provider);
-            this._trackingImpl = new WorldTracking_XR8(this);
+            const provider = XR8Provider.registerTrackingProviderWithARSession(this.engine);
+            this._trackingImpl = new WorldTracking_XR8(provider, this);
         }
     };
 
@@ -50,10 +50,6 @@ class ARSLAMCamera extends ARCamera {
         if (this.active) {
             this._trackingImpl!.startSession();
         }
-
-        ARSession.onARSessionReady.add(() => {
-
-        });
     };
 
     endSession = async () => {

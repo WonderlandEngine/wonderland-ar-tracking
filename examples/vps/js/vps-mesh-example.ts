@@ -63,11 +63,11 @@ export class VPSMeshExample extends Component {
             }
         });
 
-        ARSession.onSessionStarted.add(() => {
+        ARSession.getSessionForEngine(this.engine).onSessionStarted.add(() => {
             document.body.appendChild(this._toggleMeshButton);
         });
 
-        ARSession.onSessionEnded.add(() => {
+        ARSession.getSessionForEngine(this.engine).onSessionEnded.add(() => {
             this._toggleMeshButton.remove();
 
             if (this._meshComp) {

@@ -89,15 +89,14 @@ export class PhysicalSizeImageTarget extends Component {
             }
         });
 
-        ARSession.onSessionEnded.add(() => {
-            clearTimeout(this._imageLostTimeout);
-            if (this._meshComp) {
-                this._meshComp.destroy();
-                this._mesh!.destroy();
+        if (!this._meshComp) {
+            this._meshComp = this.object.addComponent('mesh', {})!;
+            this._meshComp.material = this.meshMaterial;
+        }
 
-                this._meshComp = null;
-                this._mesh = null;
-            }
+        ARSession.getSessionForEngine(this.engine).onSessionEnded.add(() => {
+            clearTimeout(this._imageLostTimeout);
+            this._meshComp!.active = false;
         });
     }
 
@@ -143,8 +142,8 @@ export class PhysicalSizeImageTarget extends Component {
 
         const {indices, vertices, normals, uvs} = geometryData;
 
-        this._meshComp = this.object.addComponent('mesh', {})!;
-        this._meshComp.material = this.meshMaterial;
+        // this._meshComp = this.object.addComponent('mesh', {})!;
+        //  this._meshComp.material = this.meshMaterial;
 
         this._mesh = new Mesh(this.engine, {
             vertexCount: vertices.length / 3,
@@ -164,8 +163,8 @@ export class PhysicalSizeImageTarget extends Component {
             meshUvs.set(i / 2, [uvs[i], uvs[i + 1]]);
         }
 
-        this._meshComp.mesh = this._mesh;
-        this._meshComp.active = false; // hide until found
+        this._meshComp!.mesh = this._mesh;
+        this._meshComp!.active = false; // hide until found
     };
 
     private onImageFound = (event: XR8ImageTrackedEvent) => {

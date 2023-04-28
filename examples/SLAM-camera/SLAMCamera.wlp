@@ -535,7 +535,7 @@
                 0,
                 0
             ],
-            "customIndexHtml": true
+            "customIndexHtml": false
         },
         "vr": {
             "leftEyeObject": "18",
@@ -559,7 +559,8 @@
             "framework": "webxr",
             "8thwall": {
                 "apiToken": "sU7eX52Oe2ZL8qUKBWD5naUlu1ZrnuRrtM1pQ7ukMz8rkOEG8mb63YlYTuiOrsQZTiXKRe"
-            }
+            },
+            "enable": true
         },
         "rendering": {
             "clearColor": [

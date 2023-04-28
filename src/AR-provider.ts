@@ -6,10 +6,17 @@ import {Emitter, WonderlandEngine} from '@wonderlandengine/api';
  * For example src/components/AR/frameworks/xr8/xr8-provider.ts loads, configures and checks the required permissions for the 8th Wall library.
  */
 abstract class ARProvider {
+
     protected _engine!: WonderlandEngine;
-    public set engine(engine: WonderlandEngine) {
+
+    public get engine() {
+        return this._engine;
+    }
+
+    protected constructor(engine: WonderlandEngine) {
         this._engine = engine;
     }
+
     /**
      * onSessionStarted - array of callbacks to be called when the tracking implementation has started tracking.
      * It is NOT necessary called immediately after startSession is called
