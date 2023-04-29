@@ -13,20 +13,20 @@ jobs:
         apt install -y zip
 
         # Build all node libraries
-        pushd ar-tracking && npm i && npm build && popd
-        pushd ar-provider-webxr && npm i && npm build && popd
-        pushd ar-provider-8thwall && npm i && npm build && popd
+        cd ar-tracking && npm i && npm run build && cd ..
+        cd ar-provider-webxr && npm i && npm run build && cd ..
+        cd ar-provider-8thwall && npm i && npm run build && cd ..
 
         # Build all examples
         mkdir public
-        pushd examples
+        cd examples
         for project in * ; do
           if [ ! -d "$project" ]; then continue; fi
           if [ "$project" = ".github" ]; then continue; fi
           if [ "$project" = "public" ]; then continue; fi
 
           echo "Zipping $project"
-          zip -r ./public/$project.zip $project
+          zip -r ../public/$project.zip $project
 
           echo "Building $project"
           for projectFile in $project/*.wlp ; do
@@ -34,7 +34,7 @@ jobs:
           done
           mv ../public/index.html ../public/$project.html
         done
-        popd
+        cd ..
       env:
           WLE_CREDENTIALS: ${{ secrets.WLE_CREDENTIALS }}
     - name: Gzip
