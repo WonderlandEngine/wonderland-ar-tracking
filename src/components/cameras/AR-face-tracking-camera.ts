@@ -13,7 +13,7 @@ import {ARCamera} from './AR-Camera.js';
  * Currently only works with 8th Wall tracking `FaceTracking_XR8`
  */
 class ARFaceTrackingCamera extends ARCamera {
-    public static TypeName = 'AR-face-tracking-camera';
+    static TypeName = 'AR-face-tracking-camera';
 
     @property.enum(
         ['front', 'back'] as XR8CameraDirection[keyof XR8CameraDirection][],
@@ -23,28 +23,28 @@ class ARFaceTrackingCamera extends ARCamera {
 
     private _trackingImpl!: FaceTracking_XR8;
 
-    public get onFaceLoading() {
+    get onFaceLoading() {
         return this._trackingImpl.onFaceLoading;
     }
 
-    public get onFaceFound() {
+    get onFaceFound() {
         return this._trackingImpl.onFaceFound;
     }
 
-    public get onFaceUpdate() {
+    get onFaceUpdate() {
         return this._trackingImpl.onFaceUpdate;
     }
 
-    public get onFaceLost() {
+    get onFaceLost() {
         return this._trackingImpl.onFaceLost;
     }
 
-    public init() {
+    init() {
         const provider = XR8Provider.registerTrackingProviderWithARSession(this.engine);
         this._trackingImpl = new FaceTracking_XR8(provider, this);
     }
 
-    public start() {
+    start() {
         if (!this.object.getComponent('view')) {
             throw new Error('AR-camera requires a view component');
         }

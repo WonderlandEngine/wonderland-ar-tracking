@@ -17,7 +17,7 @@ import {ARSession} from '@wonderlandengine/8thwall-tracking';
 import {ARXR8SLAMCamera} from '@wonderlandengine/8thwall-tracking';
 
 export class AbsoluteScaleWatcher extends Component {
-    public static TypeName = 'absolute-scale-watcher';
+    static TypeName = 'absolute-scale-watcher';
 
     /**
      * The ARXR8SLAMCamera somewhere in the scene

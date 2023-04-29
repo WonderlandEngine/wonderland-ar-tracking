@@ -12,7 +12,7 @@ import {
 } from '@wonderlandengine/8thwall-tracking';
 
 export class XR8CameraSwitch extends Component {
-    public static TypeName = 'xr8-camera-switch-example';
+    static TypeName = 'xr8-camera-switch-example';
 
     private _faceTrackingCamera?: ARFaceTrackingCamera;
     private _imageTrackingCamera?: ARImageTrackingCamera;

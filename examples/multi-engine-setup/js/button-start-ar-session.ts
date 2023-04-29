@@ -8,7 +8,7 @@ import {Component} from '@wonderlandengine/api';
 import {ARSession, ARCamera} from '@wonderlandengine/8thwall-tracking';
 
 export class ButtonStartARSession extends Component {
-    public static TypeName = 'button-start-ar-session';
+    static TypeName = 'button-start-ar-session';
 
     start() {
         ARSession.getSessionForEngine(this.engine).onARSessionReady.add(

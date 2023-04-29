@@ -13,14 +13,14 @@ import {ARCamera} from './AR-Camera.js';
  * This camera will force the use of 8th Wall SLAM implementation (`xr8Provider`)
  */
 class ARXR8SLAMCamera extends ARCamera {
-    public static TypeName = 'AR-XR8-SLAM-camera';
+    static TypeName = 'AR-XR8-SLAM-camera';
 
     @property.bool(false)
     useAbsoluteScale!: boolean;
 
     private _trackingImpl!: WorldTracking_XR8;
 
-    public get onTrackingStatus() {
+    get onTrackingStatus() {
         return this._trackingImpl!.onTrackingStatus;
     }
 
@@ -29,7 +29,7 @@ class ARXR8SLAMCamera extends ARCamera {
         this._trackingImpl = new WorldTracking_XR8(provider, this);
     }
 
-    public start() {
+    start() {
         if (!this.object.getComponent('view')) {
             throw new Error('AR-camera requires a view component');
         }

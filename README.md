@@ -52,11 +52,11 @@ openssl req -x509 -nodes -newkey rsa:4096 -days 3650 \
 
 ```ts
 class ARSLAMCamera extends ARCamera {
-    public static TypeName = 'AR-SLAM-camera';
+    static TypeName = 'AR-SLAM-camera';
 
     private _trackingImpl!: ITrackingMode;
 
-    public override init = () => {
+    override init = () => {
         /* Check if the device supports WebXR. If it does, use WebXRProvider */
         if (this.engine.arSupported) {
             ARSession.registerTrackingProvider(this.engine, WebXRProvider);
@@ -101,7 +101,7 @@ the required permissions for the 8th Wall library.
 ```ts
 class CustomProvider extends ARProvider {
 
-    public async load() {
+    async load() {
         // Make sure we're not in the editor
         if (!window.document) return;
 
@@ -143,7 +143,7 @@ listed to camera's events:
 
 ```ts
 export class FaceMaskExample extends Component {
-    public static TypeName = 'face-mask-example';
+    static TypeName = 'face-mask-example';
 
     /** The ARFaceTrackingCamera somewhere in the scene */
     @property.object()

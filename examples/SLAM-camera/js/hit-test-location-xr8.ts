@@ -14,7 +14,7 @@ import {vec3} from 'gl-matrix';
 import {ARSession, XR8Provider, ARProvider} from '@wonderlandengine/8thwall-tracking';
 
 export class HitTestLocationXR8 extends Component {
-    public static TypeName = 'hit-test-location-xr8';
+    static TypeName = 'hit-test-location-xr8';
 
     /**
      * The ARSLAMCamera somewhere in the scene

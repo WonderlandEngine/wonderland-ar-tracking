@@ -12,7 +12,7 @@ import {property} from '@wonderlandengine/api/decorators.js';
 import {ARSession, ARSLAMCamera} from '@wonderlandengine/8thwall-tracking';
 
 export class SlamTrackingExample extends Component {
-    public static TypeName = 'slam-tracking-example';
+    static TypeName = 'slam-tracking-example';
 
     /**
      * The ARSlamCamera somewhere in the scene

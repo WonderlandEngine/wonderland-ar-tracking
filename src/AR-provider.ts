@@ -8,7 +8,7 @@ import {Emitter, WonderlandEngine} from '@wonderlandengine/api';
 abstract class ARProvider {
     protected _engine!: WonderlandEngine;
 
-    public get engine() {
+    get engine() {
         return this._engine;
     }
 
@@ -20,16 +20,16 @@ abstract class ARProvider {
      * onSessionStart - array of callbacks to be called when the tracking implementation has started tracking.
      * It is NOT necessary called immediately after startSession is called
      */
-    public readonly onSessionStart: Emitter<any> = new Emitter();
+    readonly onSessionStart: Emitter<any> = new Emitter();
 
     /**
      * onSessionEnd - array of callbacks to be called when the tracking implementation has stoped tracking.
      * It is NOT necessary called immediately after endSession is called
      */
-    public readonly onSessionEnd: Emitter<any> = new Emitter();
+    readonly onSessionEnd: Emitter<any> = new Emitter();
 
     // Tracking implementation has beed loaded
-    public loaded = false;
+    loaded = false;
 
     /**
      * startSession - initiate tracking of the tracking impl.

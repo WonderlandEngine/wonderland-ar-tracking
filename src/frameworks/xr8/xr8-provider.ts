@@ -84,7 +84,7 @@ class XR8Provider extends ARProvider {
     /**
      * Default XR8UIHandler to handle 8th wall UI related events
      */
-    public uiHandler: XR8UIHandler = new DefaultUIHandler();
+    uiHandler: XR8UIHandler = new DefaultUIHandler();
 
     /**
      * We need to set the DRAW_FRAMEBUFFER to null on every frame,
@@ -103,7 +103,7 @@ class XR8Provider extends ARProvider {
      */
     private static loadingPromise: Promise<void> | null = null;
 
-    public static registerTrackingProviderWithARSession(engine: WonderlandEngine) {
+    static registerTrackingProviderWithARSession(engine: WonderlandEngine) {
         const provider = new XR8Provider(engine);
         ARSession.getSessionForEngine(engine).registerTrackingProvider(provider);
         return provider;
@@ -183,7 +183,7 @@ class XR8Provider extends ARProvider {
      *
      * @returns promise when the 8th Wall has loaded.
      */
-    public async load() {
+    async load() {
         // Make sure we're no in the editor
         if (!window.document) {
             return;
@@ -207,7 +207,7 @@ class XR8Provider extends ARProvider {
      * Usually will be called by some XR8 tracking implementation with specific options (Face-tracking, image-tracking, etc)
      * @typeParam check XR8.run options parameter
      */
-    public async startSession(
+    async startSession(
         options: Parameters<typeof XR8.run>[0],
         cameraModules: Array<XR8CameraPipelineModule>
     ) {
@@ -256,7 +256,7 @@ class XR8Provider extends ARProvider {
      * Ends XR8 session,
      * Can be called from anywhere.
      */
-    public async endSession() {
+    async endSession() {
         if (XR8.WLE_sessionRunning) {
             XR8.stop();
             this.onSessionEnd.notify(this);
@@ -267,7 +267,7 @@ class XR8Provider extends ARProvider {
      * Sets up scene.onPreRender and scene.onPostRender callback
      * which will handle the drawing of the camera feed.
      */
-    public enableCameraFeed() {
+    enableCameraFeed() {
         // TODO: should we store the previous state of colorClearEnabled.
         this._engine.scene.colorClearEnabled = false;
 
@@ -288,7 +288,7 @@ class XR8Provider extends ARProvider {
      * Cleans up scene.onPreRender and scene.onPostRender callback
      * which in turn removes the drawing of the camera feed.
      */
-    public disableCameraFeed() {
+    disableCameraFeed() {
         if (this._engine.scene.onPreRender.has(this.onWLPreRender)) {
             this._engine.scene.onPreRender.remove(this.onWLPreRender);
         }
@@ -303,7 +303,7 @@ class XR8Provider extends ARProvider {
      * Tells XR8 to run any necessary work before the WLE does it's rendering.
      * This includes rendering a the camera frame.
      */
-    public onWLPreRender = () => {
+    onWLPreRender = () => {
         this.cachedWebGLContext!.bindFramebuffer(
             this.cachedWebGLContext!.DRAW_FRAMEBUFFER,
             null
@@ -317,7 +317,7 @@ class XR8Provider extends ARProvider {
      * Called after WLE render call.
      * Tells XR8 it can do any necessary cleanup
      */
-    public onWLPostRender() {
+    onWLPostRender() {
         XR8.runPostRender(Date.now());
     }
 
@@ -428,7 +428,6 @@ class XR8Provider extends ARProvider {
     }
 
     /**
-     * @public
      * Checks if device browser is supported at all
      * and check any required permissions.
      * @param extraPermissions array of strings for extra permissions required by the tracking implementation.
@@ -437,7 +436,7 @@ class XR8Provider extends ARProvider {
      * @returns promise when all permissions were granted
      */
 
-    public async checkPermissions(extraPermissions: XR8ExtraPermissions = []) {
+    async checkPermissions(extraPermissions: XR8ExtraPermissions = []) {
         if (!XR8.XrDevice.isDeviceBrowserCompatible()) {
             this.uiHandler.handleIncompatibleDevice();
             return;

@@ -15,15 +15,17 @@ import {
 } from '@wonderlandengine/8thwall-tracking';
 
 export class CustomUIHandler extends Component implements XR8UIHandler {
-    public static TypeName = 'custom-xr8-ui-handler';
+    static TypeName = 'custom-xr8-ui-handler';
 
     start() {
         // tell xr8Provider we will be the UI handler
-        ARSession.getSessionForEngine(this.engine).registeredProviders.forEach((provider) => {
-            if(provider instanceof XR8Provider) {
-                provider.uiHandler = this;
+        ARSession.getSessionForEngine(this.engine).registeredProviders.forEach(
+            (provider) => {
+                if (provider instanceof XR8Provider) {
+                    provider.uiHandler = this;
+                }
             }
-        });
+        );
 
         // Start AR session as soon as it's available
         ARSession.getSessionForEngine(this.engine).onARSessionReady.add(() => {

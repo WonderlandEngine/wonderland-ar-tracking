@@ -12,26 +12,26 @@ import {ARCamera} from './AR-Camera.js';
  * Currently only works with 8th Wall tracking `WorldTracking_XR8`
  */
 class ARImageTrackingCamera extends ARCamera {
-    public static TypeName = 'AR-image-tracking-camera';
+    static TypeName = 'AR-image-tracking-camera';
 
     @property.bool(false) // Improves tracking, reduces performance
     enableSLAM!: number;
 
     private _trackingImpl!: WorldTracking_XR8;
 
-    public get onImageScanning() {
+    get onImageScanning() {
         return this._trackingImpl.onImageScanning;
     }
 
-    public get onImageFound() {
+    get onImageFound() {
         return this._trackingImpl.onImageFound;
     }
 
-    public get onImageUpdate() {
+    get onImageUpdate() {
         return this._trackingImpl.onImageUpdate;
     }
 
-    public get onImageLost() {
+    get onImageLost() {
         return this._trackingImpl.onImageLost;
     }
 
@@ -40,7 +40,7 @@ class ARImageTrackingCamera extends ARCamera {
         this._trackingImpl = new WorldTracking_XR8(provider, this);
     }
 
-    public start() {
+    start() {
         this._trackingImpl.init();
     }
 

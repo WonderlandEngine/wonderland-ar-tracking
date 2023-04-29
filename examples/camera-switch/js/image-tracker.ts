@@ -10,7 +10,7 @@ import {property} from '@wonderlandengine/api/decorators.js';
 import {ARSession, ARImageTrackingCamera} from '@wonderlandengine/8thwall-tracking';
 
 export class ImageTrackingExample extends Component {
-    public static TypeName = 'image-tracking-example';
+    static TypeName = 'image-tracking-example';
 
     /**
      * The ARImageTrackingCamera somewhere in the scene

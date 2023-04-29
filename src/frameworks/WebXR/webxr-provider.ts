@@ -7,11 +7,11 @@ import {ARSession} from '../../AR-session.js';
  */
 class WebXRProvider extends ARProvider {
     private _xrSession: XRSession | null = null;
-    public get xrSession() {
+    get xrSession() {
         return this._xrSession;
     }
 
-    public static registerTrackingProviderWithARSession(engine: WonderlandEngine) {
+    static registerTrackingProviderWithARSession(engine: WonderlandEngine) {
         const provider = new WebXRProvider(engine);
         ARSession.getSessionForEngine(engine).registerTrackingProvider(provider);
         return provider;
@@ -35,7 +35,7 @@ class WebXRProvider extends ARProvider {
         });
     }
 
-    public async startSession(
+    async startSession(
         webxrRequiredFeatures: string[] = ['local'],
         webxrOptionalFeatures: string[] = ['local', 'hit-test']
     ) {
@@ -46,7 +46,7 @@ class WebXRProvider extends ARProvider {
         );
     }
 
-    public async endSession() {
+    async endSession() {
         if (this._xrSession) {
             try {
                 await this._xrSession.end();
@@ -57,7 +57,7 @@ class WebXRProvider extends ARProvider {
         }
     }
 
-    public async load() {
+    async load() {
         this.loaded = true;
         return Promise.resolve();
     }

@@ -8,14 +8,14 @@ import {TrackingMode} from '../trackingMode.js';
  * TODO: change this when it's moved to auto constants.
  */
 export class WorldTracking_WebXR extends TrackingMode {
-    public startSession() {
+    startSession() {
         this.provider.startSession(
             window.WEBXR_REQUIRED_FEATURES,
             window.WEBXR_OPTIONAL_FEATURES
         );
     }
 
-    public endSession(): void {
+    endSession(): void {
         this.provider.endSession();
     }
 }

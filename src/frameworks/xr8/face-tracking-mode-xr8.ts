@@ -16,7 +16,7 @@ class FaceTracking_XR8 extends TrackingMode {
     /**
      * Required by the `XR8.addCameraPipelineModules`
      */
-    public readonly name = 'face-tracking-XR8';
+    readonly name = 'face-tracking-XR8';
 
     /**
      * Cache view component
@@ -33,16 +33,16 @@ class FaceTracking_XR8 extends TrackingMode {
      */
     private _cachedRotation = [0, 0, 0, -1];
 
-    public readonly onFaceScanning: Emitter<[event: XR8FaceLoadingEvent]> = new Emitter();
-    public readonly onFaceLoading: Emitter<[event: XR8FaceLoadingEvent]> = new Emitter();
-    public readonly onFaceFound: Emitter<[event: XR8FaceFoundEvent]> = new Emitter();
-    public readonly onFaceUpdate: Emitter<[event: XR8FaceFoundEvent]> = new Emitter();
-    public readonly onFaceLost: Emitter<[event: xr8FaceLostEvent]> = new Emitter();
+    readonly onFaceScanning: Emitter<[event: XR8FaceLoadingEvent]> = new Emitter();
+    readonly onFaceLoading: Emitter<[event: XR8FaceLoadingEvent]> = new Emitter();
+    readonly onFaceFound: Emitter<[event: XR8FaceFoundEvent]> = new Emitter();
+    readonly onFaceUpdate: Emitter<[event: XR8FaceFoundEvent]> = new Emitter();
+    readonly onFaceLost: Emitter<[event: xr8FaceLostEvent]> = new Emitter();
 
     /**
      * Consumed by 8th Wall.
      */
-    public readonly listeners = [
+    readonly listeners = [
         {
             /**
              * Fires when loading begins for additional face AR resources.
@@ -87,7 +87,7 @@ class FaceTracking_XR8 extends TrackingMode {
      * Called by any consuming AR camera.
      * Set's up the cached vars.
      */
-    public init() {
+    init() {
         const input = this.component.object.getComponent('input');
         if (input) {
             input.active = false; // 8th Wall will handle the camera pose
@@ -105,7 +105,7 @@ class FaceTracking_XR8 extends TrackingMode {
      * sets itself as an XR8 camera pipeline module
      * and tells xr8Provider to start the session
      */
-    public async startSession() {
+    async startSession() {
         const permissions = await (this.provider as XR8Provider).checkPermissions();
 
         if (!permissions) {
@@ -141,7 +141,7 @@ class FaceTracking_XR8 extends TrackingMode {
         ]);
     }
 
-    public endSession() {
+    endSession() {
         this.provider.endSession();
     }
 
@@ -151,7 +151,7 @@ class FaceTracking_XR8 extends TrackingMode {
      *
      * @param e Camera projection matrix and pose provided by 8th Wall
      */
-    public onUpdate = (e: XR8CameraPipelineModuleUpdateArgs) => {
+    onUpdate = (e: XR8CameraPipelineModuleUpdateArgs) => {
         const source = e.processCpuResult.facecontroller;
 
         if (!source) return;

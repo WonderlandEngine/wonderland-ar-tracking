@@ -11,7 +11,7 @@ import {property} from '@wonderlandengine/api/decorators.js';
 import {ARSession, ARVPSCamera} from '@wonderlandengine/8thwall-tracking';
 
 export class VPSExample extends Component {
-    public static TypeName = 'vps-example';
+    static TypeName = 'vps-example';
 
     /**
      * VPSCamera somewhere in the scene

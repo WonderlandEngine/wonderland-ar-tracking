@@ -11,7 +11,7 @@ import {PhysicalSizeImageTarget} from './physical-size-image-target.js';
 import {VideoTexture} from '@wonderlandengine/components';
 
 export class VideoTextureImageTarget extends Component {
-    public static TypeName = 'video-texture-image-target-example';
+    static TypeName = 'video-texture-image-target-example';
 
     private _physicalSizeImageTarget!: PhysicalSizeImageTarget;
 

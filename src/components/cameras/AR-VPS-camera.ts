@@ -16,29 +16,29 @@ import {ARCamera} from './AR-Camera.js';
  * Warning - it will disable the WASM thread support.
  */
 class ARVPSCamera extends ARCamera {
-    public static TypeName = 'AR-VPS-camera';
+    static TypeName = 'AR-VPS-camera';
 
     /**
      * make sure noone can overwrite this
      */
-    public get usesVPS() {
+    get usesVPS() {
         return true;
     }
 
     private _trackingImpl!: WorldTracking_XR8;
 
-    public get onWaySpotFound() {
+    get onWaySpotFound() {
         return this._trackingImpl.onWaySpotFound;
     }
-    public get onWaySpotUpdated() {
+    get onWaySpotUpdated() {
         return this._trackingImpl.onWaySpotUpdated;
     }
 
-    public get onWaySpotLost() {
+    get onWaySpotLost() {
         return this._trackingImpl.onWaySpotLost;
     }
 
-    public get onMeshFound() {
+    get onMeshFound() {
         return this._trackingImpl.onMeshFound;
     }
 
@@ -47,7 +47,7 @@ class ARVPSCamera extends ARCamera {
         this._trackingImpl = new WorldTracking_XR8(provider, this);
     }
 
-    public start() {
+    start() {
         this._trackingImpl.init(['location']);
     }
 

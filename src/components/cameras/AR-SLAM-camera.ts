@@ -15,11 +15,11 @@ import {ARCamera} from './AR-Camera.js';
  * or 8th Wall SLAM implementation (`xr8Provider`)
  */
 class ARSLAMCamera extends ARCamera {
-    public static TypeName = 'AR-SLAM-camera';
+    static TypeName = 'AR-SLAM-camera';
 
     private _trackingImpl!: ITrackingMode;
 
-    public override init = () => {
+    override init = () => {
         /* Check if the device supports WebXR. If it does, use WebXRProvider */
         if (this.engine.arSupported) {
             const provider = WebXRProvider.registerTrackingProviderWithARSession(
@@ -32,7 +32,7 @@ class ARSLAMCamera extends ARCamera {
         }
     };
 
-    public start() {
+    start() {
         if (!this.object.getComponent('view')) {
             throw new Error('AR-camera requires a view component');
         }
@@ -58,7 +58,7 @@ class ARSLAMCamera extends ARCamera {
         this._trackingImpl.endSession();
     }
 
-    public update(dt: number) {
+    update(dt: number) {
         this._trackingImpl.update?.(dt);
     }
 }

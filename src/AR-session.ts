@@ -20,14 +20,14 @@ export class ARSession {
     private _currentTrackingProvider: ARProvider | null = null;
 
     /** Emits and event when the AR session is ready */
-    public readonly onARSessionReady: RetainEmitter = new RetainEmitter();
+    readonly onARSessionReady: RetainEmitter = new RetainEmitter();
 
     /** Emits and event when an AR session was started */
-    public readonly onSessionStart: RetainEmitter<[trackingProvider: ARProvider]> =
+    readonly onSessionStart: RetainEmitter<[trackingProvider: ARProvider]> =
         new RetainEmitter();
 
     /** Emits and event when an AR session was ended */
-    public readonly onSessionEnd: Emitter<[trackingProvider: ARProvider]> = new Emitter();
+    readonly onSessionEnd: Emitter<[trackingProvider: ARProvider]> = new Emitter();
 
     private _engine: WonderlandEngine;
     private _sceneHasLoaded = false;
@@ -36,7 +36,7 @@ export class ARSession {
     /**
      * @returns a shallow copy of all registered providers
      */
-    public get registeredProviders(): ReadonlyArray<ARProvider> {
+    get registeredProviders(): ReadonlyArray<ARProvider> {
         return [...this._trackingProviders];
     }
 
@@ -46,7 +46,7 @@ export class ARSession {
      * @param engine The engine to retrieve the AR session for.
      * @returns The current AR session, or creates one if none exists.
      */
-    public static getSessionForEngine(engine: WonderlandEngine) {
+    static getSessionForEngine(engine: WonderlandEngine) {
         if (!this.engines.has(engine)) {
             this.engines.set(engine, new ARSession(engine));
         }
@@ -64,7 +64,7 @@ export class ARSession {
      * Makes sure it is loaded and hooks into providers onSessionStart,
      * onSessionLoaded events.
      */
-    public async registerTrackingProvider(provider: ARProvider) {
+    async registerTrackingProvider(provider: ARProvider) {
         if (this._trackingProviders.includes(provider)) {
             return;
         }
@@ -104,7 +104,7 @@ export class ARSession {
     };
 
     /** Stop a running AR session (if any) */
-    public stopARSession() {
+    stopARSession() {
         if (this._currentTrackingProvider === null) {
             console.warn('No tracking session is active, nothing will happen');
         }

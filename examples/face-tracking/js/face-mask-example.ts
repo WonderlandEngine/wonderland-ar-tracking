@@ -21,7 +21,7 @@ import {property} from '@wonderlandengine/api/decorators.js';
 import {ARFaceTrackingCamera} from '@wonderlandengine/8thwall-tracking';
 
 export class FaceMaskExample extends Component {
-    public static TypeName = 'face-mask-example';
+    static TypeName = 'face-mask-example';
 
     /**
      * The ARFaceTrackingCamera somewhere in the scene

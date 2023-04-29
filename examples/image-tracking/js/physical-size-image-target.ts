@@ -21,7 +21,7 @@ import {generateCylinderGeometry} from './geometries/cylinder-geomtery.js';
 import {generatePlaneGeomtry} from './geometries/plane-geometry.js';
 
 export class PhysicalSizeImageTarget extends Component {
-    public static TypeName = 'physical-size-image-target-example';
+    static TypeName = 'physical-size-image-target-example';
 
     /**
      * The ARImageTrackingCamera somewhere in the scene

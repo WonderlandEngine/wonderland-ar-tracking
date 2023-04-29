@@ -7,7 +7,7 @@ import {Component} from '@wonderlandengine/api';
 import {ARSession} from '@wonderlandengine/8thwall-tracking';
 
 export class ButtonEndARSession extends Component {
-    public static TypeName = 'button-end-ar-session';
+    static TypeName = 'button-end-ar-session';
 
     xrEndButton!: HTMLButtonElement;
 

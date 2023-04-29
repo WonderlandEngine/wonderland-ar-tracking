@@ -39,7 +39,7 @@ class WorldTracking_XR8 extends TrackingMode {
     /**
      * Required by the `XR8.addCameraPipelineModules`
      */
-    public readonly name = 'world-tracking-XR8';
+    readonly name = 'world-tracking-XR8';
 
     /**
      * Cache view component
@@ -61,25 +61,23 @@ class WorldTracking_XR8 extends TrackingMode {
      */
     private _extraPermissions: XR8ExtraPermissions = [];
 
-    public readonly onTrackingStatus: Emitter<[event: XR8TrackingStatusEvent]> =
-        new Emitter();
+    readonly onTrackingStatus: Emitter<[event: XR8TrackingStatusEvent]> = new Emitter();
 
-    public readonly onImageScanning: Emitter<[event: XR8ImageScanningEvent]> =
-        new Emitter();
-    public readonly onImageFound: Emitter<[event: XR8ImageTrackedEvent]> = new Emitter();
-    public readonly onImageUpdate: Emitter<[event: XR8ImageTrackedEvent]> = new Emitter();
-    public readonly onImageLost: Emitter<[event: XR8ImageTrackedEvent]> = new Emitter();
+    readonly onImageScanning: Emitter<[event: XR8ImageScanningEvent]> = new Emitter();
+    readonly onImageFound: Emitter<[event: XR8ImageTrackedEvent]> = new Emitter();
+    readonly onImageUpdate: Emitter<[event: XR8ImageTrackedEvent]> = new Emitter();
+    readonly onImageLost: Emitter<[event: XR8ImageTrackedEvent]> = new Emitter();
 
-    public readonly onMeshFound: Emitter<[event: XR8VPSMeshFoundEvent]> = new Emitter();
+    readonly onMeshFound: Emitter<[event: XR8VPSMeshFoundEvent]> = new Emitter();
 
-    public readonly onWaySpotFound: Emitter<[event: XR8VPSWayPointEvent]> = new Emitter();
-    public readonly onWaySpotUpdated: Emitter<[event: XR8VPSWayPointEvent]> = new Emitter();
-    public readonly onWaySpotLost: Emitter<[event: XR8VPSWayPointEvent]> = new Emitter();
+    readonly onWaySpotFound: Emitter<[event: XR8VPSWayPointEvent]> = new Emitter();
+    readonly onWaySpotUpdated: Emitter<[event: XR8VPSWayPointEvent]> = new Emitter();
+    readonly onWaySpotLost: Emitter<[event: XR8VPSWayPointEvent]> = new Emitter();
 
     /**
      * Consumed by 8th Wall.
      */
-    public readonly listeners = [
+    readonly listeners = [
         {
             event: 'reality.trackingstatus',
             process: (event: XR8TrackingStatusEvent) => {
@@ -182,7 +180,7 @@ class WorldTracking_XR8 extends TrackingMode {
      *
      * @param extraPermissions
      */
-    public init(extraPermissions: XR8ExtraPermissions = []) {
+    init(extraPermissions: XR8ExtraPermissions = []) {
         this._extraPermissions = extraPermissions;
 
         const input = this.component.object.getComponent('input');
@@ -214,7 +212,7 @@ class WorldTracking_XR8 extends TrackingMode {
      * sets itself as an XR8 camera pipeline module
      * and tells xr8Provider to start the session
      */
-    public async startSession() {
+    async startSession() {
         const permissions = await (this.provider as XR8Provider).checkPermissions(
             this._extraPermissions
         );
@@ -254,7 +252,7 @@ class WorldTracking_XR8 extends TrackingMode {
         ]);
     }
 
-    public endSession() {
+    endSession() {
         this.provider.endSession();
     }
 
@@ -263,7 +261,7 @@ class WorldTracking_XR8 extends TrackingMode {
      * `XR8.XrController.updateCameraProjectionMatrix` is a method to
      * tell 8th Wall what is our initial camera position.
      */
-    public onAttach = (_params: unknown) => {
+    onAttach = (_params: unknown) => {
         XR8.XrController.updateCameraProjectionMatrix({
             origin: {
                 x: this._cachedPosition[0],
@@ -291,7 +289,7 @@ class WorldTracking_XR8 extends TrackingMode {
      *
      * @param e Camera projection matrix and pose provided by 8th Wall
      */
-    public onUpdate = (e: XR8CameraPipelineModuleUpdateArgs) => {
+    onUpdate = (e: XR8CameraPipelineModuleUpdateArgs) => {
         const source = e.processCpuResult.reality;
         if (!source) return;
 

@@ -8,7 +8,7 @@ import {property} from '@wonderlandengine/api/decorators.js';
 
 import {ARSession, ARProvider, WebXRProvider} from '@wonderlandengine/8thwall-tracking';
 export class SpawnMeshOnReticle extends Component {
-    public static TypeName = 'spawn-mesh-on-reticle';
+    static TypeName = 'spawn-mesh-on-reticle';
 
     /**
      * The mesh to spawn

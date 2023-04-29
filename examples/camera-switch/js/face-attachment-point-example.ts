@@ -37,7 +37,7 @@ const ATTACHMENT_POINTS = [
 ];
 
 export class FaceAttachmentPointExample extends Component {
-    public static TypeName = 'face-attachment-point-example';
+    static TypeName = 'face-attachment-point-example';
 
     /**
      * The ARFaceTrackingCamera somewhere in the scene

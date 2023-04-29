@@ -14,7 +14,7 @@ import {property} from '@wonderlandengine/api/decorators.js';
 import {ARSession, WebXRProvider, ARProvider} from '@wonderlandengine/8thwall-tracking';
 
 export class HitTestLocationRoot extends Component {
-    public static TypeName = 'hit-test-location-root';
+    static TypeName = 'hit-test-location-root';
 
     /**
      * The ARSLAMCamera somewhere in the scene
