@@ -55,8 +55,8 @@
                     "type": "view"
                 },
                 {
-                    "type": "AR-SLAM-camera",
-                    "AR-SLAM-camera": {
+                    "type": "ar-slam-camera",
+                    "ar-slam-camera": {
                         "UseAbsoluteScale": true
                     }
                 },
@@ -303,6 +303,12 @@
                 "name": "AR Target Mesh",
                 "file": "js\\models\\ar-target.glb"
             }
+        },
+        "69": {
+            "link": {
+                "name": "AR Target Mesh",
+                "file": "models\\ar-target.glb"
+            }
         }
     },
     "materials": {
@@ -402,6 +408,12 @@
             "link": {
                 "name": "AR Target Material",
                 "file": "js\\models\\ar-target.glb"
+            }
+        },
+        "68": {
+            "link": {
+                "name": "AR Target Material",
+                "file": "models\\ar-target.glb"
             }
         }
     },
@@ -552,14 +564,9 @@
             "libraryPaths": [
                 "/js/lib/"
             ],
-            "entryPoint": "js/index.js",
-            "autoManageEntryPoint": true
+            "entryPoint": "js/index.js"
         },
         "ar": {
-            "framework": "webxr",
-            "8thwall": {
-                "apiToken": "sU7eX52Oe2ZL8qUKBWD5naUlu1ZrnuRrtM1pQ7ukMz8rkOEG8mb63YlYTuiOrsQZTiXKRe"
-            },
             "enable": true
         },
         "rendering": {
@@ -685,7 +692,7 @@
         }
     },
     "files": [
-        "js/models/ar-target.glb"
+        "models/ar-target.glb"
     ],
     "textures": {},
     "images": {},

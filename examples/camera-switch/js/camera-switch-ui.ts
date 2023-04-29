@@ -9,7 +9,7 @@ import {
     ARFaceTrackingCamera,
     ARImageTrackingCamera,
     ARSLAMCamera,
-} from '@wonderlandengine/8thwall-tracking';
+} from '@wonderlandengine/ar-tracking';
 
 export class XR8CameraSwitch extends Component {
     static TypeName = 'xr8-camera-switch-example';

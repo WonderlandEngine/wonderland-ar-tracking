@@ -5,33 +5,9 @@
 import {Component, Object as WLEObject} from '@wonderlandengine/api';
 import {property} from '@wonderlandengine/api/decorators.js';
 
-import {ARFaceTrackingCamera} from '@wonderlandengine/8thwall-tracking';
+import {ARFaceTrackingCamera, FaceAttachmentPoint} from '@wonderlandengine/ar-tracking';
 
-const ATTACHMENT_POINTS = [
-    'forehead',
-    'rightEyebrowInner',
-    'rightEyebrowMiddle',
-    'rightEyebrowOuter',
-    'leftEyebrowInner',
-    'leftEyebrowMiddle',
-    'leftEyebrowOuter',
-    'leftEar',
-    'rightEar',
-    'leftCheek',
-    'rightCheek',
-    'noseBridge',
-    'noseTip',
-    'leftEye',
-    'rightEye',
-    'leftEyeOuterCorner',
-    'rightEyeOuterCorner',
-    'upperLip',
-    'lowerLip',
-    'mouth',
-    'mouthRightCorner',
-    'mouthLeftCorner',
-    'chin',
-];
+const FaceAttachmentPoints = Object.values(FaceAttachmentPoint);
 
 export class FaceAttachmentPointExample extends Component {
     static TypeName = 'face-attachment-point-example';
@@ -45,7 +21,7 @@ export class FaceAttachmentPointExample extends Component {
     /**
      * To which feature of the face should the object be attached
      */
-    @property.enum(ATTACHMENT_POINTS)
+    @property.enum(FaceAttachmentPoints)
     attachmentPoint: number = 0;
 
     /**
@@ -69,15 +45,16 @@ export class FaceAttachmentPointExample extends Component {
         }
 
         // allocate some arrays
-        const cachedPosition = new Array<number>(3);
-        const cachedRotation = new Array<number>(4);
-        const cachedScale = [0, 0, 0];
+        const cachedPosition = new Float32Array(3);
+        const cachedRotation = new Float32Array(4);
+        const cachedScale = new Float32Array(3);
 
-        this.object.scalingWorld = [0, 0, 0];
+        /* Set scaling to zero */
+        this.object.setScalingWorld(cachedScale);
 
-        camera.onFaceUpdate.add((event) => {
-            // event.detail.attachmentPoints are filled with positions of all available positions of the face features
-            const {transform, attachmentPoints} = event.detail;
+        camera.onFaceUpdate.add((data) => {
+            // data.attachmentPoints are filled with positions of all available positions of the face features
+            const {transform, attachmentPoints} = data;
 
             cachedRotation[0] = transform.rotation.x;
             cachedRotation[1] = transform.rotation.y;
@@ -88,20 +65,14 @@ export class FaceAttachmentPointExample extends Component {
             cachedPosition[1] = transform.position.y;
             cachedPosition[2] = transform.position.z;
 
-            const scale = transform.scale;
+            cachedScale.fill(transform.scale);
 
-            cachedScale[0] = scale;
-            cachedScale[1] = scale;
-            cachedScale[2] = scale;
-
-            this.object.rotationWorld.set(cachedRotation);
+            this.object.setRotationWorld(cachedRotation);
             this.object.setTranslationWorld(cachedPosition);
-            this.object.scalingWorld.set(cachedScale);
+            this.object.setScalingWorld(cachedScale);
 
             const attachmentPoint =
-                attachmentPoints[
-                    ATTACHMENT_POINTS[this.attachmentPoint] as keyof typeof attachmentPoints
-                ].position;
+                attachmentPoints[FaceAttachmentPoints[this.attachmentPoint]].position;
             this.attachedObject.setTranslationLocal([
                 attachmentPoint.x,
                 attachmentPoint.y,
@@ -110,8 +81,8 @@ export class FaceAttachmentPointExample extends Component {
         });
 
         camera.onFaceLost.add((_event) => {
-            this.object.scalingWorld = [0, 0, 0];
-            cachedScale[0] = cachedScale[1] = cachedScale[2] = 0;
+            cachedScale.fill(0);
+            this.object.setScalingWorld(cachedScale);
         });
     }
 }

@@ -59,15 +59,15 @@
                     "type": "xr8-camera-switch-example"
                 },
                 {
-                    "type": "AR-face-tracking-camera",
+                    "type": "ar-face-tracking-camera",
                     "active": false
                 },
                 {
-                    "type": "AR-image-tracking-camera",
+                    "type": "ar-image-tracking-camera",
                     "active": false
                 },
                 {
-                    "type": "AR-SLAM-camera",
+                    "type": "ar-slam-camera",
                     "active": false
                 }
             ]
@@ -641,7 +641,8 @@
             "version": [
                 1,
                 0,
-                0
+                0,
+                2
             ],
             "customIndexHtml": false
         },

@@ -4,7 +4,7 @@
  * When clicked - kill any running AR session.
  */
 import {Component} from '@wonderlandengine/api';
-import {ARSession} from '@wonderlandengine/8thwall-tracking';
+import {ARSession} from '@wonderlandengine/ar-tracking';
 
 export class ButtonEndARSession extends Component {
     static TypeName = 'button-end-ar-session';

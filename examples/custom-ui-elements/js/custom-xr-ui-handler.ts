@@ -7,12 +7,9 @@
 import {Component} from '@wonderlandengine/api';
 import QrCodeWithLogo from 'qrcode-with-logos';
 
-import {
-    ARSession,
-    XR8UIHandler,
-    ARVPSCamera,
-    XR8Provider,
-} from '@wonderlandengine/8thwall-tracking';
+import {ARSession, ARVPSCamera} from '@wonderlandengine/ar-tracking';
+
+import {XR8UIHandler, XR8Provider} from '@wonderlandengine/ar-provider-8thwall';
 
 export class CustomUIHandler extends Component implements XR8UIHandler {
     static TypeName = 'custom-xr8-ui-handler';
@@ -50,7 +47,7 @@ export class CustomUIHandler extends Component implements XR8UIHandler {
 
     async handlePermissionFail(error: Error) {
         console.log('Permission failed', error);
-        const html = await (
+        const html = (
             await (await fetch('xr8-ui/failedPermissionsOverlay.html')).text()
         ).replace('${REASON}', error.message);
         this.showOverlay(html);
@@ -58,9 +55,10 @@ export class CustomUIHandler extends Component implements XR8UIHandler {
 
     handleError = async (error: Event) => {
         console.error('XR8 encountered an error', error);
-        const html = await (
-            await (await fetch('xr8-ui/error-overlay.html')).text()
-        ).replace('${MESSAGE}', (error as CustomEvent).detail.message);
+        const html = (await (await fetch('xr8-ui/error-overlay.html')).text()).replace(
+            '${MESSAGE}',
+            (error as CustomEvent).detail.message
+        );
         this.showOverlay(html);
     };
 

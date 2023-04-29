@@ -27,8 +27,8 @@
                     "type": "view"
                 },
                 {
-                    "type": "AR-face-tracking-camera",
-                    "AR-face-tracking-camera": {
+                    "type": "ar-face-tracking-camera",
+                    "ar-face-tracking-camera": {
                         "cameraDirection": "front"
                     }
                 },
@@ -132,7 +132,7 @@
                     "type": "face-attachment-point-example",
                     "face-attachment-point-example": {
                         "ARFaceTrackingCamera": "17",
-                        "attachmentPoint": "noseTip",
+                        "attachmentPoint": "nose tip",
                         "attachedObject": "66"
                     }
                 }
@@ -314,7 +314,7 @@
                     "type": "face-attachment-point-example",
                     "face-attachment-point-example": {
                         "ARFaceTrackingCamera": "17",
-                        "attachmentPoint": "noseBridge",
+                        "attachmentPoint": "nose bridge",
                         "attachedObject": "83"
                     }
                 }

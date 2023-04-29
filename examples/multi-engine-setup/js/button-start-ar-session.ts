@@ -5,7 +5,7 @@
  * and starts that components AR session
  */
 import {Component} from '@wonderlandengine/api';
-import {ARSession, ARCamera} from '@wonderlandengine/8thwall-tracking';
+import {ARSession, ARCamera} from '@wonderlandengine/ar-tracking';
 
 export class ButtonStartARSession extends Component {
     static TypeName = 'button-start-ar-session';

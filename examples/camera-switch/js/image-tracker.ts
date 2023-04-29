@@ -7,7 +7,7 @@
 import {Component, Object as WLEObject} from '@wonderlandengine/api';
 import {property} from '@wonderlandengine/api/decorators.js';
 
-import {ARSession, ARImageTrackingCamera} from '@wonderlandengine/8thwall-tracking';
+import {ARSession, ARImageTrackingCamera} from '@wonderlandengine/ar-tracking';
 
 export class ImageTrackingExample extends Component {
     static TypeName = 'image-tracking-example';

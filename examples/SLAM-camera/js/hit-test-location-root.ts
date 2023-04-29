@@ -11,7 +11,8 @@
 import {Component, Object as WLEObject} from '@wonderlandengine/api';
 import {property} from '@wonderlandengine/api/decorators.js';
 
-import {ARSession, WebXRProvider, ARProvider} from '@wonderlandengine/8thwall-tracking';
+import {ARSession, ARProvider} from '@wonderlandengine/ar-tracking';
+import {WebXRProvider} from '@wonderlandengine/ar-provider-webxr';
 
 export class HitTestLocationRoot extends Component {
     static TypeName = 'hit-test-location-root';
