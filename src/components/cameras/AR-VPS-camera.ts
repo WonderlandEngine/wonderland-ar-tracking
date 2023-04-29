@@ -16,7 +16,7 @@ import {ARCamera} from './AR-Camera.js';
  * Warning - it will disable the WASM thread support.
  */
 class ARVPSCamera extends ARCamera {
-    static TypeName = 'AR-VPS-camera';
+    static TypeName = 'ar-vps-camera';
 
     /**
      * make sure noone can overwrite this

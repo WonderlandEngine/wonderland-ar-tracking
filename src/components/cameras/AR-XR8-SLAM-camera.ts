@@ -13,7 +13,7 @@ import {ARCamera} from './AR-Camera.js';
  * This camera will force the use of 8th Wall SLAM implementation (`xr8Provider`)
  */
 class ARXR8SLAMCamera extends ARCamera {
-    static TypeName = 'AR-XR8-SLAM-camera';
+    static TypeName = 'ar-xr8-slam-camera';
 
     @property.bool(false)
     useAbsoluteScale!: boolean;

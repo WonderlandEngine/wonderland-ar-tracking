@@ -15,7 +15,7 @@ import {ARCamera} from './AR-Camera.js';
  * or 8th Wall SLAM implementation (`xr8Provider`)
  */
 class ARSLAMCamera extends ARCamera {
-    static TypeName = 'AR-SLAM-camera';
+    static TypeName = 'ar-slam-camera';
 
     private _trackingImpl!: ITrackingMode;
 

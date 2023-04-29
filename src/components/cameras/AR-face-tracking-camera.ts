@@ -13,7 +13,7 @@ import {ARCamera} from './AR-Camera.js';
  * Currently only works with 8th Wall tracking `FaceTracking_XR8`
  */
 class ARFaceTrackingCamera extends ARCamera {
-    static TypeName = 'AR-face-tracking-camera';
+    static TypeName = 'ar-face-tracking-camera';
 
     @property.enum(
         ['front', 'back'] as XR8CameraDirection[keyof XR8CameraDirection][],
