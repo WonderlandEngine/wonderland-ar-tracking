@@ -1,0 +1,24 @@
+{
+  "name": "vps",
+  "version": "1.0.0",
+  "description": "wonderland engine 8th Wall visual positioning system example",
+  "main": "js/index.js",
+  "type": "module",
+  "module": "js/index.js",
+  "scripts": {
+    "build": "esbuild ./js/index.js --bundle --outfile=\"deploy/vps-bundle.js\""
+  },
+  "keywords": [
+    "wonderland-engine"
+  ],
+  "devDependencies": {
+    "esbuild": "^0.15.18"
+  },
+  "dependencies": {
+    "@wonderlandengine/8thwall-tracking": "file:../..",
+    "@wonderlandengine/api": "^1.0.0-rc.7",
+    "@wonderlandengine/components": "^1.0.0-rc.8",
+    "gl-matrix": "^3.4.3",
+    "typescript": "^4.9.5"
+  }
+}
