@@ -5,11 +5,11 @@
  * Shows and hides the object when the tracking starts or stops
  *
  */
-import {Component, Object as WLEObject, Type} from '@wonderlandengine/api';
+import {Component, Object3D} from '@wonderlandengine/api';
 
 import {property} from '@wonderlandengine/api/decorators.js';
 
-import {ARSession, ARSLAMCamera} from '@wonderlandengine/8thwall-tracking';
+import {ARSession, ARSLAMCamera} from '@wonderlandengine/ar-tracking';
 
 export class SlamTrackingExample extends Component {
     static TypeName = 'slam-tracking-example';
@@ -18,7 +18,7 @@ export class SlamTrackingExample extends Component {
      * The ARSlamCamera somewhere in the scene
      */
     @property.object()
-    ARSlamCamera!: WLEObject;
+    ARSlamCamera!: Object3D;
 
     start() {
         if (!this.ARSlamCamera) {
@@ -37,14 +37,12 @@ export class SlamTrackingExample extends Component {
 
         ARSession.getSessionForEngine(this.engine).onSessionStart.add(() => {
             if (camera.active) {
-                this.object.scalingWorld = [1, 1, 1];
+                this.object.setScalingWorld([1, 1, 1]);
             }
         });
 
         ARSession.getSessionForEngine(this.engine).onSessionEnd.add(() => {
-            this.object.scalingWorld = [0, 0, 0];
+            this.object.setScalingWorld([0, 0, 0]);
         });
-
-        //this.object.scalingWorld = [0, 0, 0];
     }
 }

@@ -11,7 +11,8 @@ import {Component, Object as WLEObject} from '@wonderlandengine/api';
 import {property} from '@wonderlandengine/api/decorators.js';
 
 import {vec3} from 'gl-matrix';
-import {ARSession, XR8Provider, ARProvider} from '@wonderlandengine/8thwall-tracking';
+import {ARSession, ARProvider} from '@wonderlandengine/ar-tracking';
+import {XR8Provider} from '@wonderlandengine/ar-provider-8thwall';
 
 export class HitTestLocationXR8 extends Component {
     static TypeName = 'hit-test-location-xr8';

@@ -16,7 +16,7 @@ import {property} from '@wonderlandengine/api/decorators.js';
 
 import {quat, vec3} from 'gl-matrix';
 
-import {ARSession, ARImageTrackingCamera} from '@wonderlandengine/8thwall-tracking';
+import {ARSession, ARImageTrackingCamera} from '@wonderlandengine/ar-tracking';
 import {generateCylinderGeometry} from './geometries/cylinder-geomtery.js';
 import {generatePlaneGeomtry} from './geometries/plane-geometry.js';
 

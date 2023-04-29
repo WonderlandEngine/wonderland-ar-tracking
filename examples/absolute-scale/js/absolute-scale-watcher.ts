@@ -8,13 +8,13 @@
  * Basically when camera.onTrackingStatus is NORMAL - tracking in absolute scale
  * If camera.onTrackingStatus is anything else - tracking in relative (aka non physically correct dimensions)
  */
-import {Component, Object as WLEObject, Mesh, Material} from '@wonderlandengine/api';
+import {Component, Object3D, Mesh, Material} from '@wonderlandengine/api';
 import {property} from '@wonderlandengine/api/decorators.js';
 
 import {vec3} from 'gl-matrix';
 
-import {ARSession} from '@wonderlandengine/8thwall-tracking';
-import {ARXR8SLAMCamera} from '@wonderlandengine/8thwall-tracking';
+import {ARSession} from '@wonderlandengine/ar-tracking';
+import {ARXR8SLAMCamera} from '@wonderlandengine/ar-provider-8thwall';
 
 export class AbsoluteScaleWatcher extends Component {
     static TypeName = 'absolute-scale-watcher';
@@ -23,7 +23,7 @@ export class AbsoluteScaleWatcher extends Component {
      * The ARXR8SLAMCamera somewhere in the scene
      */
     @property.object()
-    ARXR8SLAMCamera!: WLEObject;
+    ARXR8SLAMCamera!: Object3D;
 
     /**
      * Mesh to spawn

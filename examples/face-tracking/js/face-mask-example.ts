@@ -18,7 +18,11 @@ import {
 
 import {property} from '@wonderlandengine/api/decorators.js';
 
-import {ARFaceTrackingCamera} from '@wonderlandengine/8thwall-tracking';
+import {
+    ARFaceTrackingCamera,
+    FaceFoundEvent,
+    FaceLoadingEvent,
+} from '@wonderlandengine/ar-tracking';
 
 export class FaceMaskExample extends Component {
     static TypeName = 'face-mask-example';
@@ -60,21 +64,20 @@ export class FaceMaskExample extends Component {
         }
 
         // allocate some arrays
-        const cachedPosition = new Array<number>(3);
-        const cachedRotation = new Array<number>(4);
-        const cachedScale = [0, 0, 0];
-
-        this.object.scalingWorld = [0, 0, 0];
+        const cachedPosition = new Float32Array(3);
+        const cachedRotation = new Float32Array(4);
+        const cachedScale = new Float32Array(3);
+        this.object.setScalingWorld(cachedScale);
 
         if (!this._mesh) {
             this._meshComp = this.object.addComponent('mesh', {})!;
             this._meshComp.material = this.faceMaskMaterial;
         }
 
-        camera.onFaceLoading.add((event) => {
+        camera.onFaceLoading.add((data: FaceLoadingEvent) => {
             // XR8 provides us with initial vertices, indices and uvs of the face mesh.
             // We'll be updating the positions and normals of the face mesh in the onFaceUpdate loop
-            const {indices, uvs, pointsPerDetection} = event.detail;
+            const {indices, uvs, pointsPerDetection} = data;
 
             // Covert from {x: number, y: number, z: number} to Array<number> = [x, y, z]
             const indexData = indices.reduce((data: any, current: any) => {
@@ -93,6 +96,7 @@ export class FaceMaskExample extends Component {
             const textureCoordinate = this._mesh!.attribute(
                 MeshAttribute.TextureCoordinate
             )!;
+
             for (let i = 0; i < uvs.length; i++) {
                 textureCoordinate.set(i, [uvs[i].u, uvs[i].v]);
             }
@@ -100,12 +104,12 @@ export class FaceMaskExample extends Component {
             this._meshComp!.mesh = this._mesh;
         });
 
-        camera.onFaceFound.add(this.updateFaceMesh);
+        camera.onFaceFound.add(this.updateFaceMesh.bind(this));
 
-        camera.onFaceUpdate.add((event) => {
-            this.updateFaceMesh(event);
+        camera.onFaceUpdate.add((data) => {
+            this.updateFaceMesh(data);
 
-            const {transform} = event.detail;
+            const {transform} = data;
 
             cachedRotation[0] = transform.rotation.x;
             cachedRotation[1] = transform.rotation.y;
@@ -134,8 +138,8 @@ export class FaceMaskExample extends Component {
     }
 
     // Update positions, normals of the face mesh
-    private updateFaceMesh = (event: any) => {
-        const {vertices, normals} = event.detail;
+    private updateFaceMesh(data: FaceFoundEvent) {
+        const {vertices, normals} = data;
 
         const meshNormals = this._mesh!.attribute(MeshAttribute.Normal)!;
         const positions = this._mesh!.attribute(MeshAttribute.Position)!;
@@ -145,5 +149,5 @@ export class FaceMaskExample extends Component {
             meshNormals.set(i, [normals[i].x, normals[i].y, normals[i].z]);
         }
         this._mesh!.update();
-    };
+    }
 }

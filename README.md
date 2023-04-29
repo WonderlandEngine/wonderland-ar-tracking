@@ -2,8 +2,9 @@
 
 General AR framework which currently supports 8th Wall tracking and WebXR Device API
 
-- Currently supported WebXR features: SLAM tracking.
-- Currently supported 8th Wall features: SLAM tracking, image tracking,
+Currently supported WebXR features: SLAM tracking.
+
+Currently supported 8th Wall features: SLAM tracking, image tracking,
   face tracking, VPS.
 
 * [Setting Up](#setting-up)
@@ -18,16 +19,35 @@ General AR framework which currently supports 8th Wall tracking and WebXR Device
 
 1. Create a new Wonderland Engine AR project and package.
 
-2. Run `npm i --save @wonderlandengine/8thwall-tracking` in the project's root directory.
+2. Run `npm i --save @wonderlandengine/ar-tracking @wonderlandengine/ar-provider-webxr @wonderlandengine/ar-provider-8thwall` in the project's root directory.
 
 3. Open the file configured in editor `Project Settings > JavaScript > entryPoint`
    (usually this is `js/index.js`).
 
-4. Copy the following snippet after `/* wle:auto-constants:end */`:
+4. Copy the following snippets into your entrypoint:
 ```js
+/* wle:auto-imports:end */
+
+import {loadRuntime} from '@wonderlandengine/api';
+import {ARSession} from '@wonderlandengine/ar-tracking';
+import {WebXRProvider} from '@wonderlandengine/ar-provider-webxr';
+import {XR8Provider} from '@wonderlandengine/ar-provider-8thwall';
+
+// ...
+
+/* wle:auto-constants:end */
 window.API_TOKEN_XR8 = ApiToken8THWall;
 window.WEBXR_REQUIRED_FEATURES = WebXRRequiredFeatures;
 window.WEBXR_OPTIONAL_FEATURES = WebXROptionalFeatures;
+
+// ...
+
+const arSession = ARSession.getSessionForEngine(engine);
+WebXRProvider.registerTrackingProviderWithARSession(arSession);
+XR8Provider.registerTrackingProviderWithARSession(arSession);
+
+/* wle:auto-register:start */
+// ...
 ```
 
 5. In case you are building a VPS experience, make sure you clear the editor

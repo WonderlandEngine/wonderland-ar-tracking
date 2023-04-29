@@ -23,11 +23,12 @@ export class SpawnMeshOnReticle extends Component {
     material!: Material;
 
     start() {
-        ARSession.getSessionForEngine(this.engine).onSessionStart.add(this.onSessionStart);
-        ARSession.getSessionForEngine(this.engine).onSessionEnd.add(this.onSessionEnd);
+        const arSession = ARSession.getSessionForEngine(this.engine);
+        arSession.onSessionStart.add(this.onSessionStart.bind(this));
+        arSession.onSessionEnd.add(this.onSessionEnd.bind(this));
     }
 
-    onSessionStart = (provider: ARProvider) => {
+    onSessionStart(provider: ARProvider) {
         /* We set this function up to get called when a session starts.
          * The 'select' event happens either on touch or when the trigger
          * button of a controller is pressed.
@@ -35,14 +36,14 @@ export class SpawnMeshOnReticle extends Component {
         if (provider instanceof WebXRProvider) {
             (provider as WebXRProvider).xrSession!.addEventListener(
                 'select',
-                this.spawnMesh
+                this.spawnMesh.bind(this)
             );
         } else {
             window.addEventListener('click', this.spawnMesh);
         }
-    };
+    }
 
-    onSessionEnd = (provider: ARProvider) => {
+    onSessionEnd(provider: ARProvider) {
         if (provider instanceof WebXRProvider) {
             // Clean up - let the browser garbage collect the xrSession
             (provider as WebXRProvider).xrSession!.removeEventListener(
@@ -50,19 +51,19 @@ export class SpawnMeshOnReticle extends Component {
                 this.spawnMesh
             );
         } else {
-            window.removeEventListener('click', this.spawnMesh);
+            window.removeEventListener('click', this.spawnMesh.bind(this));
         }
-    };
+    }
 
-    spawnMesh = () => {
+    spawnMesh() {
         /* Create a new object in the scene */
-        const o = this.engine.scene!.addObject(null);
+        const o = this.engine.scene.addObject(null);
         if (!o) {
             console.warn('Failed to add mesh to the scene');
             return;
         }
         /* Place new object at current cursor location */
-        o.transformLocal = this.object.transformWorld;
+        o.setTransformLocal(this.object.transformWorld);
         o.scale([0.25, 0.25, 0.25]);
         /* Move out of the floor, at 0.25 scale, the origin of
          * our cube is 0.25 above the floor */
@@ -77,5 +78,5 @@ export class SpawnMeshOnReticle extends Component {
         mesh.material = this.material;
         mesh.mesh = this.mesh;
         mesh.active = true;
-    };
+    }
 }

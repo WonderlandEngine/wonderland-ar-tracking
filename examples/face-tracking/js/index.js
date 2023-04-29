@@ -12,7 +12,7 @@
  */
 
 /* wle:auto-imports:start */
-import {ARFaceTrackingCamera} from '@wonderlandengine/8thwall-tracking';
+import {ARFaceTrackingCamera} from '@wonderlandengine/ar-tracking';
 import {ButtonEndARSession} from './../../common-components/button-end-ar-session.js';
 import {ButtonStartARSession} from './../../common-components/button-start-ar-session.js';
 import {FaceAttachmentPointExample} from './face-attachment-point-example.js';
@@ -20,7 +20,9 @@ import {FaceMaskExample} from './face-mask-example.js';
 /* wle:auto-imports:end */
 
 import {loadRuntime} from '@wonderlandengine/api';
-import * as API from '@wonderlandengine/api'; // Deprecated: Backward compatibility.
+import {ARSession} from '@wonderlandengine/ar-tracking';
+import {WebXRProvider} from '@wonderlandengine/ar-provider-webxr';
+import {XR8Provider} from '@wonderlandengine/ar-provider-8thwall';
 
 /* wle:auto-constants:start */
 const RuntimeOptions = {
@@ -37,7 +39,8 @@ const Constants = {
 };
 /* wle:auto-constants:end */
 
-window.API_TOKEN_XR8 = "sU7eX52Oe2ZL8qUKBWD5naUlu1ZrnuRrtM1pQ7ukMz8rkOEG8mb63YlYTuiOrsQZTiXKRe";
+window.API_TOKEN_XR8 =
+    'sU7eX52Oe2ZL8qUKBWD5naUlu1ZrnuRrtM1pQ7ukMz8rkOEG8mb63YlYTuiOrsQZTiXKRe';
 window.WEBXR_REQUIRED_FEATURES = Constants.WebXRRequiredFeatures;
 window.WEBXR_OPTIONAL_FEATURES = Constants.WebXROptionalFeatures;
 
@@ -58,7 +61,7 @@ function requestSession(mode) {
 
 function setupButtonsXR() {
     /* Setup AR / VR buttons */
-    
+
     // #ar-button display handled by the ARSession
 
     const vrButton = document.getElementById('vr-button');
@@ -73,6 +76,10 @@ if (document.readyState === 'loading') {
 } else {
     setupButtonsXR();
 }
+
+const arSession = ARSession.getSessionForEngine(engine);
+WebXRProvider.registerTrackingProviderWithARSession(arSession);
+XR8Provider.registerTrackingProviderWithARSession(arSession);
 
 /* wle:auto-register:start */
 engine.registerComponent(ARFaceTrackingCamera);

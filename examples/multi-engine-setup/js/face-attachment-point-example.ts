@@ -5,7 +5,7 @@
 import {Component, Object as WLEObject} from '@wonderlandengine/api';
 import {property} from '@wonderlandengine/api/decorators.js';
 
-import {ARFaceTrackingCamera} from '@wonderlandengine/8thwall-tracking';
+import {ARFaceTrackingCamera} from '@wonderlandengine/ar-tracking';
 
 const ATTACHMENT_POINTS = [
     'forehead',

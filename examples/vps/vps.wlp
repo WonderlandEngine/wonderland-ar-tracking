@@ -27,7 +27,7 @@
                     "type": "view"
                 },
                 {
-                    "type": "AR-VPS-camera"
+                    "type": "ar-vps-camera"
                 },
                 {
                     "type": "button-start-ar-session"
@@ -476,14 +476,9 @@
             "libraryPaths": [
                 "/js/lib/"
             ],
-            "autoManageEntryPoint": true,
             "entryPoint": "js/index.js"
         },
         "ar": {
-            "framework": "8thwall",
-            "8thwall": {
-                "apiToken": "sU7eX52Oe2ZL8qUKBWD5naUlu1ZrnuRrtM1pQ7ukMz8rkOEG8mb63YlYTuiOrsQZTiXKRe"
-            },
             "enable": true
         },
         "rendering": {
