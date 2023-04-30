@@ -26,6 +26,7 @@ jobs:
           if [ "$project" = ".github" ]; then continue; fi
           if [ "$project" = "public" ]; then continue; fi
           if [ "$project" = "common-components" ]; then continue; fi
+          if [ "$project" = "node_modules" ]; then continue; fi
 
           echo "Zipping $project"
           zip -r ../public/$project.zip $project
