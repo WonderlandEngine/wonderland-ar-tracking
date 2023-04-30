@@ -214,7 +214,7 @@
         "67": {
             "link": {
                 "name": "AR Target",
-                "file": "js\\models\\ar-target.glb"
+                "file": "models\\ar-target.glb"
             },
             "components": [
                 {
