@@ -6,7 +6,9 @@
 import {Component, Material, Mesh} from '@wonderlandengine/api';
 import {property} from '@wonderlandengine/api/decorators.js';
 
-import {ARSession, ARProvider, WebXRProvider} from '@wonderlandengine/8thwall-tracking';
+import {ARSession, ARProvider} from '@wonderlandengine/ar-tracking';
+import {WebXRProvider} from '@wonderlandengine/ar-provider-webxr';
+
 export class SpawnMeshOnReticle extends Component {
     static TypeName = 'spawn-mesh-on-reticle';
 
@@ -36,7 +38,7 @@ export class SpawnMeshOnReticle extends Component {
         if (provider instanceof WebXRProvider) {
             (provider as WebXRProvider).xrSession!.addEventListener(
                 'select',
-                this.spawnMesh.bind(this)
+                this.spawnMesh
             );
         } else {
             window.addEventListener('click', this.spawnMesh);
@@ -51,11 +53,11 @@ export class SpawnMeshOnReticle extends Component {
                 this.spawnMesh
             );
         } else {
-            window.removeEventListener('click', this.spawnMesh.bind(this));
+            window.removeEventListener('click', this.spawnMesh);
         }
     }
 
-    spawnMesh() {
+    spawnMesh = () => {
         /* Create a new object in the scene */
         const o = this.engine.scene.addObject(null);
         if (!o) {
@@ -70,13 +72,13 @@ export class SpawnMeshOnReticle extends Component {
         o.translate([0.0, 0.25, 0.0]);
 
         /* Add a mesh to render the object */
-        const mesh = o.addComponent('mesh', {});
+        const mesh = o.addComponent('mesh', {
+            material: this.material,
+            mesh: this.mesh,
+        });
         if (!mesh) {
             console.warn('Failed to add mesh to the object');
             return;
         }
-        mesh.material = this.material;
-        mesh.mesh = this.mesh;
-        mesh.active = true;
-    }
+    };
 }
