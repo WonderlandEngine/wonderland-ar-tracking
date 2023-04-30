@@ -16,6 +16,7 @@ jobs:
         cd ar-tracking && npm i && npm run build && cd ..
         cd ar-provider-webxr && npm i && npm run build && cd ..
         cd ar-provider-8thwall && npm i && npm run build && cd ..
+        cd examples/common-components && npm i && cd ../..
 
         # Build all examples
         mkdir public
