@@ -7,10 +7,22 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
+    "prepublishOnly": "npm run build",
     "prettier": "prettier --config ./.prettierrc.json --write ./src ./examples/**/js ./examples/common-components"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WonderlandEngine/wonderland-ar-tracking.git"
+  },
+  "bugs": {
+    "url": "https://github.com/WonderlandEngine/wonderland-ar-tracking/issues"
+  },
+  "homepage": "https://github.com/WonderlandEngine/wonderland-ar-tracking#readme",
   "keywords": [
-    "wonderland-engine"
+    "wonderland-engine",
+    "ar",
+    "8thwall",
+    "xr8"
   ],
   "devDependencies": {
     "@types/qrcode-svg": "^1.1.1",
@@ -22,8 +34,12 @@
     "@wonderlandengine/ar-tracking": "^1.0.0",
     "@wonderlandengine/components": "^1.0.0"
   },
+  "files": [
+      "dist/**/*.js",
+      "dist/**/*.d.ts"
+  ],
   "dependencies": {
-    "gl-matrix": "^3.4.3",
-    "qrcode-svg": "^1.1.0"
+      "gl-matrix": "^3.4.3",
+      "qrcode-svg": "^1.1.0"
   }
 }

@@ -7,10 +7,25 @@
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc --watch",
+    "prepublishOnly": "npm run build",
     "prettier": "prettier --config ./.prettierrc.json --write ./src ./examples/**/js ./examples/common-components"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WonderlandEngine/wonderland-ar-tracking.git"
+  },
+  "bugs": {
+    "url": "https://github.com/WonderlandEngine/wonderland-ar-tracking/issues"
+  },
+  "homepage": "https://github.com/WonderlandEngine/wonderland-ar-tracking#readme",
   "keywords": [
-    "wonderland-engine"
+    "wonderland-engine",
+    "ar",
+    "webxr"
+  ],
+  "files": [
+      "dist/**/*.js",
+      "dist/**/*.d.ts"
   ],
   "devDependencies": {
     "prettier": "^2.8.4",
