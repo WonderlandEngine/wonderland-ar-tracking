@@ -93,7 +93,7 @@
                 {
                     "type": "light",
                     "light": {
-                        "attenuation": 0.1
+                        "intensity": 3.3329999
                     }
                 }
             ],
@@ -120,7 +120,7 @@
                 {
                     "type": "light",
                     "light": {
-                        "attenuation": 0.1
+                        "intensity": 3.3329999
                     }
                 }
             ],
@@ -221,8 +221,8 @@
                     "type": "face-attachment-point-example",
                     "face-attachment-point-example": {
                         "ARFaceTrackingCamera": "17",
-                        "attachmentPoint": "noseTip",
-                        "attachedObject": "63"
+                        "attachedObject": "63",
+                        "attachmentPoint": "nose tip"
                     }
                 }
             ]
@@ -641,8 +641,7 @@
             "version": [
                 1,
                 0,
-                0,
-                2
+                1
             ],
             "customIndexHtml": false
         },
@@ -653,20 +652,14 @@
         },
         "scripting": {
             "sourcePaths": [
-                "js/",
-                "../common-components"
+                "js/"
             ],
             "bundlingType": "esbuild",
             "libraryPaths": [
                 "/js/lib/"
-            ],
-            "autoManageEntryPoint": true
+            ]
         },
         "ar": {
-            "framework": "8thwall",
-            "8thwall": {
-                "apiToken": "sU7eX52Oe2ZL8qUKBWD5naUlu1ZrnuRrtM1pQ7ukMz8rkOEG8mb63YlYTuiOrsQZTiXKRe"
-            },
             "enable": true
         },
         "rendering": {
@@ -720,18 +713,27 @@
             "link": {
                 "name": "Phong Opaque",
                 "file": "default"
+            },
+            "features": {
+                "DEPRECATED_LIGHT_ATTENUATION": true
             }
         },
         "38": {
             "link": {
                 "name": "Phong Opaque Textured",
                 "file": "default"
+            },
+            "features": {
+                "DEPRECATED_LIGHT_ATTENUATION": true
             }
         },
         "39": {
             "link": {
                 "name": "Foliage",
                 "file": "default"
+            },
+            "features": {
+                "DEPRECATED_LIGHT_ATTENUATION": true
             }
         },
         "40": {
@@ -774,12 +776,18 @@
             "link": {
                 "name": "Phong Normalmapped",
                 "file": "default"
+            },
+            "features": {
+                "DEPRECATED_LIGHT_ATTENUATION": true
             }
         },
         "61": {
             "link": {
                 "name": "Phong Lightmapped",
                 "file": "default"
+            },
+            "features": {
+                "DEPRECATED_LIGHT_ATTENUATION": true
             }
         }
     },
