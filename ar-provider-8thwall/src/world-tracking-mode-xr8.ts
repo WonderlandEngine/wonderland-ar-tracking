@@ -1,6 +1,13 @@
 import {Emitter, ViewComponent} from '@wonderlandengine/api';
 import {XR8ExtraPermissions, XR8Provider} from './xr8-provider.js';
-import {ARSession, ImageScanningEvent, ImageTrackedEvent, TrackingMode} from '@wonderlandengine/ar-tracking';
+import {
+    ARSession,
+    ImageScanningEvent,
+    ImageTrackedEvent,
+    TrackingMode,
+    VPSMeshFoundEvent,
+    VPSWayPointEvent,
+} from '@wonderlandengine/ar-tracking';
 
 /**
  * A helper type to determine if a camera wants to enable SLAM tracking
@@ -67,11 +74,11 @@ export class WorldTracking_XR8 extends TrackingMode {
     readonly onImageUpdate: Emitter<[event: ImageTrackedEvent]> = new Emitter();
     readonly onImageLost: Emitter<[event: ImageTrackedEvent]> = new Emitter();
 
-    readonly onMeshFound: Emitter<[event: XR8VPSMeshFoundEvent]> = new Emitter();
+    readonly onMeshFound: Emitter<[event: VPSMeshFoundEvent]> = new Emitter();
 
-    readonly onWaySpotFound: Emitter<[event: XR8VPSWayPointEvent]> = new Emitter();
-    readonly onWaySpotUpdated: Emitter<[event: XR8VPSWayPointEvent]> = new Emitter();
-    readonly onWaySpotLost: Emitter<[event: XR8VPSWayPointEvent]> = new Emitter();
+    readonly onWaySpotFound: Emitter<[event: VPSWayPointEvent]> = new Emitter();
+    readonly onWaySpotUpdated: Emitter<[event: VPSWayPointEvent]> = new Emitter();
+    readonly onWaySpotLost: Emitter<[event: VPSWayPointEvent]> = new Emitter();
 
     /**
      * Consumed by 8th Wall.
@@ -119,16 +126,14 @@ export class WorldTracking_XR8 extends TrackingMode {
         {
             event: 'reality.meshfound',
             process: (event: XR8VPSMeshFoundEvent) => {
-                this.onMeshFound.notify(event);
+                this.onMeshFound.notify(event.detail);
             },
         },
 
         // Seems like not implemented by xr8 yet
         {
             event: 'reality.meshupdated',
-            process: (event: XR8VPSMeshUpdatedEvent) => {
-                //console.log("Mesh is updated");
-            },
+            process: (event: XR8VPSMeshUpdatedEvent) => {},
         },
 
         /*
@@ -154,21 +159,21 @@ export class WorldTracking_XR8 extends TrackingMode {
         {
             event: 'reality.projectwayspotfound',
             process: (event: XR8VPSWayPointEvent) => {
-                this.onWaySpotFound.notify(event);
+                this.onWaySpotFound.notify(event.detail);
             },
         },
 
         {
             event: 'reality.projectwayspotupdated',
             process: (event: XR8VPSWayPointEvent) => {
-                this.onWaySpotUpdated.notify(event);
+                this.onWaySpotUpdated.notify(event.detail);
             },
         },
 
         {
             event: 'reality.projectwayspotlost',
             process: (event: XR8VPSWayPointEvent) => {
-                this.onWaySpotLost.notify(event);
+                this.onWaySpotLost.notify(event.detail);
             },
         },
     ];

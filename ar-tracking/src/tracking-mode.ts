@@ -99,9 +99,45 @@ export interface FaceTrackingMode extends ITrackingMode {
     readonly onFaceLost: Emitter<[event: FaceLostEvent]>;
 }
 
-export interface VPSMeshFoundEvent {}
-export interface VPSMeshLostEvent {}
-export interface VPSWayPointEvent {}
+export interface VPSMeshFoundEvent {
+    id: string;
+    position: {x: number; y: number; z: number};
+    rotation: {x: number; y: number; z: number; w: number};
+    geometry: {
+        index: {
+            array: Uint32Array;
+            itemSize: 1;
+        };
+        attributes: [
+            {
+                name: 'position';
+                array: Float32Array;
+                itemSize: 3;
+            },
+            {
+                name: 'color';
+                array: Float32Array;
+                itemSize: 3;
+            }
+        ];
+    };
+}
+
+export interface VPSMeshUpdatedEvent {
+    id: string;
+    position: {x: number; y: number; z: number};
+    rotation: {x: number; y: number; z: number; w: number};
+}
+
+export interface VPSMeshLostEvent {
+    id: string;
+}
+
+export interface VPSWayPointEvent {
+    name: string;
+    position: {x: number; y: number; z: number};
+    rotation: {x: number; y: number; z: number; w: number};
+}
 
 export interface VPSTrackingMode extends ITrackingMode {
     readonly onMeshFound: Emitter<[event: VPSMeshFoundEvent]>;
