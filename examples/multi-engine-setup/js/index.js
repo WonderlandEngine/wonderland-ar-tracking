@@ -12,10 +12,12 @@
  */
 
 /* wle:auto-imports:start */
-import {HitTestLocation} from '@wonderlandengine/components';
+import {ARFaceTrackingCamera} from '@wonderlandengine/ar-tracking';
 import {MouseLookComponent} from '@wonderlandengine/components';
 import {WasdControlsComponent} from '@wonderlandengine/components';
-import {SpawnMeshOnSelect} from './spawn-mesh-on-select.js';
+import {ButtonEndARSession} from './button-end-ar-session.js';
+import {ButtonStartARSession} from './button-start-ar-session.js';
+import {FaceAttachmentPointExample} from './face-attachment-point-example.js';
 /* wle:auto-imports:end */
 
 import {ARImageTrackingCamera} from '@wonderlandengine/ar-tracking';
@@ -37,7 +39,7 @@ const RuntimeOptions = {
     canvas: 'canvas',
 };
 const Constants = {
-    ProjectName: 'MobileAr',
+    ProjectName: 'engine-1',
     RuntimeBaseName: 'WonderlandRuntime',
     WebXRRequiredFeatures: ['local',],
     WebXROptionalFeatures: ['local','hand-tracking','hit-test',],
@@ -69,18 +71,51 @@ engine2.onSceneLoaded.once(() => {
     if (el) setTimeout(() => el.remove(), 2000);
 });
 
+
+/* WebXR setup. */
+
+function requestSession(mode) {
+    engine
+        .requestXRSession(mode, WebXRRequiredFeatures, WebXROptionalFeatures)
+        .catch((e) => console.error(e));
+}
+
+function setupButtonsXR() {
+    /* Setup AR / VR buttons */
+
+    // #ar-button display handled by the ARSession
+
+    const vrButton = document.getElementById('vr-button');
+    if (vrButton) {
+        vrButton.dataset.supported = engine.vrSupported;
+        vrButton.addEventListener('click', () => requestSession('immersive-vr'));
+    }
+}
+
+if (document.readyState === 'loading') {
+    window.addEventListener('load', setupButtonsXR);
+} else {
+    setupButtonsXR();
+}
+
 const arSession = ARSession.getSessionForEngine(engine);
 WebXRProvider.registerTrackingProviderWithARSession(arSession);
 XR8Provider.registerTrackingProviderWithARSession(arSession);
 
 /* wle:auto-register:start */
-engine.registerComponent(HitTestLocation);
+engine.registerComponent(ARFaceTrackingCamera);
 engine.registerComponent(MouseLookComponent);
 engine.registerComponent(WasdControlsComponent);
-engine.registerComponent(SpawnMeshOnSelect);
+engine.registerComponent(ButtonEndARSession);
+engine.registerComponent(ButtonStartARSession);
+engine.registerComponent(FaceAttachmentPointExample);
 /* wle:auto-register:end */
-
 engine.scene.load(`${Constants.ProjectName}.bin`);
+
+
+const arSession2 = ARSession.getSessionForEngine(engine2);
+WebXRProvider.registerTrackingProviderWithARSession(arSession2);
+XR8Provider.registerTrackingProviderWithARSession(arSession2);
 
 engine2.registerComponent(ARImageTrackingCamera);
 engine2.registerComponent(VideoTexture);
