@@ -42,22 +42,22 @@ export class HitTestLocationRoot extends Component {
         if (this.tracking && this.xrHitTestSource) {
             const frame = this.engine.xr?.frame;
             if (!frame) return;
-            let hitTestResults = frame.getHitTestResults(this.xrHitTestSource);
+            const hitTestResults = frame.getHitTestResults(this.xrHitTestSource);
             if (hitTestResults.length > 0) {
-                let pose = hitTestResults[0].getPose(
+                const pose = hitTestResults[0].getPose(
                     this.engine.xr!.referenceSpaceForType('viewer')!
                 );
                 this.visible = !!pose;
                 if (pose) {
                     const tw = this.camera.transformPointWorld(
                         new Array(3),
-                        new Array(
+                        [
                             pose.transform.position.x,
                             pose.transform.position.y,
                             pose.transform.position.z
-                        )
+                        ]
                     );
-                    this.object.setTranslationWorld(tw);
+                    this.object.setPositionWorld(tw);
                 }
             } else {
                 this.visible = false;

@@ -189,8 +189,8 @@ export class WorldTracking_XR8 extends TrackingMode {
 
         this._view = this.component.object.getComponent('view')!;
 
-        const rot = this.component.object.rotationWorld;
-        const pos = this.component.object.getTranslationWorld([]);
+        const rot = this.component.object.getRotationWorld();
+        const pos = this.component.object.getPositionWorld();
 
         this._cachedPosition[0] = pos[0];
         this._cachedPosition[1] = pos[1];

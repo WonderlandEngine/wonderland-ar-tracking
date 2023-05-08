@@ -65,11 +65,11 @@ export class SpawnMeshOnReticle extends Component {
             return;
         }
         /* Place new object at current cursor location */
-        o.setTransformLocal(this.object.transformWorld);
-        o.scale([0.25, 0.25, 0.25]);
+        o.setTransformLocal(this.object.getTransformWorld());
+        o.scaleLocal([0.25, 0.25, 0.25]);
         /* Move out of the floor, at 0.25 scale, the origin of
          * our cube is 0.25 above the floor */
-        o.translate([0.0, 0.25, 0.0]);
+        o.translateLocal([0.0, 0.25, 0.0]);
 
         /* Add a mesh to render the object */
         const mesh = o.addComponent('mesh', {

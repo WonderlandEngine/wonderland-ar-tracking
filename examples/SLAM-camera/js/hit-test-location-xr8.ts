@@ -36,24 +36,24 @@ export class HitTestLocationXR8 extends Component {
 
     update() {
         if (this._tracking) {
-            this.camera.getForward(this._camForward);
+            this.camera.getForwardWorld(this._camForward);
             /* Intersect with origin XY plane. We always intersect if camera facing downwards */
             if (this._camForward[1] < 0) {
-                this.camera.getTranslationWorld(this._tmpWorldPosition);
+                this.camera.getPositionWorld(this._tmpWorldPosition);
                 const t = -this._tmpWorldPosition[1] / this._camForward[1];
                 vec3.add(
                     this._intersectionVec3,
                     this._tmpWorldPosition,
                     vec3.scale(this._intersectionVec3, this._camForward, t)
                 );
-                this.object.setTranslationWorld(this._intersectionVec3);
+                this.object.setPositionWorld(this._intersectionVec3);
             }
         }
     }
 
     onSessionStart = (provider: ARProvider) => {
         if (provider instanceof XR8Provider) {
-            this.object.scalingWorld = [1, 1, 1];
+            this.object.setScalingWorld([1, 1, 1]);
             this._tracking = true;
         }
     };
@@ -61,7 +61,7 @@ export class HitTestLocationXR8 extends Component {
     onSessionEnd = (provider: ARProvider) => {
         if (provider instanceof XR8Provider) {
             this._tracking = false;
-            this.object.scalingWorld = [0, 0, 0];
+            this.object.setScalingWorld([0, 0, 0]);
         }
     };
 }
