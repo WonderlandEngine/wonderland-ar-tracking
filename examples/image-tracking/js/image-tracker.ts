@@ -52,15 +52,15 @@ export class ImageTrackingExample extends Component {
 
         camera.onImageLost.add((event: XR8ImageTrackedEvent) => {
             if (event.detail.name === this.imageId) {
-                this.object.scalingWorld = [0, 0, 0];
+                this.object.setScalingWorld([0, 0, 0]);
             }
         });
 
         ARSession.getSessionForEngine(this.engine).onSessionEnd.add(() => {
-            this.object.scalingWorld = [0, 0, 0];
+            this.object.setScalingWorld([0, 0, 0]);
         });
 
-        this.object.scalingWorld = [0, 0, 0];
+        this.object.setScalingWorld([0, 0, 0]);
     }
 
     private onImageFound = (event: XR8ImageTrackedEvent) => {
@@ -89,8 +89,8 @@ export class ImageTrackingExample extends Component {
         this._cachedScale[1] = scale;
         this._cachedScale[2] = scale;
 
-        this.object.rotationWorld.set(this._cachedRotation);
-        this.object.setTranslationWorld(this._cachedPosition);
-        this.object.scalingWorld = this._cachedScale;
+        this.object.setRotationWorld(this._cachedRotation);
+        this.object.setPositionWorld(this._cachedPosition);
+        this.object.setScalingWorld(this._cachedScale);
     };
 }

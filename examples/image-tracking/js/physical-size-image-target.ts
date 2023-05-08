@@ -184,7 +184,7 @@ export class PhysicalSizeImageTarget extends Component {
                 this._cachedTrackedPosition,
                 1
             );
-            this.object.setTranslationWorld(this._cachedPosition);
+            this.object.setPositionWorld(this._cachedPosition);
         }
     };
 
@@ -210,7 +210,7 @@ export class PhysicalSizeImageTarget extends Component {
         this._cachedScale[1] = scale;
         this._cachedScale[2] = scale;
 
-        this.object.scalingWorld.set(this._cachedScale);
+        this.object.setScalingWorld(this._cachedScale);
     };
 
     update() {
@@ -218,9 +218,10 @@ export class PhysicalSizeImageTarget extends Component {
             return;
         }
 
+        const rotationWorld = this.object.getRotationWorld()
         quat.lerp(
-            this.object.rotationWorld,
-            this.object.rotationWorld,
+            rotationWorld,
+            rotationWorld,
             this._cachedTrackedRotation,
             0.9
         );
@@ -230,6 +231,8 @@ export class PhysicalSizeImageTarget extends Component {
             this._cachedTrackedPosition,
             0.9
         );
-        this.object.setTranslationWorld(this._cachedPosition);
+
+        this.object.setRotationWorld(rotationWorld);
+        this.object.setPositionWorld(this._cachedPosition);
     }
 }

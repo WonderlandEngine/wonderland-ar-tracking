@@ -14,8 +14,8 @@
 /* wle:auto-imports:start */
 import {ARImageTrackingCamera} from '@wonderlandengine/ar-tracking';
 import {VideoTexture} from '@wonderlandengine/components';
-import {ButtonEndARSession} from './../../common-components/button-end-ar-session.js';
-import {ButtonStartARSession} from './../../common-components/button-start-ar-session.js';
+import {ButtonEndARSession} from './button-end-ar-session.js';
+import {ButtonStartARSession} from './button-start-ar-session.js';
 import {ImageTrackingExample} from './image-tracker.js';
 import {PhysicalSizeImageTarget} from './physical-size-image-target.js';
 import {VideoTextureImageTarget} from './video-texture-image-target.js';
