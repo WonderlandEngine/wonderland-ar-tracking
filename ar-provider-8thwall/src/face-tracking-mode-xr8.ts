@@ -36,6 +36,9 @@ const AttachmentPointsMapping: {[value in XR8FaceAttachmentPoints]: FaceAttachme
     upperLip: FaceAttachmentPoint.UpperLip,
 };
 
+/**
+ * Convert XR8 face lost event to general Wonderland face lost event 
+ */
 function toFaceFoundEvent(event: XR8FaceFoundEvent): FaceFoundEvent {
     const attachmentPoints: {
         [value in FaceAttachmentPoint]?: {

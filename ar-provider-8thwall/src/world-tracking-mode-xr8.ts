@@ -1,6 +1,6 @@
 import {Emitter, ViewComponent} from '@wonderlandengine/api';
 import {XR8ExtraPermissions, XR8Provider} from './xr8-provider.js';
-import {ARSession, TrackingMode} from '@wonderlandengine/ar-tracking';
+import {ARSession, ImageScanningEvent, ImageTrackedEvent, TrackingMode} from '@wonderlandengine/ar-tracking';
 
 /**
  * A helper type to determine if a camera wants to enable SLAM tracking
@@ -62,10 +62,10 @@ export class WorldTracking_XR8 extends TrackingMode {
 
     readonly onTrackingStatus: Emitter<[event: XR8TrackingStatusEvent]> = new Emitter();
 
-    readonly onImageScanning: Emitter<[event: XR8ImageScanningEvent]> = new Emitter();
-    readonly onImageFound: Emitter<[event: XR8ImageTrackedEvent]> = new Emitter();
-    readonly onImageUpdate: Emitter<[event: XR8ImageTrackedEvent]> = new Emitter();
-    readonly onImageLost: Emitter<[event: XR8ImageTrackedEvent]> = new Emitter();
+    readonly onImageScanning: Emitter<[event: ImageScanningEvent]> = new Emitter();
+    readonly onImageFound: Emitter<[event: ImageTrackedEvent]> = new Emitter();
+    readonly onImageUpdate: Emitter<[event: ImageTrackedEvent]> = new Emitter();
+    readonly onImageLost: Emitter<[event: ImageTrackedEvent]> = new Emitter();
 
     readonly onMeshFound: Emitter<[event: XR8VPSMeshFoundEvent]> = new Emitter();
 
@@ -90,26 +90,26 @@ export class WorldTracking_XR8 extends TrackingMode {
         {
             event: 'reality.imagescanning',
             process: (event: XR8ImageScanningEvent) => {
-                this.onImageScanning.notify(event);
+                this.onImageScanning.notify(event.detail);
             },
         },
 
         {
             event: 'reality.imagefound',
             process: (event: XR8ImageTrackedEvent) => {
-                this.onImageFound.notify(event);
+                this.onImageFound.notify(event.detail);
             },
         },
         {
             event: 'reality.imageupdated',
             process: (event: XR8ImageTrackedEvent) => {
-                this.onImageUpdate.notify(event);
+                this.onImageUpdate.notify(event.detail);
             },
         },
         {
             event: 'reality.imagelost',
             process: (event: XR8ImageTrackedEvent) => {
-                this.onImageLost.notify(event);
+                this.onImageLost.notify(event.detail);
             },
         },
 

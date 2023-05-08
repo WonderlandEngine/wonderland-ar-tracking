@@ -6,7 +6,7 @@
  * And stopped when the image is lost.
  */
 import {Component} from '@wonderlandengine/api';
-import {ARImageTrackingCamera, ARSession} from '@wonderlandengine/ar-tracking';
+import {ARImageTrackingCamera, ARSession, ImageTrackedEvent} from '@wonderlandengine/ar-tracking';
 import {PhysicalSizeImageTarget} from './physical-size-image-target.js';
 import {VideoTexture} from '@wonderlandengine/components';
 
@@ -42,8 +42,8 @@ export class VideoTextureImageTarget extends Component {
 
         camera.onImageFound.add(this.onImageFound);
 
-        camera.onImageLost.add((event: XR8ImageTrackedEvent) => {
-            if (event.detail.name === this._physicalSizeImageTarget.imageId) {
+        camera.onImageLost.add((event) => {
+            if (event.name === this._physicalSizeImageTarget.imageId) {
                 this._imageLostTimeout = setTimeout(() => {
                     this._videoTextureComp.video!.pause();
                 }, 250);
@@ -56,8 +56,8 @@ export class VideoTextureImageTarget extends Component {
         });
     }
 
-    private onImageFound = (event: XR8ImageTrackedEvent) => {
-        if (event.detail.name === this._physicalSizeImageTarget.imageId) {
+    private onImageFound = (event: ImageTrackedEvent) => {
+        if (event.name === this._physicalSizeImageTarget.imageId) {
             this._videoTextureComp.video!.play();
         }
     };

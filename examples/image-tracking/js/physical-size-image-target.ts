@@ -16,7 +16,7 @@ import {property} from '@wonderlandengine/api/decorators.js';
 
 import {quat, vec3} from 'gl-matrix';
 
-import {ARSession, ARImageTrackingCamera} from '@wonderlandengine/ar-tracking';
+import {ARSession, ARImageTrackingCamera, ImageScanningEvent, ImageTrackedEvent} from '@wonderlandengine/ar-tracking';
 import {generateCylinderGeometry} from './geometries/cylinder-geomtery.js';
 import {generatePlaneGeomtry} from './geometries/plane-geometry.js';
 
@@ -81,8 +81,8 @@ export class PhysicalSizeImageTarget extends Component {
 
         camera.onImageUpdate.add(this.onImageUpdated);
 
-        camera.onImageLost.add((event: XR8ImageTrackedEvent) => {
-            if (event.detail.name === this.imageId) {
+        camera.onImageLost.add((event) => {
+            if (event.name === this.imageId) {
                 this._imageLostTimeout = setTimeout(() => {
                     this._meshComp!.active = false;
                 }, 250);
@@ -101,7 +101,7 @@ export class PhysicalSizeImageTarget extends Component {
     }
 
     private createCylinderMesh = (
-        imageData: XR8ImageScanningEvent['detail']['imageTargets'][0]
+        imageData: ImageScanningEvent['imageTargets'][0]
     ) => {
         const {geometry} = imageData;
         const length = geometry.arcLengthRadians!;
@@ -118,14 +118,14 @@ export class PhysicalSizeImageTarget extends Component {
     };
 
     private createFlatMesh = (
-        imageData: XR8ImageScanningEvent['detail']['imageTargets'][0]
+        imageData: ImageScanningEvent['imageTargets'][0]
     ) => {
         const {geometry} = imageData;
         return generatePlaneGeomtry(geometry.scaleWidth!, geometry.scaledHeight!);
     };
 
-    private onImageScanned = (event: XR8ImageScanningEvent) => {
-        const imageData = event.detail.imageTargets.find(
+    private onImageScanned = (event: ImageScanningEvent) => {
+        const imageData = event.imageTargets.find(
             (target) => target.name === this.imageId
         );
         if (!imageData) {
@@ -167,8 +167,8 @@ export class PhysicalSizeImageTarget extends Component {
         this._meshComp!.active = false; // hide until found
     };
 
-    private onImageFound = (event: XR8ImageTrackedEvent) => {
-        if (event.detail.name === this.imageId) {
+    private onImageFound = (event: ImageTrackedEvent) => {
+        if (event.name === this.imageId) {
             this._meshComp!.active = true;
             this.onImageUpdated(event);
 
@@ -188,14 +188,14 @@ export class PhysicalSizeImageTarget extends Component {
         }
     };
 
-    private onImageUpdated = (event: XR8ImageTrackedEvent) => {
-        if (event.detail.name !== this.imageId) {
+    private onImageUpdated = (event: ImageTrackedEvent) => {
+        if (event.name !== this.imageId) {
             return;
         }
 
         clearTimeout(this._imageLostTimeout);
 
-        const {rotation, position, scale} = event.detail;
+        const {rotation, position, scale} = event;
 
         quat.set(
             this._cachedTrackedRotation,

@@ -8,7 +8,7 @@
 import {Component, Object as WLEObject} from '@wonderlandengine/api';
 import {property} from '@wonderlandengine/api/decorators.js';
 
-import {ARSession, ARImageTrackingCamera} from '@wonderlandengine/ar-tracking';
+import {ARSession, ARImageTrackingCamera, ImageTrackedEvent} from '@wonderlandengine/ar-tracking';
 
 export class ImageTrackingExample extends Component {
     static TypeName = 'image-tracking-example';
@@ -50,8 +50,8 @@ export class ImageTrackingExample extends Component {
 
         camera.onImageUpdate.add(this.onImageUpdated);
 
-        camera.onImageLost.add((event: XR8ImageTrackedEvent) => {
-            if (event.detail.name === this.imageId) {
+        camera.onImageLost.add((event: ImageTrackedEvent) => {
+            if (event.name === this.imageId) {
                 this.object.setScalingWorld([0, 0, 0]);
             }
         });
@@ -63,18 +63,18 @@ export class ImageTrackingExample extends Component {
         this.object.setScalingWorld([0, 0, 0]);
     }
 
-    private onImageFound = (event: XR8ImageTrackedEvent) => {
-        if (event.detail.name === this.imageId) {
+    private onImageFound = (event: ImageTrackedEvent) => {
+        if (event.name === this.imageId) {
             this.onImageUpdated(event);
         }
     };
 
-    private onImageUpdated = (event: XR8ImageTrackedEvent) => {
-        if (event.detail.name !== this.imageId) {
+    private onImageUpdated = (event: ImageTrackedEvent) => {
+        if (event.name !== this.imageId) {
             return;
         }
 
-        const {rotation, position, scale} = event.detail;
+        const {rotation, position, scale} = event;
 
         this._cachedRotation[0] = rotation.x;
         this._cachedRotation[1] = rotation.y;
