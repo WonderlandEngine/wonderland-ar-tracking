@@ -16,13 +16,13 @@ export class ButtonStartARSession extends Component {
         );
 
         ARSession.getSessionForEngine(this.engine).onSessionEnd.add(() => {
-            let xrButton = document.querySelector<HTMLElement>('#ar-button');
+            const xrButton = document.querySelector<HTMLElement>('#ar-button');
             xrButton!.style.display = 'block';
         });
     }
 
     onARSessionReady() {
-        let xrButton = document.querySelector<HTMLElement>('#ar-button');
+        const xrButton = document.querySelector<HTMLElement>('#ar-button');
 
         if (xrButton === null) {
             console.error('No #ar-button found. Session will not start.');

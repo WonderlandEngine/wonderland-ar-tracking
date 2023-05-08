@@ -80,7 +80,7 @@ export class FaceMaskExample extends Component {
             const {indices, uvs, pointsPerDetection} = data;
 
             // Covert from {x: number, y: number, z: number} to Array<number> = [x, y, z]
-            const indexData = indices.reduce((data: any, current: any) => {
+            const indexData = indices.reduce((data: number[], current: FaceLoadingEvent['indices'][0]) => {
                 data.push(...Object.values(current));
                 return data;
             }, []);
