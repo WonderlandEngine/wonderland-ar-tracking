@@ -230,8 +230,8 @@ export class FaceTracking_XR8 extends TrackingMode implements FaceTrackingMode {
         }
 
         if (position && rotation) {
-            this.component.object.rotationWorld = this._cachedRotation;
-            this.component.object.setTranslationWorld(this._cachedPosition);
+            this.component.object.setRotationWorld(this._cachedRotation);
+            this.component.object.setPositionWorld(this._cachedPosition);
         }
     };
 }
