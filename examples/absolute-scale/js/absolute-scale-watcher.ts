@@ -84,29 +84,29 @@ export class AbsoluteScaleWatcher extends Component {
             if (event.detail.status === 'NORMAL') {
                 div.style.display = 'none';
                 this._tracking = true;
-                this.object.scalingWorld = [1, 1, 1];
+                this.object.setScalingWorld([1, 1, 1]);
             } else {
                 this._tracking = false;
                 div.style.display = 'block';
-                this.object.scalingWorld = [0, 0, 0];
+                this.object.setScalingWorld([0, 0, 0]);
             }
         });
     }
 
     update() {
         if (this._tracking) {
-            this.ARXR8SLAMCamera.getForward(this._camForward);
+            this.ARXR8SLAMCamera.getForwardWorld(this._camForward);
 
             /* Intersect with origin XY plane. We always intersect if camera facing downwards */
             if (this._camForward[1] < 0) {
-                this.ARXR8SLAMCamera.getTranslationWorld(this._tmpWorldPosition);
+                this.ARXR8SLAMCamera.getPositionWorld(this._tmpWorldPosition);
                 const t = -this._tmpWorldPosition[1] / this._camForward[1];
                 vec3.add(
                     this._intersectionVec3,
                     this._tmpWorldPosition,
                     vec3.scale(this._intersectionVec3, this._camForward, t)
                 );
-                this.object.setTranslationWorld(this._intersectionVec3);
+                this.object.setPositionWorld(this._intersectionVec3);
             }
         }
     }
@@ -119,11 +119,11 @@ export class AbsoluteScaleWatcher extends Component {
         /* Create a new object in the scene */
         const o = this.engine.scene.addObject(null);
         /* Place new object at current cursor location */
-        o.transformLocal = this.object.transformWorld;
-        o.scale([0.25, 0.25, 0.25]);
+        o.setTransformLocal(this.object.getTransformWorld());
+        o.scaleLocal([0.25, 0.25, 0.25]);
         /* Move out of the floor, at 0.25 scale, the origin of
          * our cube is 0.25 above the floor */
-        o.translate([0.0, 0.25, 0.0]);
+        o.translateLocal([0.0, 0.25, 0.0]);
 
         /* Add a mesh to render the object */
         const mesh = o.addComponent('mesh', {});
