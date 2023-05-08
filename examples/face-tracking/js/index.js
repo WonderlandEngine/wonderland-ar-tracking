@@ -13,8 +13,8 @@
 
 /* wle:auto-imports:start */
 import {ARFaceTrackingCamera} from '@wonderlandengine/ar-tracking';
-import {ButtonEndARSession} from './../../common-components/button-end-ar-session.js';
-import {ButtonStartARSession} from './../../common-components/button-start-ar-session.js';
+import {ButtonEndARSession} from './button-end-ar-session.js';
+import {ButtonStartARSession} from './button-start-ar-session.js';
 import {FaceAttachmentPointExample} from './face-attachment-point-example.js';
 import {FaceMaskExample} from './face-mask-example.js';
 /* wle:auto-imports:end */

@@ -1,0 +1,5 @@
+In 1.0.0, we removed the setting to specify 8thwall API tokens
+in the editor. Please go ahead and specify your token in your
+`src/index.js` file instead:
+
+const XR8_API_TOKEN = 'sU7eX52Oe2ZL8qUKBWD5naUlu1ZrnuRrtM1pQ7ukMz8rkOEG8mb63YlYTuiOrsQZTiXKRe';

@@ -126,13 +126,13 @@ export class FaceMaskExample extends Component {
             cachedScale[1] = scale;
             cachedScale[2] = scale;
 
-            this.object.rotationWorld.set(cachedRotation);
-            this.object.setTranslationWorld(cachedPosition);
-            this.object.scalingWorld.set(cachedScale);
+            this.object.setRotationWorld(cachedRotation);
+            this.object.setPositionWorld(cachedPosition);
+            this.object.setScalingWorld(cachedScale);
         });
 
         camera.onFaceLost.add((_event) => {
-            this.object.scalingWorld = [0, 0, 0];
+            this.object.setScalingWorld([0, 0, 0]);
             cachedScale[0] = cachedScale[1] = cachedScale[2] = 0;
         });
     }

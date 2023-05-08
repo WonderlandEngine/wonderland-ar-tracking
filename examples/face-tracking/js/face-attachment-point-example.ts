@@ -68,7 +68,7 @@ export class FaceAttachmentPointExample extends Component {
             cachedScale.fill(transform.scale);
 
             this.object.setRotationWorld(cachedRotation);
-            this.object.setTranslationWorld(cachedPosition);
+            this.object.setPositionWorld(cachedPosition);
             this.object.setScalingWorld(cachedScale);
 
             const attachmentPoint =

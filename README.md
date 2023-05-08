@@ -20,6 +20,8 @@ Currently supported 8th Wall features: SLAM tracking, image tracking,
 1. Create a new Wonderland Engine AR project and package.
 
 2. Run `npm i --save @wonderlandengine/ar-tracking @wonderlandengine/ar-provider-webxr @wonderlandengine/ar-provider-8thwall` in the project's root directory.
+    
+    2.1 In case you want to try the examples from this repo, make sure you run `npm run build` for each of the following folders: `ar-provider-8thwall`, `ar-provider-webxr`, `ar-tracking` before opening the examples.
 
 3. Open the file configured in editor `Project Settings > JavaScript > entryPoint`
    (usually this is `js/index.js`).
