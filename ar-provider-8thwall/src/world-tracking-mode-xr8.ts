@@ -30,6 +30,31 @@ type UsesVPS = {
     usesVPS: boolean;
 };
 
+
+/**
+ * Convert XR8ImageScanningEvent to general Wonderland ImageScanningEvent
+ */
+function toImageScanningEvent(event: XR8ImageScanningEvent): ImageScanningEvent {
+    return {
+        imageTargets: event.detail.imageTargets.map((target) => { 
+            return {
+                ...target,
+                type: target.type.toLowerCase() as ImageScanningEvent['imageTargets'][0]['type']
+            }
+        })
+    }
+}
+
+/**
+ * Convert XR8ImageTrackedEvent to general Wonderland ImageTrackedEvent
+ */
+function toImageTrackingEvent(event: XR8ImageTrackedEvent): ImageTrackedEvent {
+    return {
+        ...event.detail,
+        type: event.detail.type.toLowerCase() as ImageTrackedEvent['type']
+    }
+}
+
 /**
  * 8th Wall tracking implementation that encapsulates
  * - SLAM tracking
@@ -97,26 +122,26 @@ export class WorldTracking_XR8 extends TrackingMode {
         {
             event: 'reality.imagescanning',
             process: (event: XR8ImageScanningEvent) => {
-                this.onImageScanning.notify(event.detail);
+                this.onImageScanning.notify(toImageScanningEvent(event));
             },
         },
 
         {
             event: 'reality.imagefound',
             process: (event: XR8ImageTrackedEvent) => {
-                this.onImageFound.notify(event.detail);
+                this.onImageFound.notify(toImageTrackingEvent(event));
             },
         },
         {
             event: 'reality.imageupdated',
             process: (event: XR8ImageTrackedEvent) => {
-                this.onImageUpdate.notify(event.detail);
+                this.onImageUpdate.notify(toImageTrackingEvent(event));
             },
         },
         {
             event: 'reality.imagelost',
             process: (event: XR8ImageTrackedEvent) => {
-                this.onImageLost.notify(event.detail);
+                this.onImageLost.notify(toImageTrackingEvent(event));
             },
         },
 
@@ -144,7 +169,6 @@ export class WorldTracking_XR8 extends TrackingMode {
         */
 
         /*
-
         // TODO - this indicated that xr8 started looking for the feature points
         // However, I feel this is not really informative event since your app logic
         // will naturally expect that the scanning has started.

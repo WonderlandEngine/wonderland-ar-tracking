@@ -11,7 +11,7 @@ export class ButtonEndARSession extends Component {
 
     xrEndButton!: HTMLButtonElement;
 
-    start() {
+    init() {
         this.xrEndButton = document.createElement('button');
         this.xrEndButton.style.lineHeight = '40px';
         this.xrEndButton.style.position = 'absolute';

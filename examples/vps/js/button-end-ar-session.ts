@@ -11,7 +11,7 @@ export class ButtonEndARSession extends Component {
 
     xrEndButton!: HTMLButtonElement;
 
-    start() {
+    init() {
         const rect = this.engine.canvas.getBoundingClientRect();
         this.xrEndButton = document.createElement('button');
         this.xrEndButton.style.lineHeight = '40px';

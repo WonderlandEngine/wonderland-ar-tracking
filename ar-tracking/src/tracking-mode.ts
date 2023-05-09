@@ -149,8 +149,11 @@ export interface VPSTrackingMode extends ITrackingMode {
 
 export interface ImageScanningEvent {
     imageTargets: {
-        name: string; // image name
-        type: 'FLAT' | 'CYLINDRICAL' | 'CONICAL';
+        /**
+         * Detected image name
+         */
+        name: string;
+        type: 'flat' | 'cylindrical' | 'conical';
         metadata: any | null;
 
         geometry: {
@@ -184,7 +187,7 @@ export interface ImageTrackedEvent {
     scale: number; // A scale factor that should be applied to object attached to this image.
     scaleWidth: number; // The width of the image in the scene, when multiplied by scale.
     scaledHeight: number; // 	The height of the image in the scene, when multiplied by scale.
-    type: 'FLAT' | 'CYLINDRICAL' | 'CONICAL';
+    type: 'flat' | 'cylindrical' | 'conical';
 
     height?: number; //	Height of the curved target.
     radiusTop?: number; //Radius of the curved target at the top.
