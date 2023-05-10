@@ -78,9 +78,15 @@ if (document.readyState === 'loading') {
     setupButtonsXR();
 }
 
+
 const arSession = ARSession.getSessionForEngine(engine);
-WebXRProvider.registerTrackingProviderWithARSession(arSession);
-XR8Provider.registerTrackingProviderWithARSession(arSession);
+if(engine.arSupported) {
+    WebXRProvider.registerTrackingProviderWithARSession(arSession);
+} else {
+    XR8Provider.registerTrackingProviderWithARSession(arSession);
+}
+
+
 
 /* wle:auto-register:start */
 engine.registerComponent(ARSLAMCamera);
