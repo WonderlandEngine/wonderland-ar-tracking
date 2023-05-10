@@ -228,13 +228,15 @@
                     "type": "hit-test-location-xr8",
                     "hit-test-location-xr8": {
                         "camera": "17"
-                    }
+                    },
+                    "active": true
                 },
                 {
                     "type": "hit-test-location-root",
                     "hit-test-location-root": {
                         "camera": "18"
-                    }
+                    },
+                    "active": true
                 },
                 {
                     "type": "spawn-mesh-on-reticle",
