@@ -35,8 +35,8 @@ const RuntimeOptions = {
 const Constants = {
     ProjectName: 'SLAMCamera',
     RuntimeBaseName: 'WonderlandRuntime',
-    WebXRRequiredFeatures: ['local',],
-    WebXROptionalFeatures: ['local','hit-test',],
+    WebXRRequiredFeatures: ['local'],
+    WebXROptionalFeatures: ['local', 'hit-test'],
 };
 /* wle:auto-constants:end */
 
@@ -78,15 +78,12 @@ if (document.readyState === 'loading') {
     setupButtonsXR();
 }
 
-
 const arSession = ARSession.getSessionForEngine(engine);
-if(engine.arSupported) {
+if (engine.arSupported) {
     WebXRProvider.registerTrackingProviderWithARSession(arSession);
 } else {
     XR8Provider.registerTrackingProviderWithARSession(arSession);
 }
-
-
 
 /* wle:auto-register:start */
 engine.registerComponent(ARSLAMCamera);
