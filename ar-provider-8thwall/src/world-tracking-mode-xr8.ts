@@ -1,6 +1,13 @@
 import {Emitter, ViewComponent} from '@wonderlandengine/api';
 import {XR8ExtraPermissions, XR8Provider} from './xr8-provider.js';
-import {ARSession, TrackingMode} from '@wonderlandengine/ar-tracking';
+import {
+    ARSession,
+    ImageScanningEvent,
+    ImageTrackedEvent,
+    TrackingMode,
+    VPSMeshFoundEvent,
+    VPSWayPointEvent,
+} from '@wonderlandengine/ar-tracking';
 
 /**
  * A helper type to determine if a camera wants to enable SLAM tracking
@@ -22,6 +29,31 @@ type CanUseAbsoluteScale = {
 type UsesVPS = {
     usesVPS: boolean;
 };
+
+
+/**
+ * Convert XR8ImageScanningEvent to general Wonderland ImageScanningEvent
+ */
+function toImageScanningEvent(event: XR8ImageScanningEvent): ImageScanningEvent {
+    return {
+        imageTargets: event.detail.imageTargets.map((target) => { 
+            return {
+                ...target,
+                type: target.type.toLowerCase() as ImageScanningEvent['imageTargets'][0]['type']
+            }
+        })
+    }
+}
+
+/**
+ * Convert XR8ImageTrackedEvent to general Wonderland ImageTrackedEvent
+ */
+function toImageTrackingEvent(event: XR8ImageTrackedEvent): ImageTrackedEvent {
+    return {
+        ...event.detail,
+        type: event.detail.type.toLowerCase() as ImageTrackedEvent['type']
+    }
+}
 
 /**
  * 8th Wall tracking implementation that encapsulates
@@ -62,16 +94,16 @@ export class WorldTracking_XR8 extends TrackingMode {
 
     readonly onTrackingStatus: Emitter<[event: XR8TrackingStatusEvent]> = new Emitter();
 
-    readonly onImageScanning: Emitter<[event: XR8ImageScanningEvent]> = new Emitter();
-    readonly onImageFound: Emitter<[event: XR8ImageTrackedEvent]> = new Emitter();
-    readonly onImageUpdate: Emitter<[event: XR8ImageTrackedEvent]> = new Emitter();
-    readonly onImageLost: Emitter<[event: XR8ImageTrackedEvent]> = new Emitter();
+    readonly onImageScanning: Emitter<[event: ImageScanningEvent]> = new Emitter();
+    readonly onImageFound: Emitter<[event: ImageTrackedEvent]> = new Emitter();
+    readonly onImageUpdate: Emitter<[event: ImageTrackedEvent]> = new Emitter();
+    readonly onImageLost: Emitter<[event: ImageTrackedEvent]> = new Emitter();
 
-    readonly onMeshFound: Emitter<[event: XR8VPSMeshFoundEvent]> = new Emitter();
+    readonly onMeshFound: Emitter<[event: VPSMeshFoundEvent]> = new Emitter();
 
-    readonly onWaySpotFound: Emitter<[event: XR8VPSWayPointEvent]> = new Emitter();
-    readonly onWaySpotUpdated: Emitter<[event: XR8VPSWayPointEvent]> = new Emitter();
-    readonly onWaySpotLost: Emitter<[event: XR8VPSWayPointEvent]> = new Emitter();
+    readonly onWaySpotFound: Emitter<[event: VPSWayPointEvent]> = new Emitter();
+    readonly onWaySpotUpdated: Emitter<[event: VPSWayPointEvent]> = new Emitter();
+    readonly onWaySpotLost: Emitter<[event: VPSWayPointEvent]> = new Emitter();
 
     /**
      * Consumed by 8th Wall.
@@ -90,26 +122,26 @@ export class WorldTracking_XR8 extends TrackingMode {
         {
             event: 'reality.imagescanning',
             process: (event: XR8ImageScanningEvent) => {
-                this.onImageScanning.notify(event);
+                this.onImageScanning.notify(toImageScanningEvent(event));
             },
         },
 
         {
             event: 'reality.imagefound',
             process: (event: XR8ImageTrackedEvent) => {
-                this.onImageFound.notify(event);
+                this.onImageFound.notify(toImageTrackingEvent(event));
             },
         },
         {
             event: 'reality.imageupdated',
             process: (event: XR8ImageTrackedEvent) => {
-                this.onImageUpdate.notify(event);
+                this.onImageUpdate.notify(toImageTrackingEvent(event));
             },
         },
         {
             event: 'reality.imagelost',
             process: (event: XR8ImageTrackedEvent) => {
-                this.onImageLost.notify(event);
+                this.onImageLost.notify(toImageTrackingEvent(event));
             },
         },
 
@@ -119,16 +151,14 @@ export class WorldTracking_XR8 extends TrackingMode {
         {
             event: 'reality.meshfound',
             process: (event: XR8VPSMeshFoundEvent) => {
-                this.onMeshFound.notify(event);
+                this.onMeshFound.notify(event.detail);
             },
         },
 
         // Seems like not implemented by xr8 yet
         {
             event: 'reality.meshupdated',
-            process: (event: XR8VPSMeshUpdatedEvent) => {
-                //console.log("Mesh is updated");
-            },
+            process: (event: XR8VPSMeshUpdatedEvent) => {},
         },
 
         /*
@@ -139,7 +169,6 @@ export class WorldTracking_XR8 extends TrackingMode {
         */
 
         /*
-
         // TODO - this indicated that xr8 started looking for the feature points
         // However, I feel this is not really informative event since your app logic
         // will naturally expect that the scanning has started.
@@ -154,21 +183,21 @@ export class WorldTracking_XR8 extends TrackingMode {
         {
             event: 'reality.projectwayspotfound',
             process: (event: XR8VPSWayPointEvent) => {
-                this.onWaySpotFound.notify(event);
+                this.onWaySpotFound.notify(event.detail);
             },
         },
 
         {
             event: 'reality.projectwayspotupdated',
             process: (event: XR8VPSWayPointEvent) => {
-                this.onWaySpotUpdated.notify(event);
+                this.onWaySpotUpdated.notify(event.detail);
             },
         },
 
         {
             event: 'reality.projectwayspotlost',
             process: (event: XR8VPSWayPointEvent) => {
-                this.onWaySpotLost.notify(event);
+                this.onWaySpotLost.notify(event.detail);
             },
         },
     ];
@@ -189,8 +218,8 @@ export class WorldTracking_XR8 extends TrackingMode {
 
         this._view = this.component.object.getComponent('view')!;
 
-        const rot = this.component.object.rotationWorld;
-        const pos = this.component.object.getTranslationWorld([]);
+        const rot = this.component.object.getRotationWorld();
+        const pos = this.component.object.getPositionWorld();
 
         this._cachedPosition[0] = pos[0];
         this._cachedPosition[1] = pos[1];
@@ -314,8 +343,8 @@ export class WorldTracking_XR8 extends TrackingMode {
         }
 
         if (position && rotation) {
-            this.component.object.rotationWorld = this._cachedRotation;
-            this.component.object.setTranslationWorld(this._cachedPosition);
+            this.component.object.setRotationWorld(this._cachedRotation);
+            this.component.object.setPositionWorld(this._cachedPosition);
         }
     };
 }

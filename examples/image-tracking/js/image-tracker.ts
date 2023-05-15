@@ -8,7 +8,7 @@
 import {Component, Object as WLEObject} from '@wonderlandengine/api';
 import {property} from '@wonderlandengine/api/decorators.js';
 
-import {ARSession, ARImageTrackingCamera} from '@wonderlandengine/ar-tracking';
+import {ARSession, ARImageTrackingCamera, ImageTrackedEvent} from '@wonderlandengine/ar-tracking';
 
 export class ImageTrackingExample extends Component {
     static TypeName = 'image-tracking-example';
@@ -50,31 +50,31 @@ export class ImageTrackingExample extends Component {
 
         camera.onImageUpdate.add(this.onImageUpdated);
 
-        camera.onImageLost.add((event: XR8ImageTrackedEvent) => {
-            if (event.detail.name === this.imageId) {
-                this.object.scalingWorld = [0, 0, 0];
+        camera.onImageLost.add((event: ImageTrackedEvent) => {
+            if (event.name === this.imageId) {
+                this.object.setScalingWorld([0, 0, 0]);
             }
         });
 
         ARSession.getSessionForEngine(this.engine).onSessionEnd.add(() => {
-            this.object.scalingWorld = [0, 0, 0];
+            this.object.setScalingWorld([0, 0, 0]);
         });
 
-        this.object.scalingWorld = [0, 0, 0];
+        this.object.setScalingWorld([0, 0, 0]);
     }
 
-    private onImageFound = (event: XR8ImageTrackedEvent) => {
-        if (event.detail.name === this.imageId) {
+    private onImageFound = (event: ImageTrackedEvent) => {
+        if (event.name === this.imageId) {
             this.onImageUpdated(event);
         }
     };
 
-    private onImageUpdated = (event: XR8ImageTrackedEvent) => {
-        if (event.detail.name !== this.imageId) {
+    private onImageUpdated = (event: ImageTrackedEvent) => {
+        if (event.name !== this.imageId) {
             return;
         }
 
-        const {rotation, position, scale} = event.detail;
+        const {rotation, position, scale} = event;
 
         this._cachedRotation[0] = rotation.x;
         this._cachedRotation[1] = rotation.y;
@@ -89,8 +89,8 @@ export class ImageTrackingExample extends Component {
         this._cachedScale[1] = scale;
         this._cachedScale[2] = scale;
 
-        this.object.rotationWorld.set(this._cachedRotation);
-        this.object.setTranslationWorld(this._cachedPosition);
-        this.object.scalingWorld = this._cachedScale;
+        this.object.setRotationWorld(this._cachedRotation);
+        this.object.setPositionWorld(this._cachedPosition);
+        this.object.setScalingWorld(this._cachedScale);
     };
 }

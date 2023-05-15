@@ -13,8 +13,8 @@
 
 /* wle:auto-imports:start */
 import {ARVPSCamera} from '@wonderlandengine/ar-tracking';
-import {ButtonEndARSession} from './../../common-components/button-end-ar-session.js';
-import {ButtonStartARSession} from './../../common-components/button-start-ar-session.js';
+import {ButtonEndARSession} from './button-end-ar-session.js';
+import {ButtonStartARSession} from './button-start-ar-session.js';
 import {VPSExample} from './vps-example.js';
 import {VPSMeshExample} from './vps-mesh-example.js';
 /* wle:auto-imports:end */

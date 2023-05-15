@@ -8,7 +8,7 @@
 import {Component, Object as WLEObject} from '@wonderlandengine/api';
 import {property} from '@wonderlandengine/api/decorators.js';
 
-import {ARSession, ARVPSCamera} from '@wonderlandengine/ar-tracking';
+import {ARSession, ARVPSCamera, VPSWayPointEvent} from '@wonderlandengine/ar-tracking';
 
 export class VPSExample extends Component {
     static TypeName = 'vps-example';
@@ -69,18 +69,18 @@ export class VPSExample extends Component {
         });
     }
 
-    private wayspotFound = (event: XR8VPSWayPointEvent) => {
-        if (event.detail.name !== this.waypointName) return;
-        VPSExample._debugText.innerHTML += '<br />Way spot found: ' + event.detail.name;
+    private wayspotFound = (event: VPSWayPointEvent) => {
+        if (event.name !== this.waypointName) return;
+        VPSExample._debugText.innerHTML += '<br />Way spot found: ' + event.name;
         this.updateModelPose(event);
     };
 
-    private updateModelPose = (event: XR8VPSWayPointEvent) => {
-        if (event.detail.name !== this.waypointName) return;
+    private updateModelPose = (event: VPSWayPointEvent) => {
+        if (event.name !== this.waypointName) return;
 
-        VPSExample._debugText.innerHTML += '<br />Way spot updated: ' + event.detail.name;
+        VPSExample._debugText.innerHTML += '<br />Way spot updated: ' + event.name;
 
-        const {position, rotation} = event.detail;
+        const {position, rotation} = event;
         const cachedPosition = [];
         const cachedRotation = [];
 
@@ -93,7 +93,7 @@ export class VPSExample extends Component {
         cachedPosition[1] = position.y;
         cachedPosition[2] = position.z;
 
-        this.object.rotationWorld.set(cachedRotation);
-        this.object.setTranslationWorld(cachedPosition);
+        this.object.setRotationWorld(cachedRotation);
+        this.object.setPositionWorld(cachedPosition);
     };
 }

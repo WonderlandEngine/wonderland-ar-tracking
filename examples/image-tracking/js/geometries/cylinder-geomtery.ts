@@ -111,7 +111,7 @@ const generateCylinderGeometry = (
         }
     }
 
-    function generateCap(top: any) {
+    function generateCap(top: boolean) {
         // save the index of the first center vertex
         const centerIndexStart = index;
 

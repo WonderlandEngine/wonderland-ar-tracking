@@ -87,8 +87,9 @@ export interface FaceFoundEvent {
     };
 }
 
-export interface FaceLostEvent {}
-export interface FaceLoadingEvent {}
+export interface FaceLostEvent {
+    id: number;
+}
 
 export interface FaceTrackingMode extends ITrackingMode {
     readonly onFaceScanning: Emitter<[event: FaceLoadingEvent]>;
@@ -98,9 +99,45 @@ export interface FaceTrackingMode extends ITrackingMode {
     readonly onFaceLost: Emitter<[event: FaceLostEvent]>;
 }
 
-export interface VPSMeshFoundEvent {}
-export interface VPSMeshLostEvent {}
-export interface VPSWayPointEvent {}
+export interface VPSMeshFoundEvent {
+    id: string;
+    position: {x: number; y: number; z: number};
+    rotation: {x: number; y: number; z: number; w: number};
+    geometry: {
+        index: {
+            array: Uint32Array;
+            itemSize: 1;
+        };
+        attributes: [
+            {
+                name: 'position';
+                array: Float32Array;
+                itemSize: 3;
+            },
+            {
+                name: 'color';
+                array: Float32Array;
+                itemSize: 3;
+            }
+        ];
+    };
+}
+
+export interface VPSMeshUpdatedEvent {
+    id: string;
+    position: {x: number; y: number; z: number};
+    rotation: {x: number; y: number; z: number; w: number};
+}
+
+export interface VPSMeshLostEvent {
+    id: string;
+}
+
+export interface VPSWayPointEvent {
+    name: string;
+    position: {x: number; y: number; z: number};
+    rotation: {x: number; y: number; z: number; w: number};
+}
 
 export interface VPSTrackingMode extends ITrackingMode {
     readonly onMeshFound: Emitter<[event: VPSMeshFoundEvent]>;
@@ -110,8 +147,54 @@ export interface VPSTrackingMode extends ITrackingMode {
     readonly onWaySpotLost: Emitter<[event: VPSWayPointEvent]>;
 }
 
-export interface ImageScanningEvent {}
-export interface ImageTrackedEvent {}
+export interface ImageScanningEvent {
+    imageTargets: {
+        /**
+         * Detected image name
+         */
+        name: string;
+        type: 'flat' | 'cylindrical' | 'conical';
+        metadata: any | null;
+
+        geometry: {
+            arcLengthRadians?: number;
+            arcStartRadians?: number;
+            height?: number;
+            radiusBottom?: number;
+            radiusTop?: number;
+            scaleWidth?: number; // The width of the image in the scene, when multiplied by scale.
+            scaledHeight?: number; // 	The height of the image in the scene, when multiplied by scale.
+        };
+
+        properties?: {
+            height: number;
+            width: number;
+            isRotated: boolean;
+            left: number;
+            top: number;
+            moveable: boolean;
+            originalHeight: number;
+            originalWidth: number;
+            physicalWidthInMeters: number | null;
+        } | null;
+    }[];
+}
+
+export interface ImageTrackedEvent {
+    name: string; // image name
+    position: {x: number; y: number; z: number}; // position of the tracked image
+    rotation: {x: number; y: number; z: number; w: number}; // rotation of the tracked image
+    scale: number; // A scale factor that should be applied to object attached to this image.
+    scaleWidth: number; // The width of the image in the scene, when multiplied by scale.
+    scaledHeight: number; // 	The height of the image in the scene, when multiplied by scale.
+    type: 'flat' | 'cylindrical' | 'conical';
+
+    height?: number; //	Height of the curved target.
+    radiusTop?: number; //Radius of the curved target at the top.
+    radiusBottom?: number; //	Radius of the curved target at the bottom.
+    arcStartRadians?: number; // Starting angle in radians.
+    arcLengthRadians?: number; //	Central angle in radians.
+}
 
 export interface ImageTrackingMode extends ITrackingMode {
     readonly onImageScanning: Emitter<[event: ImageScanningEvent]>;

@@ -99,11 +99,18 @@ declare type XR8TrackingStatusEvent = {
     };
 };
 
+/**
+ * XR8ImageScanningEvent is raised before any image is tracked.
+ * This just gives you an opportunity to generate any geometries if you want (for example a cylinder or a cone around the tracked image surface)
+ */
 declare type XR8ImageScanningEvent = {
     name: 'reality.imagescanning';
     detail: {
         imageTargets: {
-            name: string; // image name
+            /**
+             * Image name the will be tracked
+             */
+            name: string;
             type: 'FLAT' | 'CYLINDRICAL' | 'CONICAL';
             metadata: any | null;
 
@@ -113,8 +120,12 @@ declare type XR8ImageScanningEvent = {
                 height?: number;
                 radiusBottom?: number;
                 radiusTop?: number;
-                scaleWidth?: number; // The width of the image in the scene, when multiplied by scale.
-                scaledHeight?: number; // 	The height of the image in the scene, when multiplied by scale.
+
+                /** The width of the image in the scene, when multiplied by scale. */
+                scaleWidth?: number; 
+
+                /** The height of the image in the scene, when multiplied by scale. */
+                scaledHeight?: number;
             };
 
             properties?: {
@@ -132,22 +143,46 @@ declare type XR8ImageScanningEvent = {
     };
 };
 
-declare type XR8ImageTrackedEvent = {
-    name: string;
-    detail: {
-        name: string; // image name
-        position: {x: number; y: number; z: number}; // position of the tracked image
-        rotation: {x: number; y: number; z: number; w: number}; // rotation of the tracked image
-        scale: number; // A scale factor that should be applied to object attached to this image.
-        scaleWidth: number; // The width of the image in the scene, when multiplied by scale.
-        scaledHeight: number; // 	The height of the image in the scene, when multiplied by scale.
-        type: 'FLAT' | 'CYLINDRICAL' | 'CONICAL';
 
-        height?: number; //	Height of the curved target.
-        radiusTop?: number; //Radius of the curved target at the top.
-        radiusBottom?: number; //	Radius of the curved target at the bottom.
-        arcStartRadians?: number; // Starting angle in radians.
-        arcLengthRadians?: number; //	Central angle in radians.
+declare type XR8ImageTrackedEvent = {
+    /** Name of the event.*/
+    name: 'reality.imagefound' | 'reality.imageupdated' | 'reality.imagelost';
+    detail: {
+         /* Name of the tracked image */
+         name: string; 
+
+         /* Position of the tracked image */
+         position: {x: number; y: number; z: number};
+ 
+         /* Rotation of the tracked image */
+         rotation: {x: number; y: number; z: number; w: number};
+ 
+         /* A scale factor that should be applied to object attached to this image. */
+         scale: number;
+ 
+         /* The width of the image in the scene, when multiplied by scale. */
+         scaleWidth: number;
+ 
+         /* The height of the image in the scene, when multiplied by scale. */
+         scaledHeight: number;
+ 
+         /* Type of the tracked image */
+         type: 'FLAT' | 'CYLINDRICAL' | 'CONICAL';
+ 
+         /* Height of the curved target. */
+         height?: number;
+ 
+         /* Radius of the curved target at the top. */
+         radiusTop?: number;
+ 
+         /* Radius of the curved target at the bottom. */
+         radiusBottom?: number;
+ 
+         /* Starting angle in radians. */
+         arcStartRadians?: number;
+ 
+         /* Central angle in radians. */
+         arcLengthRadians?: number;
     };
 };
 
@@ -229,10 +264,18 @@ declare type XR8FaceFoundEvent = {
         transform: {
             position: {x: number; y: number; z: number};
             rotation: {x: number; y: number; z: number; w: number};
-            scale: number; // A scale factor that should be applied to objects attached to this face.
-            scaledWidth: number; // Approximate width of the head in the scene when multiplied by scale.
-            scaledHeight: number; // Approximate height of the head in the scene when multiplied by scale.
-            scaledDepth: number; // Approximate depth of the head in the scene when multiplied by scale.
+            
+            /* A scale factor that should be applied to objects attached to this face. */
+            scale: number;
+
+            /* Approximate width of the head in the scene when multiplied by scale. */
+            scaledWidth: number;
+
+            /* Approximate height of the head in the scene when multiplied by scale. */
+            scaledHeight: number;
+
+            /* Approximate depth of the head in the scene when multiplied by scale. */
+            scaledDepth: number;
         };
     };
 };
@@ -245,9 +288,7 @@ declare type XR8FaceLostEvent = {
 };
 
 declare var XR8: {
-    /**
-     * Added by WLE, to track if any session is running across different WLE runtimes
-     */
+    /** Added by WLE, to track if any session is running across different WLE runtimes */
     WLE_sessionRunning: boolean;
 
     runPreRender: (time: number) => void;

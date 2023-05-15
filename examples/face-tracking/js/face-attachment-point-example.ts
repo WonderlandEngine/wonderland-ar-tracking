@@ -22,7 +22,7 @@ export class FaceAttachmentPointExample extends Component {
      * To which feature of the face should the object be attached
      */
     @property.enum(FaceAttachmentPoints)
-    attachmentPoint: number = 0;
+    attachmentPoint = 0;
 
     /**
      * Object which should be attached to the face feature
@@ -68,12 +68,12 @@ export class FaceAttachmentPointExample extends Component {
             cachedScale.fill(transform.scale);
 
             this.object.setRotationWorld(cachedRotation);
-            this.object.setTranslationWorld(cachedPosition);
+            this.object.setPositionWorld(cachedPosition);
             this.object.setScalingWorld(cachedScale);
 
             const attachmentPoint =
                 attachmentPoints[FaceAttachmentPoints[this.attachmentPoint]].position;
-            this.attachedObject.setTranslationLocal([
+            this.attachedObject.setPositionLocal([
                 attachmentPoint.x,
                 attachmentPoint.y,
                 attachmentPoint.z,

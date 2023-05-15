@@ -12,9 +12,9 @@
  */
 
 /* wle:auto-imports:start */
-import {ARSLAMCamera} from '@wonderlandengine/8thwall-tracking';
-import {ButtonEndARSession} from './../../common-components/button-end-ar-session.js';
-import {ButtonStartARSession} from './../../common-components/button-start-ar-session.js';
+import {ARSLAMCamera} from '@wonderlandengine/ar-tracking';
+import {ButtonEndARSession} from './button-end-ar-session.js';
+import {ButtonStartARSession} from './button-start-ar-session.js';
 import {HitTestLocationRoot} from './hit-test-location-root.js';
 import {HitTestLocationXR8} from './hit-test-location-xr8.js';
 import {SpawnMeshOnReticle} from './spawn-mesh-on-reticle.js';
@@ -79,8 +79,11 @@ if (document.readyState === 'loading') {
 }
 
 const arSession = ARSession.getSessionForEngine(engine);
-WebXRProvider.registerTrackingProviderWithARSession(arSession);
-XR8Provider.registerTrackingProviderWithARSession(arSession);
+if (engine.arSupported) {
+    WebXRProvider.registerTrackingProviderWithARSession(arSession);
+} else {
+    XR8Provider.registerTrackingProviderWithARSession(arSession);
+}
 
 /* wle:auto-register:start */
 engine.registerComponent(ARSLAMCamera);

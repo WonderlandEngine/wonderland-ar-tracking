@@ -13,9 +13,9 @@
 
 /* wle:auto-imports:start */
 import {ARXR8SLAMCamera} from '@wonderlandengine/ar-provider-8thwall';
-import {ButtonEndARSession} from './../../common-components/button-end-ar-session.js';
-import {ButtonStartARSession} from './../../common-components/button-start-ar-session.js';
 import {AbsoluteScaleWatcher} from './absolute-scale-watcher.js';
+import {ButtonEndARSession} from './button-end-ar-session.js';
+import {ButtonStartARSession} from './button-start-ar-session.js';
 /* wle:auto-imports:end */
 
 import {loadRuntime} from '@wonderlandengine/api';
@@ -82,9 +82,9 @@ XR8Provider.registerTrackingProviderWithARSession(arSession);
 
 /* wle:auto-register:start */
 engine.registerComponent(ARXR8SLAMCamera);
+engine.registerComponent(AbsoluteScaleWatcher);
 engine.registerComponent(ButtonEndARSession);
 engine.registerComponent(ButtonStartARSession);
-engine.registerComponent(AbsoluteScaleWatcher);
 /* wle:auto-register:end */
 
 engine.scene.load(`${Constants.ProjectName}.bin`);
