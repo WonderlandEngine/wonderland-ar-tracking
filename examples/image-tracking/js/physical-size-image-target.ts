@@ -134,7 +134,7 @@ export class PhysicalSizeImageTarget extends Component {
         }
 
         let geometryData;
-        if (imageData.type === 'FLAT') {
+        if (imageData.type === 'flat') {
             geometryData = this.createFlatMesh(imageData);
         } else {
             geometryData = this.createCylinderMesh(imageData);
