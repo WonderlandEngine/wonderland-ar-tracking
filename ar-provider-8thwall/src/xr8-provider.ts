@@ -433,10 +433,9 @@ export class XR8Provider extends ARProvider {
             });
 
             // If we successfully acquired the camera stream - we can stop it and wait until 8th Wall requests it again
-            // Update - if we don't stop it, xr8 initializes faster
-            /* stream.getTracks().forEach((track) => {
-         track.stop();
-       });*/
+            stream.getTracks().forEach((track) => {
+                track.stop();
+            });
         } catch (exception) {
             throw new Error('Camera');
         }
