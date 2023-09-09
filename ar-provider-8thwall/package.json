@@ -1,6 +1,6 @@
 {
   "name": "@wonderlandengine/ar-provider-8thwall",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Wonderland Engine AR tracking provider based on 8th Wall.",
   "wonderlandengine": {},
   "main": "dist/index.js",
@@ -30,16 +30,16 @@
     "typescript": "^4.9.5"
   },
   "peerDependencies": {
-    "@wonderlandengine/api": "~1.0.0",
+    "@wonderlandengine/api": "^1.0.0",
     "@wonderlandengine/ar-tracking": "^1.0.0",
     "@wonderlandengine/components": "^1.0.0"
   },
   "files": [
-      "dist/**/*.js",
-      "dist/**/*.d.ts"
+    "dist/**/*.js",
+    "dist/**/*.d.ts"
   ],
   "dependencies": {
-      "gl-matrix": "^3.4.3",
-      "qrcode-svg": "^1.1.0"
+    "gl-matrix": "^3.4.3",
+    "qrcode-svg": "^1.1.0"
   }
 }
