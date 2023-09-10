@@ -36,7 +36,7 @@ type UsesVPS = {
  */
 function toImageScanningEvent(event: XR8ImageScanningEvent): ImageScanningEvent {
     return {
-        imageTargets: event.detail.imageTargets.map((target) => { 
+        imageTargets: event.detail.imageTargets.map((target) => {
             return {
                 ...target,
                 type: target.type.toLowerCase() as ImageScanningEvent['imageTargets'][0]['type']
