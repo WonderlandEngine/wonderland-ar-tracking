@@ -218,17 +218,8 @@ export class WorldTracking_XR8 extends TrackingMode {
 
         this._view = this.component.object.getComponent('view')!;
 
-        const rot = this.component.object.getRotationWorld();
-        const pos = this.component.object.getPositionWorld();
-
-        this._cachedPosition[0] = pos[0];
-        this._cachedPosition[1] = pos[1];
-        this._cachedPosition[2] = pos[2];
-
-        this._cachedRotation[0] = rot[0];
-        this._cachedRotation[1] = rot[1];
-        this._cachedRotation[2] = rot[2];
-        this._cachedRotation[3] = rot[3];
+        this.component.object.getRotationWorld(this._cachedPosition);
+        this.component.object.getPositionWorld(this._cachedRotation);
 
         ARSession.getSessionForEngine(this.component.engine).onSessionEnd.add(() => {
             XR8.removeCameraPipelineModules([XR8.XrController.pipelineModule(), this]);
@@ -305,8 +296,8 @@ export class WorldTracking_XR8 extends TrackingMode {
             cam: {
                 pixelRectWidth: this.component.engine.canvas!.width,
                 pixelRectHeight: this.component.engine.canvas!.height,
-                nearClipPlane: 0.01,
-                farClipPlane: 100,
+                nearClipPlane: this._view?.near || 0.01,
+                farClipPlane: this._view?.far || 100,
             },
         });
     };
