@@ -1,4 +1,5 @@
 import {property} from '@wonderlandengine/api/decorators.js';
+import {Material} from '@wonderlandengine/api';
 
 import {WorldTracking_XR8} from '../world-tracking-mode-xr8.js';
 import {XR8Provider} from '../xr8-provider.js';
@@ -13,6 +14,9 @@ import {ARCamera, ARSession} from '@wonderlandengine/ar-tracking';
  */
 class ARXR8SLAMCamera extends ARCamera {
     static TypeName = 'ar-xr8-slam-camera';
+
+    @property.material()
+    videoFeedMaterial!: Material;
 
     @property.bool(false)
     useAbsoluteScale!: boolean;

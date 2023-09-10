@@ -1,4 +1,4 @@
-import {Emitter, ViewComponent} from '@wonderlandengine/api';
+import {Material, Emitter, ViewComponent} from '@wonderlandengine/api';
 import {XR8ExtraPermissions, XR8Provider} from './xr8-provider.js';
 import {
     ARSession,
@@ -30,7 +30,6 @@ type UsesVPS = {
     usesVPS: boolean;
 };
 
-
 /**
  * Convert XR8ImageScanningEvent to general Wonderland ImageScanningEvent
  */
@@ -39,10 +38,10 @@ function toImageScanningEvent(event: XR8ImageScanningEvent): ImageScanningEvent 
         imageTargets: event.detail.imageTargets.map((target) => {
             return {
                 ...target,
-                type: target.type.toLowerCase() as ImageScanningEvent['imageTargets'][0]['type']
-            }
-        })
-    }
+                type: target.type.toLowerCase() as ImageScanningEvent['imageTargets'][0]['type'],
+            };
+        }),
+    };
 }
 
 /**
@@ -51,8 +50,8 @@ function toImageScanningEvent(event: XR8ImageScanningEvent): ImageScanningEvent 
 function toImageTrackingEvent(event: XR8ImageTrackedEvent): ImageTrackedEvent {
     return {
         ...event.detail,
-        type: event.detail.type.toLowerCase() as ImageTrackedEvent['type']
-    }
+        type: event.detail.type.toLowerCase() as ImageTrackedEvent['type'],
+    };
 }
 
 /**
@@ -227,11 +226,12 @@ export class WorldTracking_XR8 extends TrackingMode {
     }
 
     /**
-     * Configures XR8.XrController for the session,
-     * sets itself as an XR8 camera pipeline module
-     * and tells xr8Provider to start the session
+     * Configures XR8.XrController for the session, sets itself as an XR8 camera
+     * pipeline module and tells xr8Provider to start the session.
+     *
+     * @param params Extra parameters to initialize the 8thwall provider with.
      */
-    async startSession() {
+    async startSession(params: {backgroundMaterial?: Material} = {}) {
         const permissions = await (this.provider as XR8Provider).checkPermissions(
             this._extraPermissions
         );
@@ -264,6 +264,7 @@ export class WorldTracking_XR8 extends TrackingMode {
             cameraConfig: {
                 direction: XR8.XrConfig.camera().BACK,
             },
+            backgroundMaterial: params.backgroundMaterial,
         };
         return this.provider.startSession(options, [
             XR8.XrController.pipelineModule(),

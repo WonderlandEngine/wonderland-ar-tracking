@@ -8,6 +8,7 @@ import {
 import {Component, WonderlandEngine} from '@wonderlandengine/api';
 import {WorldTracking_XR8} from './world-tracking-mode-xr8.js';
 import {FaceTracking_XR8} from '../index.js';
+import {wonderlandCameraFeed} from './wonderland-camera-feed-renderer.js';
 
 /**
  * Array of extra permissions which some tracking mode might need.
@@ -241,7 +242,7 @@ export class XR8Provider extends ARProvider {
      * @typeParam check XR8.run options parameter
      */
     async startSession(
-        options: Parameters<typeof XR8.run>[0],
+        options: Parameters<typeof XR8.run>[0] & {backgroundMaterial?: Material},
         cameraModules: Array<XR8CameraPipelineModule>
     ) {
         if (XR8.WLE_sessionRunning) {
@@ -259,7 +260,9 @@ export class XR8Provider extends ARProvider {
          * - handle any error rised by the XR8 engine.
          */
         XR8.addCameraPipelineModules([
-            XR8.GlTextureRenderer.pipelineModule(),
+            options.backgroundMaterial
+                ? wonderlandCameraFeed({material: options.backgroundMaterial})
+                : XR8.GlTextureRenderer.pipelineModule(),
             {
                 name: 'WLE-XR8-setup',
                 onStart: () => {
