@@ -49,6 +49,10 @@ jobs:
         path: public/
   deploy-pages:
     needs: package
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
     runs-on: ubuntu-latest
     steps:
