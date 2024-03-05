@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IndexedDB Test</title>
+</head>
+
+<body>
+
+    <!-- Add HTML elements to display IndexedDB usage and quota -->
+    <p>IndexedDB Usage: <span id="usage"></span> records</p>
+    <p>IndexedDB Quota: <span id="quota"></span> GB</p>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Open or create a connection to IndexedDB
+            const request = window.indexedDB.open('YourDatabaseName', 1); // Specify database name and version
+
+            request.onupgradeneeded = (event) => {
+                const db = event.target.result;
+
+                // Create an object store (like a table in SQL databases)
+                const objectStore = db.createObjectStore('YourObjectStore', { keyPath: 'id', autoIncrement: true });
+
+                // Define the structure of the object store
+                // Here, 'id' will be auto-generated for each record
+                // You can define additional fields as needed
+
+                // For example:
+                // objectStore.createIndex('name', 'name', { unique: false });
+                // objectStore.createIndex('age', 'age', { unique: false });
+            };
+
+            request.onsuccess = (event) => {
+                const db = event.target.result;
+
+                // Check storage usage and quota
+                const transaction = db.transaction(['YourObjectStore'], 'readonly');
+                const objectStore = transaction.objectStore('YourObjectStore');
+
+                const requestUsage = objectStore.count(); // count() returns the number of records
+                requestUsage.onsuccess = (event) => {
+                    const usage = event.target.result;
+
+                    // Display usage in HTML
+                    document.getElementById('usage').textContent = String(usage);
+                };
+
+                navigator.storage.estimate().then((estimate) => {
+                    // Convert quota to gigabytes
+                    const quotaGB = (estimate.quota / (1024 * 1024 * 1024)).toFixed(2);
+
+                    // Display quota in HTML
+                    document.getElementById('quota').textContent = `${quotaGB}`;
+                });
+            };
+
+            request.onerror = (event) => {
+                console.error('Error opening IndexedDB:', event.target.error);
+            };
+        });
+    </script>
+
+</body>
+
+</html>
