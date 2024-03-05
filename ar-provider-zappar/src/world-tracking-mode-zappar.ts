@@ -1,4 +1,14 @@
-import {TrackingMode} from '@wonderlandengine/ar-tracking';
+import {Emitter, ViewComponent} from '@wonderlandengine/api';
+import {ZapparProvider} from './zappar-provider.js';
+import {
+    ARProvider,
+    ARSession,
+    ImageScanningEvent,
+    ImageTrackedEvent,
+    TrackingMode,
+    VPSMeshFoundEvent,
+    VPSWayPointEvent,
+} from '@wonderlandengine/ar-tracking';
 
 /**
  * Implementation of SLAM (World Tracking) based on the WebXR Device API
@@ -11,30 +21,57 @@ import {TrackingMode} from '@wonderlandengine/ar-tracking';
 export class WorldTracking_Zappar extends TrackingMode {
     private pipeline: any;
 
-    startSession() {
-        this.loadZapparExternalLib();
-        this.provider.startSession(window.WEBXR_REQUIRED_FEATURES, this.pipeline);
-    }
-
     endSession(): void {
         this.provider.endSession();
     }
+    startSession(): Promise<void> {
+        // Call loadZapparExternalLib and return a promise
+        return this.loadZapparExternalLib().then(() => {
+            // Zappar is loaded, now start the session
+            return this.provider.startSession(
+                window.WEBXR_REQUIRED_FEATURES,
+                this.pipeline
+            );
+        });
+    }
 
-    loadZapparExternalLib() {
+    update() {
+        return this.provider.animate();
+    }
+
+    loadZapparExternalLib(): Promise<void> {
+        // Check if the script element already exists
+        const existingScript = document.getElementById('__injected-WLE-zappar');
+
+        if (existingScript) {
+            // If script element already exists, no need to create a new one
+            console.log('Zappar script is already loaded.');
+            this.processCameraPipeline();
+            return Promise.resolve(); // Resolve the promise immediately
+        }
+
+        // If script element does not exist, create a new one
         const s = document.createElement('script');
         s.id = '__injected-WLE-zappar';
         s.crossOrigin = 'anonymous';
         s.src = 'https://libs.zappar.com/zappar-js/2.2.4/zappar.js';
         document.body.appendChild(s);
-        s.onload = () => {
-            console.log(window.Zappar);
-            this.processCameraPipeline();
-        };
+
+        // Return a promise that resolves when Zappar is loaded
+        return new Promise<void>((resolve) => {
+            s.onload = () => {
+                console.log(window.Zappar);
+                this.processCameraPipeline();
+                resolve(); // Resolve the promise
+            };
+        });
     }
 
     processCameraPipeline() {
+        console.log('hell0000.... ');
+        console.log(this.component.engine);
         this.pipeline = new Zappar.Pipeline();
-        this.pipeline.glContextSet(this._engine.canvas.getContext('webgl2'));
+        this.pipeline.glContextSet(this.component.engine.canvas.getContext('webgl2'));
         this.createFrameSource(this.pipeline);
     }
 
@@ -66,7 +103,7 @@ export class WorldTracking_Zappar extends TrackingMode {
                     break;
             }
         });
-        this._engine.scene.onPreRender.add(this.onWLPreRender);
+        this.component.engine.scene.onPreRender.add(this.onWLPreRender);
     }
 
     onWLPreRender() {
@@ -75,7 +112,7 @@ export class WorldTracking_Zappar extends TrackingMode {
         this.pipeline.frameUpdate();
         this.pipeline.cameraFrameUploadGL();
 
-        const gl = this._engine.canvas.getContext('webgl2');
+        const gl = this.component.engine.canvas.getContext('webgl2');
         gl.bindTexture(gl.TEXTURE_2D, null);
         gl.bindBuffer(gl.ARRAY_BUFFER, null);
         gl.useProgram(null);
