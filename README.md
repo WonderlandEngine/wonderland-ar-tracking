@@ -7,6 +7,43 @@ The following libraries and tracking methods are supported:
 - WebXR Device API: SLAM tracking.
 - 8th Wall: SLAM tracking, image tracking, face tracking, VPS.
 
+## Examples
+
+Their code can be found under `/examples`.
+
+### SLAM (World Tracking)
+
+Runs an AR session using WebXR Device API where available with a fallback to 8th Wall
+implementation.
+
+<img width="288" src="examples/SLAM-camera/previews/SLAM-example.webp?raw=true" alt="SLAM tracking" />
+
+---
+
+### Image Tracking
+
+<img width="288" src="examples/image-tracking/previews/image-target.webp?raw=true" alt="Simple Image target" />
+<img width="288" src="examples/image-tracking/previews/flat-image-physical-size.webp?raw=true" alt="Physically correct image size" />
+<img width="288" src="examples/image-tracking/previews/curved-image-target-video.webp?raw=true" alt="Curved image target with video" />
+
+---
+
+### Face Tracking
+
+Allows tracking a face and attaching objects to different attachment points.
+
+<img width="288"  src="examples/face-tracking/previews/face-tracking.webp?raw=true" alt="Face target" />
+
+---
+
+### 8th Wall VPS
+
+VPS (Visual Positioning System) allows tracking a world mesh for a scanned location.
+
+<img width="288"  src="examples/vps/previews/dynamic-mesh.webp?raw=true" alt="VPS Dynamically generated mesh" />
+
+---
+
 ## Table of Contents
 
 - [Setting Up](#setting-up)
@@ -135,39 +172,3 @@ export class FaceMaskExample extends Component {
 }
 ```
 
-## Examples
-
-Their code can be found under `/examples`.
-
-### SLAM (World Tracking)
-
-Runs an AR session using WebXR Device API where available with a fallback to 8th Wall
-implementation.
-
-<img width="288" src="examples/SLAM-camera/previews/SLAM-example.webp?raw=true" alt="SLAM tracking" />
-
----
-
-### Image Tracking
-
-<img width="288" src="examples/image-tracking/previews/image-target.webp?raw=true" alt="Simple Image target" />
-<img width="288" src="examples/image-tracking/previews/flat-image-physical-size.webp?raw=true" alt="Physically correct image size" />
-<img width="288" src="examples/image-tracking/previews/curved-image-target-video.webp?raw=true" alt="Curved image target with video" />
-
----
-
-### Face Tracking
-
-Allows tracking a face and attaching objects to different attachment points.
-
-<img width="288"  src="examples/face-tracking/previews/face-tracking.webp?raw=true" alt="Face target" />
-
----
-
-### 8th Wall VPS
-
-VPS (Visual Positioning System) allows tracking a world mesh for a scanned location.
-
-<img width="288"  src="examples/vps/previews/dynamic-mesh.webp?raw=true" alt="VPS Dynamically generated mesh" />
-
----
