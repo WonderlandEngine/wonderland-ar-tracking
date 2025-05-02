@@ -14,6 +14,9 @@ abstract class ARProvider {
         return this._engine;
     }
 
+    /** Name of the provider */
+    abstract get name(): string;
+
     protected constructor(engine: WonderlandEngine) {
         this._engine = engine;
     }

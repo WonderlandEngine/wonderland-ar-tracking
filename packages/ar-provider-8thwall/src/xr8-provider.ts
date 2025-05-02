@@ -87,6 +87,11 @@ export class XR8Provider extends ARProvider {
      */
     private static _instances = 0;
 
+    static Name = '8th Wall';
+    get name() {
+        return XR8Provider.Name;
+    }
+
     /**
      * Unique id for this instance
      */

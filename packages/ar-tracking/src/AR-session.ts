@@ -61,6 +61,15 @@ export class ARSession {
         throw new Error('No AR provider found for tracking type ' + type);
     }
 
+    /** Get registered {@link ARProvider} based on {@link ARProvider#name}. */
+    getARProviderByName(name: string): ARProvider | null {
+        for (const p of this._trackingProviders) {
+            if (p.name === name) return p;
+        }
+
+        return null;
+    }
+
     /**
      * Get or create an AR session attached to given engine
      *

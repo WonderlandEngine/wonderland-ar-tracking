@@ -21,14 +21,26 @@ export class WebXRProvider extends ARProvider {
         return this._xrSession;
     }
 
-    static registerTrackingProviderWithARSession(arSession: ARSession) {
-        const provider = new WebXRProvider(arSession.engine);
+    static Name = 'WebXR Device API';
+    get name() {
+        return WebXRProvider.Name;
+    }
+
+    private _config: WebXRConfig;
+
+    static registerTrackingProviderWithARSession(
+        arSession: ARSession,
+        config: WebXRConfig
+    ) {
+        const provider = new WebXRProvider(arSession.engine, config);
         arSession.registerTrackingProvider(provider);
         return provider;
     }
 
-    private constructor(engine: WonderlandEngine) {
+    private constructor(engine: WonderlandEngine, config: WebXRConfig) {
         super(engine);
+
+        this._config = config;
 
         // Safeguard that we are not running inside the editor
         if (typeof document === 'undefined') {
@@ -87,7 +99,7 @@ export class WebXRProvider extends ARProvider {
     createTracking(type: TrackingType, component: Component): ITrackingMode {
         switch (type) {
             case TrackingType.SLAM:
-                return new WorldTracking_WebXR(this, component);
+                return new WorldTracking_WebXR(this, component, this._config);
             default:
                 throw new Error('Tracking mode ' + type + ' not supported.');
         }

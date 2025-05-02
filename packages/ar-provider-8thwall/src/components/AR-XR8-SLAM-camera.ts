@@ -23,14 +23,17 @@ class ARXR8SLAMCamera extends ARCamera {
         return this._trackingImpl!.onTrackingStatus;
     }
 
-    init() {
-        const provider = XR8Provider.registerTrackingProviderWithARSession(
-            ARSession.getSessionForEngine(this.engine)
-        );
-        this._trackingImpl = new WorldTracking_XR8(provider, this);
-    }
-
     start() {
+        const provider = ARSession.getSessionForEngine(this.engine).getARProviderByName(
+            XR8Provider.Name
+        );
+        if (!provider) {
+            throw new Error(
+                'Missing XR8Provider, make sure to register it in your entrypoint.'
+            );
+        }
+        this._trackingImpl = new WorldTracking_XR8(provider, this);
+
         if (!this.object.getComponent('view')) {
             throw new Error('AR-camera requires a view component');
         }
@@ -39,15 +42,13 @@ class ARXR8SLAMCamera extends ARCamera {
     }
 
     startSession = async () => {
-        if (this.active) {
-            this._trackingImpl!.startSession();
-        }
+        if (!this.active) return;
+        this._trackingImpl!.startSession();
     };
 
     endSession = async () => {
-        if (this.active) {
-            this._trackingImpl!.endSession();
-        }
+        if (!this.active) return;
+        this._trackingImpl!.endSession();
     };
 
     onDeactivate(): void {

@@ -2,7 +2,8 @@
     "name": "wonderland-ar-tracking",
     "private": true,
     "scripts": {
-        "format": "prettier --write ."
+        "format": "prettier --write .",
+        "build": "npm run build --workspaces"
     },
     "workspaces": [
         "packages/*"
