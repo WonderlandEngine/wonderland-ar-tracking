@@ -1,11 +1,12 @@
 # Wonderland Engine AR Tracking
 
-General AR framework which currently supports 8th Wall tracking and WebXR Device API
+Integration of various AR tracking frameworks into Wonderland Engine.
 
-Currently supported WebXR features: SLAM tracking.
+The following libraries and tracking methods are supported:
+- WebXR Device API: SLAM tracking.
+- 8th Wall: SLAM tracking, image tracking, face tracking, VPS.
 
-Currently supported 8th Wall features: SLAM tracking, image tracking,
-  face tracking, VPS.
+## Table of Contents
 
 * [Setting Up](#setting-up)
 * [Structure](#structure)
@@ -19,14 +20,14 @@ Currently supported 8th Wall features: SLAM tracking, image tracking,
 
 1. Create a new Wonderland Engine AR project and package.
 
-2. Run `npm i --save @wonderlandengine/ar-tracking @wonderlandengine/ar-provider-webxr @wonderlandengine/ar-provider-8thwall` in the project's root directory.
-    
-    2.1 In case you want to try the examples from this repo, make sure you run `npm run build` for each of the following folders: `ar-provider-8thwall`, `ar-provider-webxr`, `ar-tracking` before opening the examples.
+2. To install the framework and the WebXR Device API and 8thwall providers, use the following command in the project's root:
 
-3. Open the file configured in editor `Project Settings > JavaScript > entryPoint`
-   (usually this is `js/index.js`).
+```sh
+npm i --save @wonderlandengine/ar-tracking @wonderlandengine/ar-provider-webxr @wonderlandengine/ar-provider-8thwall
+```
 
-4. Copy the following snippets into your entrypoint:
+3. Add the following snippets into your entrypoint (usually `index.js`):
+
 ```js
 /* wle:auto-imports:end */
 
@@ -52,17 +53,12 @@ XR8Provider.registerTrackingProviderWithARSession(arSession);
 // ...
 ```
 
-5. In case you are building a VPS experience, make sure you clear the editor
-   `Project Settings > Editor > serverCOEP` field.
+4. In case you are building a VPS experience, make sure to set
+   `Project Settings > Editor > serverCOEP` to `unsafe-none`.
 
-6. Make sure you are running on HTTPS (even on localhost!): Go to
-   `Views > Preferences > Server` and set the paths to a local certificate. You can
-   generate a certificate for localhost with the following command:
+5. Make sure you are running on HTTPS (8th Wall requires it even on localhost!): Go to
+   `Views > Preferences > Server` and "Generate Certificates", then check the SSL checkbox.
 
-```sh
-openssl req -x509 -nodes -newkey rsa:4096 -days 3650 \
-    -keyout 'privkey.pem' -out 'fullchain.crt' -subj '/CN=localhost'"
-```
 
 ## Structure
 
