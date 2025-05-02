@@ -16,18 +16,14 @@ class ARSLAMCamera extends ARCamera {
 
     private _trackingImpl!: ITrackingMode;
 
-    override init = () => {
+    init() {
         this._trackingImpl = ARSession.getSessionForEngine(this.engine).getTrackingProvider(
             TrackingType.SLAM,
             this
         );
-    };
+    }
 
     start() {
-        if (!this.object.getComponent('view')) {
-            throw new Error('AR-camera requires a view component');
-        }
-
         if (this._trackingImpl.init) this._trackingImpl.init();
     }
 
