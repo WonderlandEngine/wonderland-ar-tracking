@@ -2,10 +2,10 @@
 
 Integration of various AR tracking frameworks into Wonderland Engine.
 
-The following libraries and tracking methods are supported:
-
-- WebXR Device API: SLAM tracking.
-- 8th Wall: SLAM tracking, image tracking, face tracking, VPS.
+| Library             | SLAM | Image Tracking | Face Tracking | VPS |
+| ------------------- | ---- | -------------- | ------------- | --- |
+| WebXR Device API    | ✅   |                |               |     |
+| 8th Wall            | ✅   | ✅             | ✅            | ✅  |
 
 ## Examples
 
@@ -171,4 +171,3 @@ export class FaceMaskExample extends Component {
     }
 }
 ```
-
