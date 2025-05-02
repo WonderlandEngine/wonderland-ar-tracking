@@ -54,64 +54,27 @@ XR8Provider.registerTrackingProviderWithARSession(arSession, {apiToken: /* ApiTo
 5. Make sure you are running on HTTPS (8th Wall requires it even on localhost!): Go to
    `Views > Preferences > Server` and "Generate Certificates", then check the SSL checkbox.
 
-## Structure
+## API Overview
 
-### **`src/AR-session.ts`**
+### ARSession
 
 - Manages all AR sessions.
 - Registers dependencies (i.e., providers)
 - Handles global callbacks when AR sessions are started or ended
 
-```ts
-class ARSLAMCamera extends ARCamera {
-    static TypeName = 'AR-SLAM-camera';
+### ARProvider
 
-    private _trackingImpl!: ITrackingMode;
+AR provider is an abstract class that is extended by specialized AR framework providers.
+The implementing providers should handle the loading, configuring and starting/stopping some tracking implementation.
 
-    override init = () => {
-        /* Check if the device supports WebXR. If it does, use WebXRProvider */
-        if (this.engine.arSupported) {
-            ARSession.registerTrackingProvider(this.engine, WebXRProvider);
-            this._trackingImpl = new WorldTracking_WebAR(this);
-        } else {
-            ARSession.registerTrackingProvider(this.engine, xr8Provider);
-            this._trackingImpl = new WorldTracking_XR8(this);
-        }
+E.g., `src/components/AR/frameworks/xr8/xr8-provider.ts` loads, configures and checks the required permissions for the 8th Wall library.
 
-        const arSession = ARSession.getSessionForEngine(this.engine);
-        /* Listen to when all providers are loaded and ready to be used */
-        arSession.onARSessionReady.add(() => {});
-
-        /* Listen to when any tracking provider started a tracking session */
-        arSession.onSessionStart.add((trackingProvider: ARProvider) => {});
-
-        /* Listen to when running tracking provider ended a tracking session */
-        arSession.onSessionEnd.add((trackingProvider: ARProvider) => {});
-    };
-
-    /** Start AR session manually, for example on button click */
-    startSession() {
-        if (!this.active) return;
-        this._trackingImpl!.startSession();
-    }
-
-    /** Stop any running tracking provider */
-    endSession() {
-        if (!this.active) return;
-        this._trackingImpl!.endSession();
-    }
-}
-```
-
-### **`src/AR-provider`**
-
-AR provider should handle the loading, configuring and starting/stopping some tracking
-implementation.
-E.g., `src/components/AR/frameworks/xr8/xr8-provider.ts` loads, configures and checks
-the required permissions for the 8th Wall library.
+To integrate a new AR tracking framework, extend with a custom provider like so:
 
 ```ts
-class CustomProvider extends ARProvider {
+import {ARProvider} from '@wonderlandengine/ar-tracking';
+
+export class CustomProvider extends ARProvider {
     async load() {
         // Make sure we're not in the editor
         if (!window.document) return;
@@ -129,26 +92,30 @@ class CustomProvider extends ARProvider {
 }
 ```
 
-### **`src/frameworks/trackingMode.ts`**
+### TrackingMode
 
-Tracking modes holds the configuration and logic for how to handle the data coming from
-the AR-provider.
+Tracking modes hold the configuration and logic for how to handle the data coming from
+the ARProvider for a specific type of tracking (World Tracking, Face Tracking, Image Tracking).
+
 E.g, 8th Wall AR-provider may provide only camera pose if the tracking mode is
 `world-tracking` and extra pose for a tracked if tracking mode is `face-tracking`.
 Tracking modes are set by `AR-camera` and modify the camera's pose when ever a new
 pose is resolved by the AR-provider.
 
-### **`src/components/cameras/AR-Camera`**
+### ARCamera
 
-Base class for all AR-cameras.
+Base class for all AR cameras.
 
-### **`src/components/AR/cameras/*.*`**
+### src/components/AR/
 
-All supported AR camera components. Should be attached to the main view (default view
-is `root/Player/NonVrCamera`).
+Contains all supported AR camera components.
+
+Should be attached to the main view (default view is `root/Player/NonVrCamera`).
+
 There may be multiple cameras attached to the main view, but only one AR-Camera should
 be active at any given time. Otherwise multiple active AR-cameras will start fighting
 for setting the pose of the main view.
+
 Usually we keep the code of AR-camera as short as possible and let other components
 listed to camera's events:
 
@@ -170,7 +137,7 @@ export class FaceMaskExample extends Component {
 
 ## Examples
 
-Can be found under `/examples`.
+Their code can be found under `/examples`.
 
 ### SLAM (World Tracking)
 
