@@ -38,17 +38,11 @@ import {WebXRProvider} from '@wonderlandengine/ar-provider-webxr';
 import {XR8Provider} from '@wonderlandengine/ar-provider-8thwall';
 
 // ...
-
 /* wle:auto-constants:end */
-window.API_TOKEN_XR8 = ApiToken8THWall;
-window.WEBXR_REQUIRED_FEATURES = WebXRRequiredFeatures;
-window.WEBXR_OPTIONAL_FEATURES = WebXROptionalFeatures;
-
-// ...
 
 const arSession = ARSession.getSessionForEngine(engine);
-WebXRProvider.registerTrackingProviderWithARSession(arSession);
-XR8Provider.registerTrackingProviderWithARSession(arSession);
+WebXRProvider.registerTrackingProviderWithARSession(arSession, {optionalFeatures: [...], requiredFeatures: [...]});
+XR8Provider.registerTrackingProviderWithARSession(arSession, {apiToken: /* ApiToken8THWall */});
 
 /* wle:auto-register:start */
 // ...

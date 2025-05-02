@@ -73,6 +73,11 @@ export interface XR8UIHandler {
     handleIncompatibleDevice: () => void;
 }
 
+export interface XR8Config {
+    /** 8th Wall API Token */
+    apiToken: string;
+}
+
 /**
  * ARProvider implementation for loading and setting up the 8th Wall lib
  */
@@ -86,6 +91,9 @@ export class XR8Provider extends ARProvider {
      * Unique id for this instance
      */
     private _id: number;
+
+    /** Configuration values passed to the constructor */
+    private _config: XR8Config;
 
     /**
      * Default XR8UIHandler to handle 8th wall UI related events
@@ -109,8 +117,8 @@ export class XR8Provider extends ARProvider {
      */
     private static loadingPromise: Promise<void> | null = null;
 
-    static registerTrackingProviderWithARSession(arSession: ARSession) {
-        const provider = new XR8Provider(arSession.engine);
+    static registerTrackingProviderWithARSession(arSession: ARSession, config: XR8Config) {
+        const provider = new XR8Provider(arSession.engine, config);
         arSession.registerTrackingProvider(provider);
         return provider;
     }
@@ -142,10 +150,11 @@ export class XR8Provider extends ARProvider {
         }
     }
 
-    private constructor(engine: WonderlandEngine) {
+    private constructor(engine: WonderlandEngine, config: XR8Config) {
         super(engine);
 
         this._id = XR8Provider._instances++;
+        this._config = config;
 
         // Safeguard that we are not running inside the editor
         if (typeof document === 'undefined') {
@@ -159,7 +168,7 @@ export class XR8Provider extends ARProvider {
      *
      * @returns a promise when the library is loaded.
      */
-    private static loadXR8ExternalLib() {
+    private async loadXR8ExternalLib() {
         if (XR8Provider.loadingPromise) {
             return XR8Provider.loadingPromise;
         }
@@ -183,10 +192,7 @@ export class XR8Provider extends ARProvider {
                 return;
             }
 
-            /**
-             * API_TOKEN_XR8 should be defined in the index.html
-             * TODO: fix this when it's moved to the auto-constants
-             */
+            /** API_TOKEN_XR8 should be defined in the index.js */
             if (!API_TOKEN_XR8) {
                 throw new Error('8th Wall api is not defined');
             }
@@ -198,7 +204,7 @@ export class XR8Provider extends ARProvider {
             const s = document.createElement('script');
             s.id = '__injected-WLE-xr8';
             s.crossOrigin = 'anonymous';
-            s.src = 'https://apps.8thwall.com/xrweb?appKey=' + API_TOKEN_XR8;
+            s.src = 'https://apps.8thwall.com/xrweb?appKey=' + this._config.apiToken;
             document.body.appendChild(s);
         });
 
@@ -217,20 +223,17 @@ export class XR8Provider extends ARProvider {
      * @returns promise when the 8th Wall has loaded.
      */
     async load() {
-        // Make sure we're no in the editor
+        // Make sure we're not in the editor
         if (!window.document) {
             return;
         }
         this.loaded = false;
 
-        const logo =
-            document.readyState === 'complete'
-                ? this.add8thwallLogo()
-                : document.addEventListener('DOMContentLoaded', () =>
-                      this.add8thwallLogo()
-                  );
+        document.readyState === 'complete'
+            ? this.add8thwallLogo()
+            : document.addEventListener('DOMContentLoaded', () => this.add8thwallLogo());
 
-        await XR8Provider.loadXR8ExternalLib();
+        await this.loadXR8ExternalLib();
         this.loaded = true;
         document.querySelector('#WL-loading-8thwall-logo' + this._id)?.remove();
     }

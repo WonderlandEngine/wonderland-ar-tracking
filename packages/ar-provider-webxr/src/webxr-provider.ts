@@ -7,6 +7,11 @@ import {
 } from '@wonderlandengine/ar-tracking';
 import {WorldTracking_WebXR} from './world-tracking-mode-webxr.js';
 
+export interface WebXRConfig {
+    requiredFeatures: string[];
+    optionalFeatures: string[];
+}
+
 /**
  * ARProvider implementation for device native WebXR API
  */
