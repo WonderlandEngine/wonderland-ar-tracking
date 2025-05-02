@@ -46,13 +46,13 @@ VPS (Visual Positioning System) allows tracking a world mesh for a scanned locat
 
 ## Table of Contents
 
-- [Setting Up](#setting-up)
-- [Structure](#structure)
 - [Examples](#examples)
     - [SLAM (World Tracking)](#slam-world-tracking)
     - [Image Tracking](#image-tracking)
     - [Face Tracking](#face-tracking)
     - [8th Wall VPS](#8th-wall-vps)
+- [Setting Up](#setting-up)
+- [AI Overview](#api-overview)
 
 ## Setting Up
 
