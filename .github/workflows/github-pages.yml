@@ -46,8 +46,8 @@ jobs:
             - name: Gzip
               run: find ./public/ -type f ! -name '*.gz' -exec gzip -k "{}" \;
             - name: Upload artifact
-                uses: actions/upload-pages-artifact@v3
-                with:
+              uses: actions/upload-pages-artifact@v3
+              with:
                   path: ./public
     deploy-pages:
         needs: package
