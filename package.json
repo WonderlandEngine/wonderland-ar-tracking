@@ -1,0 +1,7 @@
+{
+  "name": "wonderland-ar-tracking",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ]
+}
