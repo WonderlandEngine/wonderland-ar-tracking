@@ -1,6 +1,11 @@
 name: Build
 on: [push]
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
     package:
         runs-on: ubuntu-latest
@@ -13,10 +18,8 @@ jobs:
                   apt install -y zip
 
                   # Build all node libraries
-                  cd ar-tracking && npm i && npm run build && cd ..
-                  cd ar-provider-webxr && npm i && npm run build && cd ..
-                  cd ar-provider-8thwall && npm i && npm run build && cd ..
-                  cd examples/common-components && npm i && cd ../..
+                  npm i
+                  npm run build --workspaces
 
                   # Build all examples
                   mkdir public
@@ -41,51 +44,15 @@ jobs:
               env:
                   WLE_CREDENTIALS: ${{ secrets.WLE_CREDENTIALS }}
             - name: Gzip
-              run: gzip -k public/**/*.*
-            - name: Upload package artifact
-              uses: actions/upload-artifact@v2
-              with:
-                  name: wonderland-engine-examples-deploy
-                  path: public/
+              run: find ./public/ -type f ! -name '*.gz' -exec gzip -k "{}" \;
+            - name: Upload artifact
+                uses: actions/upload-pages-artifact@v3
+                with:
+                  path: ./public
     deploy-pages:
         needs: package
-        permissions:
-            contents: read
-            pages: write
-            id-token: write
         if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout
-              uses: actions/checkout@v1
-            - name: Download package artifact
-              uses: actions/download-artifact@v2
-              with:
-                  name: wonderland-engine-examples-deploy
-                  path: public/
             - name: Deploy to GitHub Pages
-              uses: JamesIves/github-pages-deploy-action@4.1.1
-              with:
-                  branch: gh-pages
-                  folder: public
-    deploy-bucket:
-        needs: package
-        if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout
-              uses: actions/checkout@master
-            - name: Download package artifact
-              uses: actions/download-artifact@v2
-              with:
-                  name: wonderland-engine-examples-deploy
-                  path: public/
-            - name: Deploy static site to S3 bucket
-              uses: BetaHuhn/do-spaces-action@v2
-              with:
-                  source: './public/'
-                  out_dir: 'examples'
-                  space_name: ${{ secrets.AWS_NAME }}
-                  space_region: ${{ secrets.AWS_REGION}}
-                  access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-                  secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+              uses: actions/deploy-pages@v4
