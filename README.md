@@ -3,18 +3,19 @@
 Integration of various AR tracking frameworks into Wonderland Engine.
 
 The following libraries and tracking methods are supported:
+
 - WebXR Device API: SLAM tracking.
 - 8th Wall: SLAM tracking, image tracking, face tracking, VPS.
 
 ## Table of Contents
 
-* [Setting Up](#setting-up)
-* [Structure](#structure)
-* [Examples](#examples)
-    * [SLAM (World Tracking)](#slam-world-tracking)
-    * [Image Tracking](#image-tracking)
-    * [Face Tracking](#face-tracking)
-    * [8th Wall VPS](#8th-wall-vps)
+- [Setting Up](#setting-up)
+- [Structure](#structure)
+- [Examples](#examples)
+    - [SLAM (World Tracking)](#slam-world-tracking)
+    - [Image Tracking](#image-tracking)
+    - [Face Tracking](#face-tracking)
+    - [8th Wall VPS](#8th-wall-vps)
 
 ## Setting Up
 
@@ -58,7 +59,6 @@ XR8Provider.registerTrackingProviderWithARSession(arSession);
 
 5. Make sure you are running on HTTPS (8th Wall requires it even on localhost!): Go to
    `Views > Preferences > Server` and "Generate Certificates", then check the SSL checkbox.
-
 
 ## Structure
 
@@ -118,7 +118,6 @@ the required permissions for the 8th Wall library.
 
 ```ts
 class CustomProvider extends ARProvider {
-
     async load() {
         // Make sure we're not in the editor
         if (!window.document) return;
@@ -130,7 +129,7 @@ class CustomProvider extends ARProvider {
             const s = document.createElement('script');
             s.crossOrigin = 'anonymous';
             s.src = 'URL-TO-THE-TRACKING-LIBRARY.js';
-            s.addEventListener("load", resolve);
+            s.addEventListener('load', resolve);
         });
     }
 }
@@ -168,9 +167,9 @@ export class FaceMaskExample extends Component {
     ARFaceTrackingCamera!: WLEObject;
 
     start() {
-       camera.onFaceUpdate.add((event) => {
+        camera.onFaceUpdate.add((event) => {
             const {transform} = event.detail;
-       });
+        });
     }
 }
 ```
@@ -186,22 +185,24 @@ implementation.
 
 <img width="288" src="examples/SLAM-camera/previews/SLAM-example.webp?raw=true" alt="SLAM tracking" />
 
-----
-### Image Tracking
+---
 
+### Image Tracking
 
 <img width="288" src="examples/image-tracking/previews/image-target.webp?raw=true" alt="Simple Image target" />
 <img width="288" src="examples/image-tracking/previews/flat-image-physical-size.webp?raw=true" alt="Physically correct image size" />
 <img width="288" src="examples/image-tracking/previews/curved-image-target-video.webp?raw=true" alt="Curved image target with video" />
 
-----
+---
+
 ### Face Tracking
 
 Allows tracking a face and attaching objects to different attachment points.
 
 <img width="288"  src="examples/face-tracking/previews/face-tracking.webp?raw=true" alt="Face target" />
 
-----
+---
+
 ### 8th Wall VPS
 
 VPS (Visual Positioning System) allows tracking a world mesh for a scanned location.
@@ -209,4 +210,3 @@ VPS (Visual Positioning System) allows tracking a world mesh for a scanned locat
 <img width="288"  src="examples/vps/previews/dynamic-mesh.webp?raw=true" alt="VPS Dynamically generated mesh" />
 
 ---
-

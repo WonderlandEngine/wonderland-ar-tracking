@@ -34,8 +34,8 @@ const RuntimeOptions = {
 const Constants = {
     ProjectName: 'FaceTracking',
     RuntimeBaseName: 'WonderlandRuntime',
-    WebXRRequiredFeatures: ['local',],
-    WebXROptionalFeatures: ['local','hand-tracking','hit-test',],
+    WebXRRequiredFeatures: ['local'],
+    WebXROptionalFeatures: ['local', 'hand-tracking', 'hit-test'],
 };
 /* wle:auto-constants:end */
 

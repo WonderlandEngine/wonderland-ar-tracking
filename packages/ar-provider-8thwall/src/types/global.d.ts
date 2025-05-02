@@ -122,7 +122,7 @@ declare type XR8ImageScanningEvent = {
                 radiusTop?: number;
 
                 /** The width of the image in the scene, when multiplied by scale. */
-                scaleWidth?: number; 
+                scaleWidth?: number;
 
                 /** The height of the image in the scene, when multiplied by scale. */
                 scaledHeight?: number;
@@ -143,46 +143,45 @@ declare type XR8ImageScanningEvent = {
     };
 };
 
-
 declare type XR8ImageTrackedEvent = {
     /** Name of the event.*/
     name: 'reality.imagefound' | 'reality.imageupdated' | 'reality.imagelost';
     detail: {
-         /* Name of the tracked image */
-         name: string; 
+        /* Name of the tracked image */
+        name: string;
 
-         /* Position of the tracked image */
-         position: {x: number; y: number; z: number};
- 
-         /* Rotation of the tracked image */
-         rotation: {x: number; y: number; z: number; w: number};
- 
-         /* A scale factor that should be applied to object attached to this image. */
-         scale: number;
- 
-         /* The width of the image in the scene, when multiplied by scale. */
-         scaleWidth: number;
- 
-         /* The height of the image in the scene, when multiplied by scale. */
-         scaledHeight: number;
- 
-         /* Type of the tracked image */
-         type: 'FLAT' | 'CYLINDRICAL' | 'CONICAL';
- 
-         /* Height of the curved target. */
-         height?: number;
- 
-         /* Radius of the curved target at the top. */
-         radiusTop?: number;
- 
-         /* Radius of the curved target at the bottom. */
-         radiusBottom?: number;
- 
-         /* Starting angle in radians. */
-         arcStartRadians?: number;
- 
-         /* Central angle in radians. */
-         arcLengthRadians?: number;
+        /* Position of the tracked image */
+        position: {x: number; y: number; z: number};
+
+        /* Rotation of the tracked image */
+        rotation: {x: number; y: number; z: number; w: number};
+
+        /* A scale factor that should be applied to object attached to this image. */
+        scale: number;
+
+        /* The width of the image in the scene, when multiplied by scale. */
+        scaleWidth: number;
+
+        /* The height of the image in the scene, when multiplied by scale. */
+        scaledHeight: number;
+
+        /* Type of the tracked image */
+        type: 'FLAT' | 'CYLINDRICAL' | 'CONICAL';
+
+        /* Height of the curved target. */
+        height?: number;
+
+        /* Radius of the curved target at the top. */
+        radiusTop?: number;
+
+        /* Radius of the curved target at the bottom. */
+        radiusBottom?: number;
+
+        /* Starting angle in radians. */
+        arcStartRadians?: number;
+
+        /* Central angle in radians. */
+        arcLengthRadians?: number;
     };
 };
 
@@ -207,7 +206,7 @@ declare type XR8VPSMeshFoundEvent = {
                     name: 'color';
                     array: Float32Array;
                     itemSize: 3;
-                }
+                },
             ];
         };
     };
@@ -264,7 +263,7 @@ declare type XR8FaceFoundEvent = {
         transform: {
             position: {x: number; y: number; z: number};
             rotation: {x: number; y: number; z: number; w: number};
-            
+
             /* A scale factor that should be applied to objects attached to this face. */
             scale: number;
 

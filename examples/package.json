@@ -1,9 +1,9 @@
 {
-  "dependencies": {
-    "@wonderlandengine/api": "^1.0.0",
-    "@wonderlandengine/ar-provider-8thwall": "file:../ar-provider-8thwall",
-    "@wonderlandengine/ar-provider-webxr": "file:../ar-provider-webxr",
-    "@wonderlandengine/ar-tracking": "file:../ar-tracking",
-    "@wonderlandengine/components": "^1.0.0"
-  }
+    "dependencies": {
+        "@wonderlandengine/api": "^1.0.0",
+        "@wonderlandengine/ar-provider-8thwall": "file:../ar-provider-8thwall",
+        "@wonderlandengine/ar-provider-webxr": "file:../ar-provider-webxr",
+        "@wonderlandengine/ar-tracking": "file:../ar-tracking",
+        "@wonderlandengine/components": "^1.0.0"
+    }
 }

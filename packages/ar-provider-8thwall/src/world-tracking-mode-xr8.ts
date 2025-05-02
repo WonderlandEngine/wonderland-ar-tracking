@@ -30,7 +30,6 @@ type UsesVPS = {
     usesVPS: boolean;
 };
 
-
 /**
  * Convert XR8ImageScanningEvent to general Wonderland ImageScanningEvent
  */
@@ -39,10 +38,10 @@ function toImageScanningEvent(event: XR8ImageScanningEvent): ImageScanningEvent 
         imageTargets: event.detail.imageTargets.map((target) => {
             return {
                 ...target,
-                type: target.type.toLowerCase() as ImageScanningEvent['imageTargets'][0]['type']
-            }
-        })
-    }
+                type: target.type.toLowerCase() as ImageScanningEvent['imageTargets'][0]['type'],
+            };
+        }),
+    };
 }
 
 /**
@@ -51,8 +50,8 @@ function toImageScanningEvent(event: XR8ImageScanningEvent): ImageScanningEvent 
 function toImageTrackingEvent(event: XR8ImageTrackedEvent): ImageTrackedEvent {
     return {
         ...event.detail,
-        type: event.detail.type.toLowerCase() as ImageTrackedEvent['type']
-    }
+        type: event.detail.type.toLowerCase() as ImageTrackedEvent['type'],
+    };
 }
 
 /**
@@ -252,8 +251,8 @@ export class WorldTracking_XR8 extends TrackingMode {
                 componentUsesAbsoluteScale === undefined
                     ? 'responsive'
                     : componentUsesAbsoluteScale
-                    ? 'absolute'
-                    : 'responsive',
+                      ? 'absolute'
+                      : 'responsive',
             enableVps: componentUsesVPS,
         });
 

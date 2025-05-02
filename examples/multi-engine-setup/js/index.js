@@ -41,8 +41,8 @@ const RuntimeOptions = {
 const Constants = {
     ProjectName: 'engine-1',
     RuntimeBaseName: 'WonderlandRuntime',
-    WebXRRequiredFeatures: ['local',],
-    WebXROptionalFeatures: ['local','hand-tracking','hit-test',],
+    WebXRRequiredFeatures: ['local'],
+    WebXROptionalFeatures: ['local', 'hand-tracking', 'hit-test'],
 };
 /* wle:auto-constants:end */
 
@@ -70,7 +70,6 @@ engine2.onSceneLoaded.once(() => {
     const el = document.getElementById('version-3');
     if (el) setTimeout(() => el.remove(), 2000);
 });
-
 
 /* WebXR setup. */
 
@@ -111,7 +110,6 @@ engine.registerComponent(ButtonStartARSession);
 engine.registerComponent(FaceAttachmentPointExample);
 /* wle:auto-register:end */
 engine.scene.load(`${Constants.ProjectName}.bin`);
-
 
 const arSession2 = ARSession.getSessionForEngine(engine2);
 WebXRProvider.registerTrackingProviderWithARSession(arSession2);

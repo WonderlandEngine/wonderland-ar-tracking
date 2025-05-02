@@ -16,7 +16,12 @@ import {property} from '@wonderlandengine/api/decorators.js';
 
 import {quat, vec3} from 'gl-matrix';
 
-import {ARSession, ARImageTrackingCamera, ImageScanningEvent, ImageTrackedEvent} from '@wonderlandengine/ar-tracking';
+import {
+    ARSession,
+    ARImageTrackingCamera,
+    ImageScanningEvent,
+    ImageTrackedEvent,
+} from '@wonderlandengine/ar-tracking';
 import {generateCylinderGeometry} from './geometries/cylinder-geomtery.js';
 import {generatePlaneGeomtry} from './geometries/plane-geometry.js';
 
@@ -100,9 +105,7 @@ export class PhysicalSizeImageTarget extends Component {
         });
     }
 
-    private createCylinderMesh = (
-        imageData: ImageScanningEvent['imageTargets'][0]
-    ) => {
+    private createCylinderMesh = (imageData: ImageScanningEvent['imageTargets'][0]) => {
         const {geometry} = imageData;
         const length = geometry.arcLengthRadians!;
         return generateCylinderGeometry(
@@ -117,17 +120,13 @@ export class PhysicalSizeImageTarget extends Component {
         );
     };
 
-    private createFlatMesh = (
-        imageData: ImageScanningEvent['imageTargets'][0]
-    ) => {
+    private createFlatMesh = (imageData: ImageScanningEvent['imageTargets'][0]) => {
         const {geometry} = imageData;
         return generatePlaneGeomtry(geometry.scaleWidth!, geometry.scaledHeight!);
     };
 
     private onImageScanned = (event: ImageScanningEvent) => {
-        const imageData = event.imageTargets.find(
-            (target) => target.name === this.imageId
-        );
+        const imageData = event.imageTargets.find((target) => target.name === this.imageId);
         if (!imageData) {
             console.error('ImageTarget not found: ', this.imageId);
             return;
@@ -218,13 +217,8 @@ export class PhysicalSizeImageTarget extends Component {
             return;
         }
 
-        const rotationWorld = this.object.getRotationWorld()
-        quat.lerp(
-            rotationWorld,
-            rotationWorld,
-            this._cachedTrackedRotation,
-            0.9
-        );
+        const rotationWorld = this.object.getRotationWorld();
+        quat.lerp(rotationWorld, rotationWorld, this._cachedTrackedRotation, 0.9);
         vec3.lerp(
             this._cachedPosition,
             this._cachedPosition,

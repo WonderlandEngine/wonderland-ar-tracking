@@ -6,7 +6,11 @@
  * And stopped when the image is lost.
  */
 import {Component} from '@wonderlandengine/api';
-import {ARImageTrackingCamera, ARSession, ImageTrackedEvent} from '@wonderlandengine/ar-tracking';
+import {
+    ARImageTrackingCamera,
+    ARSession,
+    ImageTrackedEvent,
+} from '@wonderlandengine/ar-tracking';
 import {PhysicalSizeImageTarget} from './physical-size-image-target.js';
 import {VideoTexture} from '@wonderlandengine/components';
 

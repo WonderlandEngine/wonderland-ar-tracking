@@ -1,7 +1,15 @@
 {
-  "name": "wonderland-ar-tracking",
-  "private": true,
-  "workspaces": [
-    "packages/*"
-  ]
+    "name": "wonderland-ar-tracking",
+    "private": true,
+    "scripts": {
+        "format": "prettier --write ."
+    },
+    "workspaces": [
+        "packages/*"
+    ],
+    "prettier": "@wonderlandengine/prettier-config",
+    "devDependencies": {
+        "@wonderlandengine/prettier-config": "^1.0.0",
+        "prettier": "^3.5.3"
+    }
 }

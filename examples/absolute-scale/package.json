@@ -1,22 +1,21 @@
 {
-  "name": "absolute-scale-example",
-  "version": "1.0.0",
-  "description": "My Wonderland project",
-  "main": "js/index.js",
-  "type": "module",
-  "module": "js/index.js",
-  "scripts": {
-  },
-  "keywords": [
-    "wonderland-engine"
-  ],
-  "dependencies": {
-    "@wonderlandengine/api": "^1.0.0",
-    "@wonderlandengine/ar-provider-8thwall": "^1.0.0",
-    "@wonderlandengine/ar-provider-webxr": "^1.0.0",
-    "@wonderlandengine/ar-tracking": "^1.0.0",
-    "@wonderlandengine/components": "^1.0.0",
-    "gl-matrix": "^3.4.3",
-    "typescript": "^4.9.5"
-  }
+    "name": "absolute-scale-example",
+    "version": "1.0.0",
+    "description": "My Wonderland project",
+    "main": "js/index.js",
+    "type": "module",
+    "module": "js/index.js",
+    "scripts": {},
+    "keywords": [
+        "wonderland-engine"
+    ],
+    "dependencies": {
+        "@wonderlandengine/api": "^1.0.0",
+        "@wonderlandengine/ar-provider-8thwall": "^1.0.0",
+        "@wonderlandengine/ar-provider-webxr": "^1.0.0",
+        "@wonderlandengine/ar-tracking": "^1.0.0",
+        "@wonderlandengine/components": "^1.0.0",
+        "gl-matrix": "^3.4.3",
+        "typescript": "^4.9.5"
+    }
 }

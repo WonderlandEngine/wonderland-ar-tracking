@@ -1,26 +1,26 @@
 {
-  "name": "face-tracking.wlp",
-  "version": "1.0.0",
-  "description": "My Wonderland project",
-  "main": "js/index.js",
-  "type": "module",
-  "module": "js/index.js",
-  "scripts": {
-    "build": "esbuild ./js/index.js --bundle --format=esm --outfile=\"deploy/face-tracking.wlp-bundle.js\""
-  },
-  "keywords": [
-    "wonderland-engine"
-  ],
-  "devDependencies": {
-    "esbuild": "^0.15.18"
-  },
-  "dependencies": {
-    "@wonderlandengine/api": "^1.0.0",
-    "@wonderlandengine/ar-provider-8thwall": "^1.0.0",
-    "@wonderlandengine/ar-provider-webxr": "^1.0.0",
-    "@wonderlandengine/ar-tracking": "^1.0.0",
-    "@wonderlandengine/components": "^1.0.0",
-    "gl-matrix": "^3.4.3",
-    "typescript": "^4.9.5"
-  }
+    "name": "face-tracking.wlp",
+    "version": "1.0.0",
+    "description": "My Wonderland project",
+    "main": "js/index.js",
+    "type": "module",
+    "module": "js/index.js",
+    "scripts": {
+        "build": "esbuild ./js/index.js --bundle --format=esm --outfile=\"deploy/face-tracking.wlp-bundle.js\""
+    },
+    "keywords": [
+        "wonderland-engine"
+    ],
+    "devDependencies": {
+        "esbuild": "^0.15.18"
+    },
+    "dependencies": {
+        "@wonderlandengine/api": "^1.0.0",
+        "@wonderlandengine/ar-provider-8thwall": "^1.0.0",
+        "@wonderlandengine/ar-provider-webxr": "^1.0.0",
+        "@wonderlandengine/ar-tracking": "^1.0.0",
+        "@wonderlandengine/components": "^1.0.0",
+        "gl-matrix": "^3.4.3",
+        "typescript": "^4.9.5"
+    }
 }

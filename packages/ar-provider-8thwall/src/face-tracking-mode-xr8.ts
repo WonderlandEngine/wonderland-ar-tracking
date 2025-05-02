@@ -37,7 +37,7 @@ const AttachmentPointsMapping: {[value in XR8FaceAttachmentPoints]: FaceAttachme
 };
 
 /**
- * Convert XR8 face lost event to general Wonderland face lost event 
+ * Convert XR8 face lost event to general Wonderland face lost event
  */
 function toFaceFoundEvent(event: XR8FaceFoundEvent): FaceFoundEvent {
     const attachmentPoints: {

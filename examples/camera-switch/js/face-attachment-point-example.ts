@@ -13,7 +13,7 @@ import {
 
 const FaceAttachmentPoints = Object.values(FaceAttachmentPoint);
 
-console.log("FaceAttachmentPoints", FaceAttachmentPoints);
+console.log('FaceAttachmentPoints', FaceAttachmentPoints);
 
 export class FaceAttachmentPointExample extends Component {
     static TypeName = 'face-attachment-point-example';

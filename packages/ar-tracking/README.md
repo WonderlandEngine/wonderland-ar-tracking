@@ -9,6 +9,7 @@ Learn more about Wonderland Engine at [https://wonderlandengine.com](https://won
 ## Usage
 
 Install this library to your project's package as follows:
+
 ```sh
 npm i --save @wonderlandengine/ar-tracking
 ```
@@ -17,6 +18,7 @@ Wonderland Editor will automatically detect all components in the package add au
 those that you use in the scene.
 
 Then, make sure to install a provider, e.g.:
+
 ```sh
 npm i --save @wonderlandengine/ar-provider-webxr
 ```

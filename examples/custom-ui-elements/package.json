@@ -1,26 +1,26 @@
 {
-  "name": "custom-ui-elements-example.wlp",
-  "version": "1.0.0",
-  "description": "Custom xr8 ui handling example",
-  "main": "js/index.ts",
-  "type": "module",
-  "module": "js/index.js",
-  "scripts": {
-    "build": "esbuild ./js/index.js --bundle --outfile=\"deploy/custom-ui-elements-example.wlp-bundle.js\""
-  },
-  "keywords": [
-    "wonderland-engine"
-  ],
-  "dependencies": {
-    "@wonderlandengine/api": "^1.0.0",
-    "@wonderlandengine/ar-provider-8thwall": "^1.0.0",
-    "@wonderlandengine/ar-provider-webxr": "^1.0.0",
-    "@wonderlandengine/ar-tracking": "^1.0.0",
-    "@wonderlandengine/components": "^1.0.0",
-    "gl-matrix": "^3.4.3",
-    "qrcode-with-logos": "^1.0.3"
-  },
-  "devDependencies": {
-    "typescript": "^4.9.5"
-  }
+    "name": "custom-ui-elements-example.wlp",
+    "version": "1.0.0",
+    "description": "Custom xr8 ui handling example",
+    "main": "js/index.ts",
+    "type": "module",
+    "module": "js/index.js",
+    "scripts": {
+        "build": "esbuild ./js/index.js --bundle --outfile=\"deploy/custom-ui-elements-example.wlp-bundle.js\""
+    },
+    "keywords": [
+        "wonderland-engine"
+    ],
+    "dependencies": {
+        "@wonderlandengine/api": "^1.0.0",
+        "@wonderlandengine/ar-provider-8thwall": "^1.0.0",
+        "@wonderlandengine/ar-provider-webxr": "^1.0.0",
+        "@wonderlandengine/ar-tracking": "^1.0.0",
+        "@wonderlandengine/components": "^1.0.0",
+        "gl-matrix": "^3.4.3",
+        "qrcode-with-logos": "^1.0.3"
+    },
+    "devDependencies": {
+        "typescript": "^4.9.5"
+    }
 }
