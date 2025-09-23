@@ -1,4 +1,6 @@
-import {WonderlandEngine, Component, ViewComponent} from '@wonderlandengine/api';
+/// <reference path="./types/global.d.ts" />
+
+import {WonderlandEngine, Component} from '@wonderlandengine/api';
 import {
     ARProvider,
     ARSession,
@@ -12,11 +14,17 @@ import {WorldTracking_Zappar} from './world-tracking-mode-zappar.js';
  */
 export class ZapparProvider extends ARProvider {
     private _xrSession: XRSession | null = null;
-    private addOnce: Boolean = true;
-    private hasPlaced: Boolean = false;
-    private dynamicCanvas: any = null;
-    pipeline: any;
-    instantTracker: any;
+    private addOnce = true;
+    private hasPlaced = false;
+    private dynamicCanvas: HTMLCanvasElement | null = null;
+    private pipeline: any;
+    private instantTracker: any;
+
+    static Name = 'Zappar';
+
+    get name(): string {
+        return ZapparProvider.Name;
+    }
 
     get xrSession() {
         return this._xrSession;
@@ -46,7 +54,7 @@ export class ZapparProvider extends ARProvider {
         });
     }
 
-    async startSession(webxrRequiredFeatures: string[] = ['local'], pipeline: any) {
+    async startSession(webxrRequiredFeatures: string[] = ['local'], pipeline: any): Promise<void> {
         this.pipeline = pipeline;
 
         await this.loadZapparExternalLib(); // Wait for the Zappar script to be loaded
@@ -79,11 +87,12 @@ export class ZapparProvider extends ARProvider {
             };
         });
     }
-    update() {
+
+    update(): void {
         console.log(this.instantTracker, this.pipeline);
     }
 
-    animate(instantTracker: any = this.instantTracker, pipeline: any = this.pipeline) {
+    animate(instantTracker: any = this.instantTracker, pipeline: any = this.pipeline): void {
         if (!pipeline) return;
         if (!instantTracker) return;
 
@@ -112,7 +121,7 @@ export class ZapparProvider extends ARProvider {
         //write code to update glTexture to a dynamically created html element
         console.log(pipeline);
         // Create the dynamicCanvas if it doesn't exist
-        if (this.dynamicCanvas === undefined || this.dynamicCanvas === null) {
+        if (!this.dynamicCanvas) {
             this.dynamicCanvas = document.createElement('canvas');
             document.body.appendChild(this.dynamicCanvas);
         }
@@ -124,14 +133,14 @@ export class ZapparProvider extends ARProvider {
 
         if (!this.hasPlaced) instantTracker.setAnchorPoseFromCameraOffset(0, 0, -5);
 
-        let model = pipeline.cameraModel();
-        let projectionMatrix = Zappar.projectionMatrixFromCameraModel(
+        const model = pipeline.cameraModel();
+        const projectionMatrix = Zappar.projectionMatrixFromCameraModel(
             model,
             this.engine.canvas.width,
             this.engine.canvas.height
         );
-        let cameraPoseMatrix = pipeline.cameraPoseDefault();
-        let anchorPoseMatrix = instantTracker.anchor.pose(cameraPoseMatrix);
+        const cameraPoseMatrix = pipeline.cameraPoseDefault();
+        const anchorPoseMatrix = instantTracker.anchor.pose(cameraPoseMatrix);
         window.arr = [projectionMatrix, cameraPoseMatrix, anchorPoseMatrix];
         window.pipeline = pipeline._z;
 
@@ -145,10 +154,9 @@ export class ZapparProvider extends ARProvider {
         //requestAnimationFrame(this.animate);
     }
 
-    updateDynamicCanvas(context, texture) {
-        //console.log(this.dynamicCanvas);
-        //console.log(texture);
-        // Assuming texture.width and texture.height are the dimensions of the WebGL texture
+    updateDynamicCanvas(context: CanvasRenderingContext2D | null, texture: any): void {
+        if (!context || !texture || !this.dynamicCanvas) return;
+
         this.dynamicCanvas.width = texture.width;
         this.dynamicCanvas.height = texture.height;
 
@@ -156,23 +164,25 @@ export class ZapparProvider extends ARProvider {
         context.drawImage(texture, 0, 0, texture.width, texture.height);
     }
 
-    processCameraPipeline() {
+    processCameraPipeline(): void {
         console.log('hell0000.... ');
         console.log(this.engine);
         this.pipeline = new Zappar.Pipeline();
         window.ZapparPipeline = this.pipeline;
-        this.pipeline.glContextSet(this.engine.canvas.getContext('webgl2'));
+        const gl = this.engine.canvas.getContext('webgl2');
+        if (!gl) return;
+        this.pipeline.glContextSet(gl);
         this.createFrameSource(this.pipeline);
     }
 
-    createFrameSource(pipeline) {
+    createFrameSource(pipeline: any): void {
         const deviceId = Zappar.cameraDefaultDeviceID();
         const source = new Zappar.CameraSource(pipeline, deviceId);
         //todo call it from within a userguester
-        Zappar.permissionRequestUI().then((granted) => {
+        Zappar.permissionRequestUI().then((granted: boolean) => {
             if (granted) {
                 // User granted the permissions so start the camera
-                this.startSource(source, pipeline);
+                this.startSource(source);
             } else {
                 // User denied the permissions so show Zappar's built-in 'permission denied' UI
                 Zappar.permissionDeniedUI();
@@ -180,7 +190,7 @@ export class ZapparProvider extends ARProvider {
         });
     }
 
-    startSource(source, pipeline) {
+    startSource(source: any): void {
         document.addEventListener('visibilitychange', () => {
             switch (document.visibilityState) {
                 case 'hidden':
@@ -194,7 +204,7 @@ export class ZapparProvider extends ARProvider {
         this._engine.scene.onPreRender.add(this.onWLPreRender);
         source.start();
 
-        let instantTracker = new Zappar.InstantWorldTracker(this.pipeline);
+        const instantTracker = new Zappar.InstantWorldTracker(this.pipeline);
         console.warn('instant Tracker is :::: ');
         console.log(instantTracker);
         window.addEventListener('click', () => {
@@ -208,20 +218,21 @@ export class ZapparProvider extends ARProvider {
         }
     }
 
-    onWLPreRender() {
+    private onWLPreRender = () => {
         if (!this.pipeline) return;
         this.pipeline.processGL();
         this.pipeline.frameUpdate();
         this.pipeline.cameraFrameUploadGL();
 
         const gl = this._engine.canvas.getContext('webgl2');
+        if (!gl) return;
         gl.bindTexture(gl.TEXTURE_2D, null);
         gl.bindBuffer(gl.ARRAY_BUFFER, null);
         gl.useProgram(null);
         gl.activeTexture(gl.TEXTURE0);
 
         this.pipeline.cameraFrameDrawGL(1080, 720, true);
-    }
+    };
 
     async endSession() {
         if (this._xrSession) {

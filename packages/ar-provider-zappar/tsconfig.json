@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "target": "ES2022",
+        "module": "ES2022",
+        "moduleResolution": "nodenext",
+        "outDir": "dist",
+        "declaration": true,
+        "newLine": "LF",
+        "allowJs": false,
+        "strict": true,
+        "experimentalDecorators": true
+    },
+
+    "include": ["./src/**/*.ts", "./src/**/*.d.ts", "index.ts"],
+    "exclude": ["node_modules", "dist"]
+}

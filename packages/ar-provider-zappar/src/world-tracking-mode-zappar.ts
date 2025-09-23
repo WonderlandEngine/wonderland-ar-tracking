@@ -1,14 +1,7 @@
-import {Emitter, ViewComponent} from '@wonderlandengine/api';
+/// <reference path="./types/global.d.ts" />
+
 import {ZapparProvider} from './zappar-provider.js';
-import {
-    ARProvider,
-    ARSession,
-    ImageScanningEvent,
-    ImageTrackedEvent,
-    TrackingMode,
-    VPSMeshFoundEvent,
-    VPSWayPointEvent,
-} from '@wonderlandengine/ar-tracking';
+import {TrackingMode} from '@wonderlandengine/ar-tracking';
 
 /**
  * Implementation of SLAM (World Tracking) based on the WebXR Device API
@@ -22,21 +15,18 @@ export class WorldTracking_Zappar extends TrackingMode {
     private pipeline: any;
 
     endSession(): void {
-        this.provider.endSession();
+        (this.provider as ZapparProvider).endSession();
     }
-    startSession(): Promise<void> {
-        // Call loadZapparExternalLib and return a promise
-        return this.loadZapparExternalLib().then(() => {
-            // Zappar is loaded, now start the session
-            return this.provider.startSession(
-                window.WEBXR_REQUIRED_FEATURES,
-                this.pipeline
-            );
-        });
+    async startSession(): Promise<void> {
+        await this.loadZapparExternalLib();
+        return (this.provider as ZapparProvider).startSession(
+            window.WEBXR_REQUIRED_FEATURES,
+            this.pipeline
+        );
     }
 
-    update() {
-        return this.provider.animate();
+    update(): void {
+        (this.provider as ZapparProvider).animate();
     }
 
     loadZapparExternalLib(): Promise<void> {
@@ -67,19 +57,21 @@ export class WorldTracking_Zappar extends TrackingMode {
         });
     }
 
-    processCameraPipeline() {
+    processCameraPipeline(): void {
         console.log('hell0000.... ');
         console.log(this.component.engine);
         this.pipeline = new Zappar.Pipeline();
-        this.pipeline.glContextSet(this.component.engine.canvas.getContext('webgl2'));
+        const gl = this.component.engine.canvas.getContext('webgl2');
+        if (!gl) return;
+        this.pipeline.glContextSet(gl);
         this.createFrameSource(this.pipeline);
     }
 
-    createFrameSource(pipeline) {
+    createFrameSource(pipeline: any): void {
         const deviceId = Zappar.cameraDefaultDeviceID();
         const source = new Zappar.CameraSource(pipeline, deviceId);
         //todo call it from within a userguester
-        Zappar.permissionRequestUI().then((granted) => {
+        Zappar.permissionRequestUI().then((granted: boolean) => {
             if (granted) {
                 // User granted the permissions so start the camera
                 this.startSource(source);
@@ -90,7 +82,7 @@ export class WorldTracking_Zappar extends TrackingMode {
         });
     }
 
-    startSource(source) {
+    startSource(source: any): void {
         source.start();
 
         document.addEventListener('visibilitychange', () => {
@@ -106,18 +98,19 @@ export class WorldTracking_Zappar extends TrackingMode {
         this.component.engine.scene.onPreRender.add(this.onWLPreRender);
     }
 
-    onWLPreRender() {
+    private onWLPreRender = () => {
         if (!this.pipeline) return;
         this.pipeline.processGL();
         this.pipeline.frameUpdate();
         this.pipeline.cameraFrameUploadGL();
 
         const gl = this.component.engine.canvas.getContext('webgl2');
+        if (!gl) return;
         gl.bindTexture(gl.TEXTURE_2D, null);
         gl.bindBuffer(gl.ARRAY_BUFFER, null);
         gl.useProgram(null);
         gl.activeTexture(gl.TEXTURE0);
 
         this.pipeline.cameraFrameDrawGL(1080, 720, true);
-    }
+    };
 }
