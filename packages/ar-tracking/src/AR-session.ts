@@ -48,6 +48,23 @@ export class ARSession {
     }
 
     /**
+     * Retrieve the first registered provider that supports the given tracking type.
+     * This mirrors the provider selection logic used by {@link getTrackingProvider}.
+     */
+    getPreferredARProvider(type: TrackingType): ARProvider | null {
+        for (const provider of this._trackingProviders) {
+            if (provider.supports(type)) return provider;
+        }
+
+        return null;
+    }
+
+    /** Convenience helper for UI decisions (e.g. whether an AR start button is needed). */
+    supportsInstantTracking(type: TrackingType): boolean {
+        return this.getPreferredARProvider(type)?.supportsInstantTracking ?? false;
+    }
+
+    /**
      * Retrieve tracking implementation for given type.
      *
      * @returns The tracking instance or `null` if no provider was
@@ -58,7 +75,8 @@ export class ARSession {
             if (p.supports(type)) return p.createTracking(type, component);
         }
 
-        throw new Error('No AR provider found for tracking type ' + type);
+        const typeName = TrackingType[type] ?? String(type);
+        throw new Error('No AR provider found for tracking type ' + typeName);
     }
 
     /** Get registered {@link ARProvider} based on {@link ARProvider#name}. */

@@ -16,11 +16,15 @@
         "typescript": "^4.9.5"
     },
     "dependencies": {
-        "@wonderlandengine/api": "^1.1.0",
-        "@wonderlandengine/ar-provider-8thwall": "^1.0.0",
-        "@wonderlandengine/ar-provider-webxr": "^1.0.0",
-        "@wonderlandengine/ar-tracking": "^1.0.0",
+        "@wonderlandengine/api": "file:../../../wonderland-engine/js/api/packages/api",
+        "@wonderlandengine/ar-provider-8thwall": "file:../../packages/ar-provider-8thwall",
+        "@wonderlandengine/ar-provider-webxr": "file:../../packages/ar-provider-webxr",
+        "@wonderlandengine/ar-provider-zappar": "file:../../packages/ar-provider-zappar",
+        "@wonderlandengine/ar-tracking": "file:../../packages/ar-tracking",
         "@wonderlandengine/components": "^1.0.0",
         "gl-matrix": "^3.4.3"
+    },
+    "overrides": {
+        "@wonderlandengine/api": "$@wonderlandengine/api"
     }
 }

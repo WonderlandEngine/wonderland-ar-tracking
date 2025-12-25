@@ -38,6 +38,7 @@
         "@wonderlandengine/components": "^1.0.0"
     },
     "dependencies": {
+        "@zappar/zappar": "^2.2.7",
         "gl-matrix": "^3.4.3"
     }
 }

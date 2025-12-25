@@ -62,6 +62,15 @@ class ARImageTrackingCamera extends ARCamera {
     onDeactivate(): void {
         this._trackingImpl.endSession();
     }
+
+    update(dt: number) {
+        this._trackingImpl.update?.(dt);
+
+        const cameraTransformWorld = this._trackingImpl.getCameraTransformWorld?.();
+        if (cameraTransformWorld) {
+            this.object.setTransformWorld(cameraTransformWorld);
+        }
+    }
 }
 
 export {ARImageTrackingCamera};

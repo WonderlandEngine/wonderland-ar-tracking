@@ -15,6 +15,7 @@ class ARSLAMCamera extends ARCamera {
     static TypeName = 'ar-slam-camera';
 
     private _trackingImpl!: ITrackingMode;
+    private readonly _projectionMatrix = new Float32Array(16);
 
     init() {
         this._trackingImpl = ARSession.getSessionForEngine(this.engine).getTrackingProvider(
@@ -45,6 +46,22 @@ class ARSLAMCamera extends ARCamera {
 
     update(dt: number) {
         this._trackingImpl.update?.(dt);
+
+        const cameraTransformWorld = this._trackingImpl.getCameraTransformWorld?.();
+        if (cameraTransformWorld) {
+            this.object.setTransformWorld(cameraTransformWorld);
+        }
+
+        const view = this.object.getComponent('view');
+        if (view) {
+            const hasProjectionMatrix = this._trackingImpl.getCameraProjectionMatrix?.(
+                this._projectionMatrix
+            );
+            if (hasProjectionMatrix) {
+                // @ts-ignore
+                view._setProjectionMatrix(this._projectionMatrix);
+            }
+        }
     }
 }
 

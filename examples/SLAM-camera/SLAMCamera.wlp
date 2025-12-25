@@ -45,7 +45,8 @@
                 0.5,
                 0.5,
                 0.5
-            ]
+            ],
+            "parent": "68"
         },
         "17": {
             "name": "NonVrCamera",
@@ -111,7 +112,8 @@
                 1.0,
                 1.0,
                 1.0
-            ]
+            ],
+            "parent": "68"
         },
         "23": {
             "name": "Light.000",
@@ -138,7 +140,8 @@
                 1.0,
                 1.0,
                 1.0
-            ]
+            ],
+            "parent": "68"
         },
         "24": {
             "name": "Cone",
@@ -166,7 +169,8 @@
                 1.0,
                 1.0,
                 1.0
-            ]
+            ],
+            "parent": "68"
         },
         "27": {
             "name": "Sphere",
@@ -194,7 +198,8 @@
                 0.75,
                 0.75,
                 0.75
-            ]
+            ],
+            "parent": "68"
         },
         "45": {
             "name": "EyeRight",
@@ -261,6 +266,14 @@
                 1.0,
                 1.0,
                 1.0
+            ]
+        },
+        "68": {
+            "name": "Scene",
+            "components": [
+                {
+                    "type": "slam-anchor-zappar"
+                }
             ]
         }
     },
@@ -335,7 +348,8 @@
                     1.0
                 ],
                 "shininess": 1
-            }
+            },
+            "pipeline": "37"
         },
         "22": {
             "name": "Pink",
@@ -359,7 +373,8 @@
                     0.2165777,
                     1.0
                 ]
-            }
+            },
+            "pipeline": "37"
         },
         "25": {
             "name": "Yellow",
@@ -382,7 +397,8 @@
                     0.0,
                     1.0
                 ]
-            }
+            },
+            "pipeline": "37"
         },
         "26": {
             "name": "Green",
@@ -405,37 +421,24 @@
                     0.1437908,
                     1.0
                 ]
-            }
-        },
-        "65": {
-            "link": {
-                "name": "AR Target Material",
-                "file": "js\\models\\ar-target.glb"
-            }
+            },
+            "pipeline": "37"
         },
         "68": {
             "link": {
                 "name": "AR Target Material",
                 "file": "models\\ar-target.glb"
             }
+        },
+        "69": {
+            "name": "VideoBackground",
+            "pipeline": "67"
         }
     },
     "shaders": {
-        "1": {
-            "link": {
-                "name": "DistanceFieldVector Textured.frag",
-                "file": "default"
-            }
-        },
         "2": {
             "link": {
                 "name": "Flat.frag",
-                "file": "default"
-            }
-        },
-        "3": {
-            "link": {
-                "name": "Flat Textured.frag",
                 "file": "default"
             }
         },
@@ -451,33 +454,15 @@
                 "file": "default"
             }
         },
-        "6": {
-            "link": {
-                "name": "Phong Textured.frag",
-                "file": "default"
-            }
-        },
         "28": {
             "link": {
                 "name": "Dynamic.vert",
                 "file": "default"
             }
         },
-        "29": {
-            "link": {
-                "name": "Particle Textured.frag",
-                "file": "default"
-            }
-        },
         "30": {
             "link": {
                 "name": "Skinning.vert",
-                "file": "default"
-            }
-        },
-        "31": {
-            "link": {
-                "name": "Static.frag",
                 "file": "default"
             }
         },
@@ -540,6 +525,24 @@
                 "name": "TileFeedback.frag",
                 "file": "default"
             }
+        },
+        "58": {
+            "link": {
+                "name": "AtmosphericSky.frag",
+                "file": "default"
+            }
+        },
+        "59": {
+            "link": {
+                "name": "Color.frag",
+                "file": "default"
+            }
+        },
+        "60": {
+            "link": {
+                "name": "VideoBackground.frag",
+                "file": "default"
+            }
         }
     },
     "settings": {
@@ -547,28 +550,28 @@
             "name": "SLAMCamera",
             "version": [
                 1,
-                0,
-                1
+                5,
+                1,
+                2
             ],
             "customIndexHtml": false
         },
-        "vr": {
-            "leftEyeObject": "18",
-            "rightEyeObject": "45",
-            "enable": false
-        },
         "scripting": {
-            "sourcePaths": [
-                "js/"
-            ],
-            "bundlingType": "esbuild",
             "libraryPaths": [
                 "/js/lib/"
             ],
-            "entryPoint": "js/index.js"
-        },
-        "ar": {
-            "enable": true
+            "application": {
+                "output": "SLAMCamera-bundle.js",
+                "bundling": "esbuild",
+                "entryPoint": "js/index.js",
+                "esbuildFlags": "--format=esm"
+            },
+            "components": {
+                "sourcePaths": [
+                    "js/"
+                ],
+                "bundling": "none"
+            }
         },
         "rendering": {
             "clearColor": [
@@ -587,15 +590,40 @@
             "compressedTextureAtlasSize": [
                 4096,
                 4096
-            ]
+            ],
+            "hdr": {
+                "exposure": 1.5
+            },
+            "environment": {
+                "bakingMode": "sky",
+                "material": null
+            },
+            "sky": {
+                "enabled": true,
+                "material": "69"
+            }
         },
-        "runtime": {
+        "xr": {
+            "leftEyeObject": "18",
+            "rightEyeObject": "45",
+            "vr": {
+                "enable": false
+            },
+            "ar": {
+                "enable": true
+            },
             "webxr": {
                 "optionalFeatures": {
                     "hand-tracking": false,
-                    "occlusion": false
+                    "depth-sensing": false
                 }
             }
+        },
+        "runtime": {
+            "loadUncompressedImagesAsBitmap": false
+        },
+        "editor": {
+            "serverCOEP": "unsafe-none"
         }
     },
     "animations": {},
@@ -631,7 +659,8 @@
                 "file": "default"
             },
             "features": {
-                "DEPRECATED_LIGHT_ATTENUATION": true
+                "DEPRECATED_LIGHT_ATTENUATION": true,
+                "WITH_EMISSIVE": true
             }
         },
         "38": {
@@ -640,7 +669,8 @@
                 "file": "default"
             },
             "features": {
-                "DEPRECATED_LIGHT_ATTENUATION": true
+                "DEPRECATED_LIGHT_ATTENUATION": true,
+                "WITH_EMISSIVE": true
             }
         },
         "39": {
@@ -668,12 +698,18 @@
             "link": {
                 "name": "Physical Opaque",
                 "file": "default"
+            },
+            "features": {
+                "SEPARATE_OCCLUSION_TEXTURE": true
             }
         },
         "52": {
             "link": {
                 "name": "Physical Opaque Textured",
                 "file": "default"
+            },
+            "features": {
+                "SEPARATE_OCCLUSION_TEXTURE": true
             }
         },
         "55": {
@@ -694,7 +730,8 @@
                 "file": "default"
             },
             "features": {
-                "DEPRECATED_LIGHT_ATTENUATION": true
+                "DEPRECATED_LIGHT_ATTENUATION": true,
+                "WITH_EMISSIVE": true
             }
         },
         "61": {
@@ -703,13 +740,59 @@
                 "file": "default"
             },
             "features": {
-                "DEPRECATED_LIGHT_ATTENUATION": true
+                "DEPRECATED_LIGHT_ATTENUATION": true,
+                "WITH_EMISSIVE": true
             }
+        },
+        "62": {
+            "link": {
+                "name": "Color",
+                "file": "default"
+            }
+        },
+        "63": {
+            "link": {
+                "name": "VertexColor",
+                "file": "default"
+            }
+        },
+        "64": {
+            "link": {
+                "name": "TileFeedback",
+                "file": "default"
+            }
+        },
+        "65": {
+            "link": {
+                "name": "AtmosphericSky",
+                "file": "default"
+            },
+            "shader": "46",
+            "name": "VideoBackground"
+        },
+        "66": {
+            "link": {
+                "name": "AtmosphericSky",
+                "file": "default"
+            }
+        },
+        "67": {
+            "link": {
+                "name": "VideoBackground Textured",
+                "file": "default"
+            },
+            "viewVertexShader": "49",
+            "depthFunction": "less or equal",
+            "shader": "60",
+            "name": "VideoBackground"
         }
     },
-    "files": [
-        "models/ar-target.glb"
-    ],
+    "files": {
+        "70": {
+            "fileName": "models/ar-target.glb",
+            "colorSpace": "srgb"
+        }
+    },
     "textures": {},
     "images": {},
     "fonts": {
@@ -720,5 +803,120 @@
             }
         }
     },
-    "languages": {}
+    "languages": {},
+    "audioClips": {},
+    "shaderChunks": {
+        "1": {
+            "link": {
+                "name": "lib\\Color.glsl",
+                "file": "default"
+            }
+        },
+        "2": {
+            "link": {
+                "name": "lib\\Compatibility.glsl",
+                "file": "default"
+            }
+        },
+        "3": {
+            "link": {
+                "name": "lib\\CoordinateSystems.glsl",
+                "file": "default"
+            }
+        },
+        "4": {
+            "link": {
+                "name": "lib\\GI.glsl",
+                "file": "default"
+            }
+        },
+        "5": {
+            "link": {
+                "name": "lib\\Inputs.glsl",
+                "file": "default"
+            }
+        },
+        "6": {
+            "link": {
+                "name": "lib\\Lights.glsl",
+                "file": "default"
+            }
+        },
+        "7": {
+            "link": {
+                "name": "lib\\Materials.glsl",
+                "file": "default"
+            }
+        },
+        "8": {
+            "link": {
+                "name": "lib\\Math.glsl",
+                "file": "default"
+            }
+        },
+        "9": {
+            "link": {
+                "name": "lib\\MorphTargets.glsl",
+                "file": "default"
+            }
+        },
+        "10": {
+            "link": {
+                "name": "lib\\Packing.glsl",
+                "file": "default"
+            }
+        },
+        "11": {
+            "link": {
+                "name": "lib\\PhysicalBSDF.glsl",
+                "file": "default"
+            }
+        },
+        "12": {
+            "link": {
+                "name": "lib\\Quaternion.glsl",
+                "file": "default"
+            }
+        },
+        "13": {
+            "link": {
+                "name": "lib\\SkyProcedural.glsl",
+                "file": "default"
+            }
+        },
+        "14": {
+            "link": {
+                "name": "lib\\Slug.frag.glsl",
+                "file": "default"
+            }
+        },
+        "15": {
+            "link": {
+                "name": "lib\\Slug.vert.glsl",
+                "file": "default"
+            }
+        },
+        "16": {
+            "link": {
+                "name": "lib\\Surface.glsl",
+                "file": "default"
+            }
+        },
+        "17": {
+            "link": {
+                "name": "lib\\Textures.glsl",
+                "file": "default"
+            }
+        },
+        "18": {
+            "link": {
+                "name": "lib\\Uniforms.glsl",
+                "file": "default"
+            }
+        }
+    },
+    "morphTargets": {},
+    "particleEffects": {},
+    "probeVolumeScenarios": {},
+    "plugins": {}
 }
