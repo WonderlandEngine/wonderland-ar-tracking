@@ -58,8 +58,13 @@ class ARSLAMCamera extends ARCamera {
                 this._projectionMatrix
             );
             if (hasProjectionMatrix) {
-                // @ts-ignore
                 view._setProjectionMatrix(this._projectionMatrix);
+                const ndcDepthIsZeroToOne = false;
+                this.engine.wasm._wl_view_component_remapProjectionMatrix(
+                    view._id,
+                    this.engine.isReverseZEnabled,
+                    ndcDepthIsZeroToOne
+                );
             }
         }
     }

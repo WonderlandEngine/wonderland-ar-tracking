@@ -20,7 +20,6 @@ import type {
     ImageTracker,
     InstantWorldTracker,
     Pipeline,
-    SequenceSource,
 } from '@zappar/zappar';
 
 type ZapparImageTargetType = 'flat' | 'cylindrical' | 'conical';
@@ -30,32 +29,6 @@ export interface ZapparImageTargetOptions {
     type?: ZapparImageTargetType;
     physicalWidthInMeters?: number;
     metadata?: unknown;
-}
-
-export interface ZapparProviderOptions {
-    // Reserved for future provider options.
-
-    /**
-     * Prevent Zappar from receiving any device motion/orientation events.
-     *
-     * Useful when replaying recorded video on desktop, or when a device has
-     * orientation sensors that don't correspond to the camera feed.
-     */
-    disableDeviceMotion?: boolean;
-
-    /**
-     * Optional URL (relative or absolute) to a Zappar sequence (`.bin`) to replay.
-     *
-     * When set, the provider uses `Zappar.SequenceSource` instead of the webcam.
-     */
-    sequenceUrl?: string;
-
-    /**
-     * Whether a replayed Zappar sequence should loop when it reaches the end.
-     *
-     * Defaults to `true`.
-     */
-    loopSequence?: boolean;
 }
 
 interface ZapparImageTargetDescriptor {
@@ -87,9 +60,7 @@ export class ZapparProvider extends ARProvider {
     private _gl: WebGL2RenderingContext | null = null;
     private _zappar: Awaited<ReturnType<typeof loadZappar>> | null = null;
     private pipeline: Pipeline | null = null;
-    private cameraSource: CameraSource | SequenceSource | null = null;
-    private _sequenceSource: SequenceSource | null = null;
-    private _sequenceUrl: string | null = null;
+    private cameraSource: CameraSource | null = null;
     private instantTracker: InstantWorldTracker | null = null;
     private _faceTracker: FaceTracker | null = null;
     private _faceMesh: FaceMesh | null = null;
@@ -116,10 +87,6 @@ export class ZapparProvider extends ARProvider {
     private _missingCameraTextureFrames = 0;
     private _missingCameraTextureWarningLogged = false;
 
-    private _sequenceLoopLastFrameNumber: number | null = null;
-    private _sequenceLoopLastFrameChangeTimeMs = 0;
-    private _sequenceLoopHadAnyFrames = false;
-
     private readonly _slamCameraMatrix = mat4.create();
     private readonly _slamCameraPosition = vec3.create();
     private readonly _slamCameraRotation = quat.create();
@@ -134,16 +101,7 @@ export class ZapparProvider extends ARProvider {
 
     private _zapparDebugLogIntervalId: number | null = null;
 
-    private _deviceMotionBlockerInstalled = false;
-    private readonly _deviceMotionBlocker = (event: Event) => {
-        // Block Zappar-CV CameraSource motion listeners.
-        event.stopImmediatePropagation();
-        event.stopPropagation();
-    };
-
     private _preRenderErrorLogged = false;
-
-    private readonly _options: ZapparProviderOptions;
 
     static Name = 'Zappar';
 
@@ -163,24 +121,14 @@ export class ZapparProvider extends ARProvider {
         return this._xrSession;
     }
 
-    static registerTrackingProviderWithARSession(arSession: ARSession): ZapparProvider;
-    static registerTrackingProviderWithARSession(
-        arSession: ARSession,
-        options: ZapparProviderOptions
-    ): ZapparProvider;
-    static registerTrackingProviderWithARSession(
-        arSession: ARSession,
-        options: ZapparProviderOptions = {}
-    ) {
-        const provider = new ZapparProvider(arSession.engine, options);
+    static registerTrackingProviderWithARSession(arSession: ARSession) {
+        const provider = new ZapparProvider(arSession.engine);
         arSession.registerTrackingProvider(provider);
         return provider;
     }
 
-    private constructor(engine: WonderlandEngine, options: ZapparProviderOptions = {}) {
+    private constructor(engine: WonderlandEngine) {
         super(engine);
-
-        this._options = options;
 
         if (typeof document === 'undefined') {
             return;
@@ -203,6 +151,7 @@ export class ZapparProvider extends ARProvider {
         // Warm-up for the InstantWorldTracker anchor (~2 seconds at 60fps).
         this._anchorWarmupFramesRemaining = 120;
         await this.ensureZapparLoaded();
+        await this._zappar!.loadedPromise();
         this.ensurePipeline();
         await this.ensureCameraRunning();
 
@@ -215,53 +164,6 @@ export class ZapparProvider extends ARProvider {
         if (this.instantTracker) {
             this.instantTracker.enabled = true;
         }
-    }
-
-    private shouldDisableDeviceMotion(): boolean {
-        return this._options.disableDeviceMotion === true;
-    }
-
-    private getSequenceSourceUrl(): string | null {
-        if (this._options.sequenceUrl) return this._options.sequenceUrl;
-        if (typeof window === 'undefined') return null;
-
-        const win = window as Window & {__ZAPPAR_SEQUENCE_URL__?: unknown};
-        if (
-            typeof win.__ZAPPAR_SEQUENCE_URL__ === 'string' &&
-            win.__ZAPPAR_SEQUENCE_URL__
-        ) {
-            return win.__ZAPPAR_SEQUENCE_URL__;
-        }
-
-        const params = new URL(window.location.href).searchParams;
-        const fromQuery = params.get('zapparSequence');
-        return fromQuery && fromQuery.length > 0 ? fromQuery : null;
-    }
-
-    private installDeviceMotionBlockersIfNeeded(): void {
-        if (typeof window === 'undefined') return;
-        if (this._deviceMotionBlockerInstalled) return;
-        if (!this.shouldDisableDeviceMotion()) return;
-
-        // Capture-phase listeners run before Zappar's bubble listeners and prevent
-        // the event from reaching them.
-        window.addEventListener('devicemotion', this._deviceMotionBlocker, {
-            capture: true,
-        });
-        window.addEventListener('deviceorientation', this._deviceMotionBlocker, {
-            capture: true,
-        });
-        this._deviceMotionBlockerInstalled = true;
-
-        console.log('[ZapparProvider] Device motion/orientation blocked');
-    }
-
-    private removeDeviceMotionBlockers(): void {
-        if (typeof window === 'undefined') return;
-        if (!this._deviceMotionBlockerInstalled) return;
-        window.removeEventListener('devicemotion', this._deviceMotionBlocker, true);
-        window.removeEventListener('deviceorientation', this._deviceMotionBlocker, true);
-        this._deviceMotionBlockerInstalled = false;
     }
 
     private startZapparDebugLogging(): void {
@@ -468,23 +370,11 @@ export class ZapparProvider extends ARProvider {
             (globalThis as {ZapparPipeline?: Pipeline}).ZapparPipeline = pipeline;
         }
 
-        const sequenceUrl = this.getSequenceSourceUrl();
-        this._sequenceUrl = sequenceUrl;
-
-        if (sequenceUrl) {
-            if (typeof window !== 'undefined') {
-                console.log('[ZapparProvider] Using sequence source:', sequenceUrl);
-            }
-            const sequenceSource = new Zappar.SequenceSource(pipeline);
-            this._sequenceSource = sequenceSource;
-            this.cameraSource = sequenceSource;
-        } else {
-            if (typeof window !== 'undefined') {
-                console.log('[ZapparProvider] Using device camera source');
-            }
-            const deviceId = Zappar.cameraDefaultDeviceID();
-            this.cameraSource = new Zappar.CameraSource(pipeline, deviceId);
+        if (typeof window !== 'undefined') {
+            console.log('[ZapparProvider] Using device camera source');
         }
+        const deviceId = Zappar.cameraDefaultDeviceID();
+        this.cameraSource = new Zappar.CameraSource(pipeline, deviceId);
         this.instantTracker = new Zappar.InstantWorldTracker(pipeline);
 
         if (!this.preRenderRegistered) {
@@ -509,6 +399,7 @@ export class ZapparProvider extends ARProvider {
         await this.ensureZapparLoaded();
         const Zappar = this._zappar!;
 
+        await Zappar.loadedPromise();
         this.ensurePipeline();
 
         this._faceResourcesPromise = (async () => {
@@ -611,15 +502,15 @@ export class ZapparProvider extends ARProvider {
         const planarScale = hasPhysicalScale
             ? target.physicalScaleFactor
             : physicalWidth !== undefined
-            ? physicalWidth
-            : undefined;
+              ? physicalWidth
+              : undefined;
 
         if (planarScale !== undefined) {
             geometry.scaleWidth = planarScale;
             geometry.scaledHeight = planarScale;
         }
 
-        const radiusFactor = hasPhysicalScale ? target.physicalScaleFactor ?? 1 : 1;
+        const radiusFactor = hasPhysicalScale ? (target.physicalScaleFactor ?? 1) : 1;
 
         if (target.topRadius !== undefined) {
             geometry.radiusTop = target.topRadius * radiusFactor;
@@ -664,52 +555,10 @@ export class ZapparProvider extends ARProvider {
 
         await Zappar.loadedPromise();
 
-        // Ensure motion events are blocked before any camera source starts.
-        this.installDeviceMotionBlockersIfNeeded();
-
-        // Sequence playback does not require permissions.
-        if (this._sequenceSource && this._sequenceUrl) {
-            const resolvedUrl =
-                typeof window !== 'undefined'
-                    ? new URL(this._sequenceUrl, window.location.href).toString()
-                    : this._sequenceUrl;
-            await this._sequenceSource.load(resolvedUrl);
-            this.cameraSource.start();
-
-            this._sequenceLoopLastFrameNumber = null;
-            this._sequenceLoopLastFrameChangeTimeMs =
-                typeof performance !== 'undefined' ? performance.now() : Date.now();
-            this._sequenceLoopHadAnyFrames = false;
-
-            if (typeof document !== 'undefined') {
-                document.addEventListener('visibilitychange', this.onVisibilityChange);
-            }
-            this.cameraStarted = true;
+        const granted = await Zappar.permissionRequestUI();
+        if (!granted) {
+            Zappar.permissionDeniedUI();
             return;
-        }
-
-        const shouldDisableMotion = this.shouldDisableDeviceMotion();
-
-        // Zappar's built-in permission UI requests both camera and motion.
-        // If motion is disabled, request camera-only.
-        if (
-            shouldDisableMotion &&
-            typeof (Zappar as any).permissionRequest === 'function' &&
-            (Zappar as any).Permission?.CAMERA !== undefined
-        ) {
-            const granted = await (Zappar as any).permissionRequest(
-                (Zappar as any).Permission.CAMERA
-            );
-            if (!granted) {
-                Zappar.permissionDeniedUI();
-                return;
-            }
-        } else {
-            const granted = await Zappar.permissionRequestUI();
-            if (!granted) {
-                Zappar.permissionDeniedUI();
-                return;
-            }
         }
         this.cameraSource.start();
 
@@ -759,8 +608,6 @@ export class ZapparProvider extends ARProvider {
             this.pipeline.processGL();
             this.pipeline.frameUpdate();
 
-            this.maybeLoopSequence();
-
             // Update SLAM state every frame (one loop in the provider).
             this.updateTracking();
 
@@ -791,45 +638,6 @@ export class ZapparProvider extends ARProvider {
             }
         }
     };
-
-    private maybeLoopSequence(): void {
-        if (!this._sequenceSource) return;
-        if (this._options.loopSequence === false) return;
-        if (!this.pipeline) return;
-
-        const now = typeof performance !== 'undefined' ? performance.now() : Date.now();
-        const frameNumber = this.pipeline.frameNumber();
-
-        if (frameNumber > 0) this._sequenceLoopHadAnyFrames = true;
-
-        if (this._sequenceLoopLastFrameNumber === null) {
-            this._sequenceLoopLastFrameNumber = frameNumber;
-            this._sequenceLoopLastFrameChangeTimeMs = now;
-            return;
-        }
-
-        if (frameNumber !== this._sequenceLoopLastFrameNumber) {
-            this._sequenceLoopLastFrameNumber = frameNumber;
-            this._sequenceLoopLastFrameChangeTimeMs = now;
-            return;
-        }
-
-        // Heuristic: if the frame number stops changing for a bit *after* we had frames,
-        // assume the sequence ended and restart from the beginning.
-        if (
-            this._sequenceLoopHadAnyFrames &&
-            now - this._sequenceLoopLastFrameChangeTimeMs > 750
-        ) {
-            try {
-                this._sequenceSource.setTime(0);
-                this._sequenceSource.start();
-            } catch {
-                /* ignore */
-            }
-
-            this._sequenceLoopLastFrameChangeTimeMs = now;
-        }
-    }
 
     /** Latest projection matrix for the SLAM camera (valid only if {@link hasSlamTrackingState} is true). */
     get slamProjectionMatrix(): Readonly<Float32Array> | null {
@@ -957,8 +765,6 @@ export class ZapparProvider extends ARProvider {
         if (!this._zappar) return;
 
         const Zappar = this._zappar;
-
-        // Match Zappar's THREE.js wrapper behavior: poses can be mirrored for user-facing cameras.
         const mirrorPoses = this.pipeline.cameraFrameUserFacing();
 
         // Let Zappar continuously refine a stable surface point briefly, then lock.
@@ -987,6 +793,7 @@ export class ZapparProvider extends ARProvider {
             zNear,
             zFar
         );
+
         let origin: Float32Array | undefined;
         let cameraPoseMatrix: Float32Array;
 
@@ -1175,24 +982,12 @@ export class ZapparProvider extends ARProvider {
         this.stopZapparDebugLogging();
         this._preRenderErrorLogged = false;
 
-        this.removeDeviceMotionBlockers();
-
         if (this.cameraSource && this.cameraStarted) {
             this.cameraSource.pause();
             if (typeof document !== 'undefined') {
                 document.removeEventListener('visibilitychange', this.onVisibilityChange);
             }
             this.cameraStarted = false;
-        }
-
-        if (this._sequenceSource) {
-            try {
-                this._sequenceSource.destroy();
-            } catch {
-                /* ignore */
-            }
-            this._sequenceSource = null;
-            this._sequenceUrl = null;
         }
 
         if (this.preRenderRegistered) {
@@ -1204,10 +999,6 @@ export class ZapparProvider extends ARProvider {
         this._videoTextureUniform = null;
         this._videoTextureTransformUniform = null;
         this._videoTextureUnit = null;
-
-        this._sequenceLoopLastFrameNumber = null;
-        this._sequenceLoopLastFrameChangeTimeMs = 0;
-        this._sequenceLoopHadAnyFrames = false;
 
         if (this._faceTracker) {
             this._faceTracker.enabled = false;

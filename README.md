@@ -2,10 +2,11 @@
 
 Integration of various AR tracking frameworks into Wonderland Engine.
 
-| Library             | SLAM | Image Tracking | Face Tracking | VPS |
-| ------------------- | ---- | -------------- | ------------- | --- |
-| WebXR Device API    | ✅   |                |               |     |
-| 8th Wall            | ✅   | ✅             | ✅            | ✅  |
+| Library          | SLAM | Image Tracking | Face Tracking | VPS |
+| ---------------- | ---- | -------------- | ------------- | --- |
+| WebXR Device API | ✅   |                |               |     |
+| 8th Wall         | ✅   | ✅             | ✅            | ✅  |
+| Zappar           | ✅   | ✅             | ✅            |     |
 
 ## Examples
 
