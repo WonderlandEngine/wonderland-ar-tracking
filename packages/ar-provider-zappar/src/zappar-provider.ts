@@ -404,9 +404,38 @@ export class ZapparProvider extends ARProvider {
 
         this._faceResourcesPromise = (async () => {
             const faceTracker = new Zappar.FaceTracker(this.pipeline!);
-            await faceTracker.loadDefaultModel();
+
+            // Zappar's default loaders fetch model files relative to `import.meta.url` of the
+            // module that contains them. After bundling, that usually points at the app bundle
+            // in the deploy root, which causes 404s.
+            //
+            // We stage these assets into `static/zappar-cv/` via this package's postinstall.
+            // Load explicitly from there, and fall back to the SDK defaults for flexibility.
+            try {
+                await faceTracker.loadModel('./zappar-cv/face_tracking_model.zbin');
+            } catch (e) {
+                console.warn(
+                    '[ZapparProvider] Failed to load face tracking model from ./zappar-cv; falling back to Zappar defaults.',
+                    e
+                );
+                await faceTracker.loadDefaultModel();
+            }
             const faceMesh = new Zappar.FaceMesh();
-            await faceMesh.loadDefaultFace(true, true, true);
+            try {
+                await faceMesh.load(
+                    './zappar-cv/face_mesh_face_model.zbin',
+                    true,
+                    true,
+                    true,
+                    false
+                );
+            } catch (e) {
+                console.warn(
+                    '[ZapparProvider] Failed to load face mesh model from ./zappar-cv; falling back to Zappar defaults.',
+                    e
+                );
+                await faceMesh.loadDefaultFace(true, true, true);
+            }
             this._faceTracker = faceTracker;
             this._faceMesh = faceMesh;
         })();
@@ -454,10 +483,22 @@ export class ZapparProvider extends ARProvider {
             throw new Error('Image target registration requires a name.');
         }
 
-        const tracker = this.ensureImageTracker();
-        await tracker.loadTarget(source);
+        // Allow registering targets before an AR session starts.
+        // This is useful so image targets are known for ImageScanningEvent
+        // and so apps can prefetch/prepare targets without requesting camera access.
+        await this.ensureZapparLoaded();
+        await this._zappar!.loadedPromise();
+        this.ensurePipeline();
 
-        const targets = tracker.targets as unknown as ZapparImageTarget[];
+        const Zappar = this._zappar!;
+        if (!this._imageTracker) {
+            this._imageTracker = new Zappar.ImageTracker(this.pipeline!);
+        }
+        this._imageTracker.enabled = true;
+
+        await this._imageTracker.loadTarget(source);
+
+        const targets = this._imageTracker.targets as unknown as ZapparImageTarget[];
         const targetIndex = targets.length - 1;
         const target = targets[targetIndex];
 
