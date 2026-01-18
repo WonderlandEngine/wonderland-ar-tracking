@@ -1,6 +1,6 @@
 import {Emitter, RetainEmitter, WonderlandEngine, Component} from '@wonderlandengine/api';
 import {ARProvider} from './AR-provider.js';
-import {ITrackingMode} from './tracking-mode.js';
+import {FaceTrackingMode, ImageTrackingMode, ITrackingMode} from './tracking-mode.js';
 import {TrackingType} from './tracking-type.js';
 
 /**
@@ -70,6 +70,9 @@ export class ARSession {
      * @returns The tracking instance or `null` if no provider was
      *     able to provide given tracking type
      */
+    getTrackingProvider(type: TrackingType.Face, component: Component): FaceTrackingMode;
+    getTrackingProvider(type: TrackingType.Image, component: Component): ImageTrackingMode;
+    getTrackingProvider(type: TrackingType, component: Component): ITrackingMode;
     getTrackingProvider(type: TrackingType, component: Component): ITrackingMode {
         for (const p of this._trackingProviders) {
             if (p.supports(type)) return p.createTracking(type, component);

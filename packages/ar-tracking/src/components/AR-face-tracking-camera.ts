@@ -13,13 +13,13 @@ import {ARCamera} from './AR-Camera.js';
  *
  * Currently only works with 8th Wall tracking `FaceTracking_XR8`
  */
-class ARFaceTrackingCamera extends ARCamera {
+export class ARFaceTrackingCamera extends ARCamera {
     static TypeName = 'ar-face-tracking-camera';
 
     @property.enum(['front', 'back'], 'front')
     cameraDirection!: number;
 
-    private _trackingImpl!: FaceTrackingMode & ITrackingMode;
+    private _trackingImpl!: FaceTrackingMode;
 
     get onFaceLoading() {
         return this._trackingImpl.onFaceLoading;
@@ -41,7 +41,7 @@ class ARFaceTrackingCamera extends ARCamera {
         this._trackingImpl = ARSession.getSessionForEngine(this.engine).getTrackingProvider(
             TrackingType.Face,
             this
-        ) as FaceTrackingMode;
+        );
     }
 
     start() {
@@ -76,5 +76,3 @@ class ARFaceTrackingCamera extends ARCamera {
         }
     }
 }
-
-export {ARFaceTrackingCamera};

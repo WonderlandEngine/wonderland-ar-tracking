@@ -16,7 +16,7 @@ import {ARCamera} from './AR-Camera.js';
  * clear the "Project Settings/Editor/serverCOEP" field.
  * Warning - it will disable the WASM thread support.
  */
-class ARVPSCamera extends ARCamera {
+export class ARVPSCamera extends ARCamera {
     static TypeName = 'ar-vps-camera';
 
     /**
@@ -79,5 +79,3 @@ class ARVPSCamera extends ARCamera {
         }
     }
 }
-
-export {ARVPSCamera};

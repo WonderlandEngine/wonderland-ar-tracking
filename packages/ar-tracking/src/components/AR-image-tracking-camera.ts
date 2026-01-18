@@ -12,7 +12,7 @@ import {ARCamera} from './AR-Camera.js';
  *
  * Currently only works with 8th Wall tracking `WorldTracking_XR8`
  */
-class ARImageTrackingCamera extends ARCamera {
+export class ARImageTrackingCamera extends ARCamera {
     static TypeName = 'ar-image-tracking-camera';
 
     @property.bool(false) // Improves tracking, reduces performance
@@ -72,5 +72,3 @@ class ARImageTrackingCamera extends ARCamera {
         }
     }
 }
-
-export {ARImageTrackingCamera};

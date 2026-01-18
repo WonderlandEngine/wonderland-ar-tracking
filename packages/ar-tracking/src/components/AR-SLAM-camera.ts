@@ -11,7 +11,7 @@ import {ARSession} from '../AR-session.js';
  * Depending on the device it will choose to use either device native WebXR (`WebXRProvider`)
  * or 8th Wall SLAM implementation (`xr8Provider`)
  */
-class ARSLAMCamera extends ARCamera {
+export class ARSLAMCamera extends ARCamera {
     static TypeName = 'ar-slam-camera';
 
     private _trackingImpl!: ITrackingMode;
@@ -69,5 +69,3 @@ class ARSLAMCamera extends ARCamera {
         }
     }
 }
-
-export {ARSLAMCamera};
