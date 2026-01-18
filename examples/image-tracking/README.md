@@ -30,8 +30,20 @@ To test - point your camera at `previews/fanta.jpeg` for a quick & dirty test. T
 
 <br/>
 
-To successfully run in
+This example is wired to use the Zappar provider.
 
-- Select 8thwall as a framework in the editor `Project Settings -> VR & AR -> framework`.
-- Paste in your 8th Wall API key.
-- Make sure the app is running on HTTPS.
+To successfully run:
+
+- Install dependencies: `npm i`
+- Ensure Zappar CV assets are served at `/zappar-cv/zappar-cv.worker.js` and the corresponding `.wasm`.
+    - Wonderland serves `static/` at `/`, and the Zappar provider's `postinstall` copies the required files into `static/zappar-cv/` automatically.
+- Generate Zappar image targets (`.zpt`) for the images in `textures/` and place them under `static/targets/`:
+    - `static/targets/image-target-1-white.zpt`
+    - `static/targets/image-target-2-white.zpt`
+    - `static/targets/fanta.zpt`
+- Run on HTTPS (camera access requires a secure context).
+
+Notes:
+
+- The object components in `ImageTracking.wlp` still use the `imageId` field; for Zappar this is treated as the **registered target name**.
+- The “physical size” demo relies on target geometry. Flat targets work with `physicalWidthInMeters`, but cylindrical/conical targets should be authored with correct dimensions in Zappar.

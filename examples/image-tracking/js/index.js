@@ -24,7 +24,7 @@ import {VideoTextureImageTarget} from './video-texture-image-target.js';
 import {loadRuntime} from '@wonderlandengine/api';
 import {ARSession} from '@wonderlandengine/ar-tracking';
 import {WebXRProvider} from '@wonderlandengine/ar-provider-webxr';
-import {XR8Provider} from '@wonderlandengine/ar-provider-8thwall';
+import {ZapparProvider} from '@wonderlandengine/ar-provider-zappar';
 
 /* wle:auto-constants:start */
 const RuntimeOptions = {
@@ -41,8 +41,6 @@ const Constants = {
 };
 /* wle:auto-constants:end */
 
-window.API_TOKEN_XR8 =
-    'sU7eX52Oe2ZL8qUKBWD5naUlu1ZrnuRrtM1pQ7ukMz8rkOEG8mb63YlYTuiOrsQZTiXKRe';
 window.WEBXR_REQUIRED_FEATURES = Constants.WebXRRequiredFeatures;
 window.WEBXR_OPTIONAL_FEATURES = Constants.WebXROptionalFeatures;
 
@@ -83,7 +81,29 @@ if (document.readyState === 'loading') {
 
 const arSession = ARSession.getSessionForEngine(engine);
 WebXRProvider.registerTrackingProviderWithARSession(arSession);
-XR8Provider.registerTrackingProviderWithARSession(arSession);
+
+// Register Zappar as the image tracking provider.
+// Note: image targets must be Zappar `.zpt` files and need to be available under `static/targets/`.
+// The `name` must match the `imageId` configured on the scene components in `ImageTracking.wlp`.
+const zapparProvider = ZapparProvider.registerTrackingProviderWithARSession(arSession);
+
+// Pre-register targets so the ARImageTrackingCamera can emit an ImageScanningEvent.
+// These file paths resolve relative to the page and assume Wonderland serves `static/` at `/`.
+await zapparProvider.registerImageTarget('./targets/image-target-1-white.zpt', {
+    name: 'image-target-1-white',
+    physicalWidthInMeters: 0.15,
+});
+
+await zapparProvider.registerImageTarget('./targets/image-target-2-white.zpt', {
+    name: 'image-target-2-white',
+    physicalWidthInMeters: 0.2,
+});
+
+// Cylinder/cone targets should ideally be authored as cylindrical/conical targets in Zappar
+// so that radius/height information is available.
+await zapparProvider.registerImageTarget('./targets/fanta.zpt', {
+    name: 'fanta',
+});
 
 /* wle:auto-register:start */
 engine.registerComponent(ARImageTrackingCamera);

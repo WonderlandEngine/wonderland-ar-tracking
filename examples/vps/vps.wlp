@@ -245,7 +245,8 @@
                     1.0
                 ],
                 "shininess": 1
-            }
+            },
+            "pipeline": "37"
         },
         "22": {
             "name": "Pink",
@@ -269,7 +270,8 @@
                     0.2165777,
                     1.0
                 ]
-            }
+            },
+            "pipeline": "37"
         },
         "25": {
             "name": "Yellow",
@@ -292,7 +294,8 @@
                     0.0,
                     1.0
                 ]
-            }
+            },
+            "pipeline": "37"
         },
         "26": {
             "name": "Green",
@@ -315,7 +318,8 @@
                     0.1437908,
                     1.0
                 ]
-            }
+            },
+            "pipeline": "37"
         },
         "64": {
             "name": "xr8 mesh material",
@@ -450,6 +454,120 @@
                 "name": "TileFeedback.frag",
                 "file": "default"
             }
+        },
+        "69": {
+            "link": {
+                "name": "AtmosphericSky.frag",
+                "file": "default"
+            }
+        },
+        "70": {
+            "link": {
+                "name": "lib\\Color.glsl",
+                "file": "default"
+            }
+        },
+        "71": {
+            "link": {
+                "name": "lib\\Compatibility.frag",
+                "file": "default"
+            }
+        },
+        "72": {
+            "link": {
+                "name": "lib\\CoordinateSystems.glsl",
+                "file": "default"
+            }
+        },
+        "73": {
+            "link": {
+                "name": "lib\\GI.frag",
+                "file": "default"
+            }
+        },
+        "74": {
+            "link": {
+                "name": "lib\\Inputs.frag",
+                "file": "default"
+            }
+        },
+        "75": {
+            "link": {
+                "name": "lib\\Lights.frag",
+                "file": "default"
+            }
+        },
+        "76": {
+            "link": {
+                "name": "lib\\Materials.frag",
+                "file": "default"
+            }
+        },
+        "77": {
+            "link": {
+                "name": "lib\\Math.glsl",
+                "file": "default"
+            }
+        },
+        "78": {
+            "link": {
+                "name": "lib\\MorphTargets.glsl",
+                "file": "default"
+            }
+        },
+        "79": {
+            "link": {
+                "name": "lib\\Packing.frag",
+                "file": "default"
+            }
+        },
+        "80": {
+            "link": {
+                "name": "lib\\PhysicalBSDF.glsl",
+                "file": "default"
+            }
+        },
+        "81": {
+            "link": {
+                "name": "lib\\Quaternion.glsl",
+                "file": "default"
+            }
+        },
+        "82": {
+            "link": {
+                "name": "lib\\SkyProcedural.glsl",
+                "file": "default"
+            }
+        },
+        "83": {
+            "link": {
+                "name": "lib\\Slug.frag",
+                "file": "default"
+            }
+        },
+        "84": {
+            "link": {
+                "name": "lib\\Slug.vert",
+                "file": "default"
+            }
+        },
+        "85": {
+            "link": {
+                "name": "lib\\Surface.frag",
+                "file": "default"
+            }
+        },
+        "86": {
+            "link": {
+                "name": "lib\\Textures.frag",
+                "file": "default"
+            }
+        },
+        "88": {
+            "link": {
+                "name": "lib\\Uniforms.glsl",
+                "file": "default"
+            }
         }
     },
     "settings": {
@@ -457,28 +575,40 @@
             "name": "Vps",
             "version": [
                 1,
-                0,
-                1
+                3,
+                4
             ],
             "customIndexHtml": false
         },
-        "vr": {
+        "xr": {
+            "vr": {
+                "enable": false
+            },
             "leftEyeObject": "18",
             "rightEyeObject": "45",
-            "enable": false
+            "ar": {
+                "enable": true
+            }
         },
         "scripting": {
-            "sourcePaths": [
-                "js/"
-            ],
-            "bundlingType": "esbuild",
+            "components": {
+                "sourcePaths": [
+                    "js/"
+                ],
+                "bundling": "none"
+            },
+            "application": {
+                "output": "Vps-bundle.js",
+                "bundling": "esbuild",
+                "esbuildFlags": "--format=esm",
+                "entryPoint": "js/index.js"
+            },
             "libraryPaths": [
                 "/js/lib/"
-            ],
-            "entryPoint": "js/index.js"
+            ]
         },
-        "ar": {
-            "enable": true
+        "editor": {
+            "serverCOEP": ""
         },
         "rendering": {
             "clearColor": [
@@ -497,10 +627,10 @@
             "compressedTextureAtlasSize": [
                 4096,
                 2048
-            ]
-        },
-        "editor": {
-            "serverCOEP": ""
+            ],
+            "hdr": {
+                "exposure": 1.5
+            }
         }
     },
     "animations": {},
@@ -540,7 +670,8 @@
                 "file": "default"
             },
             "features": {
-                "DEPRECATED_LIGHT_ATTENUATION": true
+                "DEPRECATED_LIGHT_ATTENUATION": true,
+                "WITH_EMISSIVE": true
             }
         },
         "38": {
@@ -549,7 +680,8 @@
                 "file": "default"
             },
             "features": {
-                "DEPRECATED_LIGHT_ATTENUATION": true
+                "DEPRECATED_LIGHT_ATTENUATION": true,
+                "WITH_EMISSIVE": true
             }
         },
         "39": {
@@ -577,12 +709,18 @@
             "link": {
                 "name": "Physical Opaque",
                 "file": "default"
+            },
+            "features": {
+                "SEPARATE_OCCLUSION_TEXTURE": true
             }
         },
         "52": {
             "link": {
                 "name": "Physical Opaque Textured",
                 "file": "default"
+            },
+            "features": {
+                "SEPARATE_OCCLUSION_TEXTURE": true
             }
         },
         "55": {
@@ -603,7 +741,8 @@
                 "file": "default"
             },
             "features": {
-                "DEPRECATED_LIGHT_ATTENUATION": true
+                "DEPRECATED_LIGHT_ATTENUATION": true,
+                "WITH_EMISSIVE": true
             }
         },
         "61": {
@@ -612,11 +751,24 @@
                 "file": "default"
             },
             "features": {
-                "DEPRECATED_LIGHT_ATTENUATION": true
+                "DEPRECATED_LIGHT_ATTENUATION": true,
+                "WITH_EMISSIVE": true
+            }
+        },
+        "87": {
+            "link": {
+                "name": "TileFeedback",
+                "file": "default"
+            }
+        },
+        "89": {
+            "link": {
+                "name": "AtmosphericSky",
+                "file": "default"
             }
         }
     },
-    "files": [],
+    "files": {},
     "textures": {},
     "images": {},
     "fonts": {
@@ -627,5 +779,6 @@
             }
         }
     },
-    "languages": {}
+    "languages": {},
+    "morphTargets": {}
 }

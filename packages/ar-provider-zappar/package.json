@@ -7,6 +7,7 @@
     "scripts": {
         "build": "tsc",
         "build:watch": "tsc --watch",
+        "postinstall": "node ./scripts/postinstall.mjs",
         "prepublishOnly": "npm run build",
         "prettier": "prettier --config ./.prettierrc.json --write ./src ./examples/**/js ./examples/common-components"
     },
@@ -26,7 +27,8 @@
     ],
     "files": [
         "dist/**/*.js",
-        "dist/**/*.d.ts"
+        "dist/**/*.d.ts",
+        "scripts/**/*.mjs"
     ],
     "devDependencies": {
         "prettier": "^2.8.4",

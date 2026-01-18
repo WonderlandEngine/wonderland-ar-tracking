@@ -24,7 +24,11 @@ export class ImageTrackingExample extends Component {
     ARImageTrackingCamera!: WLEObject;
 
     /**
-     * Image id from the 8th Wall platform
+     * Image target name.
+     *
+     * - For 8th Wall this used to be the target id.
+     * - For Zappar this must match the `name` used when calling
+     *   `ZapparProvider.registerImageTarget(...)`.
      */
     @property.string()
     imageId!: string;

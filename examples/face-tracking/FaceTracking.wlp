@@ -61,7 +61,7 @@
                 {
                     "type": "light",
                     "light": {
-                        "attenuation": 0.1
+                        "intensity": 3.3329999
                     }
                 }
             ],
@@ -88,7 +88,7 @@
                 {
                     "type": "light",
                     "light": {
-                        "attenuation": 0.1
+                        "intensity": 3.3329999
                     }
                 }
             ],
@@ -425,7 +425,8 @@
                     1.0
                 ],
                 "shininess": 1
-            }
+            },
+            "pipeline": "37"
         },
         "22": {
             "name": "Pink",
@@ -449,7 +450,8 @@
                     0.2165777,
                     1.0
                 ]
-            }
+            },
+            "pipeline": "37"
         },
         "25": {
             "name": "Yellow",
@@ -472,7 +474,8 @@
                     0.0,
                     1.0
                 ]
-            }
+            },
+            "pipeline": "37"
         },
         "26": {
             "name": "Green",
@@ -495,7 +498,8 @@
                     0.1437908,
                     1.0
                 ]
-            }
+            },
+            "pipeline": "37"
         },
         "63": {
             "link": {
@@ -653,6 +657,120 @@
                 "name": "TileFeedback.frag",
                 "file": "default"
             }
+        },
+        "92": {
+            "link": {
+                "name": "AtmosphericSky.frag",
+                "file": "default"
+            }
+        },
+        "93": {
+            "link": {
+                "name": "lib\\Color.glsl",
+                "file": "default"
+            }
+        },
+        "94": {
+            "link": {
+                "name": "lib\\Compatibility.frag",
+                "file": "default"
+            }
+        },
+        "95": {
+            "link": {
+                "name": "lib\\CoordinateSystems.glsl",
+                "file": "default"
+            }
+        },
+        "96": {
+            "link": {
+                "name": "lib\\GI.frag",
+                "file": "default"
+            }
+        },
+        "97": {
+            "link": {
+                "name": "lib\\Inputs.frag",
+                "file": "default"
+            }
+        },
+        "98": {
+            "link": {
+                "name": "lib\\Lights.frag",
+                "file": "default"
+            }
+        },
+        "99": {
+            "link": {
+                "name": "lib\\Materials.frag",
+                "file": "default"
+            }
+        },
+        "100": {
+            "link": {
+                "name": "lib\\Math.glsl",
+                "file": "default"
+            }
+        },
+        "101": {
+            "link": {
+                "name": "lib\\MorphTargets.glsl",
+                "file": "default"
+            }
+        },
+        "102": {
+            "link": {
+                "name": "lib\\Packing.frag",
+                "file": "default"
+            }
+        },
+        "103": {
+            "link": {
+                "name": "lib\\PhysicalBSDF.glsl",
+                "file": "default"
+            }
+        },
+        "104": {
+            "link": {
+                "name": "lib\\Quaternion.glsl",
+                "file": "default"
+            }
+        },
+        "105": {
+            "link": {
+                "name": "lib\\SkyProcedural.glsl",
+                "file": "default"
+            }
+        },
+        "106": {
+            "link": {
+                "name": "lib\\Slug.frag",
+                "file": "default"
+            }
+        },
+        "107": {
+            "link": {
+                "name": "lib\\Slug.vert",
+                "file": "default"
+            }
+        },
+        "108": {
+            "link": {
+                "name": "lib\\Surface.frag",
+                "file": "default"
+            }
+        },
+        "109": {
+            "link": {
+                "name": "lib\\Textures.frag",
+                "file": "default"
+            }
+        },
+        "111": {
+            "link": {
+                "name": "lib\\Uniforms.glsl",
+                "file": "default"
+            }
         }
     },
     "settings": {
@@ -660,34 +778,37 @@
             "name": "FaceTracking",
             "version": [
                 1,
-                0,
-                0,
-                2
+                3,
+                4
             ],
             "customIndexHtml": false
         },
-        "vr": {
+        "xr": {
+            "vr": {
+                "enable": false
+            },
             "leftEyeObject": "18",
             "rightEyeObject": "45",
-            "enable": false
+            "ar": {
+                "enable": true
+            }
         },
         "scripting": {
-            "sourcePaths": [
-                "js/"
-            ],
-            "bundlingType": "esbuild",
+            "components": {
+                "sourcePaths": [
+                    "js/"
+                ],
+                "bundling": "none"
+            },
+            "application": {
+                "output": "FaceTracking-bundle.js",
+                "bundling": "esbuild",
+                "esbuildFlags": "--format=esm",
+                "entryPoint": "js/index.js"
+            },
             "libraryPaths": [
                 "/js/lib/"
-            ],
-            "autoManageEntryPoint": true,
-            "entryPoint": "js/index.js"
-        },
-        "ar": {
-            "framework": "8thwall",
-            "8thwall": {
-                "apiToken": "sU7eX52Oe2ZL8qUKBWD5naUlu1ZrnuRrtM1pQ7ukMz8rkOEG8mb63YlYTuiOrsQZTiXKRe"
-            },
-            "enable": true
+            ]
         },
         "rendering": {
             "clearColor": [
@@ -706,7 +827,10 @@
             "compressedTextureAtlasSize": [
                 4096,
                 2048
-            ]
+            ],
+            "hdr": {
+                "exposure": 1.5
+            }
         }
     },
     "animations": {},
@@ -740,18 +864,29 @@
             "link": {
                 "name": "Phong Opaque",
                 "file": "default"
+            },
+            "features": {
+                "DEPRECATED_LIGHT_ATTENUATION": true,
+                "WITH_EMISSIVE": true
             }
         },
         "38": {
             "link": {
                 "name": "Phong Opaque Textured",
                 "file": "default"
+            },
+            "features": {
+                "DEPRECATED_LIGHT_ATTENUATION": true,
+                "WITH_EMISSIVE": true
             }
         },
         "39": {
             "link": {
                 "name": "Foliage",
                 "file": "default"
+            },
+            "features": {
+                "DEPRECATED_LIGHT_ATTENUATION": true
             }
         },
         "40": {
@@ -770,12 +905,18 @@
             "link": {
                 "name": "Physical Opaque",
                 "file": "default"
+            },
+            "features": {
+                "SEPARATE_OCCLUSION_TEXTURE": true
             }
         },
         "52": {
             "link": {
                 "name": "Physical Opaque Textured",
                 "file": "default"
+            },
+            "features": {
+                "SEPARATE_OCCLUSION_TEXTURE": true
             }
         },
         "55": {
@@ -794,12 +935,20 @@
             "link": {
                 "name": "Phong Normalmapped",
                 "file": "default"
+            },
+            "features": {
+                "DEPRECATED_LIGHT_ATTENUATION": true,
+                "WITH_EMISSIVE": true
             }
         },
         "61": {
             "link": {
                 "name": "Phong Lightmapped",
                 "file": "default"
+            },
+            "features": {
+                "DEPRECATED_LIGHT_ATTENUATION": true,
+                "WITH_EMISSIVE": true
             }
         },
         "88": {
@@ -811,7 +960,8 @@
             "shader": "2",
             "features": {
                 "ALPHA_MASKED": true,
-                "TEXTURED": false
+                "TEXTURED": false,
+                "WITH_EMISSIVE": true
             },
             "blending": true,
             "blendSrcRgb": "zero",
@@ -825,15 +975,43 @@
                 "name": "Phong Opaque",
                 "file": "default"
             },
-            "name": "Glasses"
+            "name": "Glasses",
+            "features": {
+                "DEPRECATED_LIGHT_ATTENUATION": true,
+                "WITH_EMISSIVE": true
+            }
+        },
+        "110": {
+            "link": {
+                "name": "TileFeedback",
+                "file": "default"
+            }
+        },
+        "112": {
+            "link": {
+                "name": "AtmosphericSky",
+                "file": "default"
+            }
         }
     },
-    "files": [
-        "models/head-occluder-cm92ohq49a.glb",
-        "textures/wonderland-xr8.png",
-        "textures/uv-bright.png",
-        "models/stereo-glasses-9hc20dp5o8.glb"
-    ],
+    "files": {
+        "113": {
+            "fileName": "models/head-occluder-cm92ohq49a.glb",
+            "importerName": ""
+        },
+        "114": {
+            "fileName": "textures/wonderland-xr8.png",
+            "importerName": ""
+        },
+        "115": {
+            "fileName": "textures/uv-bright.png",
+            "importerName": ""
+        },
+        "116": {
+            "fileName": "models/stereo-glasses-9hc20dp5o8.glb",
+            "importerName": ""
+        }
+    },
     "textures": {
         "72": {
             "link": {
@@ -878,5 +1056,6 @@
             }
         }
     },
-    "languages": {}
+    "languages": {},
+    "morphTargets": {}
 }

@@ -1,7 +1,8 @@
 /**
  * PhysicalSizeImageTarget
  * Renders a textured plane or a cylinder that exactly matches the dimensions of the detected image.
- * for the cylindrical targets, make sure the dimensions are set correctly on the 8th Wall platform.
+ * For Zappar, make sure your `.zpt` target is authored with the correct target type
+ * (flat/cylindrical/conical) and physical dimensions.
  */
 import {
     Component,
@@ -35,7 +36,10 @@ export class PhysicalSizeImageTarget extends Component {
     ARImageTrackingCamera!: WLEObject;
 
     /**
-     * Image id from the 8th Wall platform
+        * Image target name.
+        *
+        * - For 8th Wall this used to be the image target id.
+        * - For Zappar this must match the `name` you register via `ZapparProvider.registerImageTarget()`.
      */
     @property.string()
     imageId!: string;
@@ -107,7 +111,12 @@ export class PhysicalSizeImageTarget extends Component {
 
     private createCylinderMesh = (imageData: ImageScanningEvent['imageTargets'][0]) => {
         const {geometry} = imageData;
-        const length = geometry.arcLengthRadians!;
+        const length = geometry.arcLengthRadians ?? 2 * Math.PI;
+        const arcStart =
+            geometry.arcStartRadians ?? (2 * Math.PI - length) / 2 + Math.PI;
+
+        // Zappar currently provides radius/height but not arc-length metadata.
+        // In that case we default to a full wrap (2π).
         return generateCylinderGeometry(
             geometry.radiusTop,
             geometry.radiusBottom,
@@ -115,7 +124,7 @@ export class PhysicalSizeImageTarget extends Component {
             50,
             1,
             true,
-            (2 * Math.PI - length) / 2 + Math.PI,
+            arcStart,
             length
         );
     };
