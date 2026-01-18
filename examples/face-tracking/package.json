@@ -16,7 +16,7 @@
     },
     "dependencies": {
         "@wonderlandengine/api": ">=1.3.0 <1.4.0",
-        "@wonderlandengine/ar-provider-8thwall": "^1.0.0",
+        "@wonderlandengine/ar-provider-zappar": "file:../packages/ar-provider-zappar",
         "@wonderlandengine/ar-provider-webxr": "^1.0.0",
         "@wonderlandengine/ar-tracking": "^1.0.0",
         "@wonderlandengine/components": "^1.0.0",

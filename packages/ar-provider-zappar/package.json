@@ -4,6 +4,14 @@
     "description": "Wonderland Engine AR tracking provider based on Zappar",
     "main": "dist/index.js",
     "type": "module",
+    "wonderlandengine": {
+        "plugins": [
+            {
+                "main": "plugins/zappar-publish-plugin.mjs",
+                "name": "Zappar Publish Plugin"
+            }
+        ]
+    },
     "scripts": {
         "build": "tsc",
         "build:watch": "tsc --watch",
@@ -26,6 +34,7 @@
         "zappar"
     ],
     "files": [
+        "plugins/**/*.mjs",
         "dist/**/*.js",
         "dist/**/*.d.ts",
         "scripts/**/*.mjs"
