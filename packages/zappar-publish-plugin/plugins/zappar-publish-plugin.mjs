@@ -1,6 +1,7 @@
 import {EditorPlugin, ui, workspace, tools, data} from '@wonderlandengine/editor-api';
 import fs from 'fs';
 import path from 'path';
+import util from 'util';
 
 import * as zapworksCli from '@zappar/zapworks-cli';
 
@@ -70,6 +71,9 @@ export default class ZapparPublishPlugin extends EditorPlugin {
         ui.loadImage(Buffer.from(ZAPPAR_LOGO_JPEG_BASE64, 'base64'))
             .then((img) => (this._logoImage = img))
             .catch((e) => console.warn('Failed to load Zappar logo:', e));
+
+        /* Load the config here, so that settings don't get lost on reloads */
+        this._loadConfig().catch((e) => this._setError(e, 'Failed to load Zappar config'));
     }
 
     draw() {
@@ -150,7 +154,7 @@ export default class ZapparPublishPlugin extends EditorPlugin {
         this._status = 'Packaging complete.';
     }
 
-    async _runZapworks(args, {label} = {}) {
+    async _runZapworks(args, {label, sendEnter} = {}) {
         const argv = ['node', 'zapworks', '-y', ...args];
 
         const originalArgv = process.argv;
@@ -158,69 +162,165 @@ export default class ZapparPublishPlugin extends EditorPlugin {
         const originalExit = process.exit;
         const originalStdoutWrite = process.stdout.write.bind(process.stdout);
         const originalStderrWrite = process.stderr.write.bind(process.stderr);
+        const originalConsole = {
+            log: console.log,
+            info: console.info,
+            warn: console.warn,
+            error: console.error,
+        };
+
+        const restore = [];
+        const addRestore = (fn) => restore.push(fn);
+
+        const stripAnsi = (s) => {
+            const text = String(s);
+            // OSC (Operating System Command): ESC ] ... BEL or ESC \
+            const withoutOsc = text.replace(/\x1B\][^\x07]*(?:\x07|\x1B\\)/g, '');
+            // CSI + other control sequences (handles ESC[... and 0x9B ...)
+            return withoutOsc.replace(
+                /[\x1B\x9B][[\]()#;?]*(?:\d{1,4}(?:;\d{0,4})*)?[0-9A-ORZcf-nqry=><]/g,
+                ''
+            );
+        };
 
         let buf = '';
+        let lastOutputAt = Date.now();
+        let suppressWriteCapture = false;
+        let exitCode;
 
         const onChunk = (chunk) => {
-            const s = typeof chunk === 'string' ? chunk : chunk.toString('utf8');
-            buf += s;
+            const text =
+                typeof chunk === 'string'
+                    ? chunk
+                    : (chunk?.toString?.('utf8') ?? String(chunk));
+            const clean = stripAnsi(text);
+            buf += clean;
+            lastOutputAt = Date.now();
             this._lastLog = buf;
+
             if (label) {
-                const trimmed = s.trim();
+                const trimmed = clean.trim();
                 if (trimmed) this._status = `${label}: ${trimmed}`;
             }
         };
 
+        const waitForQuietOutput = async ({idleMs = 100, maxMs = 5000} = {}) => {
+            const start = Date.now();
+            while (Date.now() - start < maxMs) {
+                if (Date.now() - lastOutputAt >= idleMs) return;
+                await new Promise((r) => setTimeout(r, 50));
+            }
+        };
+
+        const wrapWrite = (originalWrite) => (chunk, encoding, cb) => {
+            let enc = encoding;
+            let callback = cb;
+            if (typeof enc === 'function') {
+                callback = enc;
+                enc = undefined;
+            }
+
+            if (!suppressWriteCapture) onChunk(chunk);
+            return originalWrite(chunk, enc, callback);
+        };
+
+        const wrapConsoleMethod = (methodName) => {
+            const original = originalConsole[methodName];
+            return (...args2) => {
+                try {
+                    onChunk(`${util.format(...args2)}\n`);
+                } catch {
+                    /* noop */
+                }
+
+                // Avoid double-capture when console.* ultimately writes through
+                // process.stdout/process.stderr (which we also wrap).
+                suppressWriteCapture = true;
+                try {
+                    return original.apply(console, args2);
+                } finally {
+                    suppressWriteCapture = false;
+                }
+            };
+        };
+
         try {
             process.argv = argv;
+            addRestore(() => (process.argv = originalArgv));
             process.cwd = () => workspace.root;
-            process.exit = (code = 0) => {
-                const err = new Error(`zapworks exited (${code})`);
-                err.__zapworksExitCode = code;
-                throw err;
-            };
-            process.stdout.write = (chunk, encoding, cb) => {
-                onChunk(chunk);
-                return originalStdoutWrite(chunk, encoding, cb);
-            };
-            process.stderr.write = (chunk, encoding, cb) => {
-                onChunk(chunk);
-                return originalStderrWrite(chunk, encoding, cb);
-            };
+            addRestore(() => (process.cwd = originalCwd));
 
-            try {
-                const result = zapworksCli.cli(argv);
-                if (result && typeof result.then === 'function') await result;
-            } catch (e) {
-                const code = e && typeof e === 'object' ? e.__zapworksExitCode : undefined;
-                if (code === 0) return buf;
-                throw e;
+            if (sendEnter) {
+                try {
+                    process.stdin?.resume?.();
+                    setTimeout(() => {
+                        try {
+                            process.stdin?.emit?.('data', Buffer.from('\n'));
+                        } catch {
+                            /* noop */
+                        }
+                    }, 0);
+                } catch {
+                    /* noop */
+                }
+            }
+
+            process.exit = (code = 0) => {
+                exitCode = code;
+                return undefined;
+            };
+            addRestore(() => (process.exit = originalExit));
+
+            process.stdout.write = wrapWrite(originalStdoutWrite);
+            process.stderr.write = wrapWrite(originalStderrWrite);
+            addRestore(() => (process.stdout.write = originalStdoutWrite));
+            addRestore(() => (process.stderr.write = originalStderrWrite));
+
+            // Some libraries (or a Console instance created earlier) may hold a cached
+            // reference to the original stdout writer, which would bypass our
+            // process.stdout/process.stderr write overrides. Wrap console methods so we
+            // still capture lines like "Success … Project uploaded to: …".
+            console.log = wrapConsoleMethod('log');
+            console.info = wrapConsoleMethod('info');
+            console.warn = wrapConsoleMethod('warn');
+            console.error = wrapConsoleMethod('error');
+            addRestore(() => (console.log = originalConsole.log));
+            addRestore(() => (console.info = originalConsole.info));
+            addRestore(() => (console.warn = originalConsole.warn));
+            addRestore(() => (console.error = originalConsole.error));
+
+            const result = zapworksCli.cli(argv);
+            if (result && typeof result.then === 'function') await result;
+
+            // Capture output that may arrive shortly after cli() resolves/returns.
+            await waitForQuietOutput();
+
+            if (typeof exitCode === 'number' && exitCode !== 0) {
+                const err = new Error(`zapworks exited (${exitCode})`);
+                err.__zapworksExitCode = exitCode;
+                throw err;
             }
 
             return buf;
         } finally {
-            process.argv = originalArgv;
-            process.cwd = originalCwd;
-            process.exit = originalExit;
-            process.stdout.write = originalStdoutWrite;
-            process.stderr.write = originalStderrWrite;
+            // Restore in reverse order of application.
+            while (restore.length) {
+                const fn = restore.pop();
+                try {
+                    fn();
+                } catch {
+                    /* noop */
+                }
+            }
         }
     }
 
     _extractProjectUrl(logText) {
         if (!logText) return '';
-        const stripAnsi = (s) =>
-            String(s).replace(
-                // Covers common SGR + other ANSI escape sequences (colors, cursor, etc.)
-                /\x1B\[[0-?]*[ -/]*[@-~]/g,
-                ''
-            );
-        const clean = stripAnsi(logText);
-
         const re = /Project uploaded to:\s*(https?:\/\/[^\s]+)/g;
         let match;
         let lastUrl = '';
-        while ((match = re.exec(clean))) {
+        while ((match = re.exec(logText))) {
             lastUrl = match[1];
         }
 
@@ -256,7 +356,7 @@ export default class ZapparPublishPlugin extends EditorPlugin {
             if (alsoPublish) {
                 await this._runZapworks(
                     ['publish', '--version', this._version, '--project', this._projectId],
-                    {label: 'Publishing'}
+                    {label: 'Publishing', sendEnter: true}
                 );
             }
 
@@ -276,10 +376,17 @@ export default class ZapparPublishPlugin extends EditorPlugin {
         this._publishing = true;
         (async () => {
             await this._packageProject();
-            await this._runZapworks(
-                ['publish', '--version', this._version, '--project', this._projectId],
-                {label: 'Publishing'}
-            );
+            const args = [
+                'publish',
+                '--version',
+                this._version,
+                '--project',
+                this._projectId,
+            ];
+            if (data.settings.editor.serverCOEP !== 'unsafe-none') {
+                args.push('--cross-origin-isolation');
+            }
+            await this._runZapworks(args, {label: 'Publishing', sendEnter: true});
             this._status = 'Publish complete.';
         })()
             .catch((e) => this._setError(e, 'Publish failed'))

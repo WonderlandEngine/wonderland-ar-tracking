@@ -12,6 +12,7 @@
         "wonderland-engine"
     ],
     "devDependencies": {
+        "@wonderlandengine/zappar-publish-plugin": "file:../../packages/zappar-publish-plugin",
         "esbuild": "^0.15.18"
     },
     "dependencies": {
