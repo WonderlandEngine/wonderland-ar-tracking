@@ -61,7 +61,6 @@ export default class ZapparPublishPlugin extends EditorPlugin {
         this._trainProgress = '';
 
         this._status = '';
-        this._lastLog = '';
 
         /** Last uploaded ZapWorks URL (if present in CLI output). */
         this.projectURL = '';
@@ -89,9 +88,6 @@ export default class ZapparPublishPlugin extends EditorPlugin {
         if (this._status) {
             ui.separator();
             ui.text(this._status);
-        }
-        if (this._lastLog && ui.button('Log last output to console')) {
-            console.log(this._lastLog);
         }
     }
 
@@ -196,7 +192,6 @@ export default class ZapparPublishPlugin extends EditorPlugin {
             const clean = stripAnsi(text);
             buf += clean;
             lastOutputAt = Date.now();
-            this._lastLog = buf;
 
             if (label) {
                 const trimmed = clean.trim();
