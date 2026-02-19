@@ -1,6 +1,6 @@
 {
     "name": "@wonderlandengine/zappar-publish-plugin",
-    "version": "1.0.1",
+    "version": "1.1.1",
     "description": "Wonderland Engine editor publish plugin for ZapWorks (Zappar)",
     "main": "plugins/zappar-publish-plugin.mjs",
     "type": "module",

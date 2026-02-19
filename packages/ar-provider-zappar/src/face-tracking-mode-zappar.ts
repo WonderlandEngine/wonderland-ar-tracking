@@ -351,11 +351,7 @@ export class FaceTracking_Zappar extends TrackingMode implements FaceTrackingMod
                 };
             } else {
                 attachmentPoints[attachment] = {
-                    position: convertFaceLocalVectorToProviderSpace(
-                        0,
-                        0,
-                        0
-                    ),
+                    position: convertFaceLocalVectorToProviderSpace(0, 0, 0),
                 };
             }
         }
@@ -455,8 +451,7 @@ export class FaceTracking_Zappar extends TrackingMode implements FaceTrackingMod
         }
 
         if (
-            typeof engineAny.wasm?._wl_view_component_remapProjectionMatrix ===
-            'function'
+            typeof engineAny.wasm?._wl_view_component_remapProjectionMatrix === 'function'
         ) {
             const ndcDepthIsZeroToOne = false;
             engineAny.wasm._wl_view_component_remapProjectionMatrix(

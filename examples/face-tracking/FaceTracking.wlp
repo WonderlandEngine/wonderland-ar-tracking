@@ -1100,5 +1100,9 @@
     },
     "particleEffects": {},
     "probeVolumeScenarios": {},
-    "plugins": {}
+    "plugins": {
+        "Zappar Publish Plugin": {
+            "enable": true
+        }
+    }
 }

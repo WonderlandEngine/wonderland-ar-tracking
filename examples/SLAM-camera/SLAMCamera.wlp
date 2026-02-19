@@ -551,7 +551,6 @@
             "version": [
                 1,
                 5,
-                1,
                 2
             ],
             "customIndexHtml": false
@@ -581,7 +580,8 @@
                 0.0
             ],
             "bloom": {
-                "enabled": false
+                "enabled": false,
+                "threshold": 1.875
             },
             "textureAtlasSize": [
                 4096,
@@ -591,9 +591,6 @@
                 4096,
                 4096
             ],
-            "hdr": {
-                "exposure": 1.5
-            },
             "environment": {
                 "bakingMode": "sky",
                 "material": null
@@ -918,5 +915,9 @@
     "morphTargets": {},
     "particleEffects": {},
     "probeVolumeScenarios": {},
-    "plugins": {}
+    "plugins": {
+        "Zappar Publish Plugin": {
+            "enable": true
+        }
+    }
 }

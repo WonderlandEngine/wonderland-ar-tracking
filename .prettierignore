@@ -1,0 +1,7 @@
+# Vendored/minified Zappar CV runtime assets (do not format)
+examples/SLAM-camera/zappar-cv/*.js
+
+# Generated/runtime output and dependencies
+**/deploy/**
+**/cache/**
+**/node_modules/**
