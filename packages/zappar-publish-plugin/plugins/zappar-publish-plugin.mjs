@@ -349,10 +349,19 @@ export default class ZapparPublishPlugin extends EditorPlugin {
             if (url) this.projectURL = url;
 
             if (alsoPublish) {
-                await this._runZapworks(
-                    ['publish', '--version', this._version, '--project', this._projectId],
-                    {label: 'Publishing', sendEnter: true}
-                );
+                const publishArgs = [
+                    'publish',
+                    '--version',
+                    this._version,
+                    '--project',
+                    this._projectId,
+                    '--dir',
+                    path.relative(workspace.root, workspace.deployPath),
+                ];
+                if (data.settings.editor.serverCOEP !== 'unsafe-none') {
+                    publishArgs.push('--cross-origin-isolation');
+                }
+                await this._runZapworks(publishArgs, {label: 'Publishing'});
             }
 
             this._status = alsoPublish ? 'Upload & publish complete.' : 'Upload complete.';
