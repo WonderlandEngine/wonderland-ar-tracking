@@ -67,7 +67,7 @@ describe('ARSession', () => {
         expect(first).toBe(second);
     });
 
-    it('registers providers once and emits ready after scene is loaded', async () => {
+    it('registers providers once and emits ready after scene and camera are ready', async () => {
         const engine = createMockEngine();
         const session = ARSession.getSessionForEngine(engine);
         const provider = new TestProvider(engine, {
@@ -80,6 +80,9 @@ describe('ARSession', () => {
 
         await session.registerTrackingProvider(provider);
         await session.registerTrackingProvider(provider);
+
+        session.registerARCameraComponent();
+        session.markARCameraReady();
 
         expect(session.registeredProviders).toHaveLength(1);
         expect(readySpy).not.toHaveBeenCalled();
