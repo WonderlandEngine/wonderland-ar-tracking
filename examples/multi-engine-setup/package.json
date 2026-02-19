@@ -5,9 +5,7 @@
     "main": "js/index.js",
     "type": "module",
     "module": "js/index.js",
-    "scripts": {
-        "build": "echo \"The 'build' script is run by the editor and should produce your application bundle\""
-    },
+    "scripts": {},
     "keywords": [
         "wonderland-engine"
     ],

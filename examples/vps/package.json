@@ -5,9 +5,7 @@
     "main": "js/index.js",
     "type": "module",
     "module": "js/index.js",
-    "scripts": {
-        "build": "esbuild ./js/index.js --bundle --outfile=\"deploy/vps-bundle.js\""
-    },
+    "scripts": {},
     "keywords": [
         "wonderland-engine"
     ],

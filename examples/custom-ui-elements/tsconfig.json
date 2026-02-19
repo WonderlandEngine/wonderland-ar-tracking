@@ -1,13 +1,8 @@
 {
+    "extends": "../../tsconfig.base.json",
     "compilerOptions": {
-        "target": "ES2022",
-        "module": "ES2022",
-        "moduleResolution": "nodenext",
         "outDir": ".",
-        "declaration": true,
-        "newLine": "LF",
-        "allowJs": false,
-        "strict": true
+        "declaration": true
     },
 
     "include": ["./js/**/*.ts"],

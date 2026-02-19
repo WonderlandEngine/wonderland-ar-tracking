@@ -1,14 +1,9 @@
 {
+    "extends": "../../tsconfig.base.json",
     "compilerOptions": {
-        "target": "ES2022",
         "module": "NodeNext",
-        "moduleResolution": "nodenext",
         "outDir": "dist",
-        "declaration": true,
-        "newLine": "LF",
-        "allowJs": false,
-        "strict": true,
-        "experimentalDecorators": true
+        "declaration": true
     },
 
     "include": ["./src/**/*.ts", "./src/**/*.d.ts", "index.ts"],

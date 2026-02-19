@@ -5,20 +5,18 @@
     "main": "js/index.js",
     "type": "module",
     "module": "js/index.js",
-    "scripts": {
-        "build": "esbuild ./js/index.js --bundle --format=esm --outfile=\"deploy/face-tracking.wlp-bundle.js\""
-    },
+    "scripts": {},
     "keywords": [
         "wonderland-engine"
     ],
     "devDependencies": {
-        "@wonderlandengine/zappar-publish-plugin": "file:../../packages/zappar-publish-plugin",
+        "@wonderlandengine/zappar-publish-plugin": "^0.0.1",
         "esbuild": "^0.15.18"
     },
     "dependencies": {
-        "@wonderlandengine/api": ">=1.3.0 <1.4.0",
-        "@wonderlandengine/ar-provider-zappar": "file:../packages/ar-provider-zappar",
+        "@wonderlandengine/api": ">= 1.4.0 < 2.0.0",
         "@wonderlandengine/ar-provider-webxr": "^1.0.0",
+        "@wonderlandengine/ar-provider-zappar": "^1.0.0",
         "@wonderlandengine/ar-tracking": "^1.0.0",
         "@wonderlandengine/components": "^1.0.0",
         "gl-matrix": "^3.4.3",

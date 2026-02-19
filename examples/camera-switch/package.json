@@ -5,9 +5,7 @@
     "main": "js/index.ts",
     "type": "module",
     "module": "js/index.js",
-    "scripts": {
-        "build": "esbuild ./js/index.js --bundle --outfile=\"deploy/camera-switch.wlp-bundle.js\""
-    },
+    "scripts": {},
     "keywords": [
         "wonderland-engine"
     ],
