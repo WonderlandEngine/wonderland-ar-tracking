@@ -322,6 +322,26 @@ export default class ZapparPublishPlugin extends EditorPlugin {
         return (lastUrl || '').replace(/[)\]}>.,;]+$/g, '');
     }
 
+    _getDeployDirArg() {
+        return path.relative(workspace.root, workspace.deployPath);
+    }
+
+    _buildPublishArgs({includeDir = false} = {}) {
+        const args = ['publish', '--version', this._version, '--project', this._projectId];
+        if (includeDir) {
+            args.push('--dir', this._getDeployDirArg());
+        }
+        if (data.settings.editor.serverCOEP !== 'unsafe-none') {
+            args.push('--cross-origin-isolation');
+        }
+        return args;
+    }
+
+    async _publish({includeDir = false, sendEnter = false} = {}) {
+        const args = this._buildPublishArgs({includeDir});
+        await this._runZapworks(args, {label: 'Publishing', sendEnter});
+    }
+
     _upload({alsoPublish}) {
         if (this._publishing) return;
         if (!this._projectId || !this._version) {
@@ -339,7 +359,7 @@ export default class ZapparPublishPlugin extends EditorPlugin {
                 '--project',
                 this._projectId,
                 '--dir',
-                path.relative(workspace.root, workspace.deployPath),
+                this._getDeployDirArg(),
             ];
             if (data.settings.editor.serverCOEP !== 'unsafe-none') {
                 args.push('--cross-origin-isolation');
@@ -349,19 +369,7 @@ export default class ZapparPublishPlugin extends EditorPlugin {
             if (url) this.projectURL = url;
 
             if (alsoPublish) {
-                const publishArgs = [
-                    'publish',
-                    '--version',
-                    this._version,
-                    '--project',
-                    this._projectId,
-                    '--dir',
-                    path.relative(workspace.root, workspace.deployPath),
-                ];
-                if (data.settings.editor.serverCOEP !== 'unsafe-none') {
-                    publishArgs.push('--cross-origin-isolation');
-                }
-                await this._runZapworks(publishArgs, {label: 'Publishing'});
+                await this._publish({includeDir: true});
             }
 
             this._status = alsoPublish ? 'Upload & publish complete.' : 'Upload complete.';
@@ -380,17 +388,7 @@ export default class ZapparPublishPlugin extends EditorPlugin {
         this._publishing = true;
         (async () => {
             await this._packageProject();
-            const args = [
-                'publish',
-                '--version',
-                this._version,
-                '--project',
-                this._projectId,
-            ];
-            if (data.settings.editor.serverCOEP !== 'unsafe-none') {
-                args.push('--cross-origin-isolation');
-            }
-            await this._runZapworks(args, {label: 'Publishing', sendEnter: true});
+            await this._publish({sendEnter: true});
             this._status = 'Publish complete.';
         })()
             .catch((e) => this._setError(e, 'Publish failed'))
