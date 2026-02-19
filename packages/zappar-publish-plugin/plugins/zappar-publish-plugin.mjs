@@ -194,7 +194,8 @@ export default class ZapparPublishPlugin extends EditorPlugin {
             lastOutputAt = Date.now();
 
             if (label) {
-                const trimmed = clean.trim();
+                const statusText = clean.replace(/■/g, '\uf0fd');
+                const trimmed = statusText.trim();
                 if (trimmed) this._status = `${label}: ${trimmed}`;
             }
         };
