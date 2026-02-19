@@ -112,3 +112,6 @@ deploy/
 
 trash/
 
+# Zappar local/runtime config artifacts
+*.zappar.config.json
+
