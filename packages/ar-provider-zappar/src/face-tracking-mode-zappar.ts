@@ -16,11 +16,11 @@ import type {
     FaceTracker,
 } from '@zappar/zappar';
 import {mat4, quat, vec3} from 'gl-matrix';
-import {ZapparProvider} from './zappar-provider.js';
+import type {ZapparProvider} from './zappar-provider.js';
 
 type AttachmentMapping = Partial<Record<FaceAttachmentPoint, string>>;
 
-const AttachmentLandmarkKeys: AttachmentMapping = {
+export const AttachmentLandmarkKeys: AttachmentMapping = {
     [FaceAttachmentPoint.Forehead]: 'NOSE_BRIDGE',
     [FaceAttachmentPoint.EyeOuterCornerLeft]: 'EYE_LEFT',
     [FaceAttachmentPoint.EyeOuterCornerRight]: 'EYE_RIGHT',
@@ -47,6 +47,34 @@ const AttachmentLandmarkKeys: AttachmentMapping = {
 };
 
 const AttachmentList = Object.values(FaceAttachmentPoint) as FaceAttachmentPoint[];
+
+export function buildFaceLoadingEventFromMesh(
+    maxDetections: number,
+    verticesArray: ArrayLike<number>,
+    indicesArray: ArrayLike<number>,
+    uvsArray: ArrayLike<number>
+): FaceLoadingEvent {
+    const indices: Array<{a: number; b: number; c: number}> = [];
+    for (let i = 0; i < indicesArray.length; i += 3) {
+        indices.push({
+            a: indicesArray[i],
+            b: indicesArray[i + 1],
+            c: indicesArray[i + 2],
+        });
+    }
+
+    const uvs: Array<{u: number; v: number}> = [];
+    for (let i = 0; i < uvsArray.length; i += 2) {
+        uvs.push({u: uvsArray[i], v: uvsArray[i + 1]});
+    }
+
+    return {
+        maxDetections,
+        pointsPerDetection: verticesArray.length / 3,
+        indices: indices as unknown as FaceLoadingEvent['indices'],
+        uvs: uvs as unknown as FaceLoadingEvent['uvs'],
+    };
+}
 
 export class FaceTracking_Zappar extends TrackingMode implements FaceTrackingMode {
     private _zappar: ZapparNamespace | null = null;
@@ -190,30 +218,12 @@ export class FaceTracking_Zappar extends TrackingMode implements FaceTrackingMod
             return null;
         }
 
-        const indicesArray = this._faceMesh.indices;
-        const uvsArray = this._faceMesh.uvs;
-        const verticesArray = this._faceMesh.vertices;
-
-        const indices: Array<{a: number; b: number; c: number}> = [];
-        for (let i = 0; i < indicesArray.length; i += 3) {
-            indices.push({
-                a: indicesArray[i],
-                b: indicesArray[i + 1],
-                c: indicesArray[i + 2],
-            });
-        }
-
-        const uvs: Array<{u: number; v: number}> = [];
-        for (let i = 0; i < uvsArray.length; i += 2) {
-            uvs.push({u: uvsArray[i], v: uvsArray[i + 1]});
-        }
-
-        return {
-            maxDetections: this._faceTracker.maxFaces,
-            pointsPerDetection: verticesArray.length / 3,
-            indices: indices as unknown as FaceLoadingEvent['indices'],
-            uvs: uvs as unknown as FaceLoadingEvent['uvs'],
-        };
+        return buildFaceLoadingEventFromMesh(
+            this._faceTracker.maxFaces,
+            this._faceMesh.vertices,
+            this._faceMesh.indices,
+            this._faceMesh.uvs
+        );
     }
 
     private _handleAnchorVisible = (anchor: FaceAnchor) => {

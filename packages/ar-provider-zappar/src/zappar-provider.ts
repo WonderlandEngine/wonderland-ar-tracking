@@ -103,6 +103,21 @@ export class ZapparProvider extends ARProvider {
 
     private _preRenderErrorLogged = false;
 
+    private get isVerboseDebugLoggingEnabled(): boolean {
+        if (typeof window === 'undefined') {
+            return false;
+        }
+
+        const debugWindow = window as Window & {
+            __WLE_ZAPPAR_DEBUG__?: boolean;
+            __ZAPPAR_WORKER_DEBUG__?: boolean;
+        };
+        return (
+            debugWindow.__WLE_ZAPPAR_DEBUG__ === true ||
+            debugWindow.__ZAPPAR_WORKER_DEBUG__ === true
+        );
+    }
+
     static Name = 'Zappar';
 
     get name(): string {
@@ -136,11 +151,10 @@ export class ZapparProvider extends ARProvider {
 
         engine.onXRSessionStart.add((session: XRSession) => {
             this._xrSession = session;
-            this.onSessionStart.notify(this);
         });
 
         engine.onXRSessionEnd.add(() => {
-            this.onSessionEnd.notify(this);
+            this._xrSession = null;
         });
     }
 
@@ -168,6 +182,10 @@ export class ZapparProvider extends ARProvider {
 
     private startZapparDebugLogging(): void {
         if (this._zapparDebugLogIntervalId !== null) return;
+
+        if (!this.isVerboseDebugLoggingEnabled) {
+            return;
+        }
 
         const canAccessWindow =
             typeof window !== 'undefined' &&
@@ -234,10 +252,7 @@ export class ZapparProvider extends ARProvider {
         const workerUrl = './zappar-cv/zappar-cv.worker.js';
         const wasmUrl = './zappar-cv/zappar-cv.wasm';
 
-        const debugWorker =
-            typeof window !== 'undefined' &&
-            (window as unknown as {__ZAPPAR_WORKER_DEBUG__?: boolean})
-                .__ZAPPAR_WORKER_DEBUG__;
+        const debugWorker = this.isVerboseDebugLoggingEnabled;
 
         if (debugWorker) {
             console.log('[ZapparProvider] configureCvWorkerIfNeeded()', {
@@ -273,17 +288,19 @@ export class ZapparProvider extends ARProvider {
                     ? new URL(wasmUrl, window.location.href).toString()
                     : wasmUrl;
 
-            console.log('[ZapparProvider] CV worker created', {
-                workerUrl,
-                resolvedWorkerUrl,
-                wasmUrl,
-                resolvedWasmUrl,
-            });
+            if (debugWorker) {
+                console.log('[ZapparProvider] CV worker created', {
+                    workerUrl,
+                    resolvedWorkerUrl,
+                    wasmUrl,
+                    resolvedWasmUrl,
+                });
+            }
 
             let workerMessagesSeen = 0;
             worker.addEventListener('message', (event: MessageEvent) => {
                 workerMessagesSeen++;
-                if (workerMessagesSeen === 1) {
+                if (workerMessagesSeen === 1 && debugWorker) {
                     console.log(
                         '[ZapparProvider] CV worker first message received',
                         event.data
@@ -292,7 +309,7 @@ export class ZapparProvider extends ARProvider {
                 }
 
                 // Keep a couple more messages for context, but avoid spamming.
-                if (workerMessagesSeen <= 5) {
+                if (debugWorker && workerMessagesSeen <= 5) {
                     console.log('[ZapparProvider] CV worker message', {
                         index: workerMessagesSeen,
                         data: event.data,
@@ -371,7 +388,9 @@ export class ZapparProvider extends ARProvider {
         }
 
         if (typeof window !== 'undefined') {
-            console.log('[ZapparProvider] Using device camera source');
+            if (this.isVerboseDebugLoggingEnabled) {
+                console.log('[ZapparProvider] Using device camera source');
+            }
         }
         const deviceId = Zappar.cameraDefaultDeviceID();
         this.cameraSource = new Zappar.CameraSource(pipeline, deviceId);
