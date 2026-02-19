@@ -33,5 +33,4 @@ export class ARImageTrackingCamera extends ARTrackingCameraBase<ImageTrackingMod
     get onImageLost() {
         return this._trackingImpl.onImageLost;
     }
-
 }

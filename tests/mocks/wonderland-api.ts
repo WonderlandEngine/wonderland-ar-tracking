@@ -28,7 +28,10 @@ export class RetainEmitter<TArgs extends unknown[] = []> extends Emitter<TArgs> 
 
 export class Component {
     engine: WonderlandEngine;
-    object: {getComponent: (type: string) => unknown; setTransformWorld?: (value: unknown) => void};
+    object: {
+        getComponent: (type: string) => unknown;
+        setTransformWorld?: (value: unknown) => void;
+    };
     active = true;
 
     constructor(engine: WonderlandEngine) {

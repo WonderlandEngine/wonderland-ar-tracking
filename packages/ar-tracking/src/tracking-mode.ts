@@ -137,7 +137,7 @@ export interface VPSMeshFoundEvent {
                 name: 'color';
                 array: Float32Array;
                 itemSize: 3;
-            }
+            },
         ];
     };
 }

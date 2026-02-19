@@ -31,8 +31,8 @@ import {ZapparProvider} from '@wonderlandengine/ar-provider-zappar';
 const Constants = {
     ProjectName: 'SLAMCamera',
     RuntimeBaseName: 'WonderlandRuntime',
-    WebXRRequiredFeatures: ['local',],
-    WebXROptionalFeatures: ['local','hit-test',],
+    WebXRRequiredFeatures: ['local'],
+    WebXROptionalFeatures: ['local', 'hit-test'],
 };
 const RuntimeOptions = {
     webgl2: true,

@@ -30,9 +30,9 @@ map to the standard Wonderland Engine components supplied by
 `@wonderlandengine/ar-tracking` (`ARSLAMCamera`, `ARFaceTrackingCamera`, and
 `ARImageTrackingCamera`).
 
--   Face tracking loads Zappar's default model and mesh. Attachment points that
-    have no exact landmark are approximated to the closest available Zappar
-    landmark.
+- Face tracking loads Zappar's default model and mesh. Attachment points that
+  have no exact landmark are approximated to the closest available Zappar
+  landmark.
 
 ## Recording a Zappar Sequence (Camera + Motion)
 
@@ -69,8 +69,8 @@ URL.revokeObjectURL(a.href);
 
 Notes:
 
--   Sequence recording captures camera + IMU, so it’s best done on a mobile device.
--   You can replay sequences using Zappar’s `SequenceSource` API (preferred over MP4 replay for correct tracking).
+- Sequence recording captures camera + IMU, so it’s best done on a mobile device.
+- You can replay sequences using Zappar’s `SequenceSource` API (preferred over MP4 replay for correct tracking).
 
 ### Registering Image Targets
 

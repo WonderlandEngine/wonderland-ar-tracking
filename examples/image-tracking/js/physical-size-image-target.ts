@@ -36,10 +36,10 @@ export class PhysicalSizeImageTarget extends Component {
     ARImageTrackingCamera!: WLEObject;
 
     /**
-        * Image target name.
-        *
-        * - For 8th Wall this used to be the image target id.
-        * - For Zappar this must match the `name` you register via `ZapparProvider.registerImageTarget()`.
+     * Image target name.
+     *
+     * - For 8th Wall this used to be the image target id.
+     * - For Zappar this must match the `name` you register via `ZapparProvider.registerImageTarget()`.
      */
     @property.string()
     imageId!: string;
@@ -112,8 +112,7 @@ export class PhysicalSizeImageTarget extends Component {
     private createCylinderMesh = (imageData: ImageScanningEvent['imageTargets'][0]) => {
         const {geometry} = imageData;
         const length = geometry.arcLengthRadians ?? 2 * Math.PI;
-        const arcStart =
-            geometry.arcStartRadians ?? (2 * Math.PI - length) / 2 + Math.PI;
+        const arcStart = geometry.arcStartRadians ?? (2 * Math.PI - length) / 2 + Math.PI;
 
         // Zappar currently provides radius/height but not arc-length metadata.
         // In that case we default to a full wrap (2π).

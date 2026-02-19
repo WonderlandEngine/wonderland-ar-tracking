@@ -1,20 +1,23 @@
 <!doctype html>
 <html>
-  <script type="importmap">
-  {
-    "imports": {
-      "@wonderlandengine/api": "./node_modules/@wonderlandengine/api/index.js",
-      "@wonderlandengine/api/decorators.js": "./node_modules/@wonderlandengine/api/index.js"
-    }
-  }
-  </script>
+    <script type="importmap">
+        {
+            "imports": {
+                "@wonderlandengine/api": "./node_modules/@wonderlandengine/api/index.js",
+                "@wonderlandengine/api/decorators.js": "./node_modules/@wonderlandengine/api/index.js"
+            }
+        }
+    </script>
 
     <head>
-    {{ if settings.scripting.components.bundling != 'none' }}
-    {{ if settings.scripting.components.output != '' }}
-    <link rel="modulepreload" href="{{ settings.scripting.components.output }}?t={{timestamp}}" as="script">
-    {{ end }}
-    {{ end }}
+        {{ if settings.scripting.components.bundling != 'none' }} {{ if
+        settings.scripting.components.output != '' }}
+        <link
+            rel="modulepreload"
+            href="{{ settings.scripting.components.output }}?t={{timestamp}}"
+            as="script"
+        />
+        {{ end }} {{ end }}
 
         <title>News Portal</title>
         <link

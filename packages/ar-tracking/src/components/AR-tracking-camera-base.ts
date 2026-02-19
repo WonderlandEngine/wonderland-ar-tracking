@@ -3,7 +3,9 @@ import {ITrackingMode} from '../tracking-mode.js';
 import {TrackingType} from '../tracking-type.js';
 import {ARCamera} from './AR-Camera.js';
 
-export abstract class ARTrackingCameraBase<TTrackingMode extends ITrackingMode> extends ARCamera {
+export abstract class ARTrackingCameraBase<
+    TTrackingMode extends ITrackingMode,
+> extends ARCamera {
     protected abstract trackingType: TrackingType;
     protected _trackingImpl!: TTrackingMode;
 

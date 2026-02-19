@@ -266,8 +266,8 @@ export class WorldTracking_XR8 extends TrackingMode {
                 componentUsesAbsoluteScale === undefined
                     ? 'responsive'
                     : componentUsesAbsoluteScale
-                    ? 'absolute'
-                    : 'responsive',
+                      ? 'absolute'
+                      : 'responsive',
             enableVps: componentUsesVPS,
         });
 
