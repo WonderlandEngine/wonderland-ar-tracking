@@ -53,7 +53,7 @@ VPS (Visual Positioning System) allows tracking a world mesh for a scanned locat
     - [Face Tracking](#face-tracking)
     - [8th Wall VPS](#8th-wall-vps)
 - [Setting Up](#setting-up)
-- [AI Overview](#api-overview)
+- [API Overview](#api-overview)
 
 ## Setting Up
 
@@ -163,7 +163,7 @@ export class FaceMaskExample extends Component {
 
     /** The ARFaceTrackingCamera somewhere in the scene */
     @property.object()
-    ARFaceTrackingCamera!: WLEObject;
+    ARFaceTrackingCamera!: Object3D;
 
     start() {
         camera.onFaceUpdate.add((event) => {
