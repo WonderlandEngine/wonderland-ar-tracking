@@ -1,7 +1,6 @@
-import {ARSession} from '../AR-session.js';
 import {VPSTrackingMode} from '../tracking-mode.js';
 import {TrackingType} from '../tracking-type.js';
-import {ARCamera} from './AR-Camera.js';
+import {ARTrackingCameraBase} from './AR-tracking-camera-base.js';
 
 /**
  * AR VPS tracking Camera component.
@@ -16,8 +15,9 @@ import {ARCamera} from './AR-Camera.js';
  * clear the "Project Settings/Editor/serverCOEP" field.
  * Warning - it will disable the WASM thread support.
  */
-export class ARVPSCamera extends ARCamera {
+export class ARVPSCamera extends ARTrackingCameraBase<VPSTrackingMode> {
     static TypeName = 'ar-vps-camera';
+    protected trackingType = TrackingType.VPS;
 
     /**
      * make sure noone can overwrite this
@@ -25,8 +25,6 @@ export class ARVPSCamera extends ARCamera {
     get usesVPS() {
         return true;
     }
-
-    private _trackingImpl!: VPSTrackingMode;
 
     get onWaySpotFound() {
         return this._trackingImpl.onWaySpotFound;
@@ -43,39 +41,7 @@ export class ARVPSCamera extends ARCamera {
         return this._trackingImpl.onMeshFound;
     }
 
-    init() {
-        this._trackingImpl = ARSession.getSessionForEngine(this.engine).getTrackingProvider(
-            TrackingType.VPS,
-            this
-        ) as VPSTrackingMode;
-    }
-
-    start() {
-        if (this._trackingImpl.init) this._trackingImpl.init(['location']);
-    }
-
-    startSession = async () => {
-        if (this.active) {
-            this._trackingImpl.startSession();
-        }
-    };
-
-    endSession = async () => {
-        if (this.active) {
-            this._trackingImpl!.endSession();
-        }
-    };
-
-    onDeactivate(): void {
-        this._trackingImpl.endSession();
-    }
-
-    update(dt: number) {
-        this._trackingImpl.update?.(dt);
-
-        const cameraTransformWorld = this._trackingImpl.getCameraTransformWorld?.();
-        if (cameraTransformWorld) {
-            this.object.setTransformWorld(cameraTransformWorld);
-        }
+    protected getTrackingInitFeatures(): string[] {
+        return ['location'];
     }
 }

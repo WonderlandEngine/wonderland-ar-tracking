@@ -171,10 +171,12 @@ export class ARSession {
         this.onSessionStart.notify(provider);
     };
 
-    /**
     /* Called by AR providers when they ended an AR session.
      * @param provider The provider to pass to onSessionEnd */
     private onProviderSessionEnd = (provider: ARProvider) => {
+        if (this._currentTrackingProvider === provider) {
+            this._currentTrackingProvider = null;
+        }
         this.onSessionStart.reset();
         this.onSessionEnd.notify(provider);
     };

@@ -5,6 +5,6 @@ import {Component} from '@wonderlandengine/api';
  * All AR cameras should extend this
  */
 export abstract class ARCamera extends Component {
-    abstract startSession(): Promise<void>;
-    abstract endSession(): Promise<void>;
+    abstract startSession(): void;
+    abstract endSession(): void;
 }
