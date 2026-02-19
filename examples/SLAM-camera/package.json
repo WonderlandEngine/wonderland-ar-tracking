@@ -5,22 +5,25 @@
     "main": "js/index.js",
     "type": "module",
     "module": "js/index.js",
-    "scripts": {
-        "build": "esbuild ./js/index.js --bundle --outfile=\"deploy/SLAM-camera-example-bundle.js\""
-    },
+    "scripts": {},
     "keywords": [
         "wonderland-engine"
     ],
     "devDependencies": {
+        "@wonderlandengine/zappar-publish-plugin": "^1.1.0",
         "esbuild": "^0.15.18",
         "typescript": "^4.9.5"
     },
     "dependencies": {
-        "@wonderlandengine/api": "^1.1.0",
-        "@wonderlandengine/ar-provider-8thwall": "^1.0.0",
-        "@wonderlandengine/ar-provider-webxr": "^1.0.0",
-        "@wonderlandengine/ar-tracking": "^1.0.0",
+        "@wonderlandengine/api": "1.5.2",
+        "@wonderlandengine/ar-provider-8thwall": "file:../../packages/ar-provider-8thwall",
+        "@wonderlandengine/ar-provider-webxr": "file:../../packages/ar-provider-webxr",
+        "@wonderlandengine/ar-provider-zappar": "^1.1.1",
+        "@wonderlandengine/ar-tracking": "file:../../packages/ar-tracking",
         "@wonderlandengine/components": "^1.0.0",
         "gl-matrix": "^3.4.3"
+    },
+    "overrides": {
+        "@wonderlandengine/api": "$@wonderlandengine/api"
     }
 }

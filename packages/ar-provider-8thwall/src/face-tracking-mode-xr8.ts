@@ -51,11 +51,10 @@ function toFaceFoundEvent(event: XR8FaceFoundEvent): FaceFoundEvent {
         })
     );
 
-    const d = event.detail;
-    // @ts-ignore
-    d.attachmentPoints = attachmentPoints;
-    // @ts-ignore
-    return d as FaceFoundEvent;
+    return {
+        ...event.detail,
+        attachmentPoints: attachmentPoints as FaceFoundEvent['attachmentPoints'],
+    } as FaceFoundEvent;
 }
 
 /**

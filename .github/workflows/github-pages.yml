@@ -2,9 +2,9 @@ name: Build
 on: [push]
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+    contents: read
+    pages: write
+    id-token: write
 
 jobs:
     package:
@@ -19,6 +19,7 @@ jobs:
 
                   # Build all node libraries
                   npm i
+                  npm run test:unit
                   npm run build --workspaces
 
                   # Build all examples

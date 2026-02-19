@@ -2,7 +2,7 @@
  * FaceAttachmentPointExample
  * A basic example demonstrating how to attach object to a face feature
  */
-import {Component, Object as WLEObject} from '@wonderlandengine/api';
+import {Component, Object3D} from '@wonderlandengine/api';
 import {property} from '@wonderlandengine/api/decorators.js';
 
 import {ARFaceTrackingCamera, FaceAttachmentPoint} from '@wonderlandengine/ar-tracking';
@@ -16,7 +16,7 @@ export class FaceAttachmentPointExample extends Component {
      * The ARFaceTrackingCamera somewhere in the scene
      */
     @property.object()
-    ARFaceTrackingCamera!: WLEObject;
+    ARFaceTrackingCamera!: Object3D;
 
     /**
      * To which feature of the face should the object be attached
@@ -28,16 +28,18 @@ export class FaceAttachmentPointExample extends Component {
      * Object which should be attached to the face feature
      */
     @property.object()
-    attachedObject!: WLEObject;
+    attachedObject!: Object3D;
 
     start() {
         if (!this.ARFaceTrackingCamera) {
             console.warn(
-                `${this.object.name}/${this.type} requires a ${ARFaceTrackingCamera.TypeName}`
+                `${this.object.name}/${this.type} requires a ${ARFaceTrackingCamera.TypeName} component`
             );
             return;
         }
-        const camera = this.ARFaceTrackingCamera.getComponent(ARFaceTrackingCamera);
+            const camera = this.ARFaceTrackingCamera.getComponent(
+                ARFaceTrackingCamera.TypeName
+            ) as ARFaceTrackingCamera | null;
         if (!camera) {
             throw new Error(
                 `${ARFaceTrackingCamera.TypeName} was not found on ARFaceTrackingCamera`

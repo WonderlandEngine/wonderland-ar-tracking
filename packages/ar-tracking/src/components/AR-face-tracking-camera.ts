@@ -1,10 +1,9 @@
 import {property} from '@wonderlandengine/api/decorators.js';
 
-import {ARSession} from '../AR-session.js';
-import {FaceTrackingMode, ITrackingMode} from '../tracking-mode.js';
+import {FaceTrackingMode} from '../tracking-mode.js';
 import {TrackingType} from '../tracking-type.js';
 
-import {ARCamera} from './AR-Camera.js';
+import {ARTrackingCameraBase} from './AR-tracking-camera-base.js';
 
 /**
  * AR face tracking Camera component.
@@ -13,13 +12,16 @@ import {ARCamera} from './AR-Camera.js';
  *
  * Currently only works with 8th Wall tracking `FaceTracking_XR8`
  */
-class ARFaceTrackingCamera extends ARCamera {
+export class ARFaceTrackingCamera extends ARTrackingCameraBase<FaceTrackingMode> {
     static TypeName = 'ar-face-tracking-camera';
+    static InheritProperties = true;
+
+    protected getTrackingType(): TrackingType {
+        return TrackingType.Face;
+    }
 
     @property.enum(['front', 'back'], 'front')
     cameraDirection!: number;
-
-    private _trackingImpl!: FaceTrackingMode & ITrackingMode;
 
     get onFaceLoading() {
         return this._trackingImpl.onFaceLoading;
@@ -37,35 +39,9 @@ class ARFaceTrackingCamera extends ARCamera {
         return this._trackingImpl.onFaceLost;
     }
 
-    init() {
-        this._trackingImpl = ARSession.getSessionForEngine(this.engine).getTrackingProvider(
-            TrackingType.Face,
-            this
-        ) as FaceTrackingMode;
-    }
-
-    start() {
+    protected validateStart(): void {
         if (!this.object.getComponent('view')) {
             throw new Error('AR-camera requires a view component');
         }
-        if (this._trackingImpl.init) this._trackingImpl.init();
-    }
-
-    startSession = async () => {
-        if (this.active) {
-            this._trackingImpl.startSession();
-        }
-    };
-
-    endSession = async () => {
-        if (this.active) {
-            this._trackingImpl!.endSession();
-        }
-    };
-
-    onDeactivate(): void {
-        this._trackingImpl.endSession();
     }
 }
-
-export {ARFaceTrackingCamera};

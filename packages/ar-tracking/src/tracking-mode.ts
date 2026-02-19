@@ -10,6 +10,25 @@ export interface ITrackingMode {
     readonly component: Component;
     update?: (delta: number) => void;
 
+    /**
+     * Optional camera pose output as a world-space dual quaternion (8 floats).
+     *
+     * When provided, camera components (e.g. `ar-slam-camera`) may apply it via
+     * `object.setTransformWorld(...)`.
+     */
+    getCameraTransformWorld?: () => ArrayLike<number> | null;
+
+    /**
+     * Optional camera projection matrix (16 floats).
+     *
+     * When provided, camera components (e.g. `ar-slam-camera`) may apply it via
+     * `view.projectionMatrix.set(...)`.
+     *
+     * @param out The array to write the projection matrix to.
+     * @returns `true` if the projection matrix was written, `false` otherwise.
+     */
+    getCameraProjectionMatrix?: (out: Float32Array) => boolean;
+
     init?(features?: string[]): void;
     startSession: () => void;
     endSession: () => void;

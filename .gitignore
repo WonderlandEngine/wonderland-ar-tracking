@@ -108,7 +108,11 @@ dist
 .editor
 cache/
 deploy/
-
+**/zappar-cv/
+**/.autosave/
 
 trash/
+
+# Zappar local/runtime config artifacts
+*.zappar.config.json
 

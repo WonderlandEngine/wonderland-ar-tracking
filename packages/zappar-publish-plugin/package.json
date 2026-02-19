@@ -1,0 +1,44 @@
+{
+    "name": "@wonderlandengine/zappar-publish-plugin",
+    "version": "1.1.1",
+    "description": "Wonderland Engine editor publish plugin for ZapWorks (Zappar)",
+    "main": "plugins/zappar-publish-plugin.mjs",
+    "type": "module",
+    "wonderlandengine": {
+        "plugins": [
+            {
+                "main": "plugins/zappar-publish-plugin.mjs",
+                "name": "Zappar Publish Plugin"
+            }
+        ]
+    },
+    "scripts": {
+        "build": "node -e \"process.exit(0)\""
+    },
+    "prettier": "@wonderlandengine/prettier-config",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/WonderlandEngine/wonderland-ar-tracking.git"
+    },
+    "bugs": {
+        "url": "https://github.com/WonderlandEngine/wonderland-ar-tracking/issues"
+    },
+    "homepage": "https://github.com/WonderlandEngine/wonderland-ar-tracking#readme",
+    "keywords": [
+        "wonderland-engine",
+        "ar",
+        "zappar",
+        "zapworks",
+        "editor-plugin"
+    ],
+    "files": [
+        "plugins/**/*.mjs",
+        "README.md"
+    ],
+    "dependencies": {
+        "@zappar/zapworks-cli": "^2.3.3"
+    },
+    "peerDependencies": {
+        "@wonderlandengine/editor-api": "^1.5.1"
+    }
+}

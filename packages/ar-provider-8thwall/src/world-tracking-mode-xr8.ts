@@ -1,4 +1,5 @@
 import {Emitter, ViewComponent} from '@wonderlandengine/api';
+import {quat2} from 'gl-matrix';
 import {XR8ExtraPermissions, XR8Provider} from './xr8-provider.js';
 import {
     ARSession,
@@ -85,6 +86,14 @@ export class WorldTracking_XR8 extends TrackingMode {
      * Cache 8th Wall cam rotation
      */
     private _cachedRotation = [0, 0, 0, -1];
+
+    /**
+     * Latest camera transform as a world-space dual quaternion.
+     */
+    private readonly _cameraTransform = quat2.create();
+
+    private readonly _projectionMatrix = new Float32Array(16);
+    private _hasProjectionMatrix = false;
 
     /**
      * ARCamera using this tracking mode might want to request some extra permissions
@@ -217,8 +226,14 @@ export class WorldTracking_XR8 extends TrackingMode {
 
         this._view = this.component.object.getComponent('view')!;
 
-        this.component.object.getRotationWorld(this._cachedPosition);
-        this.component.object.getPositionWorld(this._cachedRotation);
+        this.component.object.getRotationWorld(this._cachedRotation);
+        this.component.object.getPositionWorld(this._cachedPosition);
+
+        quat2.fromRotationTranslation(
+            this._cameraTransform,
+            this._cachedRotation as unknown as quat2,
+            this._cachedPosition as unknown as [number, number, number]
+        );
 
         ARSession.getSessionForEngine(this.component.engine).onSessionEnd.add(() => {
             XR8.removeCameraPipelineModules([XR8.XrController.pipelineModule(), this]);
@@ -322,19 +337,32 @@ export class WorldTracking_XR8 extends TrackingMode {
         this._cachedPosition[1] = position.y;
         this._cachedPosition[2] = position.z;
 
+        quat2.fromRotationTranslation(
+            this._cameraTransform,
+            this._cachedRotation,
+            this._cachedPosition
+        );
+
         if (intrinsics) {
-            const projectionMatrix = this._view!.projectionMatrix;
             for (let i = 0; i < 16; i++) {
                 if (Number.isFinite(intrinsics[i])) {
                     // some processCpuResult.reality.intrinsics are set to Infinity, which WL brakes our projectionMatrix. So we just filter those elements out
-                    projectionMatrix[i] = intrinsics[i];
+                    this._projectionMatrix[i] = intrinsics[i];
                 }
             }
+            this._hasProjectionMatrix = true;
         }
 
-        if (position && rotation) {
-            this.component.object.setRotationWorld(this._cachedRotation);
-            this.component.object.setPositionWorld(this._cachedPosition);
-        }
+        // Pose is exposed via getCameraTransformWorld() and applied by the camera component.
     };
+
+    getCameraTransformWorld(): ArrayLike<number> {
+        return this._cameraTransform;
+    }
+
+    getCameraProjectionMatrix(out: Float32Array): boolean {
+        if (!this._hasProjectionMatrix) return false;
+        out.set(this._projectionMatrix);
+        return true;
+    }
 }

@@ -61,7 +61,7 @@
                 {
                     "type": "light",
                     "light": {
-                        "attenuation": 0.1
+                        "intensity": 3.3329999
                     }
                 }
             ],
@@ -88,7 +88,7 @@
                 {
                     "type": "light",
                     "light": {
-                        "attenuation": 0.1
+                        "intensity": 3.3329999
                     }
                 }
             ],
@@ -166,11 +166,6 @@
                     "active": true
                 }
             ],
-            "translation": [
-                0.0,
-                0.0,
-                0.0
-            ],
             "rotation": [
                 0.0,
                 0.0,
@@ -178,9 +173,9 @@
                 1.0
             ],
             "scaling": [
-                0.1,
-                0.1,
-                0.1
+                0.06,
+                0.06,
+                0.06
             ]
         },
         "65": {
@@ -207,7 +202,10 @@
             "parent": "83",
             "components": [
                 {
-                    "active": true
+                    "active": true,
+                    "mesh": {
+                        "material": "63"
+                    }
                 }
             ],
             "name": "HeadOccluder"
@@ -217,8 +215,8 @@
             "parent": "27",
             "translation": [
                 0.0,
-                0.0,
-                0.0
+                -0.2127735,
+                -0.0165339
             ],
             "scaling": [
                 1.0,
@@ -425,7 +423,8 @@
                     1.0
                 ],
                 "shininess": 1
-            }
+            },
+            "pipeline": "37"
         },
         "22": {
             "name": "Pink",
@@ -449,7 +448,8 @@
                     0.2165777,
                     1.0
                 ]
-            }
+            },
+            "pipeline": "37"
         },
         "25": {
             "name": "Yellow",
@@ -472,7 +472,8 @@
                     0.0,
                     1.0
                 ]
-            }
+            },
+            "pipeline": "37"
         },
         "26": {
             "name": "Green",
@@ -495,7 +496,8 @@
                     0.1437908,
                     1.0
                 ]
-            }
+            },
+            "pipeline": "37"
         },
         "63": {
             "link": {
@@ -504,17 +506,26 @@
             },
             "pipeline": "88",
             "Flat": {
-                "flatTexture": "90"
-            }
+                "flatTexture": null
+            },
+            "name": "Head Occluder"
         },
         "69": {
             "name": "FaceMaskWireframe",
-            "pipeline": "39",
+            "pipeline": "36",
             "Phong": {
                 "diffuseTexture": "74"
             },
             "Particle": {
-                "mainTexture": "68"
+                "mainTexture": null
+            },
+            "MeshVisualizer": {
+                "color": [
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.0
+                ]
             }
         },
         "78": {
@@ -531,24 +542,16 @@
             },
             "pipeline": "91",
             "name": "Glasses Material"
+        },
+        "87": {
+            "name": "VideoBackground",
+            "pipeline": "115"
         }
     },
     "shaders": {
-        "1": {
-            "link": {
-                "name": "DistanceFieldVector Textured.frag",
-                "file": "default"
-            }
-        },
         "2": {
             "link": {
                 "name": "Flat.frag",
-                "file": "default"
-            }
-        },
-        "3": {
-            "link": {
-                "name": "Flat Textured.frag",
                 "file": "default"
             }
         },
@@ -564,33 +567,15 @@
                 "file": "default"
             }
         },
-        "6": {
-            "link": {
-                "name": "Phong Textured.frag",
-                "file": "default"
-            }
-        },
         "28": {
             "link": {
                 "name": "Dynamic.vert",
                 "file": "default"
             }
         },
-        "29": {
-            "link": {
-                "name": "Particle Textured.frag",
-                "file": "default"
-            }
-        },
         "30": {
             "link": {
                 "name": "Skinning.vert",
-                "file": "default"
-            }
-        },
-        "31": {
-            "link": {
-                "name": "Static.frag",
                 "file": "default"
             }
         },
@@ -653,6 +638,24 @@
                 "name": "TileFeedback.frag",
                 "file": "default"
             }
+        },
+        "92": {
+            "link": {
+                "name": "AtmosphericSky.frag",
+                "file": "default"
+            }
+        },
+        "112": {
+            "link": {
+                "name": "Color.frag",
+                "file": "default"
+            }
+        },
+        "113": {
+            "link": {
+                "name": "VideoBackground.frag",
+                "file": "default"
+            }
         }
     },
     "settings": {
@@ -660,34 +663,37 @@
             "name": "FaceTracking",
             "version": [
                 1,
-                0,
-                0,
+                5,
                 2
             ],
             "customIndexHtml": false
         },
-        "vr": {
+        "xr": {
+            "vr": {
+                "enable": false
+            },
             "leftEyeObject": "18",
             "rightEyeObject": "45",
-            "enable": false
+            "ar": {
+                "enable": true
+            }
         },
         "scripting": {
-            "sourcePaths": [
-                "js/"
-            ],
-            "bundlingType": "esbuild",
+            "components": {
+                "sourcePaths": [
+                    "js/"
+                ],
+                "bundling": "none"
+            },
+            "application": {
+                "output": "FaceTracking-bundle.js",
+                "bundling": "esbuild",
+                "esbuildFlags": "--format=esm",
+                "entryPoint": "js/index.js"
+            },
             "libraryPaths": [
                 "/js/lib/"
-            ],
-            "autoManageEntryPoint": true,
-            "entryPoint": "js/index.js"
-        },
-        "ar": {
-            "framework": "8thwall",
-            "8thwall": {
-                "apiToken": "sU7eX52Oe2ZL8qUKBWD5naUlu1ZrnuRrtM1pQ7ukMz8rkOEG8mb63YlYTuiOrsQZTiXKRe"
-            },
-            "enable": true
+            ]
         },
         "rendering": {
             "clearColor": [
@@ -697,7 +703,8 @@
                 0.0
             ],
             "bloom": {
-                "enabled": false
+                "enabled": false,
+                "threshold": 1.875
             },
             "textureAtlasSize": [
                 4096,
@@ -706,12 +713,57 @@
             "compressedTextureAtlasSize": [
                 4096,
                 2048
-            ]
+            ],
+            "environment": {
+                "bakingMode": "sky",
+                "material": null
+            },
+            "sky": {
+                "enabled": true,
+                "material": "87"
+            }
+        },
+        "runtime": {
+            "loadUncompressedImagesAsBitmap": false
         }
     },
     "animations": {},
     "skins": {},
     "pipelines": {
+        "115": {
+            "link": {
+                "name": "VideoBackground",
+                "file": "default"
+            },
+            "shader": "113",
+            "viewVertexShader": "49",
+            "depthFunction": "less or equal"
+        },
+        "88": {
+            "link": {
+                "name": "Phong Lightmapped",
+                "file": "default"
+            },
+            "name": "Glasses Occluder",
+            "shader": "47",
+            "features": {
+                "ALPHA_MASKED": true,
+                "TEXTURED": false,
+                "WITH_EMISSIVE": true
+            },
+            "blending": true,
+            "blendSrcRgb": "zero",
+            "blendSrcAlpha": "zero",
+            "blendDestRgb": "one",
+            "blendDestAlpha": "one",
+            "depthWrite": true,
+            "colorWrite": {
+                "red": false,
+                "green": false,
+                "blue": false,
+                "alpha": false
+            }
+        },
         "33": {
             "link": {
                 "name": "DistanceFieldVector",
@@ -734,24 +786,38 @@
             "link": {
                 "name": "MeshVisualizer",
                 "file": "default"
-            }
+            },
+            "depthFunction": "always",
+            "doubleSided": false,
+            "depthWrite": false
         },
         "37": {
             "link": {
                 "name": "Phong Opaque",
                 "file": "default"
+            },
+            "features": {
+                "DEPRECATED_LIGHT_ATTENUATION": true,
+                "WITH_EMISSIVE": true
             }
         },
         "38": {
             "link": {
                 "name": "Phong Opaque Textured",
                 "file": "default"
+            },
+            "features": {
+                "DEPRECATED_LIGHT_ATTENUATION": true,
+                "WITH_EMISSIVE": true
             }
         },
         "39": {
             "link": {
                 "name": "Foliage",
                 "file": "default"
+            },
+            "features": {
+                "DEPRECATED_LIGHT_ATTENUATION": true
             }
         },
         "40": {
@@ -770,12 +836,18 @@
             "link": {
                 "name": "Physical Opaque",
                 "file": "default"
+            },
+            "features": {
+                "SEPARATE_OCCLUSION_TEXTURE": true
             }
         },
         "52": {
             "link": {
                 "name": "Physical Opaque Textured",
                 "file": "default"
+            },
+            "features": {
+                "SEPARATE_OCCLUSION_TEXTURE": true
             }
         },
         "55": {
@@ -794,46 +866,81 @@
             "link": {
                 "name": "Phong Normalmapped",
                 "file": "default"
+            },
+            "features": {
+                "DEPRECATED_LIGHT_ATTENUATION": true,
+                "WITH_EMISSIVE": true
             }
         },
         "61": {
             "link": {
                 "name": "Phong Lightmapped",
                 "file": "default"
-            }
-        },
-        "88": {
-            "link": {
-                "name": "Phong Lightmapped",
-                "file": "default"
             },
-            "name": "Glasses Occluder",
-            "shader": "2",
             "features": {
-                "ALPHA_MASKED": true,
-                "TEXTURED": false
-            },
-            "blending": true,
-            "blendSrcRgb": "zero",
-            "blendSrcAlpha": "zero",
-            "blendDestRgb": "one",
-            "blendDestAlpha": "one",
-            "depthWrite": true
+                "DEPRECATED_LIGHT_ATTENUATION": true,
+                "WITH_EMISSIVE": true
+            }
         },
         "91": {
             "link": {
                 "name": "Phong Opaque",
                 "file": "default"
             },
-            "name": "Glasses"
+            "name": "Glasses",
+            "features": {
+                "DEPRECATED_LIGHT_ATTENUATION": true,
+                "WITH_EMISSIVE": true
+            }
+        },
+        "110": {
+            "link": {
+                "name": "TileFeedback",
+                "file": "default"
+            }
+        },
+        "112": {
+            "link": {
+                "name": "AtmosphericSky",
+                "file": "default"
+            },
+            "shader": "46"
+        },
+        "113": {
+            "link": {
+                "name": "Color",
+                "file": "default"
+            }
+        },
+        "114": {
+            "link": {
+                "name": "VertexColor",
+                "file": "default"
+            }
         }
     },
-    "files": [
-        "models/head-occluder-cm92ohq49a.glb",
-        "textures/wonderland-xr8.png",
-        "textures/uv-bright.png",
-        "models/stereo-glasses-9hc20dp5o8.glb"
-    ],
+    "files": {
+        "113": {
+            "fileName": "models/head-occluder-cm92ohq49a.glb",
+            "importerName": "",
+            "colorSpace": "srgb"
+        },
+        "114": {
+            "fileName": "textures/wonderland-xr8.png",
+            "importerName": "",
+            "colorSpace": "srgb"
+        },
+        "115": {
+            "fileName": "textures/uv-bright.png",
+            "importerName": "",
+            "colorSpace": "srgb"
+        },
+        "116": {
+            "fileName": "models/stereo-glasses-9hc20dp5o8.glb",
+            "importerName": "",
+            "colorSpace": "srgb"
+        }
+    },
     "textures": {
         "72": {
             "link": {
@@ -878,5 +985,124 @@
             }
         }
     },
-    "languages": {}
+    "languages": {},
+    "morphTargets": {},
+    "audioClips": {},
+    "shaderChunks": {
+        "1": {
+            "link": {
+                "name": "lib\\Color.glsl",
+                "file": "default"
+            }
+        },
+        "2": {
+            "link": {
+                "name": "lib\\Compatibility.glsl",
+                "file": "default"
+            }
+        },
+        "3": {
+            "link": {
+                "name": "lib\\CoordinateSystems.glsl",
+                "file": "default"
+            }
+        },
+        "4": {
+            "link": {
+                "name": "lib\\GI.glsl",
+                "file": "default"
+            }
+        },
+        "5": {
+            "link": {
+                "name": "lib\\Inputs.glsl",
+                "file": "default"
+            }
+        },
+        "6": {
+            "link": {
+                "name": "lib\\Lights.glsl",
+                "file": "default"
+            }
+        },
+        "7": {
+            "link": {
+                "name": "lib\\Materials.glsl",
+                "file": "default"
+            }
+        },
+        "8": {
+            "link": {
+                "name": "lib\\Math.glsl",
+                "file": "default"
+            }
+        },
+        "9": {
+            "link": {
+                "name": "lib\\MorphTargets.glsl",
+                "file": "default"
+            }
+        },
+        "10": {
+            "link": {
+                "name": "lib\\Packing.glsl",
+                "file": "default"
+            }
+        },
+        "11": {
+            "link": {
+                "name": "lib\\PhysicalBSDF.glsl",
+                "file": "default"
+            }
+        },
+        "12": {
+            "link": {
+                "name": "lib\\Quaternion.glsl",
+                "file": "default"
+            }
+        },
+        "13": {
+            "link": {
+                "name": "lib\\SkyProcedural.glsl",
+                "file": "default"
+            }
+        },
+        "14": {
+            "link": {
+                "name": "lib\\Slug.frag.glsl",
+                "file": "default"
+            }
+        },
+        "15": {
+            "link": {
+                "name": "lib\\Slug.vert.glsl",
+                "file": "default"
+            }
+        },
+        "16": {
+            "link": {
+                "name": "lib\\Surface.glsl",
+                "file": "default"
+            }
+        },
+        "17": {
+            "link": {
+                "name": "lib\\Textures.glsl",
+                "file": "default"
+            }
+        },
+        "18": {
+            "link": {
+                "name": "lib\\Uniforms.glsl",
+                "file": "default"
+            }
+        }
+    },
+    "particleEffects": {},
+    "probeVolumeScenarios": {},
+    "plugins": {
+        "Zappar Publish Plugin": {
+            "enable": true
+        }
+    }
 }

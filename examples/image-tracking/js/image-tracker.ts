@@ -24,7 +24,11 @@ export class ImageTrackingExample extends Component {
     ARImageTrackingCamera!: WLEObject;
 
     /**
-     * Image id from the 8th Wall platform
+     * Image target name.
+     *
+     * - For 8th Wall this used to be the target id.
+     * - For Zappar this must match the `name` used when calling
+     *   `ZapparProvider.registerImageTarget(...)`.
      */
     @property.string()
     imageId!: string;
@@ -42,7 +46,9 @@ export class ImageTrackingExample extends Component {
             return;
         }
 
-        const camera = this.ARImageTrackingCamera.getComponent(ARImageTrackingCamera);
+        const camera = this.ARImageTrackingCamera.getComponent(
+            ARImageTrackingCamera.TypeName
+        ) as ARImageTrackingCamera | null;
 
         if (!camera) {
             throw new Error(
@@ -60,7 +66,7 @@ export class ImageTrackingExample extends Component {
             }
         });
 
-        ARSession.getSessionForEngine(this.engine).onSessionEnd.add(() => {
+        ARSession.getSessionForEngine(this.engine as any).onSessionEnd.add(() => {
             this.object.setScalingWorld([0, 0, 0]);
         });
 

@@ -12,6 +12,7 @@
  */
 
 /* wle:auto-imports:start */
+import {SlamAnchorZappar as SlamAnchorZappar1} from './slam-anchor-zappar.js';
 import {ARSLAMCamera} from '@wonderlandengine/ar-tracking';
 import {ButtonEndARSession} from './button-end-ar-session.js';
 import {ButtonStartARSession} from './button-start-ar-session.js';
@@ -21,22 +22,31 @@ import {SpawnMeshOnReticle} from './spawn-mesh-on-reticle.js';
 /* wle:auto-imports:end */
 
 import {loadRuntime} from '@wonderlandengine/api';
-import {ARSession} from '@wonderlandengine/ar-tracking';
+import {ARSession, ARCamera, TrackingType} from '@wonderlandengine/ar-tracking';
 import {WebXRProvider} from '@wonderlandengine/ar-provider-webxr';
 import {XR8Provider} from '@wonderlandengine/ar-provider-8thwall';
+import {ZapparProvider} from '@wonderlandengine/ar-provider-zappar';
 
 /* wle:auto-constants:start */
-const RuntimeOptions = {
-    physx: false,
-    loader: false,
-    xrFramebufferScaleFactor: 1,
-    canvas: 'canvas',
-};
 const Constants = {
     ProjectName: 'SLAMCamera',
     RuntimeBaseName: 'WonderlandRuntime',
     WebXRRequiredFeatures: ['local'],
     WebXROptionalFeatures: ['local', 'hit-test'],
+};
+const RuntimeOptions = {
+    webgl2: true,
+    webgpu: false,
+    physx: false,
+    loader: false,
+    xrFramebufferScaleFactor: 1,
+    loadUncompressedImagesAsBitmap: false,
+    xrOfferSession: {
+        mode: 'auto',
+        features: Constants.WebXRRequiredFeatures,
+        optionalFeatures: Constants.WebXROptionalFeatures,
+    },
+    canvas: 'canvas',
 };
 /* wle:auto-constants:end */
 
@@ -44,6 +54,55 @@ window.API_TOKEN_XR8 =
     'sU7eX52Oe2ZL8qUKBWD5naUlu1ZrnuRrtM1pQ7ukMz8rkOEG8mb63YlYTuiOrsQZTiXKRe';
 window.WEBXR_REQUIRED_FEATURES = Constants.WebXRRequiredFeatures;
 window.WEBXR_OPTIONAL_FEATURES = Constants.WebXROptionalFeatures;
+
+// Prefer configuring replay/patches from JS (not HTML). This keeps the example
+// embeddable in other shells that don't use the exported index.html.
+if (typeof window !== 'undefined') {
+    if (!window.__ZAPPAR_SEQUENCE_URL__) {
+        window.__ZAPPAR_SEQUENCE_URL__ = 'zappar-sequence.bin';
+    }
+
+    // Hardcode a 90° UV rotate fix for the video background shader.
+    // This is intentionally string-based so it works without re-exporting the .bin.
+    (function () {
+        const patchProto = (proto) => {
+            if (!proto || typeof proto.shaderSource !== 'function') return;
+            const original = proto.shaderSource;
+            proto.shaderSource = function (shader, source) {
+                try {
+                    if (typeof source === 'string' && source.includes('videoTexture')) {
+                        source = source.replace(
+                            /float\s+tRatio\s*=\s*float\s*\(\s*texSize\.x\s*\)\s*\/\s*float\s*\(\s*texSize\.y\s*\)\s*;/g,
+                            'float tRatio = float(texSize.y)/float(texSize.x);'
+                        );
+
+                        if (!source.includes('uv = uv.yx')) {
+                            source = source.replace(
+                                /uv\.y\s*=\s*1\.0\s*-\s*uv\.y\s*;/g,
+                                'uv = uv.yx;\n    uv.y = 1.0 - uv.y;'
+                            );
+                        }
+                    }
+                } catch {
+                    /* never block shader compilation */
+                }
+
+                return original.call(this, shader, source);
+            };
+        };
+
+        patchProto(
+            typeof WebGL2RenderingContext !== 'undefined'
+                ? WebGL2RenderingContext.prototype
+                : null
+        );
+        patchProto(
+            typeof WebGLRenderingContext !== 'undefined'
+                ? WebGLRenderingContext.prototype
+                : null
+        );
+    })();
+}
 
 const engine = await loadRuntime(Constants.RuntimeBaseName, RuntimeOptions);
 
@@ -79,13 +138,42 @@ if (document.readyState === 'loading') {
 }
 
 const arSession = ARSession.getSessionForEngine(engine);
+ZapparProvider.registerTrackingProviderWithARSession(arSession);
+/*
 if (engine.arSupported) {
     WebXRProvider.registerTrackingProviderWithARSession(arSession);
 } else {
-    XR8Provider.registerTrackingProviderWithARSession(arSession);
+    ZapparProvider.registerTrackingProviderWithARSession(arSession);
 }
+*/
+
+/*
+ * If the preferred SLAM provider can run without an immersive WebXR session
+ * (e.g. Zappar Instant World Tracking), auto-start and hide the AR button.
+ */
+arSession.onARSessionReady.add(() => {
+    if (!arSession.supportsInstantTracking(TrackingType.SLAM)) return;
+
+    const arButton = document.getElementById('ar-button');
+    if (arButton) arButton.style.display = 'none';
+
+    const startSlamCamera = () => {
+        const view = engine.scene.activeViews[0];
+        const components = view?.object?.getComponents?.() ?? [];
+        for (const c of components) {
+            if (c instanceof ARCamera) {
+                c.startSession();
+                return true;
+            }
+        }
+        return false;
+    };
+
+    startSlamCamera();
+});
 
 /* wle:auto-register:start */
+engine.registerComponent(SlamAnchorZappar1);
 engine.registerComponent(ARSLAMCamera);
 engine.registerComponent(ButtonEndARSession);
 engine.registerComponent(ButtonStartARSession);

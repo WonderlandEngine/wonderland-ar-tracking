@@ -1,6 +1,6 @@
 import {Emitter, RetainEmitter, WonderlandEngine, Component} from '@wonderlandengine/api';
 import {ARProvider} from './AR-provider.js';
-import {ITrackingMode} from './tracking-mode.js';
+import {FaceTrackingMode, ImageTrackingMode, ITrackingMode} from './tracking-mode.js';
 import {TrackingType} from './tracking-type.js';
 
 /**
@@ -34,6 +34,8 @@ export class ARSession {
     private _engine: WonderlandEngine;
     private _sceneHasLoaded = false;
     private _arSessionIsReady = false;
+    private _registeredCameras = 0;
+    private _readyCameras = 0;
 
     /** Wonderland Engine instance this AR session is running on */
     get engine() {
@@ -48,17 +50,38 @@ export class ARSession {
     }
 
     /**
+     * Retrieve the first registered provider that supports the given tracking type.
+     * This mirrors the provider selection logic used by {@link getTrackingProvider}.
+     */
+    getPreferredARProvider(type: TrackingType): ARProvider | null {
+        for (const provider of this._trackingProviders) {
+            if (provider.supports(type)) return provider;
+        }
+
+        return null;
+    }
+
+    /** Convenience helper for UI decisions (e.g. whether an AR start button is needed). */
+    supportsInstantTracking(type: TrackingType): boolean {
+        return this.getPreferredARProvider(type)?.supportsInstantTracking ?? false;
+    }
+
+    /**
      * Retrieve tracking implementation for given type.
      *
      * @returns The tracking instance or `null` if no provider was
      *     able to provide given tracking type
      */
+    getTrackingProvider(type: TrackingType.Face, component: Component): FaceTrackingMode;
+    getTrackingProvider(type: TrackingType.Image, component: Component): ImageTrackingMode;
+    getTrackingProvider(type: TrackingType, component: Component): ITrackingMode;
     getTrackingProvider(type: TrackingType, component: Component): ITrackingMode {
         for (const p of this._trackingProviders) {
             if (p.supports(type)) return p.createTracking(type, component);
         }
 
-        throw new Error('No AR provider found for tracking type ' + type);
+        const typeName = TrackingType[type] ?? String(type);
+        throw new Error('No AR provider found for tracking type ' + typeName);
     }
 
     /** Get registered {@link ARProvider} based on {@link ARProvider#name}. */
@@ -81,6 +104,28 @@ export class ARSession {
             this.engines.set(engine, new ARSession(engine));
         }
         return this.engines.get(engine)!;
+    }
+
+    /**
+     * Called by AR camera components during initialization to participate in
+     * AR session readiness gating.
+     */
+    registerARCameraComponent() {
+        this._registeredCameras += 1;
+        this.checkProviderLoadProgress();
+    }
+
+    /**
+     * Called by AR camera components once they completed their startup path
+     * and are ready to accept `startSession` calls.
+     */
+    markARCameraReady() {
+        if (this._readyCameras >= this._registeredCameras) {
+            return;
+        }
+
+        this._readyCameras += 1;
+        this.checkProviderLoadProgress();
     }
 
     /* Private, as ARSession instances should be created with getSessionForEngine */
@@ -121,7 +166,8 @@ export class ARSession {
 
         if (
             this._trackingProviders.every((p) => p.loaded === true) &&
-            this._sceneHasLoaded
+            this._sceneHasLoaded &&
+            this._readyCameras > 0
         ) {
             this._arSessionIsReady = true;
             this.onARSessionReady.notify();
@@ -150,10 +196,12 @@ export class ARSession {
         this.onSessionStart.notify(provider);
     };
 
-    /**
     /* Called by AR providers when they ended an AR session.
      * @param provider The provider to pass to onSessionEnd */
     private onProviderSessionEnd = (provider: ARProvider) => {
+        if (this._currentTrackingProvider === provider) {
+            this._currentTrackingProvider = null;
+        }
         this.onSessionStart.reset();
         this.onSessionEnd.notify(provider);
     };

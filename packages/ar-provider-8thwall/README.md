@@ -10,7 +10,7 @@ Learn more about Wonderland Engine at [https://wonderlandengine.com](https://won
 Install this provider to your project's package as follows:
 
 ```sh
-npm i --save @wonderlandengine/ar-provider-webxr
+npm i --save @wonderlandengine/ar-provider-8thwall
 ```
 
 For steps on how to set up an AR session, find the

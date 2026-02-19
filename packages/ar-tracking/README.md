@@ -2,7 +2,8 @@
 
 General AR framework for Wonderland Engine which currently supports
 [8th Wall tracking](https://www.npmjs.com/package/@wonderlandengine/ar-provider-8thwall)
-and [WebXR Device API](https://www.npmjs.com/package/@wonderlandengine/ar-provider-webxr).
+[WebXR Device API](https://www.npmjs.com/package/@wonderlandengine/ar-provider-webxr)
+and [Zappar](https://www.npmjs.com/package/@wonderlandengine/ar-provider-zappar).
 
 Learn more about Wonderland Engine at [https://wonderlandengine.com](https://wonderlandengine.com).
 

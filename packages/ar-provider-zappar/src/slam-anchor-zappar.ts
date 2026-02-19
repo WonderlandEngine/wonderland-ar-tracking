@@ -1,0 +1,45 @@
+import {Component} from '@wonderlandengine/api';
+import {mat4, quat2} from 'gl-matrix';
+import {ARProvider, ARSession} from '@wonderlandengine/ar-tracking';
+import {ZapparProvider} from './zappar-provider.js';
+
+/**
+ * Applies Zappar Instant World Tracking anchor pose to this object.
+ *
+ * Attach this component to a parent object of your content to verify/visualize
+ * the anchor pose coming from Zappar.
+ */
+export class SlamAnchorZappar extends Component {
+    static TypeName = 'slam-anchor-zappar';
+
+    private _provider: ZapparProvider | null = null;
+    private readonly _tmpTransform = quat2.create();
+
+    start(): void {
+        const arSession = ARSession.getSessionForEngine(this.engine);
+        arSession.onSessionStart.add(this.onSessionStart);
+        arSession.onSessionEnd.add(this.onSessionEnd);
+
+        // If a session is already running, RetainEmitter will call immediately.
+    }
+
+    update(): void {
+        const provider = this._provider;
+        if (!provider) return;
+
+        const anchorPose = provider.slamAnchorPoseMatrix;
+        if (!anchorPose) return;
+
+        // Zappar matrices are column-major; gl-matrix expects column-major.
+        quat2.fromMat4(this._tmpTransform, anchorPose as mat4);
+        this.object.setTransformWorld(this._tmpTransform);
+    }
+
+    private onSessionStart = (provider: ARProvider) => {
+        this._provider = provider instanceof ZapparProvider ? provider : null;
+    };
+
+    private onSessionEnd = (provider: ARProvider) => {
+        if (provider === this._provider) this._provider = null;
+    };
+}

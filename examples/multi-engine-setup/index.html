@@ -1,10 +1,28 @@
 <!doctype html>
 <html>
+    <script type="importmap">
+        {
+            "imports": {
+                "@wonderlandengine/api": "./node_modules/@wonderlandengine/api/index.js",
+                "@wonderlandengine/api/decorators.js": "./node_modules/@wonderlandengine/api/index.js"
+            }
+        }
+    </script>
+
     <head>
+        {{ if settings.scripting.components.bundling != 'none' }} {{ if
+        settings.scripting.components.output != '' }}
+        <link
+            rel="modulepreload"
+            href="{{ settings.scripting.components.output }}?t={{timestamp}}"
+            as="script"
+        />
+        {{ end }} {{ end }}
+
         <title>News Portal</title>
         <link
             rel="preload"
-            href="{{ settings.project.name }}-bundle.js?t={{timestamp}}"
+            href="{{ settings.scripting.application.output }}?t={{timestamp}}"
             as="script"
         />
 
@@ -155,7 +173,7 @@
 
         <script
             type="module"
-            src="{{ settings.project.name }}-bundle.js?t={{timestamp}}"
+            src="{{ settings.scripting.application.output }}?t={{timestamp}}"
         ></script>
         <script type="module" src="ImageTracking-bundle.js?t={{timestamp}}"></script>
 
@@ -216,7 +234,7 @@
                         <a>Wonderland Engine {{ version }}</a>
                     </div>
                     <div class="xr-button-container">
-                        {{ if settings.vr.enable }}<a id="vr-button">
+                        {{ if settings.xr.vr.enable }}<a id="vr-button">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 109.41 65">
                                 <rect
                                     class="xr-button-frame"
@@ -337,7 +355,7 @@
                         <a>Wonderland Engine {{ version }}</a>
                     </div>
                     <div class="xr-button-container">
-                        {{ if settings.vr.enable }}<a id="vr-button">
+                        {{ if settings.xr.vr.enable }}<a id="vr-button">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 109.41 65">
                                 <rect
                                     class="xr-button-frame"
@@ -426,7 +444,7 @@
                         <a>Wonderland Engine {{ version }}</a>
                     </div>
                     <div class="xr-button-container">
-                        {{ if settings.vr.enable }}<a id="vr-button">
+                        {{ if settings.xr.vr.enable }}<a id="vr-button">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 109.41 65">
                                 <rect
                                     class="xr-button-frame"

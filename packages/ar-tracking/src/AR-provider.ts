@@ -17,6 +17,16 @@ abstract class ARProvider {
     /** Name of the provider */
     abstract get name(): string;
 
+    /**
+     * Whether this provider can start tracking without an explicit user gesture
+     * (e.g. without entering a WebXR immersive session).
+     *
+     * Providers like Zappar can run in a normal page and should return true.
+     */
+    get supportsInstantTracking(): boolean {
+        return false;
+    }
+
     protected constructor(engine: WonderlandEngine) {
         this._engine = engine;
     }

@@ -1,9 +1,8 @@
 import {property} from '@wonderlandengine/api/decorators.js';
 
-import {ARSession} from '../AR-session.js';
-import {ImageTrackingMode, ITrackingMode} from '../tracking-mode.js';
+import {ImageTrackingMode} from '../tracking-mode.js';
 import {TrackingType} from '../tracking-type.js';
-import {ARCamera} from './AR-Camera.js';
+import {ARTrackingCameraBase} from './AR-tracking-camera-base.js';
 
 /**
  * AR image tracking Camera component.
@@ -12,13 +11,16 @@ import {ARCamera} from './AR-Camera.js';
  *
  * Currently only works with 8th Wall tracking `WorldTracking_XR8`
  */
-class ARImageTrackingCamera extends ARCamera {
+export class ARImageTrackingCamera extends ARTrackingCameraBase<ImageTrackingMode> {
     static TypeName = 'ar-image-tracking-camera';
+    static InheritProperties = true;
+
+    protected getTrackingType(): TrackingType {
+        return TrackingType.Image;
+    }
 
     @property.bool(false) // Improves tracking, reduces performance
     enableSLAM!: number;
-
-    private _trackingImpl!: ImageTrackingMode;
 
     get onImageScanning() {
         return this._trackingImpl.onImageScanning;
@@ -35,33 +37,4 @@ class ARImageTrackingCamera extends ARCamera {
     get onImageLost() {
         return this._trackingImpl.onImageLost;
     }
-
-    init() {
-        this._trackingImpl = ARSession.getSessionForEngine(this.engine).getTrackingProvider(
-            TrackingType.Image,
-            this
-        ) as ImageTrackingMode;
-    }
-
-    start() {
-        if (this._trackingImpl.init) this._trackingImpl.init();
-    }
-
-    startSession = async () => {
-        if (this.active) {
-            this._trackingImpl.startSession();
-        }
-    };
-
-    endSession = async () => {
-        if (this.active) {
-            this._trackingImpl!.endSession();
-        }
-    };
-
-    onDeactivate(): void {
-        this._trackingImpl.endSession();
-    }
 }
-
-export {ARImageTrackingCamera};

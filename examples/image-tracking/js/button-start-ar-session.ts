@@ -5,7 +5,7 @@
  * and starts that components AR session
  */
 import {Component} from '@wonderlandengine/api';
-import {ARSession, ARCamera} from '@wonderlandengine/ar-tracking';
+import {ARSession} from '@wonderlandengine/ar-tracking';
 
 export class ButtonStartARSession extends Component {
     static TypeName = 'button-start-ar-session';
@@ -33,9 +33,23 @@ export class ButtonStartARSession extends Component {
 
         xrButton.addEventListener('click', () => {
             xrButton!.style.display = 'none';
+
+            const isCameraComponent = (component: unknown): component is {
+                startSession: () => void;
+                endSession: () => void;
+            } => {
+                return (
+                    !!component &&
+                    typeof (component as {startSession?: unknown}).startSession ===
+                        'function' &&
+                    typeof (component as {endSession?: unknown}).endSession ===
+                        'function'
+                );
+            };
+
             for (const c of this.object.getComponents()) {
-                if (c instanceof ARCamera) {
-                    (c as ARCamera).startSession();
+                if (isCameraComponent(c)) {
+                    c.startSession();
                     break;
                 }
             }

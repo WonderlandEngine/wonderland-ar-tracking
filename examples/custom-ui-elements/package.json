@@ -5,14 +5,12 @@
     "main": "js/index.ts",
     "type": "module",
     "module": "js/index.js",
-    "scripts": {
-        "build": "esbuild ./js/index.js --bundle --outfile=\"deploy/custom-ui-elements-example.wlp-bundle.js\""
-    },
+    "scripts": {},
     "keywords": [
         "wonderland-engine"
     ],
     "dependencies": {
-        "@wonderlandengine/api": "^1.0.0",
+        "@wonderlandengine/api": ">=1.3.0 <1.4.0",
         "@wonderlandengine/ar-provider-8thwall": "^1.0.0",
         "@wonderlandengine/ar-provider-webxr": "^1.0.0",
         "@wonderlandengine/ar-tracking": "^1.0.0",
@@ -22,5 +20,8 @@
     },
     "devDependencies": {
         "typescript": "^4.9.5"
+    },
+    "overrides": {
+        "@wonderlandengine/api": "$@wonderlandengine/api"
     }
 }
