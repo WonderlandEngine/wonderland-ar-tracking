@@ -108,7 +108,8 @@ dist
 .editor
 cache/
 deploy/
-**/static/zappar-cv
+**/zappar-cv/
+**/.autosave/
 
 trash/
 
