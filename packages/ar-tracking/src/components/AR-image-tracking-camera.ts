@@ -13,7 +13,11 @@ import {ARTrackingCameraBase} from './AR-tracking-camera-base.js';
  */
 export class ARImageTrackingCamera extends ARTrackingCameraBase<ImageTrackingMode> {
     static TypeName = 'ar-image-tracking-camera';
-    protected trackingType = TrackingType.Image;
+    static InheritProperties = true;
+
+    protected getTrackingType(): TrackingType {
+        return TrackingType.Image;
+    }
 
     @property.bool(false) // Improves tracking, reduces performance
     enableSLAM!: number;

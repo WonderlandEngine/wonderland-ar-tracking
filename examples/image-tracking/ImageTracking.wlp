@@ -32,7 +32,8 @@
                 {
                     "type": "ar-image-tracking-camera",
                     "ar-image-tracking-camera": {
-                        "EnableSLAM": true
+                        "EnableSLAM": true,
+                        "enableSLAM": true
                     }
                 },
                 {
@@ -134,7 +135,7 @@
                     "type": "image-tracking-example",
                     "image-tracking-example": {
                         "ARImageTrackingCamera": "17",
-                        "imageId": "image-target-1-white"
+                        "imageId": "target"
                     },
                     "active": true
                 }
@@ -155,46 +156,6 @@
                 0.5,
                 0.5
             ]
-        },
-        "70": {
-            "name": "FlatImageTarget",
-            "components": [
-                {
-                    "type": "physical-size-image-target-example",
-                    "physical-size-image-target-example": {
-                        "ARImageTrackingCamera": "17",
-                        "imageId": "image-target-2-white",
-                        "meshMaterial": "67"
-                    },
-                    "active": true
-                }
-            ],
-            "parent": null
-        },
-        "73": {
-            "name": "CylindricalImageTargetWithVideoTexture",
-            "components": [
-                {
-                    "type": "physical-size-image-target-example",
-                    "physical-size-image-target-example": {
-                        "ARImageTrackingCamera": "17",
-                        "imageId": "fanta",
-                        "meshMaterial": "71"
-                    }
-                },
-                {
-                    "type": "video-texture-image-target-example"
-                },
-                {
-                    "type": "video-texture",
-                    "video-texture": {
-                        "autoplay": false,
-                        "material": "71",
-                        "url": "video.mp4"
-                    }
-                }
-            ],
-            "parent": null
         },
         "78": {
             "name": "Sphere",
@@ -290,6 +251,17 @@
                 0.2,
                 0.2,
                 0.2
+            ],
+            "translation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0,
+                1.0
             ]
         }
     },
@@ -432,36 +404,24 @@
             "name": "PhysicalImageTargetTexture",
             "pipeline": "35",
             "Physical": {
-                "albedoTexture": "66"
+                "albedoTexture": null
             },
             "Flat": {
                 "flatTexture": "77"
             }
         },
         "71": {
-            "name": "VideoMaterial",
-            "pipeline": "35",
+            "name": "VideoBackground",
+            "pipeline": "105",
             "Flat": {
                 "flatTexture": "75"
             }
         }
     },
     "shaders": {
-        "1": {
-            "link": {
-                "name": "DistanceFieldVector Textured.frag",
-                "file": "default"
-            }
-        },
         "2": {
             "link": {
                 "name": "Flat.frag",
-                "file": "default"
-            }
-        },
-        "3": {
-            "link": {
-                "name": "Flat Textured.frag",
                 "file": "default"
             }
         },
@@ -477,33 +437,15 @@
                 "file": "default"
             }
         },
-        "6": {
-            "link": {
-                "name": "Phong Textured.frag",
-                "file": "default"
-            }
-        },
         "28": {
             "link": {
                 "name": "Dynamic.vert",
                 "file": "default"
             }
         },
-        "29": {
-            "link": {
-                "name": "Particle Textured.frag",
-                "file": "default"
-            }
-        },
         "30": {
             "link": {
                 "name": "Skinning.vert",
-                "file": "default"
-            }
-        },
-        "31": {
-            "link": {
-                "name": "Static.frag",
                 "file": "default"
             }
         },
@@ -573,111 +515,15 @@
                 "file": "default"
             }
         },
-        "83": {
+        "102": {
             "link": {
-                "name": "lib\\Color.glsl",
+                "name": "Color.frag",
                 "file": "default"
             }
         },
-        "84": {
+        "103": {
             "link": {
-                "name": "lib\\Compatibility.frag",
-                "file": "default"
-            }
-        },
-        "85": {
-            "link": {
-                "name": "lib\\CoordinateSystems.glsl",
-                "file": "default"
-            }
-        },
-        "86": {
-            "link": {
-                "name": "lib\\GI.frag",
-                "file": "default"
-            }
-        },
-        "87": {
-            "link": {
-                "name": "lib\\Inputs.frag",
-                "file": "default"
-            }
-        },
-        "88": {
-            "link": {
-                "name": "lib\\Lights.frag",
-                "file": "default"
-            }
-        },
-        "89": {
-            "link": {
-                "name": "lib\\Materials.frag",
-                "file": "default"
-            }
-        },
-        "90": {
-            "link": {
-                "name": "lib\\Math.glsl",
-                "file": "default"
-            }
-        },
-        "91": {
-            "link": {
-                "name": "lib\\MorphTargets.glsl",
-                "file": "default"
-            }
-        },
-        "92": {
-            "link": {
-                "name": "lib\\Packing.frag",
-                "file": "default"
-            }
-        },
-        "93": {
-            "link": {
-                "name": "lib\\PhysicalBSDF.glsl",
-                "file": "default"
-            }
-        },
-        "94": {
-            "link": {
-                "name": "lib\\Quaternion.glsl",
-                "file": "default"
-            }
-        },
-        "95": {
-            "link": {
-                "name": "lib\\SkyProcedural.glsl",
-                "file": "default"
-            }
-        },
-        "96": {
-            "link": {
-                "name": "lib\\Slug.frag",
-                "file": "default"
-            }
-        },
-        "97": {
-            "link": {
-                "name": "lib\\Slug.vert",
-                "file": "default"
-            }
-        },
-        "98": {
-            "link": {
-                "name": "lib\\Surface.frag",
-                "file": "default"
-            }
-        },
-        "99": {
-            "link": {
-                "name": "lib\\Textures.frag",
-                "file": "default"
-            }
-        },
-        "101": {
-            "link": {
-                "name": "lib\\Uniforms.glsl",
+                "name": "VideoBackground.frag",
                 "file": "default"
             }
         }
@@ -687,8 +533,8 @@
             "name": "ImageTracking",
             "version": [
                 1,
-                3,
-                4
+                5,
+                2
             ],
             "customIndexHtml": false
         },
@@ -727,7 +573,8 @@
                 0.0
             ],
             "bloom": {
-                "enabled": false
+                "enabled": false,
+                "threshold": 1.875
             },
             "textureAtlasSize": [
                 4096,
@@ -737,9 +584,18 @@
                 4096,
                 4096
             ],
-            "hdr": {
-                "exposure": 1.5
+            "environment": {
+                "bakingMode": "sky",
+                "material": null
+            },
+            "sky": {
+                "enabled": true,
+                "material": "71"
             }
+        },
+        "runtime": {
+            "loadUncompressedImagesAsBitmap": false,
+            "viewObject": "17"
         }
     },
     "animations": {},
@@ -871,16 +727,39 @@
                 "name": "AtmosphericSky",
                 "file": "default"
             }
+        },
+        "103": {
+            "link": {
+                "name": "Color",
+                "file": "default"
+            }
+        },
+        "104": {
+            "link": {
+                "name": "VertexColor",
+                "file": "default"
+            }
+        },
+        "105": {
+            "link": {
+                "name": "VideoBackground",
+                "file": "default"
+            },
+            "depthFunction": "less or equal",
+            "depthTest": true,
+            "viewVertexShader": "49"
         }
     },
     "files": {
         "103": {
             "fileName": "textures/image-target-1-white.png",
-            "importerName": ""
+            "importerName": "",
+            "colorSpace": "srgb"
         },
         "104": {
             "fileName": "textures/image-target-2-white.png",
-            "importerName": ""
+            "importerName": "",
+            "colorSpace": "srgb"
         }
     },
     "textures": {
@@ -924,5 +803,123 @@
         }
     },
     "languages": {},
-    "morphTargets": {}
+    "morphTargets": {},
+    "audioClips": {},
+    "shaderChunks": {
+        "1": {
+            "link": {
+                "name": "lib\\Color.glsl",
+                "file": "default"
+            }
+        },
+        "2": {
+            "link": {
+                "name": "lib\\Compatibility.glsl",
+                "file": "default"
+            }
+        },
+        "3": {
+            "link": {
+                "name": "lib\\CoordinateSystems.glsl",
+                "file": "default"
+            }
+        },
+        "4": {
+            "link": {
+                "name": "lib\\GI.glsl",
+                "file": "default"
+            }
+        },
+        "5": {
+            "link": {
+                "name": "lib\\Inputs.glsl",
+                "file": "default"
+            }
+        },
+        "6": {
+            "link": {
+                "name": "lib\\Lights.glsl",
+                "file": "default"
+            }
+        },
+        "7": {
+            "link": {
+                "name": "lib\\Materials.glsl",
+                "file": "default"
+            }
+        },
+        "8": {
+            "link": {
+                "name": "lib\\Math.glsl",
+                "file": "default"
+            }
+        },
+        "9": {
+            "link": {
+                "name": "lib\\MorphTargets.glsl",
+                "file": "default"
+            }
+        },
+        "10": {
+            "link": {
+                "name": "lib\\Packing.glsl",
+                "file": "default"
+            }
+        },
+        "11": {
+            "link": {
+                "name": "lib\\PhysicalBSDF.glsl",
+                "file": "default"
+            }
+        },
+        "12": {
+            "link": {
+                "name": "lib\\Quaternion.glsl",
+                "file": "default"
+            }
+        },
+        "13": {
+            "link": {
+                "name": "lib\\SkyProcedural.glsl",
+                "file": "default"
+            }
+        },
+        "14": {
+            "link": {
+                "name": "lib\\Slug.frag.glsl",
+                "file": "default"
+            }
+        },
+        "15": {
+            "link": {
+                "name": "lib\\Slug.vert.glsl",
+                "file": "default"
+            }
+        },
+        "16": {
+            "link": {
+                "name": "lib\\Surface.glsl",
+                "file": "default"
+            }
+        },
+        "17": {
+            "link": {
+                "name": "lib\\Textures.glsl",
+                "file": "default"
+            }
+        },
+        "18": {
+            "link": {
+                "name": "lib\\Uniforms.glsl",
+                "file": "default"
+            }
+        }
+    },
+    "particleEffects": {},
+    "probeVolumeScenarios": {},
+    "plugins": {
+        "Zappar Publish Plugin": {
+            "enable": true
+        }
+    }
 }

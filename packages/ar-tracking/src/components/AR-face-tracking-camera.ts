@@ -14,7 +14,11 @@ import {ARTrackingCameraBase} from './AR-tracking-camera-base.js';
  */
 export class ARFaceTrackingCamera extends ARTrackingCameraBase<FaceTrackingMode> {
     static TypeName = 'ar-face-tracking-camera';
-    protected trackingType = TrackingType.Face;
+    static InheritProperties = true;
+
+    protected getTrackingType(): TrackingType {
+        return TrackingType.Face;
+    }
 
     @property.enum(['front', 'back'], 'front')
     cameraDirection!: number;

@@ -27,5 +27,5 @@ entry in `package.json`.
 ## Notes
 
 - This plugin complements `@wonderlandengine/ar-provider-zappar`:
-	- `ar-provider-zappar` handles runtime tracking in your app.
-	- `zappar-publish-plugin` handles editor-side publish/train workflows.
+    - `ar-provider-zappar` handles runtime tracking in your app.
+    - `zappar-publish-plugin` handles editor-side publish/train workflows.

@@ -20,22 +20,30 @@ import {FaceMaskExample} from './face-mask-example.js';
 /* wle:auto-imports:end */
 
 import {loadRuntime} from '@wonderlandengine/api';
-import {ARSession} from '@wonderlandengine/ar-tracking';
+import {ARSession, TrackingType} from '@wonderlandengine/ar-tracking';
 import {WebXRProvider} from '@wonderlandengine/ar-provider-webxr';
 import {ZapparProvider} from '@wonderlandengine/ar-provider-zappar';
 
 /* wle:auto-constants:start */
-const RuntimeOptions = {
-    physx: false,
-    loader: false,
-    xrFramebufferScaleFactor: 1,
-    canvas: 'canvas',
-};
 const Constants = {
     ProjectName: 'FaceTracking',
     RuntimeBaseName: 'WonderlandRuntime',
-    WebXRRequiredFeatures: ['local'],
-    WebXROptionalFeatures: ['local', 'hand-tracking', 'hit-test'],
+    WebXRRequiredFeatures: ['local',],
+    WebXROptionalFeatures: ['local','hand-tracking','hit-test',],
+};
+const RuntimeOptions = {
+    webgl2: true,
+    webgpu: false,
+    physx: false,
+    loader: false,
+    xrFramebufferScaleFactor: 1,
+    loadUncompressedImagesAsBitmap: false,
+    xrOfferSession: {
+        mode: 'auto',
+        features: Constants.WebXRRequiredFeatures,
+        optionalFeatures: Constants.WebXROptionalFeatures,
+    },
+    canvas: 'canvas',
 };
 /* wle:auto-constants:end */
 
@@ -78,6 +86,54 @@ if (document.readyState === 'loading') {
 const arSession = ARSession.getSessionForEngine(engine);
 WebXRProvider.registerTrackingProviderWithARSession(arSession);
 ZapparProvider.registerTrackingProviderWithARSession(arSession);
+
+/*
+ * If face tracking can run without immersive WebXR (e.g. Zappar),
+ * auto-start and hide the AR button.
+ */
+arSession.onARSessionReady.add(() => {
+    if (!arSession.supportsInstantTracking(TrackingType.Face)) return;
+
+    const arButton = document.getElementById('ar-button');
+    if (arButton) arButton.style.display = 'none';
+
+    const isCameraComponent = (component) => {
+        return (
+            component &&
+            typeof component.startSession === 'function' &&
+            typeof component.endSession === 'function'
+        );
+    };
+
+    const startFaceCamera = () => {
+        const view = engine.scene.activeViews[0];
+        const components = view?.object?.getComponents?.() ?? [];
+
+        // Prefer a face camera by type name, but fall back to first AR camera-like component.
+        for (const component of components) {
+            if (!isCameraComponent(component)) continue;
+            if (
+                component.type === 'ar-face-tracking-camera' ||
+                component.constructor?.TypeName === 'ar-face-tracking-camera'
+            ) {
+                component.startSession();
+                return true;
+            }
+        }
+
+        for (const component of components) {
+            if (!isCameraComponent(component)) continue;
+            component.startSession();
+            return true;
+        }
+
+        return false;
+    };
+
+    if (startFaceCamera()) return;
+    setTimeout(startFaceCamera, 0);
+    setTimeout(startFaceCamera, 250);
+});
 
 /* wle:auto-register:start */
 engine.registerComponent(ARFaceTrackingCamera);

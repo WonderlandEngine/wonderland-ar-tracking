@@ -16,6 +16,6 @@
         "vitest": "^2.1.9"
     },
     "dependencies": {
-        "@wonderlandengine/api": "file:../wonderland-engine/js/api/packages/api"
+        "@wonderlandengine/api": "1.5.2"
     }
 }

@@ -16,6 +16,9 @@ export class WorldTracking_Zappar extends TrackingMode {
     }
 
     init(): void {
+        const provider = this.provider as ZapparProvider;
+        provider.setPreferredCameraUserFacing(false);
+
         const input = this.component.object.getComponent('input');
         if (input) {
             // Camera pose will be driven by the AR tracking implementation.

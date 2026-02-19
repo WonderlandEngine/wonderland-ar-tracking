@@ -76,7 +76,9 @@ export class PhysicalSizeImageTarget extends Component {
             return;
         }
 
-        const camera = this.ARImageTrackingCamera.getComponent(ARImageTrackingCamera);
+        const camera = this.ARImageTrackingCamera.getComponent(
+            ARImageTrackingCamera.TypeName
+        ) as ARImageTrackingCamera | null;
 
         if (!camera) {
             throw new Error(

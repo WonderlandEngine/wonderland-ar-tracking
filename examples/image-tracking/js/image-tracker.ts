@@ -46,7 +46,9 @@ export class ImageTrackingExample extends Component {
             return;
         }
 
-        const camera = this.ARImageTrackingCamera.getComponent(ARImageTrackingCamera);
+        const camera = this.ARImageTrackingCamera.getComponent(
+            ARImageTrackingCamera.TypeName
+        ) as ARImageTrackingCamera | null;
 
         if (!camera) {
             throw new Error(
@@ -64,7 +66,7 @@ export class ImageTrackingExample extends Component {
             }
         });
 
-        ARSession.getSessionForEngine(this.engine).onSessionEnd.add(() => {
+        ARSession.getSessionForEngine(this.engine as any).onSessionEnd.add(() => {
             this.object.setScalingWorld([0, 0, 0]);
         });
 

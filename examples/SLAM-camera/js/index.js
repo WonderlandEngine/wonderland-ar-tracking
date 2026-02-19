@@ -12,12 +12,12 @@
  */
 
 /* wle:auto-imports:start */
+import {SlamAnchorZappar as SlamAnchorZappar1} from './slam-anchor-zappar.js';
 import {ARSLAMCamera} from '@wonderlandengine/ar-tracking';
 import {ButtonEndARSession} from './button-end-ar-session.js';
 import {ButtonStartARSession} from './button-start-ar-session.js';
 import {HitTestLocationRoot} from './hit-test-location-root.js';
 import {HitTestLocationXR8} from './hit-test-location-xr8.js';
-import {SlamAnchorZappar} from './slam-anchor-zappar.js';
 import {SpawnMeshOnReticle} from './spawn-mesh-on-reticle.js';
 /* wle:auto-imports:end */
 
@@ -31,8 +31,8 @@ import {ZapparProvider} from '@wonderlandengine/ar-provider-zappar';
 const Constants = {
     ProjectName: 'SLAMCamera',
     RuntimeBaseName: 'WonderlandRuntime',
-    WebXRRequiredFeatures: ['local'],
-    WebXROptionalFeatures: ['local', 'hit-test'],
+    WebXRRequiredFeatures: ['local',],
+    WebXROptionalFeatures: ['local','hit-test',],
 };
 const RuntimeOptions = {
     webgl2: true,
@@ -176,12 +176,12 @@ arSession.onARSessionReady.add(() => {
 });
 
 /* wle:auto-register:start */
+engine.registerComponent(SlamAnchorZappar1);
 engine.registerComponent(ARSLAMCamera);
 engine.registerComponent(ButtonEndARSession);
 engine.registerComponent(ButtonStartARSession);
 engine.registerComponent(HitTestLocationRoot);
 engine.registerComponent(HitTestLocationXR8);
-engine.registerComponent(SlamAnchorZappar);
 engine.registerComponent(SpawnMeshOnReticle);
 /* wle:auto-register:end */
 

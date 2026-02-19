@@ -6,12 +6,12 @@ import {ARCamera} from './AR-Camera.js';
 export abstract class ARTrackingCameraBase<
     TTrackingMode extends ITrackingMode,
 > extends ARCamera {
-    protected abstract trackingType: TrackingType;
+    protected abstract getTrackingType(): TrackingType;
     protected _trackingImpl!: TTrackingMode;
 
     init() {
         this._trackingImpl = ARSession.getSessionForEngine(this.engine).getTrackingProvider(
-            this.trackingType,
+            this.getTrackingType(),
             this
         ) as TTrackingMode;
     }

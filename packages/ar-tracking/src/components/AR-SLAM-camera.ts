@@ -12,7 +12,10 @@ import {ARTrackingCameraBase} from './AR-tracking-camera-base.js';
  */
 export class ARSLAMCamera extends ARTrackingCameraBase<ITrackingMode> {
     static TypeName = 'ar-slam-camera';
-    protected trackingType = TrackingType.SLAM;
+
+    protected getTrackingType(): TrackingType {
+        return TrackingType.SLAM;
+    }
 
     private readonly _projectionMatrix = new Float32Array(16);
 

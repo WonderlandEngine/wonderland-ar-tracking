@@ -17,7 +17,10 @@ import {ARTrackingCameraBase} from './AR-tracking-camera-base.js';
  */
 export class ARVPSCamera extends ARTrackingCameraBase<VPSTrackingMode> {
     static TypeName = 'ar-vps-camera';
-    protected trackingType = TrackingType.VPS;
+
+    protected getTrackingType(): TrackingType {
+        return TrackingType.VPS;
+    }
 
     /**
      * make sure noone can overwrite this

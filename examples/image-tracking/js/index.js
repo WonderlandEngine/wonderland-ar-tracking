@@ -12,14 +12,14 @@
  */
 
 /* wle:auto-imports:start */
+import {ARImageTrackingCamera} from '@wonderlandengine/ar-tracking';
 import {ButtonEndARSession} from './button-end-ar-session.js';
 import {ButtonStartARSession} from './button-start-ar-session.js';
 import {ImageTrackingExample} from './image-tracker.js';
-import {PhysicalSizeImageTarget} from './physical-size-image-target.js';
 /* wle:auto-imports:end */
 
 import {loadRuntime} from '@wonderlandengine/api';
-import {ARImageTrackingCamera, ARSession} from '@wonderlandengine/ar-tracking';
+import {ARSession, TrackingType} from '@wonderlandengine/ar-tracking';
 import {WebXRProvider} from '@wonderlandengine/ar-provider-webxr';
 import {ZapparProvider} from '@wonderlandengine/ar-provider-zappar';
 
@@ -88,33 +88,69 @@ const arSession = ARSession.getSessionForEngine(engine);
 WebXRProvider.registerTrackingProviderWithARSession(arSession);
 
 // Register Zappar as the image tracking provider.
-// Note: image targets must be Zappar `.zpt` files and need to be available under `static/targets/`.
+// Note: image targets must be Zappar `.zpt` files and need to be available under `static/`.
 // The `name` must match the `imageId` configured on the scene components in `ImageTracking.wlp`.
 const zapparProvider = ZapparProvider.registerTrackingProviderWithARSession(arSession);
 
 // Pre-register targets so the ARImageTrackingCamera can emit an ImageScanningEvent.
 // These file paths resolve relative to the page and assume Wonderland serves `static/` at `/`.
-await zapparProvider.registerImageTarget('./targets/image-target-1-white.zpt', {
-    name: 'image-target-1-white',
+await zapparProvider.registerImageTarget('./zappar-targets/target.zpt', {
+    name: 'target',
     physicalWidthInMeters: 0.15,
 });
 
-await zapparProvider.registerImageTarget('./targets/image-target-2-white.zpt', {
-    name: 'image-target-2-white',
-    physicalWidthInMeters: 0.2,
-});
+/*
+ * If image tracking can run without immersive WebXR (e.g. Zappar),
+ * auto-start and hide the AR button.
+ */
+arSession.onARSessionReady.add(() => {
+    if (!arSession.supportsInstantTracking(TrackingType.Image)) return;
 
-// Cylinder/cone targets should ideally be authored as cylindrical/conical targets in Zappar
-// so that radius/height information is available.
-await zapparProvider.registerImageTarget('./targets/fanta.zpt', {
-    name: 'fanta',
+    const arButton = document.getElementById('ar-button');
+    if (arButton) arButton.style.display = 'none';
+
+    const isCameraComponent = (component) => {
+        return (
+            component &&
+            typeof component.startSession === 'function' &&
+            typeof component.endSession === 'function'
+        );
+    };
+
+    const startImageCamera = () => {
+        const view = engine.scene.activeViews[0];
+        const components = view?.object?.getComponents?.() ?? [];
+
+        for (const component of components) {
+            if (!isCameraComponent(component)) continue;
+            if (
+                component.type === 'ar-image-tracking-camera' ||
+                component.constructor?.TypeName === 'ar-image-tracking-camera'
+            ) {
+                component.startSession();
+                return true;
+            }
+        }
+
+        for (const component of components) {
+            if (!isCameraComponent(component)) continue;
+            component.startSession();
+            return true;
+        }
+
+        return false;
+    };
+
+    if (startImageCamera()) return;
+    setTimeout(startImageCamera, 0);
+    setTimeout(startImageCamera, 250);
 });
 
 /* wle:auto-register:start */
+engine.registerComponent(ARImageTrackingCamera);
 engine.registerComponent(ButtonEndARSession);
 engine.registerComponent(ButtonStartARSession);
 engine.registerComponent(ImageTrackingExample);
-engine.registerComponent(PhysicalSizeImageTarget);
 /* wle:auto-register:end */
 
 engine.scene.load(`${Constants.ProjectName}.bin`);

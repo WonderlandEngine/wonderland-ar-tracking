@@ -56,7 +56,9 @@ export class FaceMaskExample extends Component {
             );
             return;
         }
-        const camera = this.ARFaceTrackingCamera.getComponent(ARFaceTrackingCamera);
+        const camera = this.ARFaceTrackingCamera.getComponent(
+            ARFaceTrackingCamera.TypeName
+        ) as ARFaceTrackingCamera | null;
         if (!camera) {
             throw new Error(
                 `${ARFaceTrackingCamera.TypeName} was not found on ARFaceTrackingCamera`
