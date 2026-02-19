@@ -3,7 +3,8 @@
     "private": true,
     "scripts": {
         "format": "prettier --write .",
-        "build": "npm run build --workspaces"
+        "build": "npm run build --workspaces",
+        "test:unit": "vitest run"
     },
     "workspaces": [
         "packages/*"
@@ -11,7 +12,8 @@
     "prettier": "@wonderlandengine/prettier-config",
     "devDependencies": {
         "@wonderlandengine/prettier-config": "^1.0.0",
-        "prettier": "^3.5.3"
+        "prettier": "^3.5.3",
+        "vitest": "^2.1.9"
     },
     "dependencies": {
         "@wonderlandengine/api": "file:../wonderland-engine/js/api/packages/api"

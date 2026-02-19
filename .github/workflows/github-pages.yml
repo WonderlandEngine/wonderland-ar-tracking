@@ -19,6 +19,7 @@ jobs:
 
                   # Build all node libraries
                   npm i
+                  npm run test:unit
                   npm run build --workspaces
 
                   # Build all examples
