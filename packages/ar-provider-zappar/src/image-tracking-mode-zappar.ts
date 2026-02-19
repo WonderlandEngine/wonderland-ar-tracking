@@ -38,6 +38,9 @@ export class ImageTracking_Zappar extends TrackingMode implements ImageTrackingM
     init(): void {
         this._view = this.component.object.getComponent('view') ?? undefined;
 
+        const provider = this.provider as ZapparProvider;
+        provider.setPreferredCameraUserFacing(false);
+
         const input = this.component.object.getComponent('input');
         if (input) {
             input.active = false;
@@ -66,15 +69,19 @@ export class ImageTracking_Zappar extends TrackingMode implements ImageTrackingM
 
         const provider = this.provider as ZapparProvider;
         const pipeline = provider.getPipeline();
+        const viewNear = this._view?.near;
+        const viewFar = this._view?.far;
 
         const projectionMatrix = Zappar.projectionMatrixFromCameraModel(
             pipeline.cameraModel(),
             this.component.engine.canvas.width,
-            this.component.engine.canvas.height
+            this.component.engine.canvas.height,
+            typeof viewNear === 'number' ? viewNear : undefined,
+            typeof viewFar === 'number' ? viewFar : undefined
         );
 
         if (this._view) {
-            this._view.projectionMatrix.set(projectionMatrix);
+            this._setProjectionMatrixWithEngineRemap(projectionMatrix);
         }
 
         const cameraPose = pipeline.cameraPoseDefault();
@@ -220,5 +227,98 @@ export class ImageTracking_Zappar extends TrackingMode implements ImageTrackingM
 
         this.component.object.setPositionWorld(this._cameraPosition);
         this.component.object.setRotationWorld(this._cameraRotation);
+    }
+
+    private _setProjectionMatrixWithEngineRemap(matrix: Float32Array) {
+        const debugWindow = globalThis as {
+            __WLE_ZAPPAR_DEBUG__?: boolean;
+            __WLE_ZAPPAR_LAST_PROJECTION_REMAP__?: {
+                mode: string;
+                viewId: number | null;
+                reverseZ: boolean;
+                status: 'applied' | 'skipped';
+                reason?: string;
+            };
+        };
+
+        const view = this._view as unknown as {
+            _setProjectionMatrix?: (value: Float32Array) => void;
+            projectionMatrix: Float32Array;
+            _id?: number;
+        };
+
+        if (!view) {
+            if (debugWindow.__WLE_ZAPPAR_DEBUG__) {
+                debugWindow.__WLE_ZAPPAR_LAST_PROJECTION_REMAP__ = {
+                    mode: 'image',
+                    viewId: null,
+                    reverseZ: false,
+                    status: 'skipped',
+                    reason: 'no-view',
+                };
+            }
+            return;
+        }
+
+        if (typeof view._setProjectionMatrix === 'function') {
+            view._setProjectionMatrix(matrix);
+        } else {
+            view.projectionMatrix.set(matrix);
+        }
+
+        const engineAny = this.component.engine as unknown as {
+            wasm: {
+                _wl_view_component_remapProjectionMatrix: (
+                    viewId: number,
+                    reverseZ: boolean,
+                    ndcDepthIsZeroToOne: boolean
+                ) => void;
+            };
+            isReverseZEnabled: boolean;
+        };
+
+        if (typeof view._id !== 'number') {
+            if (debugWindow.__WLE_ZAPPAR_DEBUG__) {
+                debugWindow.__WLE_ZAPPAR_LAST_PROJECTION_REMAP__ = {
+                    mode: 'image',
+                    viewId: null,
+                    reverseZ: engineAny.isReverseZEnabled,
+                    status: 'skipped',
+                    reason: 'missing-view-id',
+                };
+            }
+            return;
+        }
+
+        if (
+            typeof engineAny.wasm?._wl_view_component_remapProjectionMatrix === 'function'
+        ) {
+            const ndcDepthIsZeroToOne = false;
+            engineAny.wasm._wl_view_component_remapProjectionMatrix(
+                view._id,
+                engineAny.isReverseZEnabled,
+                ndcDepthIsZeroToOne
+            );
+
+            if (debugWindow.__WLE_ZAPPAR_DEBUG__) {
+                debugWindow.__WLE_ZAPPAR_LAST_PROJECTION_REMAP__ = {
+                    mode: 'image',
+                    viewId: view._id,
+                    reverseZ: engineAny.isReverseZEnabled,
+                    status: 'applied',
+                };
+            }
+            return;
+        }
+
+        if (debugWindow.__WLE_ZAPPAR_DEBUG__) {
+            debugWindow.__WLE_ZAPPAR_LAST_PROJECTION_REMAP__ = {
+                mode: 'image',
+                viewId: view._id,
+                reverseZ: engineAny.isReverseZEnabled,
+                status: 'skipped',
+                reason: 'missing-wasm-remap-function',
+            };
+        }
     }
 }

@@ -66,6 +66,8 @@ export class ZapparProvider extends ARProvider {
     private _faceMesh: FaceMesh | null = null;
     private _faceResourcesPromise: Promise<void> | null = null;
     private _imageTracker: ImageTracker | null = null;
+    private _preferredCameraUserFacing: boolean | null = null;
+    private _cameraSourceUserFacing: boolean | null = null;
     private _imageTargetDescriptors: ZapparImageTargetDescriptor[] = [];
     private readonly _imageTargetsChanged = new Emitter();
     private cameraStarted = false;
@@ -136,6 +138,16 @@ export class ZapparProvider extends ARProvider {
         return this._xrSession;
     }
 
+    /**
+     * Hint camera facing preference for the next/active session.
+     * - `true`: user/front camera
+     * - `false`: rear/back camera
+     * - `null`: Zappar default
+     */
+    setPreferredCameraUserFacing(userFacing: boolean | null): void {
+        this._preferredCameraUserFacing = userFacing;
+    }
+
     static registerTrackingProviderWithARSession(arSession: ARSession) {
         const provider = new ZapparProvider(arSession.engine);
         arSession.registerTrackingProvider(provider);
@@ -167,9 +179,18 @@ export class ZapparProvider extends ARProvider {
         await this.ensureZapparLoaded();
         await this._zappar!.loadedPromise();
         this.ensurePipeline();
+        this.ensureCameraSourcePreference();
         await this.ensureCameraRunning();
 
         this.startZapparDebugLogging();
+
+        if (this._faceTracker) {
+            this._faceTracker.enabled = true;
+        }
+
+        if (this._imageTracker) {
+            this._imageTracker.enabled = true;
+        }
 
         // For instant tracking providers, we should emit session start here.
         // (Unlike WebXR, there is no XRSessionStart event.)
@@ -177,6 +198,13 @@ export class ZapparProvider extends ARProvider {
 
         if (this.instantTracker) {
             this.instantTracker.enabled = true;
+        }
+    }
+
+    private ensurePreRenderRegistered(): void {
+        if (!this.preRenderRegistered) {
+            this.engine.scene.onPreRender.add(this.onPreRender);
+            this.preRenderRegistered = true;
         }
     }
 
@@ -362,7 +390,10 @@ export class ZapparProvider extends ARProvider {
     }
 
     private ensurePipeline(): void {
-        if (this.pipeline) return;
+        if (this.pipeline) {
+            this.ensurePreRenderRegistered();
+            return;
+        }
 
         if (!this._zappar) {
             throw new Error('Zappar is not loaded yet. Call startSession() first.');
@@ -392,14 +423,29 @@ export class ZapparProvider extends ARProvider {
                 console.log('[ZapparProvider] Using device camera source');
             }
         }
-        const deviceId = Zappar.cameraDefaultDeviceID();
-        this.cameraSource = new Zappar.CameraSource(pipeline, deviceId);
+        this.ensureCameraSourcePreference();
         this.instantTracker = new Zappar.InstantWorldTracker(pipeline);
 
-        if (!this.preRenderRegistered) {
-            this.engine.scene.onPreRender.add(this.onPreRender);
-            this.preRenderRegistered = true;
+        this.ensurePreRenderRegistered();
+    }
+
+    private ensureCameraSourcePreference(): void {
+        if (!this.pipeline || !this._zappar) {
+            return;
         }
+
+        const desiredUserFacing = this._preferredCameraUserFacing;
+        if (this.cameraSource && this._cameraSourceUserFacing === desiredUserFacing) {
+            return;
+        }
+
+        const deviceId =
+            desiredUserFacing === null
+                ? this._zappar.cameraDefaultDeviceID()
+                : this._zappar.cameraDefaultDeviceID(desiredUserFacing);
+
+        this.cameraSource = new this._zappar.CameraSource(this.pipeline, deviceId);
+        this._cameraSourceUserFacing = desiredUserFacing;
     }
 
     getPipeline(): Pipeline {
@@ -662,17 +708,14 @@ export class ZapparProvider extends ARProvider {
         if (previousUnpackBuffer) gl.bindBuffer(gl.PIXEL_UNPACK_BUFFER, null);
 
         try {
-            // Mirror Zappar THREE.js update order:
-            // - tracking: processGL() -> frameUpdate()
-            // - texture upload: cameraFrameUploadGL() is performed separately (cameraTexture.ts)
+            // Keep GL update order consistent with the non-GL path:
+            // process tracking input, upload camera frame texture, then update frame state.
             this.pipeline.processGL();
+            this.pipeline.cameraFrameUploadGL();
             this.pipeline.frameUpdate();
 
             // Update SLAM state every frame (one loop in the provider).
             this.updateTracking();
-
-            // Upload the latest camera frame to a WebGL texture (for background rendering).
-            this.pipeline.cameraFrameUploadGL();
 
             // Bind the Zappar camera texture for Wonderland's sky material.
             // Wonderland Engine will handle drawing; we only ensure that:

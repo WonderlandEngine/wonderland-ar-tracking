@@ -12,32 +12,37 @@
  */
 
 /* wle:auto-imports:start */
-import {ARImageTrackingCamera} from '@wonderlandengine/ar-tracking';
-import {VideoTexture} from '@wonderlandengine/components';
 import {ButtonEndARSession} from './button-end-ar-session.js';
 import {ButtonStartARSession} from './button-start-ar-session.js';
 import {ImageTrackingExample} from './image-tracker.js';
 import {PhysicalSizeImageTarget} from './physical-size-image-target.js';
-import {VideoTextureImageTarget} from './video-texture-image-target.js';
 /* wle:auto-imports:end */
 
 import {loadRuntime} from '@wonderlandengine/api';
-import {ARSession} from '@wonderlandengine/ar-tracking';
+import {ARImageTrackingCamera, ARSession} from '@wonderlandengine/ar-tracking';
 import {WebXRProvider} from '@wonderlandengine/ar-provider-webxr';
 import {ZapparProvider} from '@wonderlandengine/ar-provider-zappar';
 
 /* wle:auto-constants:start */
-const RuntimeOptions = {
-    physx: false,
-    loader: false,
-    xrFramebufferScaleFactor: 1,
-    canvas: 'canvas',
-};
 const Constants = {
     ProjectName: 'ImageTracking',
     RuntimeBaseName: 'WonderlandRuntime',
-    WebXRRequiredFeatures: ['local'],
-    WebXROptionalFeatures: ['local', 'hand-tracking', 'hit-test'],
+    WebXRRequiredFeatures: ['local',],
+    WebXROptionalFeatures: ['local','hand-tracking','hit-test',],
+};
+const RuntimeOptions = {
+    webgl2: true,
+    webgpu: false,
+    physx: false,
+    loader: false,
+    xrFramebufferScaleFactor: 1,
+    loadUncompressedImagesAsBitmap: false,
+    xrOfferSession: {
+        mode: 'auto',
+        features: Constants.WebXRRequiredFeatures,
+        optionalFeatures: Constants.WebXROptionalFeatures,
+    },
+    canvas: 'canvas',
 };
 /* wle:auto-constants:end */
 
@@ -106,13 +111,10 @@ await zapparProvider.registerImageTarget('./targets/fanta.zpt', {
 });
 
 /* wle:auto-register:start */
-engine.registerComponent(ARImageTrackingCamera);
-engine.registerComponent(VideoTexture);
 engine.registerComponent(ButtonEndARSession);
 engine.registerComponent(ButtonStartARSession);
 engine.registerComponent(ImageTrackingExample);
 engine.registerComponent(PhysicalSizeImageTarget);
-engine.registerComponent(VideoTextureImageTarget);
 /* wle:auto-register:end */
 
 engine.scene.load(`${Constants.ProjectName}.bin`);

@@ -26,11 +26,11 @@ describe('face-tracking Zappar helpers', () => {
 
         expect(loadingEvent.maxDetections).toBe(2);
         expect(loadingEvent.pointsPerDetection).toBe(3);
-        expect(loadingEvent.indices).toEqual([{a: 0, b: 1, c: 2}]);
+        expect(loadingEvent.indices).toEqual([{a: 0, b: 2, c: 1}]);
         expect(loadingEvent.uvs).toEqual([
-            {u: 0, v: 0},
-            {u: 1, v: 0},
+            {u: 1, v: 1},
             {u: 0, v: 1},
+            {u: 1, v: 0},
         ]);
     });
 });
