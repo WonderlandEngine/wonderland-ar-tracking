@@ -19,6 +19,10 @@ This package depends on `@zappar/zappar`; make sure your bundler is configured
 to serve the `zcv.wasm` asset as described in the
 [Zappar installation guide](https://docs.zap.works/universal-ar/javascript/getting-started/installation/).
 
+For Wonderland Editor publishing and image-target training workflows, see the
+companion package
+[`@wonderlandengine/zappar-publish-plugin`](https://www.npmjs.com/package/@wonderlandengine/zappar-publish-plugin).
+
 > **Note:** The provider currently keeps tracking active but does not draw the
 > Zappar camera feed to the Wonderland canvas. If you require a background
 > video, composite it manually in your application.
@@ -97,3 +101,10 @@ await provider.registerImageTarget('/static/targets/poster.zpt', posterTarget);
 
 Once registered, the provider emits image scanning and tracking events via
 `ARImageTrackingCamera`.
+
+## Related Packages
+
+- [`@wonderlandengine/ar-tracking`](https://www.npmjs.com/package/@wonderlandengine/ar-tracking)
+  Core AR abstractions and camera components.
+- [`@wonderlandengine/zappar-publish-plugin`](https://www.npmjs.com/package/@wonderlandengine/zappar-publish-plugin)
+  Wonderland Editor plugin for ZapWorks upload/publish and target training.
