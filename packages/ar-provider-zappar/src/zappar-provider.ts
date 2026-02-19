@@ -181,6 +181,7 @@ export class ZapparProvider extends ARProvider {
         this.ensurePipeline();
         this.ensureCameraSourcePreference();
         await this.ensureCameraRunning();
+        this.ensurePreRenderRegistered();
 
         this.startZapparDebugLogging();
 
@@ -391,7 +392,6 @@ export class ZapparProvider extends ARProvider {
 
     private ensurePipeline(): void {
         if (this.pipeline) {
-            this.ensurePreRenderRegistered();
             return;
         }
 
@@ -425,8 +425,6 @@ export class ZapparProvider extends ARProvider {
         }
         this.ensureCameraSourcePreference();
         this.instantTracker = new Zappar.InstantWorldTracker(pipeline);
-
-        this.ensurePreRenderRegistered();
     }
 
     private ensureCameraSourcePreference(): void {

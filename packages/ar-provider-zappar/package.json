@@ -1,6 +1,6 @@
 {
     "name": "@wonderlandengine/ar-provider-zappar",
-    "version": "1.0.1",
+    "version": "1.1.1",
     "description": "Wonderland Engine AR tracking provider based on Zappar",
     "main": "dist/index.js",
     "type": "module",

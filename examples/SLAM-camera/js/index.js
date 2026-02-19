@@ -169,10 +169,7 @@ arSession.onARSessionReady.add(() => {
         return false;
     };
 
-    // Run now, then retry shortly after components have started.
-    if (startSlamCamera()) return;
-    setTimeout(startSlamCamera, 0);
-    setTimeout(startSlamCamera, 250);
+    startSlamCamera();
 });
 
 /* wle:auto-register:start */

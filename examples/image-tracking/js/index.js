@@ -141,9 +141,7 @@ arSession.onARSessionReady.add(() => {
         return false;
     };
 
-    if (startImageCamera()) return;
-    setTimeout(startImageCamera, 0);
-    setTimeout(startImageCamera, 250);
+    startImageCamera();
 });
 
 /* wle:auto-register:start */

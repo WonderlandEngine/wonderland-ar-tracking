@@ -130,9 +130,7 @@ arSession.onARSessionReady.add(() => {
         return false;
     };
 
-    if (startFaceCamera()) return;
-    setTimeout(startFaceCamera, 0);
-    setTimeout(startFaceCamera, 250);
+    startFaceCamera();
 });
 
 /* wle:auto-register:start */

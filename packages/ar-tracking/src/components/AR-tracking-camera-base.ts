@@ -8,9 +8,17 @@ export abstract class ARTrackingCameraBase<
 > extends ARCamera {
     protected abstract getTrackingType(): TrackingType;
     protected _trackingImpl!: TTrackingMode;
+    private _registeredWithSession = false;
+    private _readyReported = false;
 
     init() {
-        this._trackingImpl = ARSession.getSessionForEngine(this.engine).getTrackingProvider(
+        const arSession = ARSession.getSessionForEngine(this.engine);
+        if (!this._registeredWithSession) {
+            arSession.registerARCameraComponent();
+            this._registeredWithSession = true;
+        }
+
+        this._trackingImpl = arSession.getTrackingProvider(
             this.getTrackingType(),
             this
         ) as TTrackingMode;
@@ -26,6 +34,11 @@ export abstract class ARTrackingCameraBase<
         this.validateStart();
         if (this._trackingImpl.init) {
             this._trackingImpl.init(this.getTrackingInitFeatures());
+        }
+
+        if (!this._readyReported) {
+            ARSession.getSessionForEngine(this.engine).markARCameraReady();
+            this._readyReported = true;
         }
     }
 

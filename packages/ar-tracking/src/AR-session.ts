@@ -34,6 +34,8 @@ export class ARSession {
     private _engine: WonderlandEngine;
     private _sceneHasLoaded = false;
     private _arSessionIsReady = false;
+    private _registeredCameras = 0;
+    private _readyCameras = 0;
 
     /** Wonderland Engine instance this AR session is running on */
     get engine() {
@@ -104,6 +106,28 @@ export class ARSession {
         return this.engines.get(engine)!;
     }
 
+    /**
+     * Called by AR camera components during initialization to participate in
+     * AR session readiness gating.
+     */
+    registerARCameraComponent() {
+        this._registeredCameras += 1;
+        this.checkProviderLoadProgress();
+    }
+
+    /**
+     * Called by AR camera components once they completed their startup path
+     * and are ready to accept `startSession` calls.
+     */
+    markARCameraReady() {
+        if (this._readyCameras >= this._registeredCameras) {
+            return;
+        }
+
+        this._readyCameras += 1;
+        this.checkProviderLoadProgress();
+    }
+
     /* Private, as ARSession instances should be created with getSessionForEngine */
     private constructor(engine: WonderlandEngine) {
         this._engine = engine;
@@ -142,7 +166,8 @@ export class ARSession {
 
         if (
             this._trackingProviders.every((p) => p.loaded === true) &&
-            this._sceneHasLoaded
+            this._sceneHasLoaded &&
+            this._readyCameras > 0
         ) {
             this._arSessionIsReady = true;
             this.onARSessionReady.notify();
