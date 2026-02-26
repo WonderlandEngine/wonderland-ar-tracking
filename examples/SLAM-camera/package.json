@@ -19,7 +19,6 @@
         "@wonderlandengine/ar-provider-8thwall": "^1.1.0",
         "@wonderlandengine/ar-provider-webxr": "^1.2.0",
         "@wonderlandengine/ar-provider-zappar": "^1.2.0",
-        "@zappar/zappar": "^4.3.0",
         "@wonderlandengine/ar-tracking": "^1.2.0",
         "@wonderlandengine/components": "^1.0.0",
         "gl-matrix": "^3.4.3"
