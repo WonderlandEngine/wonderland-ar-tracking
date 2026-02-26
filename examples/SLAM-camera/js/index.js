@@ -14,25 +14,24 @@
 /* wle:auto-imports:start */
 import {SlamAnchorZappar as SlamAnchorZappar1} from './slam-anchor-zappar.js';
 import {ARSLAMCamera} from '@wonderlandengine/ar-tracking';
+import {HitTestLocation} from '@wonderlandengine/ar-tracking';
 import {ButtonEndARSession} from './button-end-ar-session.js';
 import {ButtonStartARSession} from './button-start-ar-session.js';
-import {HitTestLocationRoot} from './hit-test-location-root.js';
-import {HitTestLocationXR8} from './hit-test-location-xr8.js';
+import {SlamPlacementUI} from './slam-placement-ui.js';
 import {SpawnMeshOnReticle} from './spawn-mesh-on-reticle.js';
 /* wle:auto-imports:end */
 
 import {loadRuntime} from '@wonderlandengine/api';
 import {ARSession, ARCamera, TrackingType} from '@wonderlandengine/ar-tracking';
 import {WebXRProvider} from '@wonderlandengine/ar-provider-webxr';
-import {XR8Provider} from '@wonderlandengine/ar-provider-8thwall';
 import {ZapparProvider} from '@wonderlandengine/ar-provider-zappar';
 
 /* wle:auto-constants:start */
 const Constants = {
     ProjectName: 'SLAMCamera',
     RuntimeBaseName: 'WonderlandRuntime',
-    WebXRRequiredFeatures: ['local'],
-    WebXROptionalFeatures: ['local', 'hit-test'],
+    WebXRRequiredFeatures: ['local',],
+    WebXROptionalFeatures: ['local','hit-test',],
 };
 const RuntimeOptions = {
     webgl2: true,
@@ -50,8 +49,6 @@ const RuntimeOptions = {
 };
 /* wle:auto-constants:end */
 
-window.API_TOKEN_XR8 =
-    'sU7eX52Oe2ZL8qUKBWD5naUlu1ZrnuRrtM1pQ7ukMz8rkOEG8mb63YlYTuiOrsQZTiXKRe';
 window.WEBXR_REQUIRED_FEATURES = Constants.WebXRRequiredFeatures;
 window.WEBXR_OPTIONAL_FEATURES = Constants.WebXROptionalFeatures;
 
@@ -175,10 +172,10 @@ arSession.onARSessionReady.add(() => {
 /* wle:auto-register:start */
 engine.registerComponent(SlamAnchorZappar1);
 engine.registerComponent(ARSLAMCamera);
+engine.registerComponent(HitTestLocation);
 engine.registerComponent(ButtonEndARSession);
 engine.registerComponent(ButtonStartARSession);
-engine.registerComponent(HitTestLocationRoot);
-engine.registerComponent(HitTestLocationXR8);
+engine.registerComponent(SlamPlacementUI);
 engine.registerComponent(SpawnMeshOnReticle);
 /* wle:auto-register:end */
 

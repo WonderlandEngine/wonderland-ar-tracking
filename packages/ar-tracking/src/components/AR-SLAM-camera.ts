@@ -1,4 +1,4 @@
-import {ITrackingMode} from '../tracking-mode.js';
+import {ITrackingMode, HitTestResult} from '../tracking-mode.js';
 import {TrackingType} from '../tracking-type.js';
 import {ARTrackingCameraBase} from './AR-tracking-camera-base.js';
 
@@ -37,5 +37,30 @@ export class ARSLAMCamera extends ARTrackingCameraBase<ITrackingMode> {
                 );
             }
         }
+    }
+
+    /**
+     * Set up a hit-test source for the current tracking provider.
+     *
+     * Delegates to the underlying tracking mode's {@link ITrackingMode.setupHitTest}
+     * implementation. Providers that do not require explicit setup are a no-op.
+     */
+    async setupHitTest(): Promise<void> {
+        await this._trackingImpl.setupHitTest?.();
+    }
+
+    /** Release any hit-test resources. Called automatically on session end. */
+    teardownHitTest(): void {
+        this._trackingImpl.teardownHitTest?.();
+    }
+
+    /**
+     * Returns the current hit-test result (a world-space surface position
+     * directly in front of the camera), or `null` when no surface is found.
+     *
+     * Should be called each frame from a reticle / placement component.
+     */
+    getHitTestResult(): HitTestResult | null {
+        return this._trackingImpl.getHitTestResult?.() ?? null;
     }
 }

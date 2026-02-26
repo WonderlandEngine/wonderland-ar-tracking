@@ -35,6 +35,13 @@ export class ImageTracking_Zappar extends TrackingMode implements ImageTrackingM
     readonly onImageUpdate: Emitter<[event: ImageTrackedEvent]> = new Emitter();
     readonly onImageLost: Emitter<[event: ImageTrackedEvent]> = new Emitter();
 
+    async registerTarget(
+        source: string | ArrayBuffer,
+        options: {name: string; physicalWidthInMeters?: number}
+    ): Promise<void> {
+        await (this.provider as ZapparProvider).registerImageTarget(source, options);
+    }
+
     init(): void {
         this._view = this.component.object.getComponent('view') ?? undefined;
 
@@ -72,8 +79,11 @@ export class ImageTracking_Zappar extends TrackingMode implements ImageTrackingM
         const viewNear = this._view?.near;
         const viewFar = this._view?.far;
 
-        const projectionMatrix = Zappar.projectionMatrixFromCameraModel(
+        const [cameraDataWidth, cameraDataHeight] = pipeline.cameraDataSize();
+        const projectionMatrix = Zappar.projectionMatrixFromCameraModelAndSize(
             pipeline.cameraModel(),
+            cameraDataWidth,
+            cameraDataHeight,
             this.component.engine.canvas.width,
             this.component.engine.canvas.height,
             typeof viewNear === 'number' ? viewNear : undefined,

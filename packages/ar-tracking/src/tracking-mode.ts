@@ -3,6 +3,11 @@ import {ARProvider} from './AR-provider.js';
 
 export interface TrackingStatusEvent {}
 
+/** Position returned by a SLAM provider's hit-test against real-world surfaces. */
+export interface HitTestResult {
+    position: {x: number; y: number; z: number};
+}
+
 /**
  * AR cameras will carry a tracking mode (SLAM, Face tracking, image tracking, etc)
  */
@@ -32,6 +37,30 @@ export interface ITrackingMode {
     init?(features?: string[]): void;
     startSession: () => void;
     endSession: () => void;
+
+    /**
+     * Optional: set up a hit-test source against real-world surfaces.
+     *
+     * Called once when an AR session starts (e.g. to request an
+     * `XRHitTestSource` for WebXR, or to enable the Zappar `WorldTracker`).
+     * Providers that do not require explicit setup may leave this unimplemented.
+     */
+    setupHitTest?(): Promise<void>;
+
+    /**
+     * Optional: tear down any hit-test resources created by {@link setupHitTest}.
+     *
+     * Called when the AR session ends.
+     */
+    teardownHitTest?(): void;
+
+    /**
+     * Optional: return the current hit-test result for a ray cast from the
+     * centre of the camera into the real world.
+     *
+     * Returns `null` when no surface has been found this frame.
+     */
+    getHitTestResult?(): HitTestResult | null;
 }
 
 export abstract class TrackingMode implements ITrackingMode {
@@ -220,4 +249,20 @@ export interface ImageTrackingMode extends ITrackingMode {
     readonly onImageFound: Emitter<[event: ImageTrackedEvent]>;
     readonly onImageUpdate: Emitter<[event: ImageTrackedEvent]>;
     readonly onImageLost: Emitter<[event: ImageTrackedEvent]>;
+
+    /**
+     * Pre-registers an image tracking target so the provider can start
+     * detecting it.
+     *
+     * Providers that do not require pre-registration (e.g. WebXR mind-ar)
+     * may leave this unimplemented.
+     *
+     * @param source URL or binary data for the target file (e.g. a Zappar `.zpt` path).
+     * @param options.name Must match the `imageId` used by tracker components on this target.
+     * @param options.physicalWidthInMeters Optional physical width for physically-correct scale.
+     */
+    registerTarget?(
+        source: string | ArrayBuffer,
+        options: {name: string; physicalWidthInMeters?: number}
+    ): Promise<void>;
 }

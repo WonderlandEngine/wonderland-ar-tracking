@@ -3,6 +3,7 @@ import {quat2} from 'gl-matrix';
 import {XR8ExtraPermissions, XR8Provider} from './xr8-provider.js';
 import {
     ARSession,
+    HitTestResult,
     ImageScanningEvent,
     ImageTrackedEvent,
     TrackingMode,
@@ -364,5 +365,25 @@ export class WorldTracking_XR8 extends TrackingMode {
         if (!this._hasProjectionMatrix) return false;
         out.set(this._projectionMatrix);
         return true;
+    }
+
+    /**
+     * Simple ground-plane hit-test: intersect the camera forward ray with y=0.
+     * No setup or teardown is required for this approach.
+     */
+    getHitTestResult(): HitTestResult | null {
+        const cam = this.component.object;
+        const fwd = cam.getForwardWorld(new Array(3) as number[]);
+        // Ray is pointing upward — no intersection with the ground plane.
+        if (fwd[1] >= 0) return null;
+        const pos = cam.getPositionWorld(new Array(3) as number[]);
+        const t = -pos[1] / fwd[1];
+        return {
+            position: {
+                x: pos[0] + fwd[0] * t,
+                y: 0,
+                z: pos[2] + fwd[2] * t,
+            },
+        };
     }
 }

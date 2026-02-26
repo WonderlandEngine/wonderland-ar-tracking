@@ -10,3 +10,4 @@ export * from './src/components/AR-face-tracking-camera.js';
 export * from './src/components/AR-SLAM-camera.js';
 export * from './src/components/AR-VPS-camera.js';
 export * from './src/components/AR-image-tracking-camera.js';
+export * from './src/components/hit-test-location.js';

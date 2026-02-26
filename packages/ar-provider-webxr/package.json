@@ -1,6 +1,6 @@
 {
     "name": "@wonderlandengine/ar-provider-webxr",
-    "version": "1.0.1",
+    "version": "1.2.0",
     "description": "Wonderland Engine AR tracking provider based on the WebXR Device API",
     "main": "dist/index.js",
     "type": "module",
@@ -34,7 +34,7 @@
     },
     "peerDependencies": {
         "@wonderlandengine/api": "^1.0.0",
-        "@wonderlandengine/ar-tracking": "^1.0.0",
+        "@wonderlandengine/ar-tracking": "^1.2.0",
         "@wonderlandengine/components": "^1.0.0"
     },
     "dependencies": {

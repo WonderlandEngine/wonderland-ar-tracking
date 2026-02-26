@@ -27,11 +27,26 @@ export class ImageTrackingExample extends Component {
      * Image target name.
      *
      * - For 8th Wall this used to be the target id.
-     * - For Zappar this must match the `name` used when calling
-     *   `ZapparProvider.registerImageTarget(...)`.
+     * - For Zappar this must match the filename stem of the `.zpt` file and
+     *   the `name` passed to `registerTarget`.
      */
     @property.string()
     imageId!: string;
+
+    /**
+     * URL of the Zappar `.zpt` target file, relative to the page root.
+     * Leave empty on non-Zappar providers; `registerTarget` is a no-op when
+     * the active provider does not implement it.
+     */
+    @property.string('')
+    url!: string;
+
+    /**
+     * Physical width of the tracked image in metres.
+     * Set to `0` to use Zappar's internal scale from the `.zpt` file.
+     */
+    @property.float(0)
+    physicalWidthInMeters!: number;
 
     // allocate some arrays
     private _cachedPosition = new Array<number>(3);
@@ -54,6 +69,23 @@ export class ImageTrackingExample extends Component {
             throw new Error(
                 `${ARImageTrackingCamera.TypeName} was not found on ARImageTrackingCamera`
             );
+        }
+
+        if (this.url) {
+            camera
+                .registerTarget(this.url, {
+                    name: this.imageId,
+                    physicalWidthInMeters:
+                        this.physicalWidthInMeters > 0
+                            ? this.physicalWidthInMeters
+                            : undefined,
+                })
+                .catch((e) =>
+                    console.error(
+                        `${this.type}: failed to register image target '${this.imageId}' from '${this.url}'`,
+                        e
+                    )
+                );
         }
 
         camera.onImageFound.add(this.onImageFound);

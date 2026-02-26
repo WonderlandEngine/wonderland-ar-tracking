@@ -24,6 +24,37 @@ import type {
 
 type ZapparImageTargetType = 'flat' | 'cylindrical' | 'conical';
 
+// ---------------------------------------------------------------------------
+// Zappar WorldTracker type stubs (available in @zappar/zappar >= 4.x).
+// Typed against the documented stable API surface so this compiles against
+// the current 2.x peer while remaining forward-compatible with 4.x.
+// ---------------------------------------------------------------------------
+
+/** A single detected horizontal plane produced by {@link ZapparWorldTracker}. */
+export interface ZapparPlaneAnchor {
+    /** Pose matrix of this plane in world space. */
+    pose(cameraPose: Float32Array): Float32Array;
+    /** Ordered 2-D boundary vertices on the plane surface. */
+    readonly polygon: ReadonlyArray<readonly [number, number]>;
+    /** Increments each time `polygon` is updated. */
+    readonly polygonVersion: number;
+}
+
+/**
+ * Minimal interface for the Zappar `WorldTracker` class available in
+ * `@zappar/zappar >= 4.x`.  Only the API surface used by this package is
+ * declared here.
+ */
+export interface ZapparWorldTracker {
+    enabled: boolean;
+    horizontalPlaneDetectionEnabled: boolean;
+    verticalPlaneDetectionEnabled: boolean;
+    /** Map of all currently detected plane anchors keyed by their ID. */
+    readonly planes: ReadonlyMap<string, ZapparPlaneAnchor>;
+    readonly worldAnchor: {pose(cameraPose: Float32Array): Float32Array};
+    readonly groundAnchor: {pose(cameraPose: Float32Array): Float32Array};
+}
+
 export interface ZapparImageTargetOptions {
     name: string;
     type?: ZapparImageTargetType;
@@ -70,9 +101,21 @@ export class ZapparProvider extends ARProvider {
     private _cameraSourceUserFacing: boolean | null = null;
     private _imageTargetDescriptors: ZapparImageTargetDescriptor[] = [];
     private readonly _imageTargetsChanged = new Emitter();
+
+    private _worldTracker: ZapparWorldTracker | null = null;
+    /** Set to `true` when a component requests world-tracker before the session starts. */
+    private _worldTrackerRequested = false;
+
     private cameraStarted = false;
     private hasInitializedAnchor = false;
     private _anchorWarmupFramesRemaining = 0;
+    /**
+     * When `true`, {@link updateTracking} keeps calling
+     * `setAnchorPoseFromCameraOffset` every frame so the world anchor
+     * continuously follows the camera centre. Set via
+     * {@link startUserPlacement}; cleared by {@link placeInstantAnchor}.
+     */
+    private _userPlacementMode = false;
     private preRenderRegistered = false;
 
     private _slamStateValid = false;
@@ -200,6 +243,15 @@ export class ZapparProvider extends ARProvider {
         if (this.instantTracker) {
             this.instantTracker.enabled = true;
         }
+
+        // Create the WorldTracker if it was requested before the session started.
+        if (this._worldTrackerRequested && !this._worldTracker) {
+            this._createWorldTracker();
+            this._worldTrackerRequested = false;
+        } else if (this._worldTracker) {
+            // Re-enable a pre-existing WorldTracker from a previous session.
+            this._worldTracker.enabled = true;
+        }
     }
 
     private ensurePreRenderRegistered(): void {
@@ -297,7 +349,7 @@ export class ZapparProvider extends ARProvider {
             if (debugWorker) {
                 console.log('[ZapparProvider] Creating CV worker:', workerUrl);
             }
-            const worker = new Worker(workerUrl);
+            const worker = new Worker(workerUrl, {type: 'module'});
 
             // Keep a reference for debugging / inspection.
             ZapparProvider._cvWorker = worker;
@@ -546,6 +598,13 @@ export class ZapparProvider extends ARProvider {
             throw new Error('Image target registration requires a name.');
         }
 
+        // Deduplicate: if a descriptor with the same name is already registered,
+        // skip loading to avoid double-loading the same .zpt file when multiple
+        // scene components share the same imageId target.
+        if (this._imageTargetDescriptors.some((d) => d.name === options.name)) {
+            return;
+        }
+
         // Allow registering targets before an AR session starts.
         // This is useful so image targets are known for ImageScanningEvent
         // and so apps can prefetch/prepare targets without requesting camera access.
@@ -649,6 +708,72 @@ export class ZapparProvider extends ARProvider {
 
     getImageTargetDescriptor(index: number): ZapparImageTargetDescriptor | undefined {
         return this._imageTargetDescriptors[index];
+    }
+
+    // -----------------------------------------------------------------------
+    // World tracking / plane anchors (Zappar SDK >= 4.x)
+    // -----------------------------------------------------------------------
+
+    /**
+     * Access the active {@link ZapparWorldTracker} instance, or `null` when
+     * plane tracking has not been requested or is unavailable.
+     *
+     * The instance is only non-null once {@link enableWorldTracker} has been
+     * called **and** an AR session is running.
+     */
+    get worldTracker(): ZapparWorldTracker | null {
+        return this._worldTracker;
+    }
+
+    /**
+     * Opt in to Zappar plane tracking via the `WorldTracker` API introduced in
+     * `@zappar/zappar >= 4.x`.
+     *
+     * Call this once (e.g. from a component's `start()` hook) before or after
+     * a session starts.  If the installed SDK does not expose `WorldTracker`
+     * (i.e. < 4.x) a warning is logged and the method returns `null`.
+     *
+     * The tracker is disabled again when the session ends and re-enabled on
+     * the next `startSession()` call.
+     *
+     * @returns The {@link ZapparWorldTracker} instance, or `null` on failure.
+     */
+    enableWorldTracker(): ZapparWorldTracker | null {
+        if (this._worldTracker) {
+            this._worldTracker.enabled = true;
+            return this._worldTracker;
+        }
+
+        if (this.pipeline && this._zappar) {
+            return this._createWorldTracker();
+        }
+
+        // Session not yet started – remember the request.
+        this._worldTrackerRequested = true;
+        return null;
+    }
+
+    private _createWorldTracker(): ZapparWorldTracker | null {
+        if (!this.pipeline || !this._zappar) return null;
+
+        // WorldTracker is only available in @zappar/zappar >= 4.x.
+        const ZapparAny = this._zappar as unknown as Record<string, unknown>;
+        if (typeof ZapparAny['WorldTracker'] !== 'function') {
+            console.warn(
+                '[ZapparProvider] WorldTracker not available in the installed' +
+                    ' version of @zappar/zappar. Upgrade to >= 4.x to enable plane tracking.'
+            );
+            return null;
+        }
+
+        const TrackerCtor = ZapparAny['WorldTracker'] as new (
+            pipeline: Pipeline
+        ) => ZapparWorldTracker;
+
+        this._worldTracker = new TrackerCtor(this.pipeline);
+        this._worldTracker.enabled = true;
+        this._worldTracker.horizontalPlaneDetectionEnabled = true;
+        return this._worldTracker;
     }
 
     private async ensureCameraRunning(): Promise<void> {
@@ -757,6 +882,36 @@ export class ZapparProvider extends ARProvider {
 
     get hasSlamTrackingState(): boolean {
         return this._slamStateValid;
+    }
+
+    /**
+     * `true` while the instant world anchor is being continuously repositioned
+     * in front of the camera (either during warmup or during user-placement
+     * mode). `false` once the anchor has been locked.
+     */
+    get isPlacingInstantAnchor(): boolean {
+        return this._userPlacementMode || this._anchorWarmupFramesRemaining > 0;
+    }
+
+    /**
+     * Enter user-placement mode: the instant world anchor tracks 5 m in front
+     * of the camera every frame until {@link placeInstantAnchor} is called.
+     *
+     * Typically called by a placement-UI component immediately after session
+     * start so the user can choose where to lock the world origin.
+     */
+    startUserPlacement(): void {
+        this._userPlacementMode = true;
+    }
+
+    /**
+     * Lock the instant world anchor at its current position and exit placement
+     * mode. After this call {@link isPlacingInstantAnchor} returns `false` and
+     * the anchor no longer follows the camera.
+     */
+    placeInstantAnchor(): void {
+        this._userPlacementMode = false;
+        this._anchorWarmupFramesRemaining = 0;
     }
 
     get slamFrameNumber(): number {
@@ -871,12 +1026,15 @@ export class ZapparProvider extends ARProvider {
         // Let Zappar continuously refine a stable surface point briefly, then lock.
         // If we lock immediately at startup, we can end up with effectively 3DoF behavior.
         // If we *never* lock, the origin follows the camera and the camera appears frozen.
-        if (this._anchorWarmupFramesRemaining > 0) {
+        // _userPlacementMode keeps the anchor updating beyond the warmup window until the
+        // user explicitly confirms placement via placeInstantAnchor().
+        if (
+            this._anchorWarmupFramesRemaining > 0 ||
+            this._userPlacementMode ||
+            !this.hasInitializedAnchor
+        ) {
             this.instantTracker.setAnchorPoseFromCameraOffset(0, 0, -5);
-            this._anchorWarmupFramesRemaining--;
-            this.hasInitializedAnchor = true;
-        } else if (!this.hasInitializedAnchor) {
-            this.instantTracker.setAnchorPoseFromCameraOffset(0, 0, -5);
+            if (this._anchorWarmupFramesRemaining > 0) this._anchorWarmupFramesRemaining--;
             this.hasInitializedAnchor = true;
         }
 
@@ -887,8 +1045,11 @@ export class ZapparProvider extends ARProvider {
         const zNear = activeView.near;
         const zFar = activeView.far;
 
-        const projectionMatrix = Zappar.projectionMatrixFromCameraModel(
+        const [cameraDataWidth, cameraDataHeight] = this.pipeline.cameraDataSize();
+        const projectionMatrix = Zappar.projectionMatrixFromCameraModelAndSize(
             this.pipeline.cameraModel(),
+            cameraDataWidth,
+            cameraDataHeight,
             this.engine.canvas.width,
             this.engine.canvas.height,
             zNear,
@@ -1113,6 +1274,10 @@ export class ZapparProvider extends ARProvider {
             this.instantTracker.enabled = false;
         }
 
+        if (this._worldTracker) {
+            this._worldTracker.enabled = false;
+        }
+
         if (this._xrSession) {
             try {
                 await this._xrSession.end();
@@ -1124,6 +1289,7 @@ export class ZapparProvider extends ARProvider {
 
         this.hasInitializedAnchor = false;
         this._anchorWarmupFramesRemaining = 0;
+        this._userPlacementMode = false;
         this._slamStateValid = false;
 
         this.onSessionEnd.notify(this);

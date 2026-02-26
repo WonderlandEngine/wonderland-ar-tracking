@@ -37,4 +37,26 @@ export class ARImageTrackingCamera extends ARTrackingCameraBase<ImageTrackingMod
     get onImageLost() {
         return this._trackingImpl.onImageLost;
     }
+
+    /**
+     * Pre-registers an image tracking target with the active provider.
+     *
+     * Delegates to {@link ImageTrackingMode.registerTarget} if the provider
+     * implements it (e.g. Zappar requires `.zpt` files to be loaded before
+     * tracking starts). Providers that do not need pre-registration will
+     * silently ignore this call.
+     *
+     * Call from a response component's `start()` hook, passing the same
+     * `name` that the component uses as its `imageId`.
+     *
+     * @param source URL or `ArrayBuffer` of the target file.
+     * @param options.name Must match the `imageId` on tracker components.
+     * @param options.physicalWidthInMeters Optional physical width in metres.
+     */
+    async registerTarget(
+        source: string | ArrayBuffer,
+        options: {name: string; physicalWidthInMeters?: number}
+    ): Promise<void> {
+        await this._trackingImpl.registerTarget?.(source, options);
+    }
 }

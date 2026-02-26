@@ -109,6 +109,7 @@ dist
 cache/
 deploy/
 **/zappar-cv/
+**/zappar-cv.wasm
 **/.autosave/
 
 trash/

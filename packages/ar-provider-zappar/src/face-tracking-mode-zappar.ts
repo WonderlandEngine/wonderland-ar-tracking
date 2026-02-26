@@ -169,8 +169,11 @@ export class FaceTracking_Zappar extends TrackingMode implements FaceTrackingMod
         const viewNear = this._view?.near;
         const viewFar = this._view?.far;
 
-        const projectionMatrix = Zappar.projectionMatrixFromCameraModel(
+        const [cameraDataWidth, cameraDataHeight] = pipeline.cameraDataSize();
+        const projectionMatrix = Zappar.projectionMatrixFromCameraModelAndSize(
             pipeline.cameraModel(),
+            cameraDataWidth,
+            cameraDataHeight,
             this.component.engine.canvas.width,
             this.component.engine.canvas.height,
             typeof viewNear === 'number' ? viewNear : undefined,

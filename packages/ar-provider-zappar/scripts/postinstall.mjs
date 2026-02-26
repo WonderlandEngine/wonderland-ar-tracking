@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {createRequire} from 'node:module';
 import {fileURLToPath} from 'node:url';
+import {execSync} from 'node:child_process';
 
 const require = createRequire(import.meta.url);
 const __filename = fileURLToPath(import.meta.url);
@@ -108,51 +109,111 @@ function main() {
     const projectRoot = resolveProjectRoot();
     const outDir = path.resolve(projectRoot, 'static', 'zappar-cv');
 
-    const workerSource =
-        findFirstFile(umdDir, (name) => name === 'zappar.worker.js') ??
-        findFirstFile(umdDir, (name) => name === 'zappar-cv.worker.js') ??
-        findFirstFile(zapparRoot, (name) => name === 'zappar.worker.js') ??
-        findFirstFile(zapparRoot, (name) => name === 'zappar-cv.worker.js') ??
-        null;
+    // -------------------------------------------------------------------------
+    // Detect package layout.
+    // @zappar/zappar < 4.x ships a pre-bundled UMD worker in `umd/`.
+    // @zappar/zappar >= 4.x ships only unbundled ESM; the worker must be bundled
+    // from `@zappar/zappar-cv/lib/worker.js` using esbuild.
+    // -------------------------------------------------------------------------
+    const isLegacyLayout = fs.existsSync(umdDir);
 
-    if (!workerSource) {
-        warn('Could not locate Zappar worker under', umdDir);
-        warn('Zappar root:', zapparRoot);
-        return;
-    }
+    if (isLegacyLayout) {
+        // ---- Legacy (< 4.x) path ----
+        const workerSource =
+            findFirstFile(umdDir, (name) => name === 'zappar.worker.js') ??
+            findFirstFile(umdDir, (name) => name === 'zappar-cv.worker.js') ??
+            findFirstFile(zapparRoot, (name) => name === 'zappar.worker.js') ??
+            findFirstFile(zapparRoot, (name) => name === 'zappar-cv.worker.js') ??
+            null;
 
-    const wasmCandidates = listFiles(umdDir)
-        .filter((e) => e.isFile() && e.name.endsWith('.wasm'))
-        .map((e) => path.join(umdDir, e.name));
+        if (!workerSource) {
+            warn('Could not locate Zappar worker under', umdDir);
+            warn('Zappar root:', zapparRoot);
+            return;
+        }
 
-    let wasmSource = wasmCandidates.length === 1 ? wasmCandidates[0] : null;
-    wasmSource = wasmSource ?? findWasmFromWorker(workerSource, umdDir);
-    wasmSource = wasmSource ?? (wasmCandidates.length > 0 ? wasmCandidates[0] : null);
+        const wasmCandidates = listFiles(umdDir)
+            .filter((e) => e.isFile() && e.name.endsWith('.wasm'))
+            .map((e) => path.join(umdDir, e.name));
 
-    if (!wasmSource) {
-        warn('Could not locate Zappar wasm under', umdDir);
-        warn('Worker found at:', workerSource);
-        return;
-    }
+        let wasmSource = wasmCandidates.length === 1 ? wasmCandidates[0] : null;
+        wasmSource = wasmSource ?? findWasmFromWorker(workerSource, umdDir);
+        wasmSource = wasmSource ?? (wasmCandidates.length > 0 ? wasmCandidates[0] : null);
 
-    fs.mkdirSync(outDir, {recursive: true});
+        if (!wasmSource) {
+            warn('Could not locate Zappar wasm under', umdDir);
+            warn('Worker found at:', workerSource);
+            return;
+        }
 
-    const workerDest = path.join(outDir, 'zappar-cv.worker.js');
-    copyOrThrow(workerSource, workerDest);
+        fs.mkdirSync(outDir, {recursive: true});
 
-    const wasmBasename = path.basename(wasmSource);
-    const wasmDest = path.join(outDir, wasmBasename);
-    copyOrThrow(wasmSource, wasmDest);
+        const workerDest = path.join(outDir, 'zappar-cv.worker.js');
+        copyOrThrow(workerSource, workerDest);
 
-    // Create a stable alias that the Wonderland provider code points at.
-    safeLinkOrCopy(wasmDest, path.join(outDir, 'zappar-cv.wasm'));
+        const wasmBasename = path.basename(wasmSource);
+        const wasmDest = path.join(outDir, wasmBasename);
+        copyOrThrow(wasmSource, wasmDest);
+        safeLinkOrCopy(wasmDest, path.join(outDir, 'zappar-cv.wasm'));
+        // Also copy wasm to static root so the bundled worker can find it at /zappar-cv.wasm.
+        copyOrThrow(wasmSource, path.join(path.dirname(outDir), 'zappar-cv.wasm'));
 
-    // Optional: copy any Zappar binary blobs shipped alongside the wasm.
-    // (Harmless if unused; avoids runtime 404s if Zappar expects them.)
-    for (const entry of listFiles(umdDir)) {
-        if (!entry.isFile()) continue;
-        if (!entry.name.endsWith('.zbin')) continue;
-        copyOrThrow(path.join(umdDir, entry.name), path.join(outDir, entry.name));
+        for (const entry of listFiles(umdDir)) {
+            if (!entry.isFile()) continue;
+            if (!entry.name.endsWith('.zbin')) continue;
+            copyOrThrow(path.join(umdDir, entry.name), path.join(outDir, entry.name));
+        }
+    } else {
+        // ---- Modern (>= 4.x) path ----
+        // Bundle the worker entry from @zappar/zappar-cv/lib/worker.js with esbuild.
+        const workerEntry = path.join(zapparCvLibDir, 'worker.js');
+        if (!fs.existsSync(workerEntry)) {
+            warn('Could not find worker entry at', workerEntry);
+            warn('Skipping worker bundling.');
+            return;
+        }
+
+        fs.mkdirSync(outDir, {recursive: true});
+
+        const workerDest = path.join(outDir, 'zappar-cv.worker.js');
+
+        // Try esbuild; it may be installed locally in the consumer project or globally.
+        const esbuildPaths = [
+            // consumer project's own node_modules (most reliable)
+            path.resolve(projectRoot, 'node_modules', '.bin', 'esbuild'),
+            path.resolve(projectRoot, 'node_modules', '.bin', 'esbuild.cmd'),
+            // provider package's own node_modules (if esbuild is a devDep there)
+            path.resolve(__dirname, '..', 'node_modules', '.bin', 'esbuild'),
+            path.resolve(__dirname, '..', 'node_modules', '.bin', 'esbuild.cmd'),
+        ];
+        const esbuildBin = esbuildPaths.find((p) => fs.existsSync(p));
+
+        if (!esbuildBin) {
+            warn('esbuild not found — cannot bundle worker for @zappar/zappar >= 4.x.');
+            warn('Add esbuild as a devDependency in your project and re-run npm install.');
+            return;
+        }
+
+        log('Bundling Zappar CV worker with esbuild…');
+        try {
+            execSync(
+                `"${esbuildBin}" "${workerEntry}" --bundle --format=esm --platform=browser --outfile="${workerDest}"`,
+                {stdio: 'inherit'}
+            );
+        } catch (e) {
+            warn('esbuild failed to bundle the Zappar CV worker:', e.message ?? e);
+            return;
+        }
+
+        // Copy the wasm file next to the worker so relative URL resolution works.
+        const wasmSrc = path.join(zapparCvLibDir, 'zappar-cv.wasm');
+        if (!fs.existsSync(wasmSrc)) {
+            warn('Could not find zappar-cv.wasm at', wasmSrc);
+        } else {
+            copyOrThrow(wasmSrc, path.join(outDir, 'zappar-cv.wasm'));
+            // Also copy wasm to static root so the bundled worker can find it at /zappar-cv.wasm.
+            copyOrThrow(wasmSrc, path.join(path.dirname(outDir), 'zappar-cv.wasm'));
+        }
     }
 
     // Required for face tracking defaults (FaceTracker.loadDefaultModel / FaceMesh.loadDefault*).
@@ -174,6 +235,27 @@ function main() {
     }
 
     log('Copied Zappar CV assets into', outDir);
+
+    // -------------------------------------------------------------------------
+    // Patch @zappar/zappar-cv/lib/profile.js: the file guards on
+    // `typeof window !== "undefined"` but then accesses `window.location`
+    // unconditionally. In the WLE editor's bundler context `window` is shimmed
+    // but `window.location` is undefined, crashing the component parse pass.
+    // Replace the bare access with optional chaining so it safely returns
+    // undefined rather than throwing.
+    // -------------------------------------------------------------------------
+    const profilePath = path.join(zapparCvRoot, 'lib', 'profile.js');
+    if (fs.existsSync(profilePath)) {
+        let profileSrc = fs.readFileSync(profilePath, 'utf8');
+        const patched = profileSrc.replaceAll(
+            'window.location.href',
+            'window.location?.href?'
+        );
+        if (patched !== profileSrc) {
+            fs.writeFileSync(profilePath, patched, 'utf8');
+            log('Patched @zappar/zappar-cv/lib/profile.js (window.location guard)');
+        }
+    }
 }
 
 try {

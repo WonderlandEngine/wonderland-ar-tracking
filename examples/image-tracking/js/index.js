@@ -27,8 +27,8 @@ import {ZapparProvider} from '@wonderlandengine/ar-provider-zappar';
 const Constants = {
     ProjectName: 'ImageTracking',
     RuntimeBaseName: 'WonderlandRuntime',
-    WebXRRequiredFeatures: ['local',],
-    WebXROptionalFeatures: ['local','hand-tracking','hit-test',],
+    WebXRRequiredFeatures: ['local'],
+    WebXROptionalFeatures: ['local', 'hand-tracking', 'hit-test'],
 };
 const RuntimeOptions = {
     webgl2: true,
@@ -88,16 +88,12 @@ const arSession = ARSession.getSessionForEngine(engine);
 WebXRProvider.registerTrackingProviderWithARSession(arSession);
 
 // Register Zappar as the image tracking provider.
-// Note: image targets must be Zappar `.zpt` files and need to be available under `static/`.
-// The `name` must match the `imageId` configured on the scene components in `ImageTracking.wlp`.
-const zapparProvider = ZapparProvider.registerTrackingProviderWithARSession(arSession);
-
-// Pre-register targets so the ARImageTrackingCamera can emit an ImageScanningEvent.
-// These file paths resolve relative to the page and assume Wonderland serves `static/` at `/`.
-await zapparProvider.registerImageTarget('./zappar-targets/target.zpt', {
-    name: 'target',
-    physicalWidthInMeters: 0.15,
-});
+// Note: image targets must be Zappar `.zpt` files served under `static/`.
+// Set the `url` and `imageId` properties directly on scene tracker components
+// (e.g. `image-tracking-example`, `physical-size-image-target-example`).
+// Each component calls `camera.registerTarget(url, { name: imageId })` from
+// its own `start()`, so no manual pre-registration is needed here.
+ZapparProvider.registerTrackingProviderWithARSession(arSession);
 
 /*
  * If image tracking can run without immersive WebXR (e.g. Zappar),
